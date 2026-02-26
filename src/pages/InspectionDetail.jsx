@@ -144,8 +144,8 @@ export default function InspectionDetail() {
       <body>
         <div class="sticker">
           <div class="sticker-header" style="display:flex;align-items:center;gap:6px;justify-content:center;">
-            <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/3e93469f9_state.jpg" style="width:28px;height:28px;object-fit:contain;" />
-            <div>State of North Carolina<br>Dept. of Public Instruction</div>
+            <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/736f6667e_nhcs.png" style="width:28px;height:28px;object-fit:contain;" />
+            <div>New Hanover County Schools</div>
           </div>
           <div class="sticker-title">Camera Surveillance Inspection</div>
 
