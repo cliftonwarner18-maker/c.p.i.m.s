@@ -20,7 +20,7 @@ export default function Layout({ children, currentPageName }) {
       {/* Top Header Bar */}
       <div className="bg-primary text-primary-foreground px-3 py-1 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Shield className="w-5 h-5 text-accent" />
+          <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/89c560c96_state.jpg" className="w-7 h-7 object-contain" />
           <div>
             <div className="text-[11px] font-bold tracking-[0.2em] uppercase leading-tight">
               STATE OF NORTH CAROLINA
