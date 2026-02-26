@@ -28,6 +28,12 @@ export default function BusProfile() {
     queryFn: () => base44.entities.Inspection.list('-created_date'),
   });
 
+  const { data: busHistory = [] } = useQuery({
+    queryKey: ['busHistory', busNumber],
+    queryFn: () => base44.entities.BusHistory.filter({ bus_number: busNumber }, '-start_time'),
+    enabled: !!busNumber,
+  });
+
   const bus = buses.find(b => b.bus_number === busNumber);
   const busWorkOrders = workOrders.filter(w => w.bus_number === busNumber);
   const busInspections = inspections.filter(i => i.bus_number === busNumber);
