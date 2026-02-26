@@ -1,18 +1,26 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import WinWindow from '../components/WinWindow';
+import EditInspectionForm from '../components/inspections/EditInspectionForm';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import moment from 'moment';
-import { Plus, Search, Eye } from 'lucide-react';
+import { Plus, Search, Eye, Pencil, Trash2 } from 'lucide-react';
 
 export default function Inspections() {
   const [search, setSearch] = useState('');
+  const [editingInsp, setEditingInsp] = useState(null);
+  const queryClient = useQueryClient();
 
   const { data: inspections = [] } = useQuery({
     queryKey: ['inspections'],
     queryFn: () => base44.entities.Inspection.list('-created_date'),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id) => base44.entities.Inspection.delete(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['inspections'] }),
   });
 
   const filtered = inspections.filter(i => {
@@ -25,6 +33,14 @@ export default function Inspections() {
 
   return (
     <div className="space-y-2">
+      {editingInsp && (
+        <EditInspectionForm
+          inspection={editingInsp}
+          onClose={() => setEditingInsp(null)}
+          onSaved={() => setEditingInsp(null)}
+        />
+      )}
+
       <WinWindow title="CAMERA SYSTEM INSPECTIONS — LOG" icon="📋">
         <div className="flex flex-wrap gap-2 mb-2">
           <Link
@@ -56,7 +72,7 @@ export default function Inspections() {
                 <th className="p-1 text-left">DVR</th>
                 <th className="p-1 text-left">SIGNALS</th>
                 <th className="p-1 text-left">RESULT</th>
-                <th className="p-1 text-left">ACTION</th>
+                <th className="p-1 text-left">ACTIONS</th>
               </tr>
             </thead>
             <tbody>
@@ -75,13 +91,28 @@ export default function Inspections() {
                   <td className={`p-1 font-bold ${insp.overall_status === 'Pass' ? 'status-completed' : insp.overall_status === 'Fail' ? 'status-cancelled' : 'status-pending'}`}>
                     [{insp.overall_status?.toUpperCase() || 'N/A'}]
                   </td>
-                  <td className="p-1">
+                  <td className="p-1 flex gap-1">
                     <Link
                       to={createPageUrl('InspectionDetail') + `?id=${insp.id}`}
                       className="win-button !py-0 !px-1 text-[10px] no-underline text-foreground"
+                      title="View"
                     >
                       <Eye className="w-3 h-3" />
                     </Link>
+                    <button
+                      className="win-button !py-0 !px-1 text-[10px]"
+                      onClick={() => setEditingInsp(insp)}
+                      title="Edit"
+                    >
+                      <Pencil className="w-3 h-3" />
+                    </button>
+                    <button
+                      className="win-button !py-0 !px-1 text-[10px]"
+                      onClick={() => { if (confirm('Delete this inspection?')) deleteMutation.mutate(insp.id); }}
+                      title="Delete"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                    </button>
                   </td>
                 </tr>
               ))}

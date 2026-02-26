@@ -47,28 +47,28 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
-import Dashboard from './pages/Dashboard';
-import NewWorkOrder from './pages/NewWorkOrder';
-import WorkOrders from './pages/WorkOrders';
-import WorkOrderDetail from './pages/WorkOrderDetail';
-import FleetManager from './pages/FleetManager';
 import BusProfile from './pages/BusProfile';
+import Dashboard from './pages/Dashboard';
+import FleetManager from './pages/FleetManager';
+import InspectionDetail from './pages/InspectionDetail';
 import Inspections from './pages/Inspections';
 import NewInspection from './pages/NewInspection';
-import InspectionDetail from './pages/InspectionDetail';
+import NewWorkOrder from './pages/NewWorkOrder';
+import WorkOrderDetail from './pages/WorkOrderDetail';
+import WorkOrders from './pages/WorkOrders';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    "Dashboard": Dashboard,
-    "NewWorkOrder": NewWorkOrder,
-    "WorkOrders": WorkOrders,
-    "WorkOrderDetail": WorkOrderDetail,
-    "FleetManager": FleetManager,
     "BusProfile": BusProfile,
+    "Dashboard": Dashboard,
+    "FleetManager": FleetManager,
+    "InspectionDetail": InspectionDetail,
     "Inspections": Inspections,
     "NewInspection": NewInspection,
-    "InspectionDetail": InspectionDetail,
+    "NewWorkOrder": NewWorkOrder,
+    "WorkOrderDetail": WorkOrderDetail,
+    "WorkOrders": WorkOrders,
 }
 
 export const pagesConfig = {
