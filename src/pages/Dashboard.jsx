@@ -110,17 +110,18 @@ export default function Dashboard() {
 
           {/* Recent Completed */}
           <WinWindow title="RECENTLY COMPLETED REPAIRS" icon="✅">
-            <div className="win-panel-inset p-1 max-h-[150px] overflow-auto">
+            <div className="win-panel-inset p-1 overflow-auto" style={{ maxHeight: '320px', minHeight: '80px' }}>
               {recentCompleted.length === 0 ? (
-                <div className="text-center text-[11px] p-2 text-muted-foreground">NO COMPLETED REPAIRS</div>
+                <div className="text-center text-[11px] p-3 text-muted-foreground">NO COMPLETED REPAIRS</div>
               ) : (
                 recentCompleted.map(wo => (
-                  <div key={wo.id} className="text-[11px] p-1 border-b border-border">
-                    <div className="flex justify-between">
+                  <div key={wo.id} className="text-[11px] p-2 border-b border-border hover:bg-secondary/40">
+                    <div className="flex justify-between items-center">
                       <span className="font-bold">{wo.order_number} — BUS #{wo.bus_number}</span>
-                      <span className="status-completed">[COMPLETED]</span>
+                      <span className="status-completed font-bold">[DONE]</span>
                     </div>
                     <div className="text-muted-foreground truncate">{wo.repairs_rendered}</div>
+                    {wo.technician_name && <div className="text-[10px] text-muted-foreground">TECH: {wo.technician_name}</div>}
                   </div>
                 ))
               )}
