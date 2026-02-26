@@ -100,7 +100,6 @@ export default function BusProfile() {
             <DataRow label="VIN" value={bus.vin} />
             <DataRow label="ENGINE" value={bus.engine} />
             <DataRow label="CAPACITY" value={bus.passenger_capacity} />
-            <DataRow label="ASSET #" value={bus.asset_number} />
             <DataRow label="WHEELCHAIR" value={bus.wheelchair_accessible ? 'YES' : 'NO'} />
             <DataRow label="STATUS" value={bus.status} />
           </div>
