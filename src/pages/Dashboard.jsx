@@ -147,6 +147,7 @@ export default function Dashboard() {
         <div>&gt; TOTAL RECORDS: {buses.length} VEHICLES | {workOrders.length} WORK ORDERS | {inspections.length} INSPECTIONS</div>
         <div>&gt; SESSION ACTIVE — {moment().format('dddd, MMMM D, YYYY HH:mm:ss')}</div>
       </div>
-    </>
-  );
-}
+      </div>
+      </>
+      );
+      }
