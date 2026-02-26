@@ -240,6 +240,7 @@ export default function BusProfile() {
                 <th className="p-1 text-left">ELAPSED</th>
                 <th className="p-1 text-left">TECHNICIAN</th>
                 <th className="p-1 text-left">DESCRIPTION</th>
+                <th className="p-1 text-left no-print">ACTION</th>
               </tr>
             </thead>
             <tbody>
