@@ -214,6 +214,45 @@ export default function BusProfile() {
         </div>
       </WinWindow>
 
+      {/* Manual History */}
+      <WinWindow title={`MANUAL HISTORY LOG — BUS #${bus.bus_number}`} icon="📝">
+        <div className="flex justify-end mb-2 no-print">
+          <button
+            className="win-button flex items-center gap-1 text-[11px] !bg-primary !text-primary-foreground"
+            onClick={() => setShowAddHistory(true)}
+          >
+            <Plus className="w-3 h-3" /> ADD HISTORY ENTRY
+          </button>
+        </div>
+        <div className="win-panel-inset overflow-auto" style={{ maxHeight: '300px' }}>
+          <table className="w-full text-[11px] font-mono">
+            <thead>
+              <tr className="bg-primary text-primary-foreground">
+                <th className="p-1 text-left">DATE/TIME START</th>
+                <th className="p-1 text-left">DATE/TIME END</th>
+                <th className="p-1 text-left">ELAPSED</th>
+                <th className="p-1 text-left">TECHNICIAN</th>
+                <th className="p-1 text-left">DESCRIPTION</th>
+              </tr>
+            </thead>
+            <tbody>
+              {busHistory.length === 0 && (
+                <tr><td colSpan={5} className="p-3 text-center text-muted-foreground">NO HISTORY ENTRIES</td></tr>
+              )}
+              {busHistory.map((h, i) => (
+                <tr key={h.id} className={i % 2 === 0 ? 'bg-card' : 'bg-background'}>
+                  <td className="p-1">{h.start_time ? moment(h.start_time).format('MM/DD/YY HH:mm') : '—'}</td>
+                  <td className="p-1">{h.end_time ? moment(h.end_time).format('MM/DD/YY HH:mm') : '—'}</td>
+                  <td className="p-1 font-bold">{formatElapsed(h.elapsed_minutes)}</td>
+                  <td className="p-1">{h.technician}</td>
+                  <td className="p-1">{h.description}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </WinWindow>
+
       {/* Notes */}
       {bus.notes && (
         <WinWindow title="VEHICLE NOTES" icon="📝">
