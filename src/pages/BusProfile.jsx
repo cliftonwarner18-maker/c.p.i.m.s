@@ -55,8 +55,22 @@ export default function BusProfile() {
 
   const overdue = bus.next_inspection_due && new Date(bus.next_inspection_due) < new Date();
 
+  const formatElapsed = (mins) => {
+    if (!mins || mins <= 0) return '—';
+    const h = Math.floor(mins / 60);
+    const m = mins % 60;
+    return h > 0 ? `${h}h ${m}m` : `${m}m`;
+  };
+
   return (
     <div className="max-w-4xl mx-auto space-y-2">
+      {showAddHistory && (
+        <AddHistoryForm
+          busNumber={busNumber}
+          onClose={() => setShowAddHistory(false)}
+          onSaved={() => setShowAddHistory(false)}
+        />
+      )}
       <div className="flex gap-2 no-print">
         <Link to={createPageUrl('FleetManager')} className="win-button flex items-center gap-1 text-[11px] no-underline text-foreground">
           <ArrowLeft className="w-3 h-3" /> BACK TO FLEET
