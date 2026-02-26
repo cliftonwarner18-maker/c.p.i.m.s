@@ -51,7 +51,7 @@ export default function Dashboard() {
   return (
     <div style={{display:'flex',flexDirection:'column',gap:'4px'}}>
       {/* Header Banner */}
-      <div className="win-panel-inset flex items-center justify-center gap-3" style={{padding:'4px',boxSizing:'border-box'}}>
+      <div className="win-panel-inset" style={{padding:'4px',boxSizing:'border-box',display:'flex',alignItems:'center',justifyContent:'center',gap:'12px'}}>>
         <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/736f6667e_nhcs.png" style={{width:36,height:36,objectFit:'contain',flexShrink:0}} alt="NHCS Logo" />
         <div className="text-center leading-tight">
           <div className="text-[9px] font-bold tracking-[0.2em] text-muted-foreground uppercase">New Hanover County Schools</div>
@@ -69,17 +69,18 @@ export default function Dashboard() {
 
       {/* Quick Actions */}
       <div style={{display:'flex',gap:'4px',flexWrap:'wrap'}}>
-        <Link to={createPageUrl('NewWorkOrder')} className="win-button flex items-center gap-1 text-[12px] no-underline text-foreground">
+        <Link to={createPageUrl('NewWorkOrder')} className="win-button text-[12px] no-underline text-foreground" style={{display:'flex',alignItems:'center',gap:'4px'}}>
           <PlusCircle className="w-4 h-4" /> NEW WORK ORDER
         </Link>
-        <Link to={createPageUrl('FleetManager')} className="win-button flex items-center gap-1 text-[12px] no-underline text-foreground">
+        <Link to={createPageUrl('FleetManager')} className="win-button text-[12px] no-underline text-foreground" style={{display:'flex',alignItems:'center',gap:'4px'}}>
           <Bus className="w-4 h-4" /> MANAGE FLEET
         </Link>
-        <Link to={createPageUrl('Inspections')} className="win-button flex items-center gap-1 text-[12px] no-underline text-foreground">
+        <Link to={createPageUrl('Inspections')} className="win-button text-[12px] no-underline text-foreground" style={{display:'flex',alignItems:'center',gap:'4px'}}>
           <ClipboardCheck className="w-4 h-4" /> INSPECTIONS
         </Link>
         <button
-          className="win-button flex items-center gap-1 text-[12px] !bg-accent !text-accent-foreground font-bold"
+          className="win-button text-[12px] font-bold"
+          style={{display:'flex',alignItems:'center',gap:'4px',background:'hsl(45,90%,50%)',color:'hsl(220,20%,10%)'}}
           onClick={() => setShowTranscribe(true)}
         >
           <Zap className="w-4 h-4" /> QUICK TRANSCRIBE
@@ -100,17 +101,17 @@ export default function Dashboard() {
             <div className="text-center text-[11px] p-3 text-muted-foreground">NO OVERDUE INSPECTIONS</div>
           ) : (
             overdueInspections.map(b => (
-              <div key={b.id} className="flex items-center justify-between text-[12px] p-2 border-b border-border hover:bg-secondary/40">
-                <div className="flex items-center gap-2">
-                  <AlertTriangle className="w-4 h-4 status-cancelled flex-shrink-0" />
+              <div key={b.id} style={{display:'flex',alignItems:'center',justifyContent:'space-between',fontSize:'12px',padding:'4px',borderBottom:'1px solid hsl(220,15%,70%)'}}>
+                <div style={{display:'flex',alignItems:'center',gap:'4px'}}>
+                  <AlertTriangle className="w-4 h-4" style={{color:'hsl(0,60%,45%)',flexShrink:0}} />
                   <div>
-                    <div className="font-bold">BUS #{b.bus_number}</div>
-                    <div className="text-[10px] text-muted-foreground">{b.year} {b.make} {b.model}</div>
+                    <div style={{fontWeight:'bold'}}>BUS #{b.bus_number}</div>
+                    <div style={{fontSize:'10px',color:'hsl(220,10%,40%)'}}>{b.year} {b.make} {b.model}</div>
                   </div>
                 </div>
-                <div className="text-right">
-                  <div className="status-cancelled font-bold text-[11px]">OVERDUE</div>
-                  <div className="font-bold text-[11px]">DUE: {moment(b.next_inspection_due).format('MM/DD/YY')}</div>
+                <div style={{textAlign:'right'}}>
+                  <div style={{color:'hsl(0,60%,45%)',fontWeight:'bold',fontSize:'11px'}}>OVERDUE</div>
+                  <div style={{fontWeight:'bold',fontSize:'11px'}}>DUE: {moment(b.next_inspection_due).format('MM/DD/YY')}</div>
                 </div>
               </div>
             ))
@@ -125,13 +126,13 @@ export default function Dashboard() {
             <div className="text-center text-[11px] p-3 text-muted-foreground">NO COMPLETED REPAIRS</div>
           ) : (
             recentCompleted.map(wo => (
-              <div key={wo.id} className="text-[11px] p-2 border-b border-border hover:bg-secondary/40">
-                <div className="flex justify-between items-center">
-                  <span className="font-bold">{wo.order_number} — BUS #{wo.bus_number}</span>
-                  <span className="status-completed font-bold">[DONE]</span>
+              <div key={wo.id} style={{fontSize:'11px',padding:'4px',borderBottom:'1px solid hsl(220,15%,70%)'}}>
+                <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                  <span style={{fontWeight:'bold'}}>{wo.order_number} — BUS #{wo.bus_number}</span>
+                  <span style={{color:'hsl(140,60%,30%)',fontWeight:'bold'}}>[DONE]</span>
                 </div>
-                <div className="text-muted-foreground truncate">{wo.repairs_rendered}</div>
-                {wo.technician_name && <div className="text-[10px] text-muted-foreground">TECH: {wo.technician_name}</div>}
+                <div style={{color:'hsl(220,10%,40%)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{wo.repairs_rendered}</div>
+                {wo.technician_name && <div style={{fontSize:'10px',color:'hsl(220,10%,40%)'}}>TECH: {wo.technician_name}</div>}
               </div>
             ))
           )}
