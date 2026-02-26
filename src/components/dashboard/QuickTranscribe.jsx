@@ -165,7 +165,8 @@ export default function QuickTranscribe({ onClose }) {
                           ? <td colSpan={5} className="p-1 text-destructive text-[10px]">PARSE ERROR: {row._raw}</td>
                           : <>
                             <td className="p-1 font-bold">{row.busNumber}</td>
-                            <td className="p-1 max-w-[150px] truncate">{row.issue}</td>
+                            <td className="p-1">{row.lot || '—'}</td>
+                            <td className="p-1 max-w-[120px] truncate">{row.issue}</td>
                             <td className="p-1">{row.cameraType || '—'}</td>
                             <td className="p-1">{row.tech || '—'}</td>
                             <td className="p-1">{row.dateRaw || '—'}</td>
