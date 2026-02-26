@@ -68,7 +68,7 @@ export default function NewWorkOrder() {
           <div className="flex gap-2 justify-center">
             <button
               className="win-button flex items-center gap-1"
-              onClick={() => { setSubmitted(false); setForm({ reported_by: '', bus_number: '', issue_description: '' }); }}
+              onClick={() => { setSubmitted(false); setForm({ reported_by: '', bus_number: '', base_location: '', issue_description: '' }); }}
             >
               <FileText className="w-3 h-3" /> NEW WORK ORDER
             </button>
