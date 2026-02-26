@@ -101,13 +101,19 @@ export default function WorkOrders() {
                   <td className="p-1 max-w-[200px] truncate">{wo.issue_description}</td>
                   <td className={`p-1 font-bold ${statusClass(wo.status)}`}>[{wo.status?.toUpperCase()}]</td>
                   <td className="p-1">{wo.technician_name || '—'}</td>
-                  <td className="p-1">
+                  <td className="p-1 flex gap-1">
                     <Link
                       to={createPageUrl('WorkOrderDetail') + `?id=${wo.id}`}
                       className="win-button !py-0 !px-2 text-[10px] inline-block no-underline text-foreground"
                     >
                       OPEN
                     </Link>
+                    <button
+                      className="win-button !py-0 !px-2 text-[10px] !bg-destructive !text-destructive-foreground flex items-center gap-0.5"
+                      onClick={() => handleDelete(wo)}
+                    >
+                      <Trash2 className="w-3 h-3" /> DEL
+                    </button>
                   </td>
                 </tr>
               ))}
