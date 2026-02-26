@@ -237,9 +237,9 @@ export default function InspectionDetail() {
       <WinWindow title={`INSPECTION REPORT: ${inspection.inspection_number}`} icon="📋">
         <div className="win-panel-inset p-3 text-center mb-2">
           <div className="flex items-center justify-center gap-3 mb-1">
-            <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/3e93469f9_state.jpg" className="w-10 h-10 object-contain" />
+            <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/736f6667e_nhcs.png" className="w-10 h-10 object-contain" />
             <div>
-              <div className="text-[10px] font-bold tracking-[0.2em]">STATE OF NORTH CAROLINA — DEPT. OF PUBLIC INSTRUCTION</div>
+              <div className="text-[10px] font-bold tracking-[0.2em]">NEW HANOVER COUNTY SCHOOLS</div>
               <div className="text-[13px] font-bold tracking-wider">MOBILE VEHICLE SURVEILLANCE INSPECTION REPORT</div>
               <div className="text-[11px]">OFFICIAL CAMERA SYSTEM CERTIFICATION</div>
             </div>
