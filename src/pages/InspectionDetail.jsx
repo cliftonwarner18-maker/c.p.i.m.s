@@ -368,7 +368,7 @@ export default function InspectionDetail() {
               </div>
             )}
             <div className="text-center border-t border-gray-400 mt-1 pt-1 text-gray-500" style={{ fontSize: '6pt', letterSpacing: '0.1em' }}>
-              NC DPI — MOBILE VEHICLE SURVEILLANCE SYSTEM
+              NHCS — MOBILE VEHICLE SURVEILLANCE SYSTEM
             </div>
           </div>
         </div>
