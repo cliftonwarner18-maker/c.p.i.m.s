@@ -62,9 +62,10 @@ export default function Dashboard() {
       </div>
 
       {/* Stats */}
-      <WinWindow title="SYSTEM STATUS OVERVIEW" icon="📊" noPadding>
+      <div className="win-panel" style={{padding:0}}>
+        <div className="win-titlebar">📊 SYSTEM STATUS OVERVIEW</div>
         <DashboardStats buses={buses} workOrders={workOrders} inspections={inspections} />
-      </WinWindow>
+      </div>
 
       {/* Quick Actions */}
       <div className="flex gap-2 flex-wrap">
