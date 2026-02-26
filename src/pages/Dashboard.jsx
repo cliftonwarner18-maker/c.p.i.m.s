@@ -11,6 +11,8 @@ import { AlertTriangle, PlusCircle, Bus, ClipboardCheck, Zap } from 'lucide-reac
 import moment from 'moment';
 
 export default function Dashboard() {
+  const [showTranscribe, setShowTranscribe] = useState(false);
+
   const { data: buses = [] } = useQuery({
     queryKey: ['buses'],
     queryFn: () => base44.entities.Bus.list('-created_date'),
