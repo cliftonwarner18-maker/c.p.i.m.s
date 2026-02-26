@@ -78,17 +78,6 @@ export default function BusProfile() {
           onSaved={() => setShowAddHistory(false)}
         />
       )}
-      {showBulkImport && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="w-full max-w-2xl">
-            <BulkImportHistory
-              busNumber={busNumber}
-              onClose={() => setShowBulkImport(false)}
-              onSaved={() => {}}
-            />
-          </div>
-        </div>
-      )}
       <div className="flex gap-2 no-print">
         <Link to={createPageUrl('FleetManager')} className="win-button flex items-center gap-1 text-[11px] no-underline text-foreground">
           <ArrowLeft className="w-3 h-3" /> BACK TO FLEET
