@@ -20,9 +20,9 @@ export default function DashboardStats({ buses, workOrders, inspections }) {
   ];
 
   return (
-    <div style={{display:'flex',width:'100%',height:'50px',margin:'0',padding:'0',gap:'0',boxSizing:'border-box'}}>
+    <div style={{display:'flex',width:'100%',height:'50px',margin:'-2px -2px -2px -2px',padding:'0',gap:'0',boxSizing:'border-box'}}>
       {stats.map((stat, i) => (
-        <div key={i} style={{flex:'1',minWidth:'0',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',textAlign:'center',padding:'2px 4px',boxSizing:'border-box',height:'50px',background:'hsl(220,15%,96%)',borderTop:'2px solid hsl(220,15%,50%)',borderRight:'2px solid hsl(220,15%,96%)',borderBottom:'2px solid hsl(220,15%,96%)',borderLeft:'2px solid hsl(220,15%,50%)'}}>
+        <div key={i} style={{flex:'1',minWidth:'0',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',textAlign:'center',padding:'2px 4px',boxSizing:'border-box',height:'100%',background:'hsl(220,15%,96%)',borderTop:'2px solid hsl(220,15%,50%)',borderRight:'2px solid hsl(220,15%,96%)',borderBottom:'2px solid hsl(220,15%,96%)',borderLeft:'2px solid hsl(220,15%,50%)'}}>
           <stat.icon style={{width:12,height:12,color:stat.color,margin:'0',flexShrink:0}} />
           <div style={{fontSize:'11px',fontWeight:'bold',color:stat.color,lineHeight:'1',margin:'0',flexShrink:0}}>{stat.value}</div>
           <div style={{fontSize:'6px',fontWeight:'bold',whiteSpace:'nowrap',letterSpacing:'0.02em',lineHeight:'1',margin:'0'}}>{stat.label}</div>
