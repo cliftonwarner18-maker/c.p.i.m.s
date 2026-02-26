@@ -184,6 +184,13 @@ export default function BusForm({ bus, onClose, onSaved }) {
           <textarea className="win-input w-full text-[11px] h-16 resize-none" value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} />
         </div>
 
+        {/* Legacy Upload */}
+        <div className="win-panel p-2">
+          <div className="text-[10px] font-bold bg-primary text-primary-foreground px-2 py-0.5 mb-1">▸ LEGACY UPLOAD</div>
+          <textarea className="win-input w-full text-[11px] h-32 font-mono resize-none" placeholder="Paste audit/repair log text here..." value={form.legacy_upload || ''} onChange={e => setForm({...form, legacy_upload: e.target.value})} />
+          <div className="text-[9px] text-muted-foreground mt-1">Audit/repair log text — will be preserved with vehicle record</div>
+        </div>
+
         <div className="flex gap-2">
           <button type="submit" className="win-button flex items-center gap-1 !bg-primary !text-primary-foreground" disabled={isPending}>
             <Save className="w-3 h-3" /> {isPending ? 'SAVING...' : 'SAVE VEHICLE'}
