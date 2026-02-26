@@ -291,38 +291,82 @@ export default function InspectionDetail() {
       </WinWindow>
 
       {/* Printable Inspection Sticker */}
-      <WinWindow title="PRINTABLE INSPECTION STICKER (MOBILE PRINTER)" icon="🏷️">
-        <div className="no-print text-[10px] text-muted-foreground mb-1">
-          Use your browser print function to print this sticker for the bus.
+      <WinWindow title="INSPECTION STICKER PREVIEW — MOBILE PRINTER OUTPUT" icon="🏷️">
+        <div className="no-print text-[10px] text-muted-foreground mb-1 flex items-center gap-2">
+          <Printer className="w-3 h-3" />
+          STICKER PREVIEW — Click "PRINT STICKER ONLY" to send directly to mobile printer
         </div>
-        <div ref={stickerRef} className="border-2 border-foreground p-3 max-w-sm mx-auto text-center bg-card">
-          <div className="text-[8px] font-bold tracking-[0.15em] border-b border-foreground pb-1 mb-1">
-            STATE OF NORTH CAROLINA — DPI
-          </div>
-          <div className="text-[11px] font-bold tracking-wider">
-            SURVEILLANCE INSPECTION
-          </div>
-          <div className="text-[16px] font-bold terminal-text my-1">
-            BUS #{inspection.bus_number}
-          </div>
-          <div className={`text-[14px] font-bold py-1 ${
-            inspection.overall_status === 'Pass' ? 'status-completed' : 'status-cancelled'
-          }`}>
-            ★ {inspection.overall_status?.toUpperCase()} ★
-          </div>
-          <div className="text-[9px] space-y-0.5 mt-1">
-            <div>INSP#: {inspection.inspection_number}</div>
-            <div>DATE: {moment(inspection.inspection_date || inspection.created_date).format('MM/DD/YYYY')}</div>
-            <div>INSPECTOR: {inspection.inspector_name}</div>
+        {/* Sticker Preview */}
+        <div className="flex justify-center py-2">
+          <div className="border-4 border-foreground bg-white text-black font-mono" style={{ width: '3in', padding: '10px', fontSize: '10px' }}>
+            <div className="text-center border-b-2 border-black pb-1 mb-1 font-bold tracking-widest" style={{ fontSize: '7pt' }}>
+              STATE OF NORTH CAROLINA<br />DEPT. OF PUBLIC INSTRUCTION
+            </div>
+            <div className="text-center font-bold tracking-wider mb-1" style={{ fontSize: '9pt' }}>
+              CAMERA SURVEILLANCE INSPECTION
+            </div>
+            <div className="text-center font-bold my-1" style={{ fontSize: '20pt', letterSpacing: '0.05em' }}>
+              BUS #{inspection.bus_number}
+            </div>
+            <div className={`text-center font-bold border-2 border-black py-1 my-1 tracking-widest ${
+              inspection.overall_status === 'Pass' ? 'text-green-800 bg-green-50' :
+              inspection.overall_status === 'Fail' ? 'text-red-800 bg-red-50' : 'text-yellow-800 bg-yellow-50'
+            }`} style={{ fontSize: '14pt' }}>
+              ★ {inspection.overall_status?.toUpperCase()} ★
+            </div>
+            <div className="grid grid-cols-2 gap-x-2 mb-1" style={{ fontSize: '7pt' }}>
+              <div className="border-b border-gray-300 py-0.5">
+                <div className="text-gray-500 font-bold" style={{ fontSize: '6pt' }}>INSP. NUMBER</div>
+                <div className="font-bold">{inspection.inspection_number}</div>
+              </div>
+              <div className="border-b border-gray-300 py-0.5">
+                <div className="text-gray-500 font-bold" style={{ fontSize: '6pt' }}>DATE INSPECTED</div>
+                <div className="font-bold">{moment(inspection.inspection_date || inspection.created_date).format('MM/DD/YYYY')}</div>
+              </div>
+              <div className="border-b border-gray-300 py-0.5">
+                <div className="text-gray-500 font-bold" style={{ fontSize: '6pt' }}>INSPECTOR</div>
+                <div className="font-bold">{inspection.inspector_name}</div>
+              </div>
+              <div className="border-b border-gray-300 py-0.5">
+                <div className="text-gray-500 font-bold" style={{ fontSize: '6pt' }}>CAMERA SYSTEM</div>
+                <div className="font-bold">{bus?.camera_system_type || 'N/A'}</div>
+              </div>
+            </div>
+            <div className="space-y-0" style={{ fontSize: '7pt' }}>
+              {[
+                ['Camera System', inspection.camera_system_functional],
+                ['DVR Functional', inspection.dvr_functional],
+                ['Mounting Secure', inspection.mounting_secure],
+                ['Date/Time Accuracy', inspection.date_time_accuracy],
+                ['Signals & Lights', inspection.signals_lights_functional],
+                ['Programming', inspection.programming_verified],
+              ].map(([label, val]) => (
+                <div key={label} className="flex justify-between border-b border-dotted border-gray-300 py-0.5">
+                  <span>{label}</span>
+                  <span className={val ? 'text-green-700 font-bold' : 'text-red-700 font-bold'}>{val ? '✓ PASS' : '✗ FAIL'}</span>
+                </div>
+              ))}
+              <div className="flex justify-between border-b border-dotted border-gray-300 py-0.5">
+                <span>Lenses</span>
+                <span className={inspection.lenses_condition === 'Pass' ? 'text-green-700 font-bold' : 'text-red-700 font-bold'}>
+                  {inspection.lenses_condition?.toUpperCase()}
+                </span>
+              </div>
+            </div>
             {inspection.next_inspection_due && (
-              <div className="font-bold border-t border-foreground pt-1 mt-1">
-                NEXT DUE: {moment(inspection.next_inspection_due).format('MM/DD/YYYY')}
+              <div className="text-center font-bold border-2 border-black p-1 mt-1" style={{ fontSize: '9pt' }}>
+                NEXT INSPECTION DUE:<br />{moment(inspection.next_inspection_due).format('MM/DD/YYYY')}
               </div>
             )}
+            <div className="text-center border-t border-gray-400 mt-1 pt-1 text-gray-500" style={{ fontSize: '6pt', letterSpacing: '0.1em' }}>
+              NC DPI — MOBILE VEHICLE SURVEILLANCE SYSTEM
+            </div>
           </div>
-          <div className="text-[7px] mt-1 border-t border-foreground pt-1">
-            NC DPI — MOBILE VEHICLE SURVEILLANCE SYSTEM
-          </div>
+        </div>
+        <div className="flex justify-center mt-2">
+          <button className="win-button flex items-center gap-1 text-[12px] !bg-primary !text-primary-foreground" onClick={printStickerOnly}>
+            <Printer className="w-4 h-4" /> PRINT STICKER — MOBILE PRINTER
+          </button>
         </div>
       </WinWindow>
     </div>
