@@ -31,6 +31,7 @@ export default function NewWorkOrder() {
   const [form, setForm] = useState({
     reported_by: '',
     bus_number: '',
+    base_location: '',
     issue_description: '',
   });
 
