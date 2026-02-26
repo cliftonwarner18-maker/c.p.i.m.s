@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import WinWindow from '../components/WinWindow';
+import LoadingScreen from '../components/LoadingScreen';
 import DashboardStats from '../components/dashboard/DashboardStats';
 import ActiveWorkOrders from '../components/dashboard/ActiveWorkOrders';
 import QuickTranscribe from '../components/dashboard/QuickTranscribe';
@@ -35,9 +36,7 @@ export default function Dashboard() {
     return <div className="p-4 text-red-600">Error loading data. Refresh the page.</div>;
   }
 
-  if (busesLoading || woLoading || inspLoading) {
-    return <div className="p-4">Loading...</div>;
-  }
+  const isLoading = busesLoading || woLoading || inspLoading;
 
   const recentCompleted = workOrders
     .filter(w => w.status === 'Completed')
@@ -49,7 +48,9 @@ export default function Dashboard() {
   });
 
   return (
-    <div style={{display:'flex',flexDirection:'column',gap:'4px'}}>
+    <>
+      <LoadingScreen isLoading={isLoading} message="LOADING FLEET DATA..." />
+      <div style={{display:'flex',flexDirection:'column',gap:'4px'}}>
       {/* Header Banner */}
       <div className="win-panel-inset" style={{padding:'8px',boxSizing:'border-box',display:'flex',alignItems:'center',justifyContent:'space-between',gap:'12px'}}>
         <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/736f6667e_nhcs.png" style={{width:40,height:40,objectFit:'contain',flexShrink:0}} alt="NHCS Logo" />
@@ -146,6 +147,6 @@ export default function Dashboard() {
         <div>&gt; TOTAL RECORDS: {buses.length} VEHICLES | {workOrders.length} WORK ORDERS | {inspections.length} INSPECTIONS</div>
         <div>&gt; SESSION ACTIVE — {moment().format('dddd, MMMM D, YYYY HH:mm:ss')}</div>
       </div>
-    </div>
+    </>
   );
 }
