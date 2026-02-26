@@ -37,18 +37,21 @@ export default function Dashboard() {
   return (
     <div className="space-y-2">
       {/* Header Banner */}
-      <div className="win-panel-inset bg-primary/5 p-3 text-center">
-        <div className="terminal-text text-2xl font-bold text-primary tracking-widest">
-          ╔══════════════════════════════════════════════════╗
-        </div>
-        <div className="terminal-text text-xl font-bold text-primary tracking-[0.3em]">
-          SCHOOL BUS SURVEILLANCE SYSTEM
-        </div>
-        <div className="terminal-text text-sm text-muted-foreground tracking-[0.2em]">
-          CAMERA REPAIR & MAINTENANCE MANAGEMENT
-        </div>
-        <div className="terminal-text text-2xl font-bold text-primary tracking-widest">
-          ╚══════════════════════════════════════════════════╝
+      <div className="win-panel-inset bg-primary/5 p-4 text-center border-4 border-primary/30">
+        <div className="flex items-center justify-center gap-3 mb-1">
+          <Shield className="w-8 h-8 text-primary" />
+          <div>
+            <div className="text-[11px] font-bold tracking-[0.25em] text-muted-foreground uppercase">
+              State of North Carolina — Dept. of Public Instruction
+            </div>
+            <div className="text-xl font-bold text-primary tracking-[0.2em] uppercase">
+              School Bus Surveillance System
+            </div>
+            <div className="text-[11px] tracking-[0.15em] text-muted-foreground uppercase">
+              Camera Repair &amp; Maintenance Management Database
+            </div>
+          </div>
+          <Shield className="w-8 h-8 text-primary" />
         </div>
       </div>
 
