@@ -13,7 +13,7 @@ export default function WorkOrders() {
   const [search, setSearch] = useState('');
   const queryClient = useQueryClient();
 
-  const { data: workOrders = [] } = useQuery({
+  const { data: workOrders = [], isLoading } = useQuery({
     queryKey: ['workOrders'],
     queryFn: () => base44.entities.WorkOrder.list('-created_date'),
   });
@@ -47,7 +47,7 @@ export default function WorkOrders() {
 
   return (
     <>
-      <LoadingScreen isLoading={false} />
+      <LoadingScreen isLoading={isLoading} message="LOADING WORK ORDERS..." />
       <div style={{display:'flex',flexDirection:'column',gap:'4px'}}>
        <WinWindow title="ALL WORK ORDERS — SURVEILLANCE REPAIR LOG" icon="📋">
          {/* Filters */}

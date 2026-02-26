@@ -15,7 +15,7 @@ export default function FleetManager() {
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('All');
 
-  const { data: buses = [] } = useQuery({
+  const { data: buses = [], isLoading } = useQuery({
     queryKey: ['buses'],
     queryFn: () => base44.entities.Bus.list('bus_number'),
   });
@@ -36,7 +36,7 @@ export default function FleetManager() {
 
   return (
     <>
-      <LoadingScreen isLoading={false} />
+      <LoadingScreen isLoading={isLoading} message="LOADING FLEET..." />
       <div style={{display:'flex',flexDirection:'column',gap:'4px'}}>
        {showForm && (
         <BusForm
