@@ -79,8 +79,8 @@ export default function WorkOrders() {
          </div>
 
         {/* Table */}
-        <div className="win-panel-inset overflow-auto" style={{ maxHeight: '500px' }}>
-          <table className="w-full" style={{fontSize:'11px',fontFamily:"'Courier Prime', monospace"}}>
+        <div className="win-panel-inset" style={{ maxHeight: '500px', overflow: 'auto', width: '100%', boxSizing: 'border-box' }}>
+          <table style={{ width: '100%', fontSize: '11px', fontFamily: "'Courier Prime', monospace" }}>
             <thead>
               <tr style={{background:'hsl(220,70%,35%)',color:'white',position:'sticky',top:0}}>
                 <th style={{padding:'4px',textAlign:'left'}}>ORDER#</th>

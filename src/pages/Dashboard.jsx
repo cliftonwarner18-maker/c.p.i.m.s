@@ -97,7 +97,7 @@ export default function Dashboard() {
 
       {/* Overdue Inspections - full width */}
       <WinWindow title="OVERDUE INSPECTIONS" icon="🔴">
-        <div className="win-panel-inset p-1 overflow-auto" style={{ maxHeight: '400px', minHeight: '80px' }}>
+        <div className="win-panel-inset" style={{ maxHeight: '400px', minHeight: '80px', overflow: 'auto', padding: '4px' }}>
           {overdueInspections.length === 0 ? (
             <div className="text-center text-[11px] p-3 text-muted-foreground">NO OVERDUE INSPECTIONS</div>
           ) : (
@@ -122,7 +122,7 @@ export default function Dashboard() {
 
       {/* Recently Completed */}
       <WinWindow title="RECENTLY COMPLETED REPAIRS" icon="✅">
-        <div className="win-panel-inset p-1 overflow-auto" style={{ maxHeight: '320px', minHeight: '80px' }}>
+        <div className="win-panel-inset" style={{ maxHeight: '320px', minHeight: '80px', overflow: 'auto', padding: '4px' }}>
           {recentCompleted.length === 0 ? (
             <div className="text-center text-[11px] p-3 text-muted-foreground">NO COMPLETED REPAIRS</div>
           ) : (
