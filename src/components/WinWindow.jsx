@@ -9,17 +9,6 @@ export default function WinWindow({ title, children, className = "", icon = null
           {icon && <span style={{fontSize: '10px'}}>{icon}</span>}
           <span style={{fontSize: '10px', letterSpacing: '0.05em', fontWeight: 'bold'}}>{title}</span>
         </div>
-        <div className="flex gap-0.5">
-          <button style={{background: 'hsl(220,15%,90%)', border: '2px solid', borderColor: 'hsl(220,15%,98%) hsl(220,15%,55%) hsl(220,15%,55%) hsl(220,15%,98%)', padding: 0, width: 16, height: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '8px', cursor: 'pointer'}}>
-            <Minus className="w-2 h-2" />
-          </button>
-          <button style={{background: 'hsl(220,15%,90%)', border: '2px solid', borderColor: 'hsl(220,15%,98%) hsl(220,15%,55%) hsl(220,15%,55%) hsl(220,15%,98%)', padding: 0, width: 16, height: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '8px', cursor: 'pointer'}}>
-            <Square className="w-1.5 h-1.5" />
-          </button>
-          <button style={{background: 'hsl(220,15%,90%)', border: '2px solid', borderColor: 'hsl(220,15%,98%) hsl(220,15%,55%) hsl(220,15%,55%) hsl(220,15%,98%)', padding: 0, width: 16, height: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '8px', cursor: 'pointer'}}>
-            <X className="w-2 h-2" />
-          </button>
-        </div>
       </div>
       <div className={noPadding ? 'p-0' : 'p-2'}>
         {children}
