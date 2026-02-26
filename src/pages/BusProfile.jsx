@@ -9,6 +9,7 @@ import { createPageUrl } from '@/utils';
 import { Printer, ArrowLeft, AlertTriangle, CheckCircle, Plus } from 'lucide-react';
 
 export default function BusProfile() {
+  const [showAddHistory, setShowAddHistory] = useState(false);
   const urlParams = new URLSearchParams(window.location.search);
   const busNumber = urlParams.get('bus');
 
