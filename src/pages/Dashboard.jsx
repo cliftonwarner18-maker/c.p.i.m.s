@@ -51,14 +51,14 @@ export default function Dashboard() {
   return (
     <div style={{display:'flex',flexDirection:'column',gap:'4px'}}>
       {/* Header Banner */}
-      <div className="win-panel-inset" style={{padding:'4px',boxSizing:'border-box',display:'flex',alignItems:'center',justifyContent:'center',gap:'12px'}}>>
-        <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/736f6667e_nhcs.png" style={{width:36,height:36,objectFit:'contain',flexShrink:0}} alt="NHCS Logo" />
-        <div className="text-center leading-tight">
-          <div className="text-[9px] font-bold tracking-[0.2em] text-muted-foreground uppercase">New Hanover County Schools</div>
-          <div className="text-[14px] font-bold text-primary tracking-[0.1em] uppercase">School Bus Surveillance System</div>
-          <div className="text-[9px] tracking-[0.08em] text-muted-foreground uppercase">Camera Repair &amp; Maintenance Management Database</div>
+      <div className="win-panel-inset" style={{padding:'8px',boxSizing:'border-box',display:'flex',alignItems:'center',justifyContent:'space-between',gap:'12px'}}>
+        <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/736f6667e_nhcs.png" style={{width:40,height:40,objectFit:'contain',flexShrink:0}} alt="NHCS Logo" />
+        <div style={{flex:1,textAlign:'center',lineHeight:'1.2'}}>
+          <div style={{fontSize:'10px',fontWeight:'bold',letterSpacing:'0.1em',textTransform:'uppercase',color:'hsl(220,10%,40%)',marginBottom:'2px'}}>New Hanover County Schools</div>
+          <div style={{fontSize:'16px',fontWeight:'bold',letterSpacing:'0.08em',textTransform:'uppercase',color:'hsl(220,70%,35%)',marginBottom:'2px',fontFamily:"'Courier Prime', monospace"}}>SCHOOL BUS SURVEILLANCE SYSTEM</div>
+          <div style={{fontSize:'9px',letterSpacing:'0.08em',textTransform:'uppercase',color:'hsl(220,10%,40%)'}}>Camera Repair &amp; Maintenance Management Database</div>
         </div>
-        <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/736f6667e_nhcs.png" style={{width:36,height:36,objectFit:'contain',flexShrink:0}} alt="NHCS Logo" />
+        <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/736f6667e_nhcs.png" style={{width:40,height:40,objectFit:'contain',flexShrink:0}} alt="NHCS Logo" />
       </div>
 
       {/* Stats */}
