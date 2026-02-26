@@ -1,7 +1,7 @@
 import React from 'react';
 import { X, Minus, Square } from 'lucide-react';
 
-export default function WinWindow({ title, children, className = "", icon = null }) {
+export default function WinWindow({ title, children, className = "", icon = null, noPadding = false }) {
   return (
     <div className={`win-panel ${className}`}>
       <div className="win-titlebar flex items-center justify-between select-none">
@@ -21,7 +21,7 @@ export default function WinWindow({ title, children, className = "", icon = null
           </button>
         </div>
       </div>
-      <div className="p-2">
+      <div className={noPadding ? '' : 'p-2'}>
         {children}
       </div>
     </div>
