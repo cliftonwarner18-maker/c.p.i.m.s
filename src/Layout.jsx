@@ -16,9 +16,9 @@ const navItems = [
 
 export default function Layout({ children, currentPageName }) {
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background text-foreground flex flex-col font-mono" style={{fontFamily: "'Courier Prime', monospace"}}>
       {/* Top Header Bar */}
-      <div style={{background:'hsl(220,70%,35%)',color:'white',padding:'4px 12px',display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'nowrap',minHeight:0}}>
+      <div style={{background:'hsl(220,70%,35%)',color:'white',padding:'4px 12px',display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'nowrap',minHeight:0,fontFamily:"'Courier Prime',monospace"}}>
         <div style={{display:'flex',alignItems:'center',gap:8,flexShrink:0}}>
           <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/736f6667e_nhcs.png" style={{width:24,height:24,objectFit:'contain',flexShrink:0}} alt="NHCS Logo" />
           <div style={{lineHeight:'1.1'}}>
@@ -33,7 +33,7 @@ export default function Layout({ children, currentPageName }) {
       </div>
 
       {/* Menu Bar — horizontal, single line */}
-      <div className="win-panel no-print" style={{display:'flex',alignItems:'center',padding:'2px 4px',overflowX:'auto',flexWrap:'nowrap',whiteSpace:'nowrap'}}>
+      <div className="win-panel no-print" style={{display:'flex',alignItems:'center',padding:'2px 4px',overflowX:'auto',flexWrap:'nowrap',whiteSpace:'nowrap',fontFamily:"'Courier Prime',monospace"}}>
         {navItems.map((item) => (
           <Link
             key={item.page}
@@ -57,12 +57,12 @@ export default function Layout({ children, currentPageName }) {
       </div>
 
       {/* Content */}
-      <div className="flex-1 p-2 overflow-auto">
+      <div className="flex-1 p-2 overflow-auto" style={{fontFamily:"'Courier Prime',monospace"}}>
         {children}
       </div>
 
       {/* Bottom Status Bar */}
-      <div className="win-border-inset bg-secondary flex items-center text-[10px] font-mono px-1 h-5 no-print">
+      <div className="win-border-inset bg-secondary flex items-center text-[10px] font-mono px-1 h-5 no-print" style={{fontFamily:"'Courier Prime',monospace"}}>
         <div className="win-border-inset px-2 bg-card flex-1">
           NHCS — SCHOOL BUS SURVEILLANCE MANAGEMENT SYSTEM
         </div>
