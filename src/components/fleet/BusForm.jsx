@@ -6,7 +6,7 @@ import { Save, X } from 'lucide-react';
 
 export default function BusForm({ bus, onClose, onSaved }) {
   const [form, setForm] = useState({
-    bus_number: '', bus_type: 'School Bus', year: '', make: '', model: '',
+    bus_number: '', bus_type: 'School Bus', base_location: 'Main', year: '', make: '', model: '',
     vin: '', engine: '', passenger_capacity: '', wheelchair_accessible: false,
     asset_number: '', camera_system_type: 'None', camera_serial_number: '',
     camera_model_number: '', samsara_enabled: false, samsara_av_enabled: false,
