@@ -26,6 +26,17 @@ export default function WorkOrders() {
     return matchStatus && matchSearch;
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: (id) => base44.entities.WorkOrder.delete(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['workOrders'] }),
+  });
+
+  const handleDelete = (wo) => {
+    if (window.confirm(`DELETE work order ${wo.order_number} for Bus #${wo.bus_number}? This cannot be undone.`)) {
+      deleteMutation.mutate(wo.id);
+    }
+  };
+
   const statusClass = (s) => {
     if (s === 'Pending') return 'status-pending';
     if (s === 'In Progress') return 'status-progress';
