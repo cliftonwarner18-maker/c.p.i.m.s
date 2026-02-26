@@ -20,12 +20,12 @@ export default function DashboardStats({ buses, workOrders, inspections }) {
   ];
 
   return (
-    <div style={{display:'grid',gridTemplateColumns:'repeat(5, 1fr)',width:'100%',gap:'2px',padding:'4px'}}>
+    <div style={{display:'grid',gridTemplateColumns:'repeat(5, 1fr)',width:'100%',gap:'4px',padding:'8px',background:'hsl(220,20%,10%)',border:'2px solid hsl(220,70%,35%)'}}>
       {stats.map((stat, i) => (
-        <div key={i} style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',textAlign:'center',padding:'12px 8px',background:'hsl(220,15%,96%)',border:'2px solid hsl(220,15%,50%)',minHeight:'90px',boxSizing:'border-box'}}>
-          <stat.icon style={{width:'24px',height:'24px',color:stat.color,marginBottom:'6px'}} />
-          <div style={{fontSize:'28px',fontWeight:'bold',color:stat.color,lineHeight:'1',margin:'0'}}>{stat.value}</div>
-          <div style={{fontSize:'11px',fontWeight:'bold',whiteSpace:'nowrap',letterSpacing:'0.05em',lineHeight:'1.2',margin:'6px 0 0 0',color:'hsl(220,10%,40%)'}}>{stat.label}</div>
+        <div key={i} style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',textAlign:'center',padding:'16px 12px',background:'hsl(220,20%,8%)',border:'2px solid',borderColor:stat.color,boxShadow:`0 0 12px ${stat.color}40`,minHeight:'100px',boxSizing:'border-box'}}>
+          <stat.icon style={{width:'28px',height:'28px',color:stat.color,marginBottom:'8px',filter:'drop-shadow(0 0 4px ' + stat.color + ')'}} />
+          <div style={{fontSize:'36px',fontWeight:'bold',color:stat.color,lineHeight:'1',margin:'0',textShadow:`0 0 10px ${stat.color}`}}>{stat.value}</div>
+          <div style={{fontSize:'12px',fontWeight:'bold',whiteSpace:'nowrap',letterSpacing:'0.08em',lineHeight:'1.3',margin:'8px 0 0 0',color:stat.color,textTransform:'uppercase',textShadow:`0 0 6px ${stat.color}`}}>{stat.label}</div>
         </div>
       ))}
     </div>
