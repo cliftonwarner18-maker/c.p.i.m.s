@@ -19,6 +19,7 @@ export default function BusForm({ bus, onClose, onSaved }) {
       setForm({
         bus_number: bus.bus_number || '',
         bus_type: bus.bus_type || 'School Bus',
+        base_location: bus.base_location || 'Main',
         year: bus.year || '',
         make: bus.make || '',
         model: bus.model || '',
