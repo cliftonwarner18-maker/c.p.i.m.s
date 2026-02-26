@@ -105,6 +105,7 @@ export default function FleetManager() {
                     <td className="p-1">{b.bus_type}</td>
                     <td className="p-1">{b.year}</td>
                     <td className="p-1">{b.make} {b.model}</td>
+                    <td className="p-1">{b.base_location || '—'}</td>
                     <td className="p-1">{b.camera_system_type || 'None'}</td>
                     <td className="p-1 font-bold">{b.status || 'Active'}</td>
                     <td className={`p-1 font-bold ${overdue ? 'status-cancelled' : ''}`}>
