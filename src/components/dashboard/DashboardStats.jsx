@@ -20,12 +20,12 @@ export default function DashboardStats({ buses, workOrders, inspections }) {
   ];
 
   return (
-    <div style={{display:'grid',gridTemplateColumns:'repeat(5, 1fr)',width:'100%',gap:'0',height:'50px'}}>
+    <div style={{display:'grid',gridTemplateColumns:'repeat(5, 1fr)',width:'100%',gap:'2px',padding:'4px'}}>
       {stats.map((stat, i) => (
-        <div key={i} style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',textAlign:'center',padding:'2px 4px',background:'hsl(220,15%,96%)',borderTop:'2px solid hsl(220,15%,50%)',borderRight:'2px solid hsl(220,15%,96%)',borderBottom:'2px solid hsl(220,15%,96%)',borderLeft:'2px solid hsl(220,15%,50%)'}}>
-          <stat.icon style={{width:'12px',height:'12px',color:stat.color,margin:'0'}} />
-          <div style={{fontSize:'11px',fontWeight:'bold',color:stat.color,lineHeight:'1',margin:'0'}}>{stat.value}</div>
-          <div style={{fontSize:'6px',fontWeight:'bold',whiteSpace:'nowrap',letterSpacing:'0.02em',lineHeight:'1',margin:'0'}}>{stat.label}</div>
+        <div key={i} style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',textAlign:'center',padding:'12px 8px',background:'hsl(220,15%,96%)',border:'2px solid hsl(220,15%,50%)',minHeight:'90px',boxSizing:'border-box'}}>
+          <stat.icon style={{width:'24px',height:'24px',color:stat.color,marginBottom:'6px'}} />
+          <div style={{fontSize:'28px',fontWeight:'bold',color:stat.color,lineHeight:'1',margin:'0'}}>{stat.value}</div>
+          <div style={{fontSize:'11px',fontWeight:'bold',whiteSpace:'nowrap',letterSpacing:'0.05em',lineHeight:'1.2',margin:'6px 0 0 0',color:'hsl(220,10%,40%)'}}>{stat.label}</div>
         </div>
       ))}
     </div>
