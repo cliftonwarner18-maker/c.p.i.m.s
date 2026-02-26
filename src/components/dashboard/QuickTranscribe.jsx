@@ -84,11 +84,13 @@ export default function QuickTranscribe({ onClose }) {
       const issueText = [
         row.issue,
         row.cameraType ? `Camera Type: ${row.cameraType}` : '',
+        row.lot ? `Lot: ${row.lot}` : '',
       ].filter(Boolean).join(' | ');
 
       await base44.entities.WorkOrder.create({
         order_number: orderNumber,
         bus_number: row.busNumber,
+        base_location: row.lot || '',
         reported_by: row.tech || 'Transcribed',
         issue_description: issueText,
         status: 'Pending',
