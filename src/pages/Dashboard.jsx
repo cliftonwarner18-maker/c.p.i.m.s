@@ -39,7 +39,7 @@ export default function Dashboard() {
       {/* Header Banner */}
       <div className="win-panel-inset bg-primary/5 p-4 text-center border-4 border-primary/30">
         <div className="flex items-center justify-center gap-3 mb-1">
-          <Shield className="w-8 h-8 text-primary" />
+          <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/89c560c96_state.jpg" className="w-12 h-12 object-contain" />
           <div>
             <div className="text-[11px] font-bold tracking-[0.25em] text-muted-foreground uppercase">
               State of North Carolina — Dept. of Public Instruction
@@ -51,7 +51,7 @@ export default function Dashboard() {
               Camera Repair &amp; Maintenance Management Database
             </div>
           </div>
-          <Shield className="w-8 h-8 text-primary" />
+          <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/89c560c96_state.jpg" className="w-12 h-12 object-contain" />
         </div>
       </div>
 
