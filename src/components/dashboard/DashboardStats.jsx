@@ -6,7 +6,7 @@ const StatBox = ({ icon: Icon, value, label, color }) => (
     flex: 1,
     minWidth: 0,
     textAlign: 'center',
-    padding: '1px 2px',
+    padding: '2px 4px',
     borderTop: '2px solid hsl(220,15%,50%)',
     borderRight: '2px solid hsl(220,15%,96%)',
     borderBottom: '2px solid hsl(220,15%,96%)',
@@ -16,14 +16,16 @@ const StatBox = ({ icon: Icon, value, label, color }) => (
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 0,
-    height: '100%'
+    gap: '1px',
+    height: '100%',
+    boxSizing: 'border-box',
+    overflow: 'hidden'
   }}>
-    <Icon style={{ width: 12, height: 12, color, flexShrink: 0 }} />
-    <div style={{ fontSize: '12px', fontWeight: 'bold', color, lineHeight: 1, flexShrink: 0 }}>
+    <Icon style={{ width: 12, height: 12, color, flexShrink: 0, margin: 0 }} />
+    <div style={{ fontSize: '11px', fontWeight: 'bold', color, lineHeight: 1, flexShrink: 0, margin: 0 }}>
       {value}
     </div>
-    <div style={{ fontSize: '6px', fontWeight: 'bold', whiteSpace: 'nowrap', letterSpacing: '0.02em', lineHeight: 1 }}>
+    <div style={{ fontSize: '6px', fontWeight: 'bold', whiteSpace: 'nowrap', letterSpacing: '0.02em', lineHeight: 1, margin: 0 }}>
       {label}
     </div>
   </div>
