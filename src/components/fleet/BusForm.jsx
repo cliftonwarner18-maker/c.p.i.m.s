@@ -81,11 +81,11 @@ export default function BusForm({ bus, onClose, onSaved }) {
 
   return (
     <WinWindow title={bus ? `EDIT VEHICLE — BUS #${bus.bus_number}` : 'ADD NEW VEHICLE'} icon="🚌">
-      <form onSubmit={handleSubmit} className="space-y-2">
+      <form onSubmit={handleSubmit} style={{display:'flex',flexDirection:'column',gap:'4px'}}>
         {/* Vehicle Info */}
-        <div className="win-panel p-2">
-          <div className="text-[10px] font-bold bg-primary text-primary-foreground px-2 py-0.5 mb-1">▸ VEHICLE INFORMATION</div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+        <div className="win-panel" style={{padding:'4px',boxSizing:'border-box'}}>
+          <div style={{fontSize:'10px',fontWeight:'bold',background:'hsl(220,70%,35%)',color:'white',padding:'2px 4px',marginBottom:'2px'}}>▸ VEHICLE INFORMATION</div>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(150px, 1fr))',gap:'4px'}}>
             <Field label="BUS # *">
               <input className="win-input w-full text-[11px]" value={form.bus_number} onChange={e => setForm({...form, bus_number: e.target.value})} required />
             </Field>
@@ -138,9 +138,9 @@ export default function BusForm({ bus, onClose, onSaved }) {
         </div>
 
         {/* Camera System */}
-        <div className="win-panel p-2">
-          <div className="text-[10px] font-bold bg-primary text-primary-foreground px-2 py-0.5 mb-1">▸ CAMERA SYSTEM</div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+        <div className="win-panel" style={{padding:'4px',boxSizing:'border-box'}}>
+          <div style={{fontSize:'10px',fontWeight:'bold',background:'hsl(220,70%,35%)',color:'white',padding:'2px 4px',marginBottom:'2px'}}>▸ CAMERA SYSTEM</div>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(150px, 1fr))',gap:'4px'}}>
             <Field label="CAMERA SYSTEM">
               <select className="win-input w-full text-[11px]" value={form.camera_system_type} onChange={e => setForm({...form, camera_system_type: e.target.value})}>
                 <option value="Seon">Seon</option>
@@ -161,14 +161,14 @@ export default function BusForm({ bus, onClose, onSaved }) {
         </div>
 
         {/* AI Camera / Samsara */}
-        <div className="win-panel p-2">
-          <div className="text-[10px] font-bold bg-primary text-primary-foreground px-2 py-0.5 mb-1">▸ AI CAMERA SYSTEM (SAMSARA)</div>
-          <div className="flex flex-wrap gap-4 mb-2">
+        <div className="win-panel" style={{padding:'4px',boxSizing:'border-box'}}>
+          <div style={{fontSize:'10px',fontWeight:'bold',background:'hsl(220,70%,35%)',color:'white',padding:'2px 4px',marginBottom:'2px'}}>▸ AI CAMERA SYSTEM (SAMSARA)</div>
+          <div style={{display:'flex',flexWrap:'wrap',gap:'8px',marginBottom:'4px'}}>
             <Check label="Samsara" checked={form.samsara_enabled} onChange={e => setForm({...form, samsara_enabled: e.target.checked})} />
             <Check label="Sam AV" checked={form.samsara_av_enabled} onChange={e => setForm({...form, samsara_av_enabled: e.target.checked})} />
             <Check label="Sam Inputs" checked={form.samsara_inputs_enabled} onChange={e => setForm({...form, samsara_inputs_enabled: e.target.checked})} />
           </div>
-          <div className="grid grid-cols-2 gap-2">
+          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(150px, 1fr))',gap:'4px'}}>
             <Field label="DASH CAM SID#">
               <input className="win-input w-full text-[11px]" value={form.dash_cam_sid} onChange={e => setForm({...form, dash_cam_sid: e.target.value})} />
             </Field>
@@ -179,19 +179,19 @@ export default function BusForm({ bus, onClose, onSaved }) {
         </div>
 
         {/* Notes */}
-        <div className="win-panel p-2">
-          <div className="text-[10px] font-bold bg-primary text-primary-foreground px-2 py-0.5 mb-1">▸ NOTES</div>
-          <textarea className="win-input w-full text-[11px] h-16 resize-none" value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} />
+        <div className="win-panel" style={{padding:'4px',boxSizing:'border-box'}}>
+          <div style={{fontSize:'10px',fontWeight:'bold',background:'hsl(220,70%,35%)',color:'white',padding:'2px 4px',marginBottom:'2px'}}>▸ NOTES</div>
+          <textarea className="win-input" style={{width:'100%',fontSize:'11px',height:'60px',resize:'none'}} value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} />
         </div>
 
         {/* Legacy Upload */}
-        <div className="win-panel p-2">
-          <div className="text-[10px] font-bold bg-primary text-primary-foreground px-2 py-0.5 mb-1">▸ LEGACY UPLOAD</div>
-          <textarea className="win-input w-full text-[11px] h-32 font-mono resize-none" placeholder="Paste audit/repair log text here..." value={form.legacy_upload || ''} onChange={e => setForm({...form, legacy_upload: e.target.value})} />
-          <div className="text-[9px] text-muted-foreground mt-1">Audit/repair log text — will be preserved with vehicle record</div>
+        <div className="win-panel" style={{padding:'4px',boxSizing:'border-box'}}>
+          <div style={{fontSize:'10px',fontWeight:'bold',background:'hsl(220,70%,35%)',color:'white',padding:'2px 4px',marginBottom:'2px'}}>▸ LEGACY UPLOAD</div>
+          <textarea className="win-input" style={{width:'100%',fontSize:'11px',height:'120px',fontFamily:'monospace',resize:'none'}} placeholder="Paste audit/repair log text here..." value={form.legacy_upload || ''} onChange={e => setForm({...form, legacy_upload: e.target.value})} />
+          <div style={{fontSize:'9px',color:'hsl(220,10%,40%)',marginTop:'2px'}}>Audit/repair log text — will be preserved with vehicle record</div>
         </div>
 
-        <div className="flex gap-2">
+        <div style={{display:'flex',gap:'4px'}}>
           <button type="submit" className="win-button flex items-center gap-1 !bg-primary !text-primary-foreground" disabled={isPending}>
             <Save className="w-3 h-3" /> {isPending ? 'SAVING...' : 'SAVE VEHICLE'}
           </button>
