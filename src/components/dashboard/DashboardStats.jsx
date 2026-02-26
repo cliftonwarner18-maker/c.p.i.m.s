@@ -39,7 +39,7 @@ export default function DashboardStats({ buses, workOrders, inspections }) {
   }).length;
 
   return (
-    <div style={{ display: 'flex', width: '100%', gap: 0 }}>
+    <div style={{ display: 'flex', width: '100%', gap: 0, minHeight: '60px' }}>
       <StatBox icon={Bus} value={totalBuses} label="TOTAL FLEET" color="hsl(220,70%,35%)" />
       <StatBox icon={AlertTriangle} value={pendingOrders} label="PENDING W/O" color="hsl(45,90%,40%)" />
       <StatBox icon={Wrench} value={inProgressOrders} label="IN PROGRESS" color="hsl(220,70%,45%)" />
