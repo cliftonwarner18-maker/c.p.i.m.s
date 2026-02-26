@@ -58,22 +58,24 @@ export default function NewWorkOrder() {
   if (submitted) {
     return (
       <WinWindow title="WORK ORDER SUBMITTED" icon="✅">
-        <div className="win-panel-inset p-6 text-center space-y-4">
-          <div className="terminal-text text-3xl status-completed font-bold">
+        <div className="win-panel-inset" style={{padding:'24px',textAlign:'center',display:'flex',flexDirection:'column',gap:'16px'}}>
+          <div style={{fontSize:'24px',fontWeight:'bold',color:'hsl(140,60%,30%)',fontFamily:"'VT323', 'Courier New', monospace"}}>
             WORK ORDER SUBMITTED SUCCESSFULLY
           </div>
-          <div className="text-[12px] font-mono">
+          <div style={{fontSize:'12px',fontFamily:"'Courier Prime', monospace"}}>
             Your work order has been placed into the PENDING REPAIRS queue.
           </div>
-          <div className="flex gap-2 justify-center">
+          <div style={{display:'flex',gap:'4px',justifyContent:'center'}}>
             <button
-              className="win-button flex items-center gap-1"
+              className="win-button"
+              style={{display:'flex',alignItems:'center',gap:'4px'}}
               onClick={() => { setSubmitted(false); setForm({ reported_by: '', bus_number: '', base_location: '', issue_description: '' }); }}
             >
               <FileText className="w-3 h-3" /> NEW WORK ORDER
             </button>
             <button
-              className="win-button flex items-center gap-1"
+              className="win-button"
+              style={{display:'flex',alignItems:'center',gap:'4px'}}
               onClick={() => navigate(createPageUrl('Dashboard'))}
             >
               RETURN TO DASHBOARD
@@ -85,20 +87,20 @@ export default function NewWorkOrder() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto space-y-2">
-      <WinWindow title="CREATE NEW WORK ORDER — CAMERA REPAIR REQUEST" icon="📝">
-        <form onSubmit={handleSubmit} className="space-y-3">
+    <div style={{maxWidth:'640px',margin:'0 auto',display:'flex',flexDirection:'column',gap:'4px'}}>
+       <WinWindow title="CREATE NEW WORK ORDER — CAMERA REPAIR REQUEST" icon="📝">
+         <form onSubmit={handleSubmit} style={{display:'flex',flexDirection:'column',gap:'4px'}}>
           {/* Auto fields */}
-          <div className="grid grid-cols-2 gap-2">
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'4px'}}>
             <div>
-              <label className="text-[11px] font-bold block mb-1">DATE/TIME (AUTO)</label>
-              <div className="win-input w-full bg-secondary/50 text-[12px]">
+              <label style={{fontSize:'11px',fontWeight:'bold',display:'block',marginBottom:'2px'}}>DATE/TIME (AUTO)</label>
+              <div className="win-input" style={{width:'100%',background:'hsl(220,20%,92%)',fontSize:'12px',padding:'4px'}}>
                 {moment().format('MM/DD/YYYY HH:mm:ss')}
               </div>
             </div>
             <div>
-              <label className="text-[11px] font-bold block mb-1">ORDER # (AUTO)</label>
-              <div className="win-input w-full bg-secondary/50 text-[12px]">
+              <label style={{fontSize:'11px',fontWeight:'bold',display:'block',marginBottom:'2px'}}>ORDER # (AUTO)</label>
+              <div className="win-input" style={{width:'100%',background:'hsl(220,20%,92%)',fontSize:'12px',padding:'4px'}}>
                 {generateOrderNumber()}
               </div>
             </div>
@@ -106,10 +108,11 @@ export default function NewWorkOrder() {
 
           {/* Reporter */}
           <div>
-            <label className="text-[11px] font-bold block mb-1">REPORTING PERSON *</label>
+            <label style={{fontSize:'11px',fontWeight:'bold',display:'block',marginBottom:'2px'}}>REPORTING PERSON *</label>
             <input
               type="text"
-              className="win-input w-full text-[12px]"
+              className="win-input"
+              style={{width:'100%',fontSize:'12px'}}
               placeholder="Enter your full name..."
               value={form.reported_by}
               onChange={(e) => setForm({ ...form, reported_by: e.target.value })}
@@ -119,9 +122,10 @@ export default function NewWorkOrder() {
 
           {/* Base Location */}
           <div>
-            <label className="text-[11px] font-bold block mb-1">BASE LOCATION *</label>
+            <label style={{fontSize:'11px',fontWeight:'bold',display:'block',marginBottom:'2px'}}>BASE LOCATION *</label>
             <select
-              className="win-input w-full text-[12px]"
+              className="win-input"
+              style={{width:'100%',fontSize:'12px'}}
               value={form.base_location}
               onChange={(e) => setForm({ ...form, base_location: e.target.value })}
               required
@@ -136,9 +140,10 @@ export default function NewWorkOrder() {
 
           {/* Bus Selection */}
           <div>
-            <label className="text-[11px] font-bold block mb-1">SELECT BUS # *</label>
+            <label style={{fontSize:'11px',fontWeight:'bold',display:'block',marginBottom:'2px'}}>SELECT BUS # *</label>
             <select
-              className="win-input w-full text-[12px]"
+              className="win-input"
+              style={{width:'100%',fontSize:'12px'}}
               value={form.bus_number}
               onChange={(e) => setForm({ ...form, bus_number: e.target.value })}
               required
@@ -154,9 +159,10 @@ export default function NewWorkOrder() {
 
           {/* Issue Description */}
           <div>
-            <label className="text-[11px] font-bold block mb-1">ISSUE DESCRIPTION *</label>
+            <label style={{fontSize:'11px',fontWeight:'bold',display:'block',marginBottom:'2px'}}>ISSUE DESCRIPTION *</label>
             <textarea
-              className="win-input w-full text-[12px] h-32 resize-none"
+              className="win-input"
+              style={{width:'100%',fontSize:'12px',height:'128px',resize:'none'}}
               placeholder="Describe the camera system issue in detail..."
               value={form.issue_description}
               onChange={(e) => setForm({ ...form, issue_description: e.target.value })}
@@ -164,8 +170,8 @@ export default function NewWorkOrder() {
             />
           </div>
 
-          <div className="flex gap-2">
-            <button type="submit" className="win-button flex items-center gap-1 !bg-primary !text-primary-foreground" disabled={createMutation.isPending}>
+          <div style={{display:'flex',gap:'4px'}}>
+            <button type="submit" className="win-button" style={{display:'flex',alignItems:'center',gap:'4px',background:'hsl(220,70%,35%)',color:'white'}} disabled={createMutation.isPending}>
               <Send className="w-3 h-3" />
               {createMutation.isPending ? 'SUBMITTING...' : 'SUBMIT WORK ORDER'}
             </button>
