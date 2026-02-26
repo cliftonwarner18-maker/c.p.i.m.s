@@ -33,6 +33,13 @@ export default function BusProfile() {
     enabled: !!busNumber,
   });
 
+  const { mutate: deleteHistory } = useMutation({
+    mutationFn: (id) => base44.entities.BusHistory.delete(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['busHistory', busNumber] }),
+  });
+
+  const queryClient = useQueryClient();
+
   const bus = buses.find(b => b.bus_number === busNumber);
   const busWorkOrders = workOrders.filter(w => w.bus_number === busNumber);
   const busInspections = inspections.filter(i => i.bus_number === busNumber);
