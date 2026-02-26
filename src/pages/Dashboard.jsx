@@ -128,7 +128,7 @@ export default function Dashboard() {
 
       {/* System Log Footer */}
       <div className="win-panel-inset p-2 text-[10px] font-mono text-muted-foreground">
-        <div>&gt; SYSTEM INITIALIZED — NC DPI MOBILE VEHICLE SURVEILLANCE INSPECTION SYSTEM</div>
+        <div>&gt; SYSTEM INITIALIZED — NHCS MOBILE VEHICLE SURVEILLANCE INSPECTION SYSTEM</div>
         <div>&gt; DATABASE CONNECTION: <span className="status-completed font-bold">ONLINE</span></div>
         <div>&gt; TOTAL RECORDS: {buses.length} VEHICLES | {workOrders.length} WORK ORDERS | {inspections.length} INSPECTIONS</div>
         <div>&gt; SESSION ACTIVE — {moment().format('dddd, MMMM D, YYYY HH:mm:ss')}</div>
