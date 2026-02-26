@@ -18,30 +18,39 @@ export default function Layout({ children, currentPageName }) {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Top Header Bar */}
-      <div className="bg-primary text-primary-foreground px-3 py-1 flex items-center justify-between" style={{minHeight: 0}}>
-        <div className="flex items-center gap-2">
-          <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/736f6667e_nhcs.png" style={{width:28,height:28,objectFit:'contain',flexShrink:0}} alt="NHCS Logo" />
-          <div className="leading-none">
-            <div className="text-[10px] font-bold tracking-widest uppercase">NEW HANOVER COUNTY SCHOOLS</div>
-            <div className="text-[8px] tracking-wider uppercase opacity-80">TRANSPORTATION DEPT. — MOBILE VEHICLE SURVEILLANCE SYSTEM</div>
+      <div style={{background:'hsl(220,70%,35%)',color:'white',padding:'4px 12px',display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'nowrap',minHeight:0}}>
+        <div style={{display:'flex',alignItems:'center',gap:8,flexShrink:0}}>
+          <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/736f6667e_nhcs.png" style={{width:24,height:24,objectFit:'contain',flexShrink:0}} alt="NHCS Logo" />
+          <div style={{lineHeight:'1.1'}}>
+            <div style={{fontSize:10,fontWeight:'bold',letterSpacing:'0.15em',textTransform:'uppercase',whiteSpace:'nowrap'}}>NEW HANOVER COUNTY SCHOOLS</div>
+            <div style={{fontSize:8,letterSpacing:'0.1em',textTransform:'uppercase',opacity:0.8,whiteSpace:'nowrap'}}>TRANSPORTATION DEPT. — MOBILE VEHICLE SURVEILLANCE SYSTEM</div>
           </div>
         </div>
-        <div className="flex items-center gap-1 text-[9px] opacity-70">
-          <Database className="w-3 h-3" />
-          <span>NCDPI-MVSS v2.1.04</span>
+        <div style={{display:'flex',alignItems:'center',gap:4,fontSize:9,opacity:0.7,flexShrink:0}}>
+          <Database style={{width:12,height:12}} />
+          <span style={{whiteSpace:'nowrap'}}>NCDPI-MVSS v2.1.04</span>
         </div>
       </div>
 
       {/* Menu Bar — horizontal, single line */}
-      <div className="win-panel flex items-center gap-0 px-1 py-0.5 no-print overflow-x-auto" style={{whiteSpace:'nowrap'}}>
+      <div className="win-panel no-print" style={{display:'flex',alignItems:'center',padding:'2px 4px',overflowX:'auto',flexWrap:'nowrap',whiteSpace:'nowrap'}}>
         {navItems.map((item) => (
           <Link
             key={item.page}
             to={createPageUrl(item.page)}
-            className={`win-button !py-0.5 !px-3 text-[11px] inline-flex items-center gap-1 no-underline
-              ${currentPageName === item.page ? '!bg-primary !text-primary-foreground' : 'text-foreground'}`}
+            style={{
+              display:'inline-flex',alignItems:'center',gap:4,
+              padding:'2px 12px',fontSize:11,textDecoration:'none',
+              background: currentPageName === item.page ? 'hsl(220,70%,35%)' : 'hsl(220,15%,90%)',
+              color: currentPageName === item.page ? 'white' : 'inherit',
+              border:'2px solid',
+              borderColor: currentPageName === item.page
+                ? 'hsl(220,15%,55%) hsl(220,15%,98%) hsl(220,15%,98%) hsl(220,15%,55%)'
+                : 'hsl(220,15%,98%) hsl(220,15%,55%) hsl(220,15%,55%) hsl(220,15%,98%)',
+              fontFamily:"'Courier Prime',monospace",fontWeight:'bold',whiteSpace:'nowrap',flexShrink:0
+            }}
           >
-            <item.icon className="w-3 h-3" />
+            <item.icon style={{width:12,height:12,flexShrink:0}} />
             {item.name}
           </Link>
         ))}
