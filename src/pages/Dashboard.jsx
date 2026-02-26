@@ -85,19 +85,23 @@ export default function Dashboard() {
         <div className="space-y-2">
           {/* Overdue Inspections */}
           <WinWindow title="OVERDUE INSPECTIONS" icon="🔴">
-            <div className="win-panel-inset p-1 max-h-[150px] overflow-auto">
+            <div className="win-panel-inset p-1 overflow-auto" style={{ maxHeight: '320px', minHeight: '80px' }}>
               {overdueInspections.length === 0 ? (
-                <div className="text-center text-[11px] p-2 text-muted-foreground">NO OVERDUE INSPECTIONS</div>
+                <div className="text-center text-[11px] p-3 text-muted-foreground">NO OVERDUE INSPECTIONS</div>
               ) : (
                 overdueInspections.map(b => (
-                  <div key={b.id} className="flex items-center justify-between text-[11px] p-1 border-b border-border">
-                    <div className="flex items-center gap-1">
-                      <AlertTriangle className="w-3 h-3 status-cancelled" />
-                      <span className="font-bold">BUS #{b.bus_number}</span>
+                  <div key={b.id} className="flex items-center justify-between text-[12px] p-2 border-b border-border hover:bg-secondary/40">
+                    <div className="flex items-center gap-2">
+                      <AlertTriangle className="w-4 h-4 status-cancelled flex-shrink-0" />
+                      <div>
+                        <div className="font-bold">BUS #{b.bus_number}</div>
+                        <div className="text-[10px] text-muted-foreground">{b.year} {b.make} {b.model}</div>
+                      </div>
                     </div>
-                    <span className="status-cancelled font-bold">
-                      DUE: {moment(b.next_inspection_due).format('MM/DD/YY')}
-                    </span>
+                    <div className="text-right">
+                      <div className="status-cancelled font-bold text-[11px]">OVERDUE</div>
+                      <div className="font-bold text-[11px]">DUE: {moment(b.next_inspection_due).format('MM/DD/YY')}</div>
+                    </div>
                   </div>
                 ))
               )}
