@@ -6,7 +6,7 @@ import LoadingScreen from '../components/LoadingScreen';
 import BusForm from '../components/fleet/BusForm';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Plus, Eye, Pencil, Trash2, Search } from 'lucide-react';
+import { Plus, Eye, Pencil, Trash2, Search, FileDown } from 'lucide-react';
 
 export default function FleetManager() {
   const queryClient = useQueryClient();
@@ -14,6 +14,8 @@ export default function FleetManager() {
   const [editingBus, setEditingBus] = useState(null);
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('All');
+  const [locationFilter, setLocationFilter] = useState('All');
+  const [isExporting, setIsExporting] = useState(false);
 
   const { data: buses = [], isLoading } = useQuery({
     queryKey: ['buses'],
@@ -31,8 +33,33 @@ export default function FleetManager() {
       b.vin?.toLowerCase().includes(search.toLowerCase()) ||
       b.make?.toLowerCase().includes(search.toLowerCase());
     const matchType = typeFilter === 'All' || b.bus_type === typeFilter;
-    return matchSearch && matchType;
+    const matchLocation = locationFilter === 'All' || b.base_location === locationFilter;
+    return matchSearch && matchType && matchLocation;
   });
+
+  const handleExportPDF = async () => {
+    setIsExporting(true);
+    try {
+      const response = await base44.functions.invoke('exportFleet', {
+        locationFilter,
+        busTypeFilter: typeFilter
+      });
+      
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'fleet-inventory.pdf';
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      a.remove();
+    } catch (error) {
+      alert('Error exporting PDF: ' + error.message);
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   return (
     <>
@@ -53,36 +80,57 @@ export default function FleetManager() {
       <WinWindow title="FLEET MANAGEMENT — VEHICLE DATABASE" icon="🚌">
         <div style={{display:'flex',flexWrap:'wrap',gap:'4px',marginBottom:'4px',alignItems:'center'}}>
            <button
-             className="win-button"
-             style={{display:'flex',alignItems:'center',gap:'4px',fontSize:'11px',background:'hsl(220,70%,35%)',color:'white'}}
-             onClick={() => { setEditingBus(null); setShowForm(true); }}
-           >
-             <Plus className="w-3 h-3" /> ADD NEW VEHICLE
-           </button>
-           <div style={{display:'flex',alignItems:'center',gap:'4px'}}>
-             <span style={{fontSize:'11px',fontWeight:'bold'}}>TYPE:</span>
-             {['All', 'School Bus', 'Activity Bus'].map(t => (
-               <button
-                 key={t}
-                 className="win-button"
-                 style={{fontSize:'10px',padding:'0 4px',background: typeFilter === t ? 'hsl(220,70%,35%)' : 'hsl(220,15%,90%)',color: typeFilter === t ? 'white' : 'inherit'}}
-                 onClick={() => setTypeFilter(t)}
-               >
-                 {t.toUpperCase()}
-               </button>
-             ))}
-           </div>
-           <div style={{display:'flex',alignItems:'center',gap:'4px',marginLeft:'auto'}}>
-             <Search className="w-3 h-3" />
-             <input
-               className="win-input"
-               style={{fontSize:'11px',width:'192px'}}
-               placeholder="Search fleet..."
-               value={search}
-               onChange={(e) => setSearch(e.target.value)}
-             />
-           </div>
-         </div>
+              className="win-button"
+              style={{display:'flex',alignItems:'center',gap:'4px',fontSize:'11px',background:'hsl(220,70%,35%)',color:'white'}}
+              onClick={() => { setEditingBus(null); setShowForm(true); }}
+            >
+              <Plus className="w-3 h-3" /> ADD NEW VEHICLE
+            </button>
+            <div style={{display:'flex',alignItems:'center',gap:'4px'}}>
+              <span style={{fontSize:'11px',fontWeight:'bold'}}>TYPE:</span>
+              {['All', 'School Bus', 'Activity Bus'].map(t => (
+                <button
+                  key={t}
+                  className="win-button"
+                  style={{fontSize:'10px',padding:'0 4px',background: typeFilter === t ? 'hsl(220,70%,35%)' : 'hsl(220,15%,90%)',color: typeFilter === t ? 'white' : 'inherit'}}
+                  onClick={() => setTypeFilter(t)}
+                >
+                  {t.toUpperCase()}
+                </button>
+              ))}
+            </div>
+            <div style={{display:'flex',alignItems:'center',gap:'4px'}}>
+              <span style={{fontSize:'11px',fontWeight:'bold'}}>LOCATION:</span>
+              {['All', 'Main', 'North', 'Central', 'Sold'].map(l => (
+                <button
+                  key={l}
+                  className="win-button"
+                  style={{fontSize:'10px',padding:'0 4px',background: locationFilter === l ? 'hsl(220,70%,35%)' : 'hsl(220,15%,90%)',color: locationFilter === l ? 'white' : 'inherit'}}
+                  onClick={() => setLocationFilter(l)}
+                >
+                  {l.toUpperCase()}
+                </button>
+              ))}
+            </div>
+            <button
+              className="win-button"
+              disabled={isExporting}
+              style={{display:'flex',alignItems:'center',gap:'4px',fontSize:'11px',background:isExporting ? 'hsl(220,15%,75%)' : 'hsl(220,70%,35%)',color:'white'}}
+              onClick={handleExportPDF}
+            >
+              <FileDown className="w-3 h-3" /> EXPORT PDF
+            </button>
+            <div style={{display:'flex',alignItems:'center',gap:'4px',marginLeft:'auto'}}>
+              <Search className="w-3 h-3" />
+              <input
+                className="win-input"
+                style={{fontSize:'11px',width:'192px'}}
+                placeholder="Search fleet..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+          </div>
 
         <div className="win-panel-inset" style={{ maxHeight: '500px', overflow: 'auto', width: '100%', boxSizing: 'border-box' }}>
           <table style={{ width: '100%', fontSize: '11px', fontFamily: "'Courier Prime', monospace" }}>
