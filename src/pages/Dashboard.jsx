@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import WinWindow from '../components/WinWindow';
 import DashboardStats from '../components/dashboard/DashboardStats';
 import ActiveWorkOrders from '../components/dashboard/ActiveWorkOrders';
+import QuickTranscribe from '../components/dashboard/QuickTranscribe';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { AlertTriangle, PlusCircle, Bus, ClipboardCheck } from 'lucide-react';
+import { AlertTriangle, PlusCircle, Bus, ClipboardCheck, Zap } from 'lucide-react';
 import moment from 'moment';
 
 export default function Dashboard() {
