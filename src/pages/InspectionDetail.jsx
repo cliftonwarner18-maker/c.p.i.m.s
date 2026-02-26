@@ -223,7 +223,10 @@ export default function InspectionDetail() {
           <ArrowLeft className="w-3 h-3" /> BACK TO INSPECTIONS
         </Link>
         <button className="win-button flex items-center gap-1 text-[11px]" onClick={() => window.print()}>
-          <Printer className="w-3 h-3" /> PRINT REPORT
+          <Printer className="w-3 h-3" /> PRINT FULL REPORT
+        </button>
+        <button className="win-button flex items-center gap-1 text-[11px] !bg-primary !text-primary-foreground" onClick={printStickerOnly}>
+          <Printer className="w-3 h-3" /> PRINT STICKER ONLY
         </button>
       </div>
 
