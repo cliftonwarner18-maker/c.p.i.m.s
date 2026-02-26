@@ -154,6 +154,9 @@ export default function BusForm({ bus, onClose, onSaved }) {
             <Field label="MODEL #">
               <input className="win-input w-full text-[11px]" value={form.camera_model_number} onChange={e => setForm({...form, camera_model_number: e.target.value})} />
             </Field>
+            <Field label="DVR ASSET #">
+              <input className="win-input w-full text-[11px]" value={form.asset_number} onChange={e => setForm({...form, asset_number: e.target.value})} />
+            </Field>
           </div>
         </div>
 
