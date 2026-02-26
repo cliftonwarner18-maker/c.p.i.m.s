@@ -40,22 +40,14 @@ export default function Dashboard() {
   return (
     <div className="space-y-2">
       {/* Header Banner */}
-      <div className="win-panel-inset bg-primary/5 p-4 text-center border-4 border-primary/30">
-        <div className="flex items-center justify-center gap-3 mb-1">
-          <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/89c560c96_state.jpg" className="w-12 h-12 object-contain" />
-          <div>
-            <div className="text-[11px] font-bold tracking-[0.25em] text-muted-foreground uppercase">
-              State of North Carolina — Dept. of Public Instruction
-            </div>
-            <div className="text-xl font-bold text-primary tracking-[0.2em] uppercase">
-              School Bus Surveillance System
-            </div>
-            <div className="text-[11px] tracking-[0.15em] text-muted-foreground uppercase">
-              Camera Repair &amp; Maintenance Management Database
-            </div>
-          </div>
-          <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/89c560c96_state.jpg" className="w-12 h-12 object-contain" />
+      <div className="win-panel-inset bg-primary/5 py-2 px-4 flex items-center justify-center gap-3 border-2 border-primary/20">
+        <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/89c560c96_state.jpg" style={{width:36,height:36,objectFit:'contain',flexShrink:0}} alt="NC Seal" />
+        <div className="text-center leading-tight">
+          <div className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground uppercase">State of North Carolina — Dept. of Public Instruction</div>
+          <div className="text-[15px] font-bold text-primary tracking-[0.15em] uppercase">School Bus Surveillance System</div>
+          <div className="text-[10px] tracking-[0.1em] text-muted-foreground uppercase">Camera Repair &amp; Maintenance Management Database</div>
         </div>
+        <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/89c560c96_state.jpg" style={{width:36,height:36,objectFit:'contain',flexShrink:0}} alt="NC Seal" />
       </div>
 
       {/* Stats */}
