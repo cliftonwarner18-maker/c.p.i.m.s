@@ -20,7 +20,7 @@ export default function Layout({ children, currentPageName }) {
       {/* Top Header Bar */}
       <div className="bg-primary text-primary-foreground px-3 py-1 flex items-center justify-between" style={{minHeight: 0}}>
         <div className="flex items-center gap-2">
-          <div style={{width:28,height:28,flexShrink:0,display:'flex',alignItems:'center',justifyContent:'center',background:'rgba(255,255,255,0.2)',border:'1px solid rgba(255,255,255,0.4)',borderRadius:2,fontSize:16}}>🚌</div>
+          <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/736f6667e_nhcs.png" style={{width:28,height:28,objectFit:'contain',flexShrink:0}} alt="NHCS Logo" />
           <div className="leading-none">
             <div className="text-[10px] font-bold tracking-widest uppercase">NEW HANOVER COUNTY SCHOOLS</div>
             <div className="text-[8px] tracking-wider uppercase opacity-80">TRANSPORTATION DEPT. — MOBILE VEHICLE SURVEILLANCE SYSTEM</div>
