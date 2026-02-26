@@ -116,6 +116,14 @@ export default function BusForm({ bus, onClose, onSaved }) {
             <Field label="ASSET #">
               <input className="win-input w-full text-[11px]" value={form.asset_number} onChange={e => setForm({...form, asset_number: e.target.value})} />
             </Field>
+            <Field label="BASE LOCATION">
+              <select className="win-input w-full text-[11px]" value={form.base_location} onChange={e => setForm({...form, base_location: e.target.value})}>
+                <option value="Main">Main</option>
+                <option value="North">North</option>
+                <option value="Central">Central</option>
+                <option value="Sold">Sold</option>
+              </select>
+            </Field>
             <Field label="STATUS">
               <select className="win-input w-full text-[11px]" value={form.status} onChange={e => setForm({...form, status: e.target.value})}>
                 <option value="Active">Active</option>
