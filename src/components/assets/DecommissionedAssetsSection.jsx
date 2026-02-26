@@ -2,12 +2,16 @@ import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import WinWindow from '../WinWindow';
-import { Plus, Edit2, Trash2 } from 'lucide-react';
+import { Plus, Edit2, Trash2, FileDown } from 'lucide-react';
 
 export default function DecommissionedAssetsSection() {
   const [showForm, setShowForm] = useState(false);
   const [editingAsset, setEditingAsset] = useState(null);
   const [formData, setFormData] = useState({});
+  const [statusFilter, setStatusFilter] = useState('All');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [isExporting, setIsExporting] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: assets = [], isLoading } = useQuery({
@@ -64,20 +68,88 @@ export default function DecommissionedAssetsSection() {
     }
   };
 
+  const handleExportPDF = async () => {
+    setIsExporting(true);
+    try {
+      const response = await base44.functions.invoke('exportDecommissionedAssets', {
+        statusFilter,
+        startDate,
+        endDate
+      });
+      
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'decommissioned-assets.pdf';
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      a.remove();
+    } catch (error) {
+      alert('Error exporting PDF: ' + error.message);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <WinWindow title="DECOMMISSIONED ASSETS — SALVAGE & DISPOSAL LOG" icon="🗑️">
       <div style={{display:'flex',flexDirection:'column',gap:'8px'}}>
-        <button
-          onClick={() => {
-            setEditingAsset(null);
-            setFormData({});
-            setShowForm(!showForm);
-          }}
-          className="win-button"
-          style={{width:'fit-content',display:'flex',alignItems:'center',gap:'4px'}}
-        >
-          <Plus style={{width:12,height:12}} /> Log Decommission
-        </button>
+        <div style={{display:'flex',gap:'8px',flexWrap:'wrap',alignItems:'center'}}>
+          <button
+            onClick={() => {
+              setEditingAsset(null);
+              setFormData({});
+              setShowForm(!showForm);
+            }}
+            className="win-button"
+            style={{display:'flex',alignItems:'center',gap:'4px',fontSize:'11px'}}
+          >
+            <Plus style={{width:12,height:12}} /> Log Decommission
+          </button>
+          
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="win-input"
+            style={{fontSize:'11px',padding:'4px 8px'}}
+          >
+            <option>All</option>
+            <option>In Bad Parts</option>
+            <option>Awaiting Auction</option>
+            <option>Took to Auction</option>
+            <option>Rebuilt</option>
+            <option>Salvaged</option>
+          </select>
+
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            className="win-input"
+            style={{fontSize:'11px',padding:'4px 8px'}}
+            placeholder="Start Date"
+          />
+          
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            className="win-input"
+            style={{fontSize:'11px',padding:'4px 8px'}}
+            placeholder="End Date"
+          />
+
+          <button
+            onClick={handleExportPDF}
+            disabled={isExporting}
+            className="win-button"
+            style={{display:'flex',alignItems:'center',gap:'4px',fontSize:'11px',background:isExporting ? 'hsl(220,15%,75%)' : 'hsl(220,70%,35%)',color:'white'}}
+          >
+            <FileDown style={{width:12,height:12}} /> Export PDF
+          </button>
+        </div>
 
         {showForm && (
           <div className="win-panel-inset" style={{padding:'12px',border:'2px solid hsl(220,15%,50%)',maxHeight:'500px',overflowY:'auto'}}>
