@@ -55,7 +55,7 @@ export default function Layout({ children, currentPageName }) {
       {/* Bottom Status Bar */}
       <div className="win-border-inset bg-secondary flex items-center text-[10px] font-mono px-1 h-5 no-print">
         <div className="win-border-inset px-2 bg-card flex-1">
-          NC DPI — SCHOOL BUS SURVEILLANCE MANAGEMENT SYSTEM
+          NHCS — SCHOOL BUS SURVEILLANCE MANAGEMENT SYSTEM
         </div>
         <div className="win-border-inset px-2 bg-card">
           {new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}
