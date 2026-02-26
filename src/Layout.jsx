@@ -20,10 +20,10 @@ export default function Layout({ children, currentPageName }) {
       {/* Top Header Bar */}
       <div className="bg-primary text-primary-foreground px-3 py-1 flex items-center justify-between" style={{minHeight: 0}}>
         <div className="flex items-center gap-2">
-          <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/89c560c96_state.jpg" style={{width:24,height:24,objectFit:'contain',flexShrink:0}} alt="NC Seal" />
+          <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/736f6667e_nhcs.png" style={{width:28,height:28,objectFit:'contain',flexShrink:0,filter:'brightness(0) invert(1)'}} alt="NHCS Logo" />
           <div className="leading-none">
-            <div className="text-[10px] font-bold tracking-widest uppercase">STATE OF NORTH CAROLINA</div>
-            <div className="text-[8px] tracking-wider uppercase opacity-80">DEPT. OF PUBLIC INSTRUCTION — MOBILE VEHICLE SURVEILLANCE SYSTEM</div>
+            <div className="text-[10px] font-bold tracking-widest uppercase">NEW HANOVER COUNTY SCHOOLS</div>
+            <div className="text-[8px] tracking-wider uppercase opacity-80">TRANSPORTATION DEPT. — MOBILE VEHICLE SURVEILLANCE SYSTEM</div>
           </div>
         </div>
         <div className="flex items-center gap-1 text-[9px] opacity-70">
