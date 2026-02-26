@@ -226,12 +226,20 @@ export default function BusProfile() {
       {/* Manual History */}
       <WinWindow title={`MANUAL HISTORY LOG — BUS #${bus.bus_number}`} icon="📝">
         <div className="flex justify-end mb-2 no-print">
-          <button
-            className="win-button flex items-center gap-1 text-[11px] !bg-primary !text-primary-foreground"
-            onClick={() => setShowAddHistory(true)}
-          >
-            <Plus className="w-3 h-3" /> ADD HISTORY ENTRY
-          </button>
+          <div className="flex gap-2">
+            <button
+              className="win-button flex items-center gap-1 text-[11px]"
+              onClick={() => setShowBulkImport(true)}
+            >
+              <Upload className="w-3 h-3" /> BULK IMPORT
+            </button>
+            <button
+              className="win-button flex items-center gap-1 text-[11px] !bg-primary !text-primary-foreground"
+              onClick={() => setShowAddHistory(true)}
+            >
+              <Plus className="w-3 h-3" /> ADD HISTORY ENTRY
+            </button>
+          </div>
         </div>
         <div className="win-panel-inset overflow-auto" style={{ maxHeight: '300px' }}>
           <table className="w-full text-[11px] font-mono">
