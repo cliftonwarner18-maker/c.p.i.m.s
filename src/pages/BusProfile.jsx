@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import WinWindow from '../components/WinWindow';
+import AddHistoryForm from '../components/fleet/AddHistoryForm';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Printer, ArrowLeft, AlertTriangle, CheckCircle } from 'lucide-react';
+import { Printer, ArrowLeft, AlertTriangle, CheckCircle, Plus } from 'lucide-react';
 
 export default function BusProfile() {
   const urlParams = new URLSearchParams(window.location.search);
