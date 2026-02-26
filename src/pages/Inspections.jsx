@@ -14,7 +14,7 @@ export default function Inspections() {
   const [editingInsp, setEditingInsp] = useState(null);
   const queryClient = useQueryClient();
 
-  const { data: inspections = [] } = useQuery({
+  const { data: inspections = [], isLoading } = useQuery({
     queryKey: ['inspections'],
     queryFn: () => base44.entities.Inspection.list('-created_date'),
   });
@@ -34,7 +34,7 @@ export default function Inspections() {
 
   return (
     <>
-      <LoadingScreen isLoading={false} />
+      <LoadingScreen isLoading={isLoading} message="LOADING INSPECTIONS..." />
       <div style={{display:'flex',flexDirection:'column',gap:'4px'}}>
        {editingInsp && (
          <EditInspectionForm
@@ -65,8 +65,8 @@ export default function Inspections() {
            </div>
          </div>
 
-        <div className="win-panel-inset overflow-auto" style={{ maxHeight: '500px' }}>
-          <table className="w-full" style={{fontSize:'11px',fontFamily:"'Courier Prime', monospace"}}>
+        <div className="win-panel-inset" style={{ maxHeight: '500px', overflow: 'auto', width: '100%', boxSizing: 'border-box' }}>
+          <table style={{ width: '100%', fontSize: '11px', fontFamily: "'Courier Prime', monospace" }}>
             <thead>
               <tr style={{background:'hsl(220,70%,35%)',color:'white',position:'sticky',top:0}}>
                 <th style={{padding:'4px',textAlign:'left'}}>INSP#</th>
