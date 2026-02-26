@@ -73,62 +73,55 @@ export default function Dashboard() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
-        {/* Active Work Orders - takes 2 cols */}
-        <div className="lg:col-span-2">
-          <WinWindow title="ACTIVE WORK ORDERS — PENDING REPAIRS" icon="⚠️">
-            <ActiveWorkOrders workOrders={workOrders} />
-          </WinWindow>
-        </div>
+      {/* Active Work Orders - full width */}
+      <WinWindow title="ACTIVE WORK ORDERS — PENDING REPAIRS" icon="⚠️">
+        <ActiveWorkOrders workOrders={workOrders} />
+      </WinWindow>
 
-        {/* Right Column */}
-        <div className="space-y-2">
-          {/* Overdue Inspections */}
-          <WinWindow title="OVERDUE INSPECTIONS" icon="🔴">
-            <div className="win-panel-inset p-1 overflow-auto" style={{ maxHeight: '320px', minHeight: '80px' }}>
-              {overdueInspections.length === 0 ? (
-                <div className="text-center text-[11px] p-3 text-muted-foreground">NO OVERDUE INSPECTIONS</div>
-              ) : (
-                overdueInspections.map(b => (
-                  <div key={b.id} className="flex items-center justify-between text-[12px] p-2 border-b border-border hover:bg-secondary/40">
-                    <div className="flex items-center gap-2">
-                      <AlertTriangle className="w-4 h-4 status-cancelled flex-shrink-0" />
-                      <div>
-                        <div className="font-bold">BUS #{b.bus_number}</div>
-                        <div className="text-[10px] text-muted-foreground">{b.year} {b.make} {b.model}</div>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="status-cancelled font-bold text-[11px]">OVERDUE</div>
-                      <div className="font-bold text-[11px]">DUE: {moment(b.next_inspection_due).format('MM/DD/YY')}</div>
-                    </div>
+      {/* Overdue Inspections - full width */}
+      <WinWindow title="OVERDUE INSPECTIONS" icon="🔴">
+        <div className="win-panel-inset p-1 overflow-auto" style={{ maxHeight: '400px', minHeight: '80px' }}>
+          {overdueInspections.length === 0 ? (
+            <div className="text-center text-[11px] p-3 text-muted-foreground">NO OVERDUE INSPECTIONS</div>
+          ) : (
+            overdueInspections.map(b => (
+              <div key={b.id} className="flex items-center justify-between text-[12px] p-2 border-b border-border hover:bg-secondary/40">
+                <div className="flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4 status-cancelled flex-shrink-0" />
+                  <div>
+                    <div className="font-bold">BUS #{b.bus_number}</div>
+                    <div className="text-[10px] text-muted-foreground">{b.year} {b.make} {b.model}</div>
                   </div>
-                ))
-              )}
-            </div>
-          </WinWindow>
-
-          {/* Recent Completed */}
-          <WinWindow title="RECENTLY COMPLETED REPAIRS" icon="✅">
-            <div className="win-panel-inset p-1 overflow-auto" style={{ maxHeight: '320px', minHeight: '80px' }}>
-              {recentCompleted.length === 0 ? (
-                <div className="text-center text-[11px] p-3 text-muted-foreground">NO COMPLETED REPAIRS</div>
-              ) : (
-                recentCompleted.map(wo => (
-                  <div key={wo.id} className="text-[11px] p-2 border-b border-border hover:bg-secondary/40">
-                    <div className="flex justify-between items-center">
-                      <span className="font-bold">{wo.order_number} — BUS #{wo.bus_number}</span>
-                      <span className="status-completed font-bold">[DONE]</span>
-                    </div>
-                    <div className="text-muted-foreground truncate">{wo.repairs_rendered}</div>
-                    {wo.technician_name && <div className="text-[10px] text-muted-foreground">TECH: {wo.technician_name}</div>}
-                  </div>
-                ))
-              )}
-            </div>
-          </WinWindow>
+                </div>
+                <div className="text-right">
+                  <div className="status-cancelled font-bold text-[11px]">OVERDUE</div>
+                  <div className="font-bold text-[11px]">DUE: {moment(b.next_inspection_due).format('MM/DD/YY')}</div>
+                </div>
+              </div>
+            ))
+          )}
         </div>
-      </div>
+      </WinWindow>
+
+      {/* Recently Completed */}
+      <WinWindow title="RECENTLY COMPLETED REPAIRS" icon="✅">
+        <div className="win-panel-inset p-1 overflow-auto" style={{ maxHeight: '320px', minHeight: '80px' }}>
+          {recentCompleted.length === 0 ? (
+            <div className="text-center text-[11px] p-3 text-muted-foreground">NO COMPLETED REPAIRS</div>
+          ) : (
+            recentCompleted.map(wo => (
+              <div key={wo.id} className="text-[11px] p-2 border-b border-border hover:bg-secondary/40">
+                <div className="flex justify-between items-center">
+                  <span className="font-bold">{wo.order_number} — BUS #{wo.bus_number}</span>
+                  <span className="status-completed font-bold">[DONE]</span>
+                </div>
+                <div className="text-muted-foreground truncate">{wo.repairs_rendered}</div>
+                {wo.technician_name && <div className="text-[10px] text-muted-foreground">TECH: {wo.technician_name}</div>}
+              </div>
+            ))
+          )}
+        </div>
+      </WinWindow>
 
       {/* System Log Footer */}
       <div className="win-panel-inset p-2 text-[10px] font-mono text-muted-foreground">
