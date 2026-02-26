@@ -153,6 +153,7 @@ export default function FleetManager() {
           TOTAL FLEET: {filtered.length} VEHICLES
         </div>
       </WinWindow>
-    </div>
-  );
-}
+      </div>
+      </>
+      );
+      }
