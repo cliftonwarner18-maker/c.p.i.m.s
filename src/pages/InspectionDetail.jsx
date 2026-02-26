@@ -33,6 +33,180 @@ export default function InspectionDetail() {
     );
   }
 
+  const printStickerOnly = () => {
+    const stickerHTML = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Inspection Sticker - Bus #${inspection.bus_number}</title>
+        <style>
+          @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap');
+          * { margin: 0; padding: 0; box-sizing: border-box; }
+          body {
+            font-family: 'Courier Prime', 'Courier New', monospace;
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 8px;
+          }
+          .sticker {
+            border: 3px solid #000;
+            padding: 10px;
+            width: 3in;
+            text-align: center;
+            background: white;
+            page-break-inside: avoid;
+          }
+          .sticker-header {
+            font-size: 7pt;
+            font-weight: bold;
+            letter-spacing: 0.15em;
+            border-bottom: 2px solid #000;
+            padding-bottom: 4px;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+          }
+          .sticker-title {
+            font-size: 9pt;
+            font-weight: bold;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+          }
+          .sticker-bus {
+            font-size: 20pt;
+            font-weight: bold;
+            margin: 4px 0;
+            letter-spacing: 0.05em;
+          }
+          .sticker-result {
+            font-size: 16pt;
+            font-weight: bold;
+            padding: 4px 0;
+            border: 2px solid #000;
+            margin: 4px 0;
+            letter-spacing: 0.1em;
+          }
+          .result-pass { color: #166534; background: #f0fdf4; }
+          .result-fail { color: #991b1b; background: #fef2f2; }
+          .result-conditional { color: #92400e; background: #fffbeb; }
+          .sticker-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2px;
+            margin: 4px 0;
+            text-align: left;
+          }
+          .sticker-field {
+            font-size: 7.5pt;
+            padding: 2px 0;
+            border-bottom: 1px solid #ccc;
+          }
+          .sticker-field-label { font-weight: bold; font-size: 6.5pt; color: #555; display: block; }
+          .sticker-field-value { font-size: 8pt; font-weight: bold; }
+          .checklist {
+            margin: 4px 0;
+            text-align: left;
+          }
+          .check-item {
+            font-size: 7pt;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px dotted #ccc;
+            padding: 1px 0;
+          }
+          .check-pass { color: #166534; font-weight: bold; }
+          .check-fail { color: #991b1b; font-weight: bold; }
+          .next-due {
+            font-size: 9pt;
+            font-weight: bold;
+            border: 2px solid #000;
+            padding: 3px;
+            margin-top: 4px;
+            text-transform: uppercase;
+          }
+          .sticker-footer {
+            font-size: 6pt;
+            border-top: 1px solid #000;
+            padding-top: 3px;
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #555;
+          }
+          @media print {
+            @page { margin: 0.1in; size: 3in auto; }
+            body { padding: 4px; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="sticker">
+          <div class="sticker-header">State of North Carolina<br>Dept. of Public Instruction</div>
+          <div class="sticker-title">Camera Surveillance Inspection</div>
+
+          <div class="sticker-bus">BUS #${inspection.bus_number}</div>
+
+          <div class="sticker-result ${
+            inspection.overall_status === 'Pass' ? 'result-pass' :
+            inspection.overall_status === 'Fail' ? 'result-fail' : 'result-conditional'
+          }">
+            ★ ${inspection.overall_status?.toUpperCase()} ★
+          </div>
+
+          <div class="sticker-grid">
+            <div class="sticker-field">
+              <span class="sticker-field-label">INSP. NUMBER</span>
+              <span class="sticker-field-value">${inspection.inspection_number}</span>
+            </div>
+            <div class="sticker-field">
+              <span class="sticker-field-label">DATE INSPECTED</span>
+              <span class="sticker-field-value">${moment(inspection.inspection_date || inspection.created_date).format('MM/DD/YYYY')}</span>
+            </div>
+            <div class="sticker-field">
+              <span class="sticker-field-label">INSPECTOR</span>
+              <span class="sticker-field-value">${inspection.inspector_name}</span>
+            </div>
+            <div class="sticker-field">
+              <span class="sticker-field-label">CAMERA SYSTEM</span>
+              <span class="sticker-field-value">${bus?.camera_system_type || 'N/A'}</span>
+            </div>
+            ${bus?.camera_serial_number ? `
+            <div class="sticker-field">
+              <span class="sticker-field-label">SERIAL #</span>
+              <span class="sticker-field-value">${bus.camera_serial_number}</span>
+            </div>` : ''}
+          </div>
+
+          <div class="checklist">
+            <div class="check-item"><span>Camera System</span><span class="${inspection.camera_system_functional ? 'check-pass' : 'check-fail'}">${inspection.camera_system_functional ? '✓ PASS' : '✗ FAIL'}</span></div>
+            <div class="check-item"><span>DVR Functional</span><span class="${inspection.dvr_functional ? 'check-pass' : 'check-fail'}">${inspection.dvr_functional ? '✓ PASS' : '✗ FAIL'}</span></div>
+            <div class="check-item"><span>Lenses</span><span class="${inspection.lenses_condition === 'Pass' ? 'check-pass' : 'check-fail'}">${inspection.lenses_condition?.toUpperCase()}</span></div>
+            <div class="check-item"><span>Mounting Secure</span><span class="${inspection.mounting_secure ? 'check-pass' : 'check-fail'}">${inspection.mounting_secure ? '✓ PASS' : '✗ FAIL'}</span></div>
+            <div class="check-item"><span>Date/Time Accuracy</span><span class="${inspection.date_time_accuracy ? 'check-pass' : 'check-fail'}">${inspection.date_time_accuracy ? '✓ PASS' : '✗ FAIL'}</span></div>
+            <div class="check-item"><span>Signals & Lights</span><span class="${inspection.signals_lights_functional ? 'check-pass' : 'check-fail'}">${inspection.signals_lights_functional ? '✓ PASS' : '✗ FAIL'}</span></div>
+            <div class="check-item"><span>Programming</span><span class="${inspection.programming_verified ? 'check-pass' : 'check-fail'}">${inspection.programming_verified ? '✓ PASS' : '✗ FAIL'}</span></div>
+          </div>
+
+          ${inspection.next_inspection_due ? `
+          <div class="next-due">
+            Next Inspection Due:<br>${moment(inspection.next_inspection_due).format('MM/DD/YYYY')}
+          </div>` : ''}
+
+          ${inspection.inspection_notes ? `<div style="font-size:6.5pt; margin-top:3px; text-align:left; color:#444; border-top:1px dotted #ccc; padding-top:3px;">NOTE: ${inspection.inspection_notes}</div>` : ''}
+
+          <div class="sticker-footer">NC DPI — Mobile Vehicle Surveillance System</div>
+        </div>
+        <script>window.onload = function() { window.print(); }</script>
+      </body>
+      </html>
+    `;
+    const win = window.open('', '_blank', 'width=400,height=600');
+    win.document.write(stickerHTML);
+    win.document.close();
+  };
+
   const PassFail = ({ label, pass }) => (
     <div className="flex items-center justify-between text-[11px] py-1 border-b border-border">
       <span className="font-bold">{label}</span>
