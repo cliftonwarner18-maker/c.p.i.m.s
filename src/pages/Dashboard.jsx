@@ -13,20 +13,31 @@ import moment from 'moment';
 export default function Dashboard() {
   const [showTranscribe, setShowTranscribe] = useState(false);
 
-  const { data: buses = [] } = useQuery({
+  const { data: buses = [], isLoading: busesLoading, error: busesError } = useQuery({
     queryKey: ['buses'],
     queryFn: () => base44.entities.Bus.list('-created_date'),
+    retry: 2,
   });
 
-  const { data: workOrders = [] } = useQuery({
+  const { data: workOrders = [], isLoading: woLoading, error: woError } = useQuery({
     queryKey: ['workOrders'],
     queryFn: () => base44.entities.WorkOrder.list('-created_date'),
+    retry: 2,
   });
 
-  const { data: inspections = [] } = useQuery({
+  const { data: inspections = [], isLoading: inspLoading, error: inspError } = useQuery({
     queryKey: ['inspections'],
     queryFn: () => base44.entities.Inspection.list('-created_date'),
+    retry: 2,
   });
+
+  if (busesError || woError || inspError) {
+    return <div className="p-4 text-red-600">Error loading data. Refresh the page.</div>;
+  }
+
+  if (busesLoading || woLoading || inspLoading) {
+    return <div className="p-4">Loading...</div>;
+  }
 
   const recentCompleted = workOrders
     .filter(w => w.status === 'Completed')
