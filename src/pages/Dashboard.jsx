@@ -38,7 +38,7 @@ export default function Dashboard() {
   });
 
   return (
-    <div className="space-y-2" style={{width:'100vw',marginLeft:'calc(-50vw + 50%)',overflow:'hidden'}}>
+    <div className="space-y-2">
       {/* Header Banner */}
       <div className="win-panel-inset p-2 flex items-center justify-center gap-3">
         <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/736f6667e_nhcs.png" style={{width:36,height:36,objectFit:'contain',flexShrink:0}} alt="NHCS Logo" />
