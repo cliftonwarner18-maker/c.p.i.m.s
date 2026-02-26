@@ -51,7 +51,7 @@ export default function Dashboard() {
       </div>
 
       {/* Stats */}
-      <WinWindow title="SYSTEM STATUS OVERVIEW" icon="📊">
+      <WinWindow title="SYSTEM STATUS OVERVIEW" icon="📊" noPadding>
         <DashboardStats buses={buses} workOrders={workOrders} inspections={inspections} />
       </WinWindow>
 
