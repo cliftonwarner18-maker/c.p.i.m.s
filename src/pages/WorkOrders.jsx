@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import WinWindow from '../components/WinWindow';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import moment from 'moment';
-import { Search, Filter } from 'lucide-react';
+import { Search, Filter, Trash2 } from 'lucide-react';
 
 export default function WorkOrders() {
   const [statusFilter, setStatusFilter] = useState('All');
