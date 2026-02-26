@@ -28,6 +28,7 @@ const StatBox = ({ icon: Icon, value, label, color }) => (
   </div>
 );
 
+// v2
 export default function DashboardStats({ buses, workOrders, inspections }) {
   const totalBuses = buses.length;
   const pendingOrders = workOrders.filter(w => w.status === 'Pending').length;
