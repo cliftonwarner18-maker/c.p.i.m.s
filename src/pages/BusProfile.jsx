@@ -111,6 +111,7 @@ export default function BusProfile() {
             <DataRow label="CAMERA SYSTEM" value={bus.camera_system_type} />
             <DataRow label="SERIAL #" value={bus.camera_serial_number} />
             <DataRow label="MODEL #" value={bus.camera_model_number} />
+            <DataRow label="DVR ASSET #" value={bus.asset_number} />
             <div className="mt-2 text-[10px] font-bold bg-primary text-primary-foreground px-2 py-0.5">AI CAMERA (SAMSARA)</div>
             <DataRow label="SAMSARA" value={bus.samsara_enabled ? '☑ YES' : '☐ NO'} />
             <DataRow label="SAM AV" value={bus.samsara_av_enabled ? '☑ YES' : '☐ NO'} />
