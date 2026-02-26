@@ -52,7 +52,9 @@ export default function Dashboard() {
 
       {/* Stats */}
       <WinWindow title="SYSTEM STATUS OVERVIEW" icon="📊">
-        <DashboardStats buses={buses} workOrders={workOrders} inspections={inspections} />
+        <div style={{padding: '0', margin: '0'}}>
+          <DashboardStats buses={buses} workOrders={workOrders} inspections={inspections} />
+        </div>
       </WinWindow>
 
       {/* Quick Actions */}
