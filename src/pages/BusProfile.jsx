@@ -71,6 +71,7 @@ export default function BusProfile() {
           <div className="win-panel-inset p-2">
             <DataRow label="BUS #" value={bus.bus_number} />
             <DataRow label="TYPE" value={bus.bus_type} />
+            <DataRow label="BASE LOCATION" value={bus.base_location} />
             <DataRow label="YEAR" value={bus.year} />
             <DataRow label="MAKE" value={bus.make} />
             <DataRow label="MODEL" value={bus.model} />
