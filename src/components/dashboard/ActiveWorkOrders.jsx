@@ -16,7 +16,7 @@ export default function ActiveWorkOrders({ workOrders }) {
   };
 
   return (
-    <div className="win-panel-inset overflow-auto" style={{ maxHeight: '340px' }}>
+    <div className="win-panel-inset overflow-auto" style={{ maxHeight: '520px', minHeight: '100px' }}>
       <table className="w-full text-[12px] font-mono">
         <thead>
           <tr className="bg-primary text-primary-foreground">
