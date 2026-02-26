@@ -86,6 +86,7 @@ export default function FleetManager() {
                 <th className="p-1 text-left">TYPE</th>
                 <th className="p-1 text-left">YEAR</th>
                 <th className="p-1 text-left">MAKE/MODEL</th>
+                <th className="p-1 text-left">LOCATION</th>
                 <th className="p-1 text-left">CAMERA</th>
                 <th className="p-1 text-left">STATUS</th>
                 <th className="p-1 text-left">INSP. DUE</th>
