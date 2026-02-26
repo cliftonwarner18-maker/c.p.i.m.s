@@ -21,12 +21,12 @@ export default function DashboardStats({ buses, workOrders, inspections }) {
   ];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+    <div className="grid grid-cols-5 gap-2">
       {stats.map((stat, i) => (
-        <div key={i} className="win-panel-inset p-2 text-center">
-          <stat.icon className={`w-5 h-5 mx-auto mb-1 ${stat.color}`} />
-          <div className={`text-2xl font-bold terminal-text ${stat.color}`}>{stat.value}</div>
-          <div className="text-[10px] font-bold tracking-wider text-muted-foreground">{stat.label}</div>
+        <div key={i} className="win-panel-inset p-1 text-center" style={{minWidth: '0'}}>
+          <stat.icon className={`w-4 h-4 mx-auto mb-0.5 ${stat.color}`} />
+          <div className={`text-lg font-bold ${stat.color}`} style={{fontSize: '14px'}}>{stat.value}</div>
+          <div className="text-[9px] font-bold tracking-wider text-muted-foreground" style={{lineHeight: '1.2'}}>{stat.label}</div>
         </div>
       ))}
     </div>
