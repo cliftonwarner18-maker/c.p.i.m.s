@@ -89,101 +89,106 @@ export default function WorkOrderDetail() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto space-y-2">
-      <div className="flex gap-2 no-print">
-        <Link to={createPageUrl('WorkOrders')} className="win-button flex items-center gap-1 text-[11px] no-underline text-foreground">
-          <ArrowLeft className="w-3 h-3" /> BACK TO WORK ORDERS
-        </Link>
-        <Link to={createPageUrl('Dashboard')} className="win-button text-[11px] no-underline text-foreground">
-          DASHBOARD
-        </Link>
-      </div>
+    <div style={{maxWidth:'900px',margin:'0 auto',display:'flex',flexDirection:'column',gap:'4px'}}>
+      <div className="no-print" style={{display:'flex',gap:'4px'}}>
+         <Link to={createPageUrl('WorkOrders')} className="win-button no-underline" style={{display:'flex',alignItems:'center',gap:'4px',fontSize:'11px',color:'inherit'}}>
+           <ArrowLeft className="w-3 h-3" /> BACK TO WORK ORDERS
+         </Link>
+         <Link to={createPageUrl('Dashboard')} className="win-button no-underline" style={{fontSize:'11px',color:'inherit'}}>
+           DASHBOARD
+         </Link>
+       </div>
 
       <div ref={printRef}>
         <WinWindow title={`WORK ORDER: ${workOrder.order_number} — BUS #${workOrder.bus_number}`} icon="🔧">
           {/* Header */}
-          <div className="win-panel-inset p-3 mb-2 text-center">
-            <div className="flex items-center justify-center gap-3 mb-1">
-              <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/736f6667e_nhcs.png" className="w-10 h-10 object-contain" />
+          <div className="win-panel-inset" style={{padding:'8px',marginBottom:'4px',textAlign:'center'}}>
+            <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:'12px',marginBottom:'4px'}}>
+              <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/736f6667e_nhcs.png" style={{width:40,height:40,objectFit:'contain'}} />
               <div>
-                <div className="text-[10px] font-bold tracking-[0.2em]">NEW HANOVER COUNTY SCHOOLS</div>
-                <div className="text-[13px] font-bold tracking-wider">MOBILE VEHICLE SURVEILLANCE — REPAIR WORK ORDER</div>
-                <div className="text-[11px] text-muted-foreground">OFFICIAL SERVICE RECORD</div>
+                <div style={{fontSize:'10px',fontWeight:'bold',letterSpacing:'0.2em'}}>NEW HANOVER COUNTY SCHOOLS</div>
+                <div style={{fontSize:'13px',fontWeight:'bold',letterSpacing:'0.05em'}}>MOBILE VEHICLE SURVEILLANCE — REPAIR WORK ORDER</div>
+                <div style={{fontSize:'11px',color:'hsl(220,10%,40%)'}}>OFFICIAL SERVICE RECORD</div>
               </div>
             </div>
           </div>
 
           {/* Original Complaint */}
-          <div className="win-panel p-2 mb-2">
-            <div className="text-[11px] font-bold bg-primary text-primary-foreground px-2 py-0.5 mb-1">
+          <div className="win-panel" style={{padding:'4px',marginBottom:'4px',background:'hsl(220,15%,90%)',border:'2px solid hsl(220,15%,50%)'}}>
+            <div style={{fontSize:'11px',fontWeight:'bold',background:'hsl(220,70%,35%)',color:'white',padding:'2px 4px',marginBottom:'4px'}}>
               ▸ ORIGINAL COMPLAINT
             </div>
-            <div className="grid grid-cols-2 gap-2 text-[11px]">
-              <div><span className="font-bold">ORDER#:</span> {workOrder.order_number}</div>
-              <div><span className="font-bold">DATE:</span> {moment(workOrder.created_date).format('MM/DD/YYYY HH:mm:ss')}</div>
-              <div><span className="font-bold">BUS#:</span> {workOrder.bus_number}</div>
-              <div><span className="font-bold">REPORTED BY:</span> {workOrder.reported_by}</div>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'4px',fontSize:'11px',padding:'0 4px'}}>
+              <div><span style={{fontWeight:'bold'}}>ORDER#:</span> {workOrder.order_number}</div>
+              <div><span style={{fontWeight:'bold'}}>DATE:</span> {moment(workOrder.created_date).format('MM/DD/YYYY HH:mm:ss')}</div>
+              <div><span style={{fontWeight:'bold'}}>BUS#:</span> {workOrder.bus_number}</div>
+              <div><span style={{fontWeight:'bold'}}>REPORTED BY:</span> {workOrder.reported_by}</div>
             </div>
-            <div className="mt-2 text-[11px]">
-              <span className="font-bold">ISSUE:</span>
-              <div className="win-panel-inset p-2 mt-1 text-[11px]">{workOrder.issue_description}</div>
+            <div style={{marginTop:'4px',fontSize:'11px',padding:'0 4px'}}>
+              <span style={{fontWeight:'bold'}}>ISSUE:</span>
+              <div className="win-panel-inset" style={{padding:'4px',marginTop:'2px',fontSize:'11px'}}>{workOrder.issue_description}</div>
             </div>
           </div>
 
           {/* Repair Section */}
-          <div className="win-panel p-2 mb-2">
-            <div className="text-[11px] font-bold bg-primary text-primary-foreground px-2 py-0.5 mb-1">
+          <div className="win-panel" style={{padding:'4px',marginBottom:'4px',background:'hsl(220,15%,90%)',border:'2px solid hsl(220,15%,50%)'}}>
+            <div style={{fontSize:'11px',fontWeight:'bold',background:'hsl(220,70%,35%)',color:'white',padding:'2px 4px',marginBottom:'4px'}}>
               ▸ REPAIRS RENDERED
             </div>
-            <div className="space-y-2">
+            <div style={{display:'flex',flexDirection:'column',gap:'4px',padding:'0 4px'}}>
               <div>
-                <label className="text-[10px] font-bold">TECHNICIAN NAME:</label>
+                <label style={{fontSize:'10px',fontWeight:'bold',display:'block',marginBottom:'2px'}}>TECHNICIAN NAME:</label>
                 <input
-                  className="win-input w-full text-[12px]"
+                  className="win-input"
+                  style={{width:'100%',fontSize:'12px'}}
                   value={form.technician_name}
                   onChange={(e) => setForm({ ...form, technician_name: e.target.value })}
                   placeholder="Enter technician name..."
                 />
               </div>
-              <div className="grid grid-cols-3 gap-2">
+              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'4px'}}>
                 <div>
-                  <label className="text-[10px] font-bold">START TIME:</label>
+                  <label style={{fontSize:'10px',fontWeight:'bold',display:'block',marginBottom:'2px'}}>START TIME:</label>
                   <input
                     type="time"
-                    className="win-input w-full text-[12px]"
+                    className="win-input"
+                    style={{width:'100%',fontSize:'12px'}}
                     value={form.repair_start_time}
                     onChange={(e) => setForm({ ...form, repair_start_time: e.target.value })}
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] font-bold">END TIME:</label>
+                  <label style={{fontSize:'10px',fontWeight:'bold',display:'block',marginBottom:'2px'}}>END TIME:</label>
                   <input
                     type="time"
-                    className="win-input w-full text-[12px]"
+                    className="win-input"
+                    style={{width:'100%',fontSize:'12px'}}
                     value={form.repair_end_time}
                     onChange={(e) => setForm({ ...form, repair_end_time: e.target.value })}
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] font-bold">ELAPSED TIME:</label>
-                  <div className="win-input w-full text-[12px] bg-secondary/50 font-bold">
+                  <label style={{fontSize:'10px',fontWeight:'bold',display:'block',marginBottom:'2px'}}>ELAPSED TIME:</label>
+                  <div className="win-input" style={{width:'100%',fontSize:'12px',background:'hsl(220,20%,92%)',fontWeight:'bold',padding:'2px 4px',boxSizing:'border-box'}}>
                     {elapsed || '—'}
                   </div>
                 </div>
               </div>
               <div>
-                <label className="text-[10px] font-bold">REPAIRS RENDERED:</label>
+                <label style={{fontSize:'10px',fontWeight:'bold',display:'block',marginBottom:'2px'}}>REPAIRS RENDERED:</label>
                 <textarea
-                  className="win-input w-full text-[12px] h-24 resize-none"
+                  className="win-input"
+                  style={{width:'100%',fontSize:'12px',height:'96px',resize:'none'}}
                   value={form.repairs_rendered}
                   onChange={(e) => setForm({ ...form, repairs_rendered: e.target.value })}
                   placeholder="Describe repairs performed..."
                 />
               </div>
               <div>
-                <label className="text-[10px] font-bold">STATUS:</label>
+                <label style={{fontSize:'10px',fontWeight:'bold',display:'block',marginBottom:'2px'}}>STATUS:</label>
                 <select
-                  className="win-input w-full text-[12px]"
+                  className="win-input"
+                  style={{width:'100%',fontSize:'12px'}}
                   value={form.status}
                   onChange={(e) => setForm({ ...form, status: e.target.value })}
                 >
@@ -197,22 +202,23 @@ export default function WorkOrderDetail() {
           </div>
 
           {/* Timestamps */}
-          <div className="win-panel-inset p-2 text-[10px] text-muted-foreground mb-2">
+          <div className="win-panel-inset" style={{padding:'4px',marginBottom:'4px',fontSize:'10px',color:'hsl(220,10%,40%)'}}>
             <div>CREATED: {moment(workOrder.created_date).format('MM/DD/YYYY HH:mm:ss')}</div>
             <div>LAST UPDATED: {moment(workOrder.updated_date).format('MM/DD/YYYY HH:mm:ss')}</div>
             {workOrder.completed_date && <div>COMPLETED: {moment(workOrder.completed_date).format('MM/DD/YYYY HH:mm:ss')}</div>}
           </div>
 
           {/* Actions */}
-          <div className="flex gap-2 no-print">
+          <div className="no-print" style={{display:'flex',gap:'4px'}}>
             <button
-              className="win-button flex items-center gap-1 !bg-primary !text-primary-foreground"
+              className="win-button"
+              style={{display:'flex',alignItems:'center',gap:'4px',background:'hsl(220,70%,35%)',color:'white'}}
               onClick={handleSave}
               disabled={updateMutation.isPending}
             >
               <Save className="w-3 h-3" /> {updateMutation.isPending ? 'SAVING...' : 'SAVE CHANGES'}
             </button>
-            <button className="win-button flex items-center gap-1" onClick={handlePrint}>
+            <button className="win-button" style={{display:'flex',alignItems:'center',gap:'4px'}} onClick={handlePrint}>
               <Printer className="w-3 h-3" /> PRINT RECEIPT
             </button>
           </div>
