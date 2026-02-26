@@ -20,12 +20,12 @@ export default function DashboardStats({ buses, workOrders, inspections }) {
   ];
 
   return (
-    <div className="dashboard-stats-wrapper" style={{display:'flex !important',width:'100% !important',height:'50px !important',margin:'0 !important',padding:'0 !important',gap:'0 !important',boxSizing:'border-box !important',flexShrink:0}}>
+    <div style={{display:'grid',gridTemplateColumns:'repeat(5, 1fr)',width:'100%',gap:'0',height:'50px'}}>
       {stats.map((stat, i) => (
-        <div key={i} className="dashboard-stat-item" style={{flex:'1 !important',minWidth:'0 !important',display:'flex !important',flexDirection:'column !important',alignItems:'center !important',justifyContent:'center !important',textAlign:'center !important',padding:'2px 4px !important',boxSizing:'border-box !important',height:'50px !important',background:'hsl(220,15%,96%) !important',borderTop:'2px solid hsl(220,15%,50%) !important',borderRight:'2px solid hsl(220,15%,96%) !important',borderBottom:'2px solid hsl(220,15%,96%) !important',borderLeft:'2px solid hsl(220,15%,50%) !important',flexShrink:'0 !important'}}>
-          <stat.icon style={{width:'12px !important',height:'12px !important',color:stat.color,margin:'0 !important',flexShrink:'0 !important',lineHeight:'1 !important'}} />
-          <div style={{fontSize:'11px !important',fontWeight:'bold !important',color:stat.color,lineHeight:'1 !important',margin:'0 !important',flexShrink:'0 !important'}}>{stat.value}</div>
-          <div style={{fontSize:'6px !important',fontWeight:'bold !important',whiteSpace:'nowrap !important',letterSpacing:'0.02em !important',lineHeight:'1 !important',margin:'0 !important'}}>{stat.label}</div>
+        <div key={i} style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',textAlign:'center',padding:'2px 4px',background:'hsl(220,15%,96%)',borderTop:'2px solid hsl(220,15%,50%)',borderRight:'2px solid hsl(220,15%,96%)',borderBottom:'2px solid hsl(220,15%,96%)',borderLeft:'2px solid hsl(220,15%,50%)'}}>
+          <stat.icon style={{width:'12px',height:'12px',color:stat.color,margin:'0'}} />
+          <div style={{fontSize:'11px',fontWeight:'bold',color:stat.color,lineHeight:'1',margin:'0'}}>{stat.value}</div>
+          <div style={{fontSize:'6px',fontWeight:'bold',whiteSpace:'nowrap',letterSpacing:'0.02em',lineHeight:'1',margin:'0'}}>{stat.label}</div>
         </div>
       ))}
     </div>
