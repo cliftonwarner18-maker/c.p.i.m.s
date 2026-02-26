@@ -2,25 +2,7 @@ import React from 'react';
 import { Bus, AlertTriangle, Wrench, ClipboardCheck } from 'lucide-react';
 
 const StatBox = ({ icon: Icon, value, label, color }) => (
-  <div style={{
-    flex: 1,
-    minWidth: 0,
-    textAlign: 'center',
-    padding: '2px 4px',
-    borderTop: '2px solid hsl(220,15%,50%)',
-    borderRight: '2px solid hsl(220,15%,96%)',
-    borderBottom: '2px solid hsl(220,15%,96%)',
-    borderLeft: '2px solid hsl(220,15%,50%)',
-    background: 'hsl(220,15%,96%)',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '1px',
-    height: '100%',
-    boxSizing: 'border-box',
-    overflow: 'hidden'
-  }}>
+  <div className="dashboard-stat-box">
     <Icon style={{ width: 12, height: 12, color, flexShrink: 0, margin: 0 }} />
     <div style={{ fontSize: '11px', fontWeight: 'bold', color, lineHeight: 1, flexShrink: 0, margin: 0 }}>
       {value}
