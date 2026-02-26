@@ -155,7 +155,7 @@ export default function NewWorkOrder() {
             <button
               type="button"
               className="win-button"
-              onClick={() => setForm({ reported_by: '', bus_number: '', issue_description: '' })}
+              onClick={() => setForm({ reported_by: '', bus_number: '', base_location: '', issue_description: '' })}
             >
               CLEAR FORM
             </button>
