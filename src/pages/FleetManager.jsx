@@ -34,7 +34,7 @@ export default function FleetManager() {
   });
 
   return (
-    <div className="space-y-2">
+    <div style={{display:'flex',flexDirection:'column',gap:'4px'}}>
       {showForm && (
         <BusForm
           bus={editingBus}
@@ -48,7 +48,7 @@ export default function FleetManager() {
       )}
 
       <WinWindow title="FLEET MANAGEMENT — VEHICLE DATABASE" icon="🚌">
-        <div className="flex flex-wrap gap-2 mb-2">
+        <div style={{display:'flex',flexWrap:'wrap',gap:'4px',marginBottom:'4px'}}>
           <button
             className="win-button flex items-center gap-1 text-[11px] !bg-primary !text-primary-foreground"
             onClick={() => { setEditingBus(null); setShowForm(true); }}
@@ -82,15 +82,15 @@ export default function FleetManager() {
           <table className="w-full text-[11px] font-mono">
             <thead>
               <tr className="bg-primary text-primary-foreground sticky top-0">
-                <th className="p-1 text-left">BUS#</th>
-                <th className="p-1 text-left">TYPE</th>
-                <th className="p-1 text-left">YEAR</th>
-                <th className="p-1 text-left">MAKE/MODEL</th>
-                <th className="p-1 text-left">LOCATION</th>
-                <th className="p-1 text-left">CAMERA</th>
-                <th className="p-1 text-left">STATUS</th>
-                <th className="p-1 text-left">INSP. DUE</th>
-                <th className="p-1 text-left">ACTIONS</th>
+                <th style={{padding:'2px 4px',textAlign:'left'}}>BUS#</th>
+                <th style={{padding:'2px 4px',textAlign:'left'}}>TYPE</th>
+                <th style={{padding:'2px 4px',textAlign:'left'}}>YEAR</th>
+                <th style={{padding:'2px 4px',textAlign:'left'}}>MAKE/MODEL</th>
+                <th style={{padding:'2px 4px',textAlign:'left'}}>LOCATION</th>
+                <th style={{padding:'2px 4px',textAlign:'left'}}>CAMERA</th>
+                <th style={{padding:'2px 4px',textAlign:'left'}}>STATUS</th>
+                <th style={{padding:'2px 4px',textAlign:'left'}}>INSP. DUE</th>
+                <th style={{padding:'2px 4px',textAlign:'left',minWidth:'80px'}}>ACTIONS</th>
               </tr>
             </thead>
             <tbody>
@@ -100,18 +100,18 @@ export default function FleetManager() {
               {filtered.map((b, i) => {
                 const overdue = b.next_inspection_due && new Date(b.next_inspection_due) < new Date();
                 return (
-                  <tr key={b.id} className={i % 2 === 0 ? 'bg-card' : 'bg-background'}>
-                    <td className="p-1 font-bold">{b.bus_number}</td>
-                    <td className="p-1">{b.bus_type}</td>
-                    <td className="p-1">{b.year}</td>
-                    <td className="p-1">{b.make} {b.model}</td>
-                    <td className="p-1">{b.base_location || '—'}</td>
-                    <td className="p-1">{b.camera_system_type || 'None'}</td>
-                    <td className="p-1 font-bold">{b.status || 'Active'}</td>
-                    <td className={`p-1 font-bold ${overdue ? 'status-cancelled' : ''}`}>
+                  <tr key={b.id} style={{backgroundColor: i % 2 === 0 ? 'hsl(220,15%,96%)' : 'hsl(220,20%,92%)'}}>
+                    <td style={{padding:'2px 4px',fontWeight:'bold'}}>{b.bus_number}</td>
+                    <td style={{padding:'2px 4px'}}>{b.bus_type}</td>
+                    <td style={{padding:'2px 4px'}}>{b.year}</td>
+                    <td style={{padding:'2px 4px'}}>{b.make} {b.model}</td>
+                    <td style={{padding:'2px 4px'}}>{b.base_location || '—'}</td>
+                    <td style={{padding:'2px 4px'}}>{b.camera_system_type || 'None'}</td>
+                    <td style={{padding:'2px 4px',fontWeight:'bold'}}>{b.status || 'Active'}</td>
+                    <td style={{padding:'2px 4px',fontWeight:'bold',color: overdue ? 'hsl(0,60%,45%)' : 'inherit'}}>
                       {b.next_inspection_due ? new Date(b.next_inspection_due).toLocaleDateString() : '—'}
                     </td>
-                    <td className="p-1 flex gap-1">
+                    <td style={{padding:'2px 4px',display:'flex',gap:'2px',whiteSpace:'nowrap'}}>
                       <Link
                         to={createPageUrl('BusProfile') + `?bus=${b.bus_number}`}
                         className="win-button !py-0 !px-1 text-[10px] no-underline text-foreground"
@@ -140,7 +140,7 @@ export default function FleetManager() {
             </tbody>
           </table>
         </div>
-        <div className="text-[10px] text-muted-foreground mt-1">
+        <div style={{fontSize:'10px',color:'hsl(220,10%,40%)',marginTop:'2px'}}>
           TOTAL FLEET: {filtered.length} VEHICLES
         </div>
       </WinWindow>
