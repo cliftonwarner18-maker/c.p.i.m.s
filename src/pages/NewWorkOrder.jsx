@@ -117,6 +117,23 @@ export default function NewWorkOrder() {
             />
           </div>
 
+          {/* Base Location */}
+          <div>
+            <label className="text-[11px] font-bold block mb-1">BASE LOCATION *</label>
+            <select
+              className="win-input w-full text-[12px]"
+              value={form.base_location}
+              onChange={(e) => setForm({ ...form, base_location: e.target.value })}
+              required
+            >
+              <option value="">-- SELECT LOCATION --</option>
+              <option value="Main">Main</option>
+              <option value="North">North</option>
+              <option value="Central">Central</option>
+              <option value="Sold">Sold</option>
+            </select>
+          </div>
+
           {/* Bus Selection */}
           <div>
             <label className="text-[11px] font-bold block mb-1">SELECT BUS # *</label>
