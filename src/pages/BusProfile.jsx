@@ -54,7 +54,7 @@ export default function BusProfile() {
           <ArrowLeft className="w-3 h-3" /> BACK TO FLEET
         </Link>
         <button className="win-button flex items-center gap-1 text-[11px]" onClick={() => window.print()}>
-          <Printer className="w-3 h-3" /> PRINT ASSET REPORT
+          <Printer className="w-3 h-3" /> PRINT FULL HISTORY REPORT
         </button>
       </div>
 
