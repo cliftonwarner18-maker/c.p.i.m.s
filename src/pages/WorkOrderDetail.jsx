@@ -103,9 +103,14 @@ export default function WorkOrderDetail() {
         <WinWindow title={`WORK ORDER: ${workOrder.order_number} — BUS #${workOrder.bus_number}`} icon="🔧">
           {/* Header */}
           <div className="win-panel-inset p-3 mb-2 text-center">
-            <div className="text-[10px] font-bold tracking-[0.2em]">STATE OF NORTH CAROLINA — DEPT. OF PUBLIC INSTRUCTION</div>
-            <div className="text-[13px] font-bold tracking-wider">MOBILE VEHICLE SURVEILLANCE — REPAIR WORK ORDER</div>
-            <div className="text-[11px] text-muted-foreground">OFFICIAL SERVICE RECORD</div>
+            <div className="flex items-center justify-center gap-3 mb-1">
+              <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/3e93469f9_state.jpg" className="w-10 h-10 object-contain" />
+              <div>
+                <div className="text-[10px] font-bold tracking-[0.2em]">STATE OF NORTH CAROLINA — DEPT. OF PUBLIC INSTRUCTION</div>
+                <div className="text-[13px] font-bold tracking-wider">MOBILE VEHICLE SURVEILLANCE — REPAIR WORK ORDER</div>
+                <div className="text-[11px] text-muted-foreground">OFFICIAL SERVICE RECORD</div>
+              </div>
+            </div>
           </div>
 
           {/* Original Complaint */}
