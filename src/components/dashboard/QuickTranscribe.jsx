@@ -5,14 +5,15 @@ import { X, Zap, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 import moment from 'moment';
 
 // Parses a tab-separated or comma-separated line like:
-// "454 North  need serial number  Safety  TE  9/25/2025"
+// "454 M  need serial number  Safety Vision  TE  9/25/2025"
+// Columns: Bus# & Lot | Issue | Camera Type | Tech | Date
 function parseLine(line) {
   // Try tab split first, then comma
   let parts = line.includes('\t') ? line.split('\t') : line.split(',');
-  parts = parts.map(p => p.trim()).filter(Boolean);
+  parts = parts.map(p => p.trim());
 
   // Need at least bus# and issue
-  if (parts.length < 2) return null;
+  if (parts.filter(Boolean).length < 2) return null;
 
   const busRaw = parts[0] || '';
   const issue = parts[1] || '';
@@ -20,8 +21,10 @@ function parseLine(line) {
   const tech = parts[3] || '';
   const dateRaw = parts[4] || '';
 
-  // Normalize bus number — strip direction words
-  const busNumber = busRaw.replace(/\b(north|south|east|west|lot [a-z]|lot[a-z])\b/gi, '').trim();
+  // Split bus number and lot — bus# is the leading number(s), lot is the rest
+  const busMatch = busRaw.match(/^(\d+)\s*(.*)?$/);
+  const busNumber = busMatch ? busMatch[1].trim() : busRaw.trim();
+  const lot = busMatch ? (busMatch[2] || '').trim() : '';
 
   // Normalize camera type
   let cameraType = '';
@@ -35,7 +38,7 @@ function parseLine(line) {
     if (d.isValid()) parsedDate = d.toISOString();
   }
 
-  return { busNumber, issue, cameraType, tech, dateRaw, parsedDate };
+  return { busNumber, lot, issue, cameraType, tech, dateRaw, parsedDate };
 }
 
 export default function QuickTranscribe({ onClose }) {
