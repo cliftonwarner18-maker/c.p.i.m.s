@@ -6,7 +6,8 @@ import AddHistoryForm from '../components/fleet/AddHistoryForm';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Printer, ArrowLeft, AlertTriangle, CheckCircle, Plus } from 'lucide-react';
+import { Printer, ArrowLeft, AlertTriangle, CheckCircle, Plus, Upload } from 'lucide-react';
+import BulkImportHistory from '../components/fleet/BulkImportHistory';
 
 export default function BusProfile() {
   const [showAddHistory, setShowAddHistory] = useState(false);
