@@ -70,7 +70,7 @@ export default function Dashboard() {
 
       {/* Quick Actions */}
       <div style={{display:'flex',gap:'4px',flexWrap:'wrap'}}>
-        <Link to={createPageUrl('NewWorkOrder')} className="win-button text-[12px] no-underline text-foreground" style={{display:'flex',alignItems:'center',gap:'4px'}}>
+        <Link to={createPageUrl('NewWorkOrder')} className="win-button text-[12px] no-underline" style={{display:'flex',alignItems:'center',gap:'4px',background:'hsl(140,70%,40%)',color:'white',fontWeight:'bold'}}>
           <PlusCircle className="w-4 h-4" /> NEW WORK ORDER
         </Link>
         <Link to={createPageUrl('FleetManager')} className="win-button text-[12px] no-underline text-foreground" style={{display:'flex',alignItems:'center',gap:'4px'}}>
