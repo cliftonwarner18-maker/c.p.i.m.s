@@ -82,7 +82,7 @@ export default function BusProfile() {
 
       {/* Header */}
       <div className="win-panel-inset p-3 text-center">
-        <div className="text-[10px] font-bold tracking-[0.2em]">STATE OF NORTH CAROLINA — DEPT. OF PUBLIC INSTRUCTION</div>
+        <div className="text-[10px] font-bold tracking-[0.2em]">NEW HANOVER COUNTY SCHOOLS</div>
         <div className="terminal-text text-2xl font-bold text-primary">BUS #{bus.bus_number} — VEHICLE PROFILE</div>
         <div className="text-[11px]">{bus.bus_type} | {bus.status}</div>
       </div>
