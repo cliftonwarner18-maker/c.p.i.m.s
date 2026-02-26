@@ -43,10 +43,10 @@ export default function Layout({ children, currentPageName }) {
             style={{
               display:'inline-flex',alignItems:'center',gap:4,
               padding:'2px 12px',fontSize:11,textDecoration:'none',
-              background: currentPageName === item.page ? 'hsl(220,70%,35%)' : 'hsl(220,15%,90%)',
-              color: currentPageName === item.page ? 'white' : 'inherit',
+              background: item.page === 'NewWorkOrder' ? 'hsl(140,70%,40%)' : currentPageName === item.page ? 'hsl(220,70%,35%)' : 'hsl(220,15%,90%)',
+              color: item.page === 'NewWorkOrder' || currentPageName === item.page ? 'white' : 'inherit',
               border:'2px solid',
-              borderColor: currentPageName === item.page
+              borderColor: item.page === 'NewWorkOrder' || currentPageName === item.page
                 ? 'hsl(220,15%,55%) hsl(220,15%,98%) hsl(220,15%,98%) hsl(220,15%,55%)'
                 : 'hsl(220,15%,98%) hsl(220,15%,55%) hsl(220,15%,55%) hsl(220,15%,98%)',
               fontFamily:"'Courier Prime',monospace",fontWeight:'bold',whiteSpace:'nowrap',flexShrink:0
