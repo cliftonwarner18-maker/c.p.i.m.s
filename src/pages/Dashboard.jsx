@@ -6,7 +6,7 @@ import DashboardStats from '../components/dashboard/DashboardStats';
 import ActiveWorkOrders from '../components/dashboard/ActiveWorkOrders';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Shield, AlertTriangle, PlusCircle, Bus, ClipboardCheck } from 'lucide-react';
+import { AlertTriangle, PlusCircle, Bus, ClipboardCheck } from 'lucide-react';
 import moment from 'moment';
 
 export default function Dashboard() {
