@@ -6,7 +6,7 @@ const StatBox = ({ icon: Icon, value, label, color }) => (
     flex: 1,
     minWidth: 0,
     textAlign: 'center',
-    padding: '2px 3px',
+    padding: '1px 2px',
     borderTop: '2px solid hsl(220,15%,50%)',
     borderRight: '2px solid hsl(220,15%,96%)',
     borderBottom: '2px solid hsl(220,15%,96%)',
@@ -16,13 +16,14 @@ const StatBox = ({ icon: Icon, value, label, color }) => (
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 0
+    gap: 0,
+    height: '100%'
   }}>
-    <Icon style={{ width: 14, height: 14, color, marginBottom: '1px' }} />
-    <div style={{ fontSize: '14px', fontWeight: 'bold', color, lineHeight: 1.1, marginBottom: '1px' }}>
+    <Icon style={{ width: 12, height: 12, color, flexShrink: 0 }} />
+    <div style={{ fontSize: '12px', fontWeight: 'bold', color, lineHeight: 1, flexShrink: 0 }}>
       {value}
     </div>
-    <div style={{ fontSize: '7px', fontWeight: 'bold', whiteSpace: 'nowrap', letterSpacing: '0.02em' }}>
+    <div style={{ fontSize: '6px', fontWeight: 'bold', whiteSpace: 'nowrap', letterSpacing: '0.02em', lineHeight: 1 }}>
       {label}
     </div>
   </div>
@@ -40,7 +41,7 @@ export default function DashboardStats({ buses, workOrders, inspections }) {
   }).length;
 
   return (
-    <div style={{ display: 'flex', width: '100%', gap: 0, height: '60px', margin: 0, padding: 0 }}>
+    <div style={{ display: 'flex', width: '100%', gap: 0, height: '48px', margin: 0, padding: 0 }}>
       <StatBox icon={Bus} value={totalBuses} label="TOTAL FLEET" color="hsl(220,70%,35%)" />
       <StatBox icon={AlertTriangle} value={pendingOrders} label="PENDING W/O" color="hsl(45,90%,40%)" />
       <StatBox icon={Wrench} value={inProgressOrders} label="IN PROGRESS" color="hsl(220,70%,45%)" />
