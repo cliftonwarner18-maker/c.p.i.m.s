@@ -10,6 +10,7 @@ import { Search, Filter, Trash2 } from 'lucide-react';
 export default function WorkOrders() {
   const [statusFilter, setStatusFilter] = useState('All');
   const [search, setSearch] = useState('');
+  const queryClient = useQueryClient();
 
   const { data: workOrders = [] } = useQuery({
     queryKey: ['workOrders'],
