@@ -308,8 +308,8 @@ export default function InspectionDetail() {
         <div className="flex justify-center py-2">
           <div className="border-4 border-foreground bg-white text-black font-mono" style={{ width: '3in', padding: '10px', fontSize: '10px' }}>
             <div className="flex items-center justify-center gap-2 border-b-2 border-black pb-1 mb-1 font-bold tracking-widest" style={{ fontSize: '7pt' }}>
-              <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/3e93469f9_state.jpg" style={{ width: '28px', height: '28px', objectFit: 'contain' }} />
-              <div>STATE OF NORTH CAROLINA<br />DEPT. OF PUBLIC INSTRUCTION</div>
+              <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/736f6667e_nhcs.png" style={{ width: '28px', height: '28px', objectFit: 'contain' }} />
+              <div>NEW HANOVER COUNTY SCHOOLS</div>
             </div>
             <div className="text-center font-bold tracking-wider mb-1" style={{ fontSize: '9pt' }}>
               CAMERA SURVEILLANCE INSPECTION
