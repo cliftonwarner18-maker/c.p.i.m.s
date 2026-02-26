@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { 
   LayoutDashboard, Bus, FileText, ClipboardCheck, 
-  PlusCircle, Database
+  PlusCircle, Database, Package2, HardDrive
 } from 'lucide-react';
 
 const navItems = [
@@ -12,6 +12,8 @@ const navItems = [
   { name: 'New W/O', icon: PlusCircle, page: 'NewWorkOrder' },
   { name: 'Work Orders', icon: FileText, page: 'WorkOrders' },
   { name: 'Inspections', icon: ClipboardCheck, page: 'Inspections' },
+  { name: 'Assets', icon: Package2, page: 'Assets' },
+  { name: 'H-Drive', icon: HardDrive, page: 'HdriveManagement' },
 ];
 
 export default function Layout({ children, currentPageName }) {
