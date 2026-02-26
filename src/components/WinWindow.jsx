@@ -21,7 +21,7 @@ export default function WinWindow({ title, children, className = "", icon = null
           </button>
         </div>
       </div>
-      <div className={noPadding ? '' : 'p-2'}>
+      <div className={noPadding ? 'p-0' : 'p-2'}>
         {children}
       </div>
     </div>
