@@ -117,13 +117,13 @@ export default function QuickTranscribe({ onClose }) {
             <>
               <div className="text-[11px] text-muted-foreground mb-2 win-border-inset p-2 bg-card">
                 <strong>FORMAT (tab or comma separated, one entry per line):</strong><br />
-                Bus # &amp; Lot &nbsp;|&nbsp; Issue &nbsp;|&nbsp; Camera Type &nbsp;|&nbsp; Tech &nbsp;|&nbsp; Date<br />
-                <span className="text-[10px] opacity-70">Example: 454 North	need serial number	Safety	TE	9/25/2025</span>
+                Bus # &amp; Lot (e.g. 454 M or 454 N) &nbsp;|&nbsp; Issue &nbsp;|&nbsp; Camera Type (Seon / Safety Vision) &nbsp;|&nbsp; Cam Tech &nbsp;|&nbsp; Date<br />
+                <span className="text-[10px] opacity-70">Example: 454 M&#9;need serial number&#9;Safety Vision&#9;TE&#9;9/25/2025</span>
               </div>
               <textarea
                 className="win-input w-full text-[11px] font-mono"
                 rows={10}
-                placeholder={"454 North\tneed serial number\tSafety\tTE\t9/25/2025\n512 South\tcamera offline\tSeon\tJD\t10/1/2025"}
+                placeholder={"454 M\tneed serial number\tSafety Vision\tTE\t9/25/2025\n512 N\tcamera offline\tSeon\tJD\t10/1/2025"}
                 value={rawText}
                 onChange={e => setRawText(e.target.value)}
               />
