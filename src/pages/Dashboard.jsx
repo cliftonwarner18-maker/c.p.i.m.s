@@ -74,7 +74,15 @@ export default function Dashboard() {
         <Link to={createPageUrl('Inspections')} className="win-button flex items-center gap-1 text-[12px] no-underline text-foreground">
           <ClipboardCheck className="w-4 h-4" /> INSPECTIONS
         </Link>
+        <button
+          className="win-button flex items-center gap-1 text-[12px] !bg-accent !text-accent-foreground font-bold"
+          onClick={() => setShowTranscribe(true)}
+        >
+          <Zap className="w-4 h-4" /> QUICK TRANSCRIBE
+        </button>
       </div>
+
+      {showTranscribe && <QuickTranscribe onClose={() => setShowTranscribe(false)} />}
 
       {/* Active Work Orders - full width */}
       <WinWindow title="ACTIVE WORK ORDERS — PENDING REPAIRS" icon="⚠️">
