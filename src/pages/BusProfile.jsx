@@ -7,11 +7,8 @@ import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Printer, ArrowLeft, AlertTriangle, CheckCircle, Plus, Upload } from 'lucide-react';
-import BulkImportHistory from '../components/fleet/BulkImportHistory';
-
 export default function BusProfile() {
   const [showAddHistory, setShowAddHistory] = useState(false);
-  const [showBulkImport, setShowBulkImport] = useState(false);
   const urlParams = new URLSearchParams(window.location.search);
   const busNumber = urlParams.get('bus');
 
