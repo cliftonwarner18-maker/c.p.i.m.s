@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import WinWindow from '../components/WinWindow';
+import LoadingScreen from '../components/LoadingScreen';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import moment from 'moment';
@@ -45,7 +46,9 @@ export default function WorkOrders() {
   };
 
   return (
-    <div style={{display:'flex',flexDirection:'column',gap:'4px'}}>
+    <>
+      <LoadingScreen isLoading={false} />
+      <div style={{display:'flex',flexDirection:'column',gap:'4px'}}>
        <WinWindow title="ALL WORK ORDERS — SURVEILLANCE REPAIR LOG" icon="📋">
          {/* Filters */}
          <div style={{display:'flex',flexWrap:'wrap',gap:'4px',marginBottom:'4px',alignItems:'center'}}>
@@ -127,7 +130,8 @@ export default function WorkOrders() {
         <div style={{fontSize:'10px',color:'hsl(220,10%,40%)',marginTop:'2px'}}>
           SHOWING {filtered.length} OF {workOrders.length} RECORDS
         </div>
-      </WinWindow>
-    </div>
-  );
-}
+        </WinWindow>
+        </div>
+        </>
+        );
+        }
