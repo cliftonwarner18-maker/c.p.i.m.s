@@ -5,21 +5,20 @@ const StatBox = ({ icon: Icon, value, label, color }) => (
   <div style={{
     flex: 1,
     textAlign: 'center',
-    padding: '10px 8px',
+    padding: '6px 4px',
     borderTop: '2px solid hsl(220,15%,50%)',
     borderRight: '2px solid hsl(220,15%,96%)',
     borderBottom: '2px solid hsl(220,15%,96%)',
     borderLeft: '2px solid hsl(220,15%,50%)',
-    background: 'hsl(220,15%,96%)',
-    minWidth: '80px'
+    background: 'hsl(220,15%,96%)'
   }}>
-    <div style={{ marginBottom: '4px' }}>
-      <Icon style={{ width: 16, height: 16, margin: '0 auto', color }} />
+    <div style={{ marginBottom: '2px' }}>
+      <Icon style={{ width: 14, height: 14, margin: '0 auto', color }} />
     </div>
-    <div style={{ fontSize: '16px', fontWeight: 'bold', color, lineHeight: 1 }}>
+    <div style={{ fontSize: '14px', fontWeight: 'bold', color, lineHeight: 1 }}>
       {value}
     </div>
-    <div style={{ fontSize: '8px', fontWeight: 'bold', marginTop: '3px', whiteSpace: 'nowrap' }}>
+    <div style={{ fontSize: '7px', fontWeight: 'bold', marginTop: '2px', whiteSpace: 'nowrap' }}>
       {label}
     </div>
   </div>
