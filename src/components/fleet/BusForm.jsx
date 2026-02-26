@@ -66,15 +66,15 @@ export default function BusForm({ bus, onClose, onSaved }) {
   const isPending = createMutation.isPending || updateMutation.isPending;
 
   const Field = ({ label, children }) => (
-    <div>
-      <label className="text-[10px] font-bold block mb-0.5">{label}</label>
+    <div style={{display:'flex',flexDirection:'column'}}>
+      <label style={{fontSize:'10px',fontWeight:'bold',display:'block',marginBottom:'2px'}}>{label}</label>
       {children}
     </div>
   );
 
   const Check = ({ label, checked, onChange }) => (
-    <label className="flex items-center gap-1 text-[11px] cursor-pointer">
-      <input type="checkbox" checked={checked} onChange={onChange} className="accent-primary" />
+    <label style={{display:'flex',alignItems:'center',gap:'4px',fontSize:'11px',cursor:'pointer'}}>
+      <input type="checkbox" checked={checked} onChange={onChange} style={{accentColor:'hsl(220,70%,35%)'}} />
       {label}
     </label>
   );
@@ -87,34 +87,34 @@ export default function BusForm({ bus, onClose, onSaved }) {
           <div style={{fontSize:'10px',fontWeight:'bold',background:'hsl(220,70%,35%)',color:'white',padding:'2px 4px',marginBottom:'2px'}}>▸ VEHICLE INFORMATION</div>
           <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(150px, 1fr))',gap:'4px'}}>
             <Field label="BUS # *">
-              <input className="win-input w-full text-[11px]" value={form.bus_number} onChange={e => setForm({...form, bus_number: e.target.value})} required />
-            </Field>
+               <input className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.bus_number} onChange={e => setForm({...form, bus_number: e.target.value})} required />
+             </Field>
             <Field label="BUS TYPE *">
-              <select className="win-input w-full text-[11px]" value={form.bus_type} onChange={e => setForm({...form, bus_type: e.target.value})} required>
+              <select className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.bus_type} onChange={e => setForm({...form, bus_type: e.target.value})} required>
                 <option value="School Bus">School Bus</option>
                 <option value="Activity Bus">Activity Bus</option>
               </select>
             </Field>
             <Field label="YEAR">
-              <input className="win-input w-full text-[11px]" value={form.year} onChange={e => setForm({...form, year: e.target.value})} />
+              <input className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.year} onChange={e => setForm({...form, year: e.target.value})} />
             </Field>
             <Field label="MAKE">
-              <input className="win-input w-full text-[11px]" value={form.make} onChange={e => setForm({...form, make: e.target.value})} />
+              <input className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.make} onChange={e => setForm({...form, make: e.target.value})} />
             </Field>
             <Field label="MODEL">
-              <input className="win-input w-full text-[11px]" value={form.model} onChange={e => setForm({...form, model: e.target.value})} />
+              <input className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.model} onChange={e => setForm({...form, model: e.target.value})} />
             </Field>
             <Field label="VIN">
-              <input className="win-input w-full text-[11px]" value={form.vin} onChange={e => setForm({...form, vin: e.target.value})} />
+              <input className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.vin} onChange={e => setForm({...form, vin: e.target.value})} />
             </Field>
             <Field label="ENGINE">
-              <input className="win-input w-full text-[11px]" value={form.engine} onChange={e => setForm({...form, engine: e.target.value})} />
+              <input className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.engine} onChange={e => setForm({...form, engine: e.target.value})} />
             </Field>
             <Field label="CAPACITY">
-              <input type="number" className="win-input w-full text-[11px]" value={form.passenger_capacity} onChange={e => setForm({...form, passenger_capacity: e.target.value})} />
+              <input type="number" className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.passenger_capacity} onChange={e => setForm({...form, passenger_capacity: e.target.value})} />
             </Field>
             <Field label="BASE LOCATION">
-              <select className="win-input w-full text-[11px]" value={form.base_location} onChange={e => setForm({...form, base_location: e.target.value})}>
+              <select className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.base_location} onChange={e => setForm({...form, base_location: e.target.value})}>
                 <option value="Main">Main</option>
                 <option value="North">North</option>
                 <option value="Central">Central</option>
@@ -122,16 +122,16 @@ export default function BusForm({ bus, onClose, onSaved }) {
               </select>
             </Field>
             <Field label="STATUS">
-              <select className="win-input w-full text-[11px]" value={form.status} onChange={e => setForm({...form, status: e.target.value})}>
+              <select className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.status} onChange={e => setForm({...form, status: e.target.value})}>
                 <option value="Active">Active</option>
                 <option value="Out of Service">Out of Service</option>
                 <option value="Retired">Retired</option>
               </select>
             </Field>
             <Field label="INSP. DUE">
-              <input type="date" className="win-input w-full text-[11px]" value={form.next_inspection_due} onChange={e => setForm({...form, next_inspection_due: e.target.value})} />
+              <input type="date" className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.next_inspection_due} onChange={e => setForm({...form, next_inspection_due: e.target.value})} />
             </Field>
-            <div className="flex items-end">
+            <div style={{display:'flex',alignItems:'flex-end'}}>
               <Check label="WHEELCHAIR" checked={form.wheelchair_accessible} onChange={e => setForm({...form, wheelchair_accessible: e.target.checked})} />
             </div>
           </div>
@@ -142,20 +142,20 @@ export default function BusForm({ bus, onClose, onSaved }) {
           <div style={{fontSize:'10px',fontWeight:'bold',background:'hsl(220,70%,35%)',color:'white',padding:'2px 4px',marginBottom:'2px'}}>▸ CAMERA SYSTEM</div>
           <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(150px, 1fr))',gap:'4px'}}>
             <Field label="CAMERA SYSTEM">
-              <select className="win-input w-full text-[11px]" value={form.camera_system_type} onChange={e => setForm({...form, camera_system_type: e.target.value})}>
+              <select className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.camera_system_type} onChange={e => setForm({...form, camera_system_type: e.target.value})}>
                 <option value="Seon">Seon</option>
                 <option value="Safety Vision">Safety Vision</option>
                 <option value="None">None</option>
               </select>
             </Field>
             <Field label="SERIAL #">
-              <input className="win-input w-full text-[11px]" value={form.camera_serial_number} onChange={e => setForm({...form, camera_serial_number: e.target.value})} />
+              <input className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.camera_serial_number} onChange={e => setForm({...form, camera_serial_number: e.target.value})} />
             </Field>
             <Field label="MODEL #">
-              <input className="win-input w-full text-[11px]" value={form.camera_model_number} onChange={e => setForm({...form, camera_model_number: e.target.value})} />
+              <input className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.camera_model_number} onChange={e => setForm({...form, camera_model_number: e.target.value})} />
             </Field>
             <Field label="DVR ASSET #">
-              <input className="win-input w-full text-[11px]" value={form.asset_number} onChange={e => setForm({...form, asset_number: e.target.value})} />
+              <input className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.asset_number} onChange={e => setForm({...form, asset_number: e.target.value})} />
             </Field>
           </div>
         </div>
@@ -170,10 +170,10 @@ export default function BusForm({ bus, onClose, onSaved }) {
           </div>
           <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(150px, 1fr))',gap:'4px'}}>
             <Field label="DASH CAM SID#">
-              <input className="win-input w-full text-[11px]" value={form.dash_cam_sid} onChange={e => setForm({...form, dash_cam_sid: e.target.value})} />
+              <input className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.dash_cam_sid} onChange={e => setForm({...form, dash_cam_sid: e.target.value})} />
             </Field>
             <Field label="GATEWAY SID#">
-              <input className="win-input w-full text-[11px]" value={form.gateway_sid} onChange={e => setForm({...form, gateway_sid: e.target.value})} />
+              <input className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.gateway_sid} onChange={e => setForm({...form, gateway_sid: e.target.value})} />
             </Field>
           </div>
         </div>
@@ -192,12 +192,12 @@ export default function BusForm({ bus, onClose, onSaved }) {
         </div>
 
         <div style={{display:'flex',gap:'4px'}}>
-          <button type="submit" className="win-button flex items-center gap-1 !bg-primary !text-primary-foreground" disabled={isPending}>
-            <Save className="w-3 h-3" /> {isPending ? 'SAVING...' : 'SAVE VEHICLE'}
-          </button>
-          <button type="button" className="win-button flex items-center gap-1" onClick={onClose}>
-            <X className="w-3 h-3" /> CANCEL
-          </button>
+          <button type="submit" className="win-button" style={{display:'flex',alignItems:'center',gap:'4px',background:'hsl(220,70%,35%)',color:'white'}} disabled={isPending}>
+             <Save className="w-3 h-3" /> {isPending ? 'SAVING...' : 'SAVE VEHICLE'}
+           </button>
+           <button type="button" className="win-button" style={{display:'flex',alignItems:'center',gap:'4px'}} onClick={onClose}>
+             <X className="w-3 h-3" /> CANCEL
+           </button>
         </div>
       </form>
     </WinWindow>
