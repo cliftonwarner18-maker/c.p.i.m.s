@@ -145,6 +145,7 @@ export default function QuickTranscribe({ onClose }) {
                     <tr className="bg-primary text-primary-foreground sticky top-0">
                       <th className="p-1">✓</th>
                       <th className="p-1 text-left">BUS#</th>
+                      <th className="p-1 text-left">LOT</th>
                       <th className="p-1 text-left">ISSUE</th>
                       <th className="p-1 text-left">CAM TYPE</th>
                       <th className="p-1 text-left">TECH</th>
