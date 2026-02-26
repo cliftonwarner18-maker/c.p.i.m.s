@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { 
   LayoutDashboard, Bus, FileText, ClipboardCheck, 
-  PlusCircle, Database, Shield 
+  PlusCircle, Database
 } from 'lucide-react';
 
 const navItems = [
