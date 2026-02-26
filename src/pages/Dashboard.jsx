@@ -49,9 +49,9 @@ export default function Dashboard() {
   });
 
   return (
-    <div className="space-y-2">
+    <div style={{display:'flex',flexDirection:'column',gap:'4px'}}>
       {/* Header Banner */}
-      <div className="win-panel-inset p-2 flex items-center justify-center gap-3">
+      <div className="win-panel-inset flex items-center justify-center gap-3" style={{padding:'4px',boxSizing:'border-box'}}>
         <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/736f6667e_nhcs.png" style={{width:36,height:36,objectFit:'contain',flexShrink:0}} alt="NHCS Logo" />
         <div className="text-center leading-tight">
           <div className="text-[9px] font-bold tracking-[0.2em] text-muted-foreground uppercase">New Hanover County Schools</div>
@@ -62,13 +62,13 @@ export default function Dashboard() {
       </div>
 
       {/* Stats */}
-      <div className="win-panel" style={{padding:0}}>
+      <div className="win-panel" style={{padding:0,margin:0}}>
         <div className="win-titlebar">📊 SYSTEM STATUS OVERVIEW</div>
         <DashboardStats buses={buses} workOrders={workOrders} inspections={inspections} />
       </div>
 
       {/* Quick Actions */}
-      <div className="flex gap-2 flex-wrap">
+      <div style={{display:'flex',gap:'4px',flexWrap:'wrap'}}>
         <Link to={createPageUrl('NewWorkOrder')} className="win-button flex items-center gap-1 text-[12px] no-underline text-foreground">
           <PlusCircle className="w-4 h-4" /> NEW WORK ORDER
         </Link>
@@ -139,7 +139,7 @@ export default function Dashboard() {
       </WinWindow>
 
       {/* System Log Footer */}
-      <div className="win-panel-inset p-2 text-[10px] font-mono text-muted-foreground">
+      <div className="win-panel-inset text-[10px] font-mono text-muted-foreground" style={{padding:'4px',margin:0,boxSizing:'border-box'}}>
         <div>&gt; SYSTEM INITIALIZED — NHCS MOBILE VEHICLE SURVEILLANCE INSPECTION SYSTEM</div>
         <div>&gt; DATABASE CONNECTION: <span className="status-completed font-bold">ONLINE</span></div>
         <div>&gt; TOTAL RECORDS: {buses.length} VEHICLES | {workOrders.length} WORK ORDERS | {inspections.length} INSPECTIONS</div>
