@@ -199,7 +199,7 @@ export default function InspectionDetail() {
 
           ${inspection.inspection_notes ? `<div style="font-size:6.5pt; margin-top:3px; text-align:left; color:#444; border-top:1px dotted #ccc; padding-top:3px;">NOTE: ${inspection.inspection_notes}</div>` : ''}
 
-          <div class="sticker-footer">NC DPI — Mobile Vehicle Surveillance System</div>
+          <div class="sticker-footer">NHCS — Mobile Vehicle Surveillance System</div>
         </div>
         <script>window.onload = function() { window.print(); }</script>
       </body>
