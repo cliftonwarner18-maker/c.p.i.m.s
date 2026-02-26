@@ -28,6 +28,8 @@ export default function BusProfile() {
     queryFn: () => base44.entities.Inspection.list('-created_date'),
   });
 
+  const queryClient = useQueryClient();
+
   const { data: busHistory = [] } = useQuery({
     queryKey: ['busHistory', busNumber],
     queryFn: () => base44.entities.BusHistory.filter({ bus_number: busNumber }, '-start_time'),
@@ -38,8 +40,6 @@ export default function BusProfile() {
     mutationFn: (id) => base44.entities.BusHistory.delete(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['busHistory', busNumber] }),
   });
-
-  const queryClient = useQueryClient();
 
   const bus = buses.find(b => b.bus_number === busNumber);
   const busWorkOrders = workOrders.filter(w => w.bus_number === busNumber);
