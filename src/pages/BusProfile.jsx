@@ -254,6 +254,15 @@ export default function BusProfile() {
                   <td className="p-1 font-bold">{formatElapsed(h.elapsed_minutes)}</td>
                   <td className="p-1">{h.technician}</td>
                   <td className="p-1">{h.description}</td>
+                  <td className="p-1 no-print">
+                    <button
+                      className="win-button !py-0 !px-1 text-[10px]"
+                      onClick={() => { if (confirm('Delete this entry?')) deleteHistory(h.id); }}
+                      title="Delete"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
