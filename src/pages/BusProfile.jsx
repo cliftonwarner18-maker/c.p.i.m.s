@@ -280,6 +280,15 @@ export default function BusProfile() {
           <div className="win-panel-inset p-2 text-[11px]">{bus.notes}</div>
         </WinWindow>
       )}
-    </div>
-  );
-}
+
+      {/* Legacy Upload */}
+      {bus.legacy_upload && (
+        <WinWindow title="LEGACY UPLOAD — AUDIT/REPAIR LOG" icon="📄">
+          <div className="win-panel-inset p-2 text-[11px] font-mono whitespace-pre-wrap break-words max-h-80 overflow-auto">
+            {bus.legacy_upload}
+          </div>
+        </WinWindow>
+      )}
+      </div>
+      );
+      }
