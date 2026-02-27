@@ -262,6 +262,18 @@ export default function DecommissionedAssetsSection() {
                   <option>Salvaged</option>
                 </select>
               </div>
+              <div style={{display:'flex',alignItems:'center',gap:'6px',padding:'6px',background:'hsl(45,90%,95%)',border:'1px solid hsl(45,90%,60%)'}}>
+                <input
+                  type="checkbox"
+                  id="out_of_inventory_check"
+                  checked={!!formData.out_of_inventory}
+                  onChange={(e) => setFormData({...formData, out_of_inventory: e.target.checked})}
+                  style={{width:'14px',height:'14px',cursor:'pointer'}}
+                />
+                <label htmlFor="out_of_inventory_check" style={{cursor:'pointer',fontWeight:'bold',color:'hsl(30,80%,30%)'}}>
+                  ✓ Device Out of Inventory — Sold/Auctioned, No Longer a Bus Garage Asset
+                </label>
+              </div>
               <div style={{display:'flex',gap:'4px',justifyContent:'flex-end'}}>
                 <button type="button" className="win-button" onClick={resetForm} style={{fontSize:'11px'}}>Cancel</button>
                 <button type="submit" className="win-button" style={{background:'hsl(220,70%,35%)',color:'white',fontSize:'11px'}}>Save</button>
