@@ -61,6 +61,7 @@ export default function HdriveManagement() {
   const [userFilter, setUserFilter] = useState('');
   const [locationFilter, setLocationFilter] = useState('');
   const [seizedFilter, setSeizedFilter] = useState(false);
+  const [isCleaningUp, setIsCleaningUp] = useState(false);
   const [isExportingList, setIsExportingList] = useState(false);
   const [auditSearch, setAuditSearch] = useState('');
   const [auditUserFilter, setAuditUserFilter] = useState('');
@@ -145,6 +146,20 @@ export default function HdriveManagement() {
       setShowBulkImport(false);
     },
   });
+
+  const handleCleanupDuplicates = async () => {
+    if (!window.confirm('Delete duplicate H-drives (keeping most detailed records)?\n\nThis cannot be undone.')) return;
+    setIsCleaningUp(true);
+    try {
+      const response = await base44.functions.invoke('cleanupDuplicates', { entityName: 'HDrive' });
+      queryClient.invalidateQueries({ queryKey: ['hdrives'] });
+      alert(`Cleanup complete!\n${response.data.message}`);
+    } catch (error) {
+      alert(`Error during cleanup: ${error.message}`);
+    } finally {
+      setIsCleaningUp(false);
+    }
+  };
 
   const filtered = drives.filter(d => {
     const matchSearch = !search ||
@@ -506,6 +521,10 @@ export default function HdriveManagement() {
           <button className="win-button" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', background: 'hsl(140,70%,40%)', color: 'white' }}
             onClick={() => setShowBulkImport(true)}>
             <Upload className="w-3 h-3" /> BULK IMPORT
+          </button>
+          <button className="win-button" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', background: 'hsl(0,65%,45%)', color: 'white' }}
+            onClick={handleCleanupDuplicates} disabled={isCleaningUp}>
+            🧹 {isCleaningUp ? 'CLEANING...' : 'CLEAN UP DUPLICATES'}
           </button>
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginLeft: 'auto', flexWrap: 'wrap' }}>
             <Search className="w-3 h-3" />
