@@ -189,6 +189,12 @@ export default function HdriveManagement() {
   return (
     <>
       <LoadingScreen isLoading={isLoading} message="LOADING H-DRIVE INVENTORY..." />
+      <DeleteConfirmModal
+        isOpen={!!deleteTarget}
+        label={deleteTarget ? `H-Drive S/N: ${deleteTarget.serial_number}` : ''}
+        onConfirm={() => { deleteMutation.mutate(deleteTarget.id); setDeleteTarget(null); }}
+        onCancel={() => setDeleteTarget(null)}
+      />
       <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
 
         {/* Add Drive Form */}
@@ -479,7 +485,7 @@ export default function HdriveManagement() {
                           <Pencil className="w-3 h-3" /> EDIT
                         </button>
                         <button className="win-button" style={{ padding: '0 2px', fontSize: '10px', display: 'inline-flex' }}
-                          onClick={() => { if (confirm('Delete this H-Drive?')) deleteMutation.mutate(d.id); }} title="Delete">
+                          onClick={() => setDeleteTarget(d)} title="Delete">
                           <Trash2 className="w-3 h-3" />
                         </button>
                       </td>
