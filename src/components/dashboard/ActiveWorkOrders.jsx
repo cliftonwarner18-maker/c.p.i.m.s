@@ -6,9 +6,31 @@ import { base44 } from '@/api/base44Client';
 import { FileDown } from 'lucide-react';
 
 export default function ActiveWorkOrders({ workOrders }) {
+  const [isExporting, setIsExporting] = useState(false);
+  
   const active = workOrders
     .filter(w => w.status === 'Pending' || w.status === 'In Progress')
     .sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
+
+  const handleExport = async () => {
+    setIsExporting(true);
+    try {
+      const { data } = await base44.functions.invoke('exportActiveWorkOrders', {});
+      const blob = new Blob([data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'active-work-orders.pdf';
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      a.remove();
+    } catch (error) {
+      alert('Error exporting PDF: ' + error.message);
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   const statusClass = (s) => {
     if (s === 'Pending') return 'status-pending';
