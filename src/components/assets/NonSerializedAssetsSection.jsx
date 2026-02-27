@@ -27,7 +27,10 @@ export default function NonSerializedAssetsSection() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: (data) => base44.entities.NonSerializedAsset.update(editingAsset.id, data),
+    mutationFn: (data) => {
+      const id = data.id || editingAsset?.id;
+      return base44.entities.NonSerializedAsset.update(id, data);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['nonSerializedAssets'] });
       resetForm();
