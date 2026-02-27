@@ -68,6 +68,9 @@ export default function Layout({ children, currentPageName }) {
         <div className="win-border-inset px-2 bg-card flex-1">
           NHCS — SCHOOL BUS SURVEILLANCE MANAGEMENT SYSTEM
         </div>
+        <div className="win-border-inset px-2 bg-card" style={{fontStyle:'italic',color:'hsl(220,10%,45%)',fontSize:'8px',letterSpacing:'0.03em'}}>
+          Powered by Base44 · Developed by Clifton Warner M.
+        </div>
         <div className="win-border-inset px-2 bg-card">
           {new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}
         </div>
