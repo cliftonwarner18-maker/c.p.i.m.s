@@ -65,6 +65,12 @@ export default function AdminPanel() {
   return (
     <>
       <LoadingScreen isLoading={isLoading} message="LOADING ADMIN PANEL..." />
+      <DeleteConfirmModal
+        isOpen={!!deleteTarget}
+        label={deleteTarget ? `user "${deleteTarget.name}"` : ''}
+        onConfirm={() => { deleteMutation.mutate(deleteTarget.id); setDeleteTarget(null); }}
+        onCancel={() => setDeleteTarget(null)}
+      />
       <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
 
         {/* User Form */}
@@ -138,7 +144,7 @@ export default function AdminPanel() {
                       </button>
                       <button className="win-button"
                         style={{ padding: '0 2px', fontSize: '10px', display: 'inline-flex', alignItems: 'center' }}
-                        onClick={() => { if (confirm(`Delete user "${u.name}"?`)) deleteMutation.mutate(u.id); }} title="Delete">
+                        onClick={() => setDeleteTarget(u)} title="Delete">
                         <Trash2 className="w-3 h-3" />
                       </button>
                     </td>
