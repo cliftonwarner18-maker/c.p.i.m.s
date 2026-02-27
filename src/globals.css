@@ -154,6 +154,14 @@ table thead {
   position: sticky !important;
   top: 0 !important;
   z-index: 10 !important;
+  background-color: inherit !important;
+}
+
+/* Fix overflow containers to allow sticky to work */
+.overflow-auto table thead tr {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 10 !important;
 }
 
 /* Scrollbar styling */
