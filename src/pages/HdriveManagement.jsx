@@ -106,7 +106,7 @@ export default function HdriveManagement() {
       queryClient.invalidateQueries({ queryKey: ['custody'] });
       setShowTransferForm(false);
       setSelectedDrive(null);
-      setTransferData({ transferred_to: '', new_location: '', reason: '' });
+      setTransferData({ transferred_to: '', fleet_location: '', sub_location: '', reason: '' });
     },
   });
 
