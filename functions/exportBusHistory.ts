@@ -51,10 +51,12 @@ Deno.serve(async (req) => {
         yPos = 10;
       }
       doc.setFont(undefined, 'bold');
+      doc.setFontSize(10);
       doc.text(label + ':', 10, yPos);
       doc.setFont(undefined, 'normal');
-      doc.text(String(value || '—'), 50, yPos);
-      yPos += 4;
+      const wrapped = doc.splitTextToSize(String(value || '—'), pageWidth - 60);
+      doc.text(wrapped, 50, yPos);
+      yPos += Math.max(4, wrapped.length * 3);
     };
 
     // Header
