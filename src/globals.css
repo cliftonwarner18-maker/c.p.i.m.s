@@ -150,18 +150,17 @@
 .status-cancelled { color: hsl(0, 60%, 45%); }
 
 /* Table header sticky - PERMANENT FIX */
-table thead {
+table thead,
+table thead tr {
   position: sticky !important;
   top: 0 !important;
   z-index: 10 !important;
   background-color: inherit !important;
 }
 
-/* Fix overflow containers to allow sticky to work */
-.overflow-auto table thead tr {
-  position: sticky !important;
-  top: 0 !important;
-  z-index: 10 !important;
+table thead th {
+  background-color: inherit !important;
+  position: relative !important;
 }
 
 /* Scrollbar styling */
