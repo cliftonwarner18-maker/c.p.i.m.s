@@ -235,9 +235,14 @@ export default function HdriveManagement() {
                 {filtered.length === 0 && (
                   <tr><td colSpan={5} style={{ padding: '16px', textAlign: 'center', color: 'hsl(220,10%,40%)' }}>NO H-DRIVES FOUND</td></tr>
                 )}
-                {filtered.map((d, i) => (
-                  <tr key={d.id} style={{ backgroundColor: i % 2 === 0 ? 'hsl(220,15%,96%)' : 'hsl(220,20%,92%)', height: '24px', lineHeight: '24px' }}>
-                    <td style={{ padding: '0 4px', fontWeight: 'bold' }}>{d.serial_number}</td>
+                {filtered.map((d, i) => {
+                  const dup = isDuplicate(d);
+                  return (
+                  <tr key={d.id} style={{ backgroundColor: dup ? 'hsl(0,80%,92%)' : i % 2 === 0 ? 'hsl(220,15%,96%)' : 'hsl(220,20%,92%)', height: '24px', lineHeight: '24px', outline: dup ? '2px solid hsl(0,72%,45%)' : 'none' }}>
+                    <td style={{ padding: '0 4px', fontWeight: 'bold' }}>
+                      {dup && <span style={{ background: 'hsl(0,72%,45%)', color: 'white', fontSize: '8px', padding: '0 3px', marginRight: '4px', fontWeight: 'bold' }}>⚠ DUPLICATE</span>}
+                      {d.serial_number}
+                    </td>
                     <td style={{ padding: '0 4px' }}>{d.make} / {d.model}</td>
                     <td style={{ padding: '0 4px' }}>{d.current_user || '—'}</td>
                     <td style={{ padding: '0 4px', fontSize: '9px' }}>{d.current_location || '—'}</td>
@@ -252,7 +257,8 @@ export default function HdriveManagement() {
                       </button>
                     </td>
                   </tr>
-                ))}
+                  );
+                })}
               </tbody>
             </table>
           </div>

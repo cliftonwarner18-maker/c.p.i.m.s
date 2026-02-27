@@ -160,9 +160,13 @@ export default function FleetManager() {
               )}
               {filtered.map((b, i) => {
                 const overdue = b.next_inspection_due && new Date(b.next_inspection_due) < new Date();
+                const dup = isBusDuplicate(b);
                 return (
-                  <tr key={b.id} style={{backgroundColor: i % 2 === 0 ? 'hsl(220,15%,96%)' : 'hsl(220,20%,92%)',height:'24px',lineHeight:'24px'}}>
-                    <td style={{padding:'0 4px',fontWeight:'bold'}}>{b.bus_number}</td>
+                  <tr key={b.id} style={{backgroundColor: dup ? 'hsl(0,80%,92%)' : i % 2 === 0 ? 'hsl(220,15%,96%)' : 'hsl(220,20%,92%)',height:'24px',lineHeight:'24px', outline: dup ? '2px solid hsl(0,72%,45%)' : 'none'}}>
+                    <td style={{padding:'0 4px',fontWeight:'bold'}}>
+                      {dup && <span style={{background:'hsl(0,72%,45%)',color:'white',fontSize:'8px',padding:'0 3px',marginRight:'4px',fontWeight:'bold'}}>⚠ DUPLICATE</span>}
+                      {b.bus_number}
+                    </td>
                     <td style={{padding:'0 4px'}}>{b.bus_type}</td>
                     <td style={{padding:'0 4px'}}>{b.year}</td>
                     <td style={{padding:'0 4px'}}>{b.make} {b.model}</td>

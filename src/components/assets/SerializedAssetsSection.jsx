@@ -251,9 +251,14 @@ export default function SerializedAssetsSection() {
               </tr>
             </thead>
             <tbody>
-              {assets.map(asset => (
-                <tr key={asset.id} style={{borderBottom:'1px solid hsl(220,15%,85%)'}}>
-                  <td style={{padding:'4px'}}>{asset.asset_number}</td>
+              {assets.map(asset => {
+                const dup = isAssetDuplicate(asset);
+                return (
+                <tr key={asset.id} style={{borderBottom:'1px solid hsl(220,15%,85%)', backgroundColor: dup ? 'hsl(0,80%,92%)' : '', outline: dup ? '2px solid hsl(0,72%,45%)' : 'none'}}>
+                  <td style={{padding:'4px'}}>
+                    {dup && <span style={{background:'hsl(0,72%,45%)',color:'white',fontSize:'8px',padding:'0 3px',marginRight:'4px',fontWeight:'bold'}}>⚠ DUP</span>}
+                    {asset.asset_number}
+                  </td>
                   <td style={{padding:'4px'}}>{asset.brand}</td>
                   <td style={{padding:'4px'}}>{asset.model}</td>
                   <td style={{padding:'4px'}}>{asset.serial_number}</td>
