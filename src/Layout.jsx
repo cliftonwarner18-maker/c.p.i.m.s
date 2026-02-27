@@ -60,7 +60,7 @@ export default function Layout({ children, currentPageName }) {
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-auto" style={{fontFamily:"'Courier Prime',monospace", padding: '0'}}>
+      <div className="flex-1 overflow-auto" style={{fontFamily:"'Courier Prime',monospace", padding: '0', width: '100%', boxSizing: 'border-box'}}>
         {children}
       </div>
 
