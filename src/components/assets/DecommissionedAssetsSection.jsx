@@ -305,6 +305,13 @@ export default function DecommissionedAssetsSection() {
                   <td style={{padding:'4px'}}>{asset.make} {asset.model}</td>
                   <td style={{padding:'4px'}}>{asset.serial_number || '-'}</td>
                   <td style={{padding:'4px'}}>{asset.decom_status}</td>
+                  <td style={{padding:'4px',textAlign:'center'}}>
+                    {asset.out_of_inventory ? (
+                      <span style={{color:'hsl(0,72%,45%)',fontWeight:'bold',fontSize:'10px'}}>✓ OUT</span>
+                    ) : (
+                      <span style={{color:'hsl(220,15%,60%)',fontSize:'10px'}}>—</span>
+                    )}
+                  </td>
                   <td style={{padding:'4px',textAlign:'center',display:'flex',gap:'4px',justifyContent:'center'}}>
                     <button onClick={() => handleEdit(asset)} style={{background:'none',border:'none',cursor:'pointer',color:'hsl(220,70%,35%)',fontSize:'10px'}}>
                       <Edit2 style={{width:12,height:12}} />
