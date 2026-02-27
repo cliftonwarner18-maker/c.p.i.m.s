@@ -366,12 +366,26 @@ export default function HdriveManagement() {
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', alignItems: 'flex-end' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
               <label style={{ fontSize: '10px', fontWeight: 'bold' }}>SEARCH (serial / make / model):</label>
-              <input className="win-input" style={{ fontSize: '11px', width: '200px' }} placeholder="e.g. SEON, E050..."
+              <input className="win-input" style={{ fontSize: '11px', width: '180px' }} placeholder="e.g. SEON, E050..."
                 value={auditSearch} onChange={(e) => setAuditSearch(e.target.value)} />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-              <label style={{ fontSize: '10px', fontWeight: 'bold' }}>FILTER BY CURRENT USER:</label>
-              <UserDropdown value={auditUserFilter} onChange={setAuditUserFilter} placeholder="All users" style={{ width: '160px' }} />
+              <label style={{ fontSize: '10px', fontWeight: 'bold' }}>FILTER BY USER:</label>
+              <UserDropdown value={auditUserFilter} onChange={setAuditUserFilter} placeholder="All users" style={{ width: '150px' }} />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+              <label style={{ fontSize: '10px', fontWeight: 'bold' }}>FILTER BY LOCATION:</label>
+              <select className="win-input" style={{ fontSize: '11px', width: '140px', fontFamily: "'Courier Prime', monospace" }} value={auditLocationFilter} onChange={e => setAuditLocationFilter(e.target.value)}>
+                <option value="">All Locations</option>
+                {FLEET_LOCATIONS.map(l => <option key={l} value={l}>{l}</option>)}
+              </select>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', justifyContent: 'flex-end' }}>
+              <label style={{ fontSize: '10px', fontWeight: 'bold', visibility: 'hidden' }}>_</label>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', height: '28px' }}>
+                <input type="checkbox" id="auditSeized" checked={!!auditSiezedOnly} onChange={e => setAuditSeizedOnly(e.target.checked)} />
+                <label htmlFor="auditSeized" style={{ fontSize: '11px', fontWeight: 'bold', color: auditSiezedOnly ? 'hsl(0,65%,40%)' : 'inherit', whiteSpace: 'nowrap' }}>⚠️ SEIZED ONLY</label>
+              </div>
             </div>
             <button className="win-button"
               style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', background: isExporting ? 'hsl(220,15%,75%)' : 'hsl(0,65%,40%)', color: 'white', alignSelf: 'flex-end' }}
