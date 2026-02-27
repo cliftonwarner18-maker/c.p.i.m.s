@@ -152,12 +152,24 @@ Deno.serve(async (req) => {
 
       const custodyCount = allCustody.filter(c => c.hdrive_serial === drive.serial_number).length;
 
+      // Highlight seized rows
+      if (drive.seized) {
+        doc.setFillColor(255, 230, 180);
+        doc.rect(margin, y, pageWidth - margin * 2, rowH, 'F');
+        doc.setDrawColor(200, 100, 0);
+        doc.setLineWidth(0.4);
+        doc.rect(margin, y, pageWidth - margin * 2, rowH);
+        doc.setDrawColor(180, 180, 200);
+        doc.setLineWidth(0.2);
+      }
+
       doc.setFont('courier', 'normal');
       doc.setFontSize(7.5);
       const textY = y + 5.5;
       doc.text(String(idx + 1), cols.num.x + 1, textY);
       doc.setFont('courier', 'bold');
-      doc.text((drive.serial_number || '-').substring(0, 18), cols.serial.x + 1, textY);
+      const serialLabel = (drive.seized ? '[SEIZED] ' : '') + (drive.serial_number || '-');
+      doc.text(serialLabel.substring(0, 20), cols.serial.x + 1, textY);
       doc.setFont('courier', 'normal');
       doc.text((`${drive.make || ''} ${drive.model || ''}`).trim().substring(0, 18) || '-', cols.make.x + 1, textY);
       doc.text((drive.current_user || '-').substring(0, 20), cols.user.x + 1, textY);
