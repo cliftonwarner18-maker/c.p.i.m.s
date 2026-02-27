@@ -74,7 +74,7 @@ Deno.serve(async (req) => {
       
       // Add delay between batches to avoid rate limiting
       if (i + batchSize < updates.length) {
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise(resolve => setTimeout(resolve, 2000));
       }
     }
 
