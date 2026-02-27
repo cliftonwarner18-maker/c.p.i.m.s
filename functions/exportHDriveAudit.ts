@@ -92,7 +92,7 @@ Deno.serve(async (req) => {
     doc.text('CURRENT LOCATION', cols.loc.x + 1,  y + 4);
     doc.text('LOG#', cols.hist.x + 1, y + 4);
     doc.text('DATE  (MM/DD/YYYY)',  cols.date.x + 1, y + 4);
-    doc.text('[ ✓ ]', cols.chk.x + 1, y + 4);
+      doc.text('[CHK]', cols.chk.x + 1, y + 4);
     doc.text('INITIALS', cols.init.x + 1, y + 4);
     doc.setTextColor(0, 0, 0);
     y += 7;
