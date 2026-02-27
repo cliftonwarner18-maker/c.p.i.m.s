@@ -234,9 +234,77 @@ export default function HdriveManagement() {
                 <label style={{ fontSize: '11px', fontWeight: 'bold' }}>CURRENT USER:</label>
                 <UserDropdown value={editData.current_user} onChange={v => setEditData({...editData, current_user: v})} />
               </div>
+
+              {/* Seized Section */}
+              <div style={{ marginTop: '4px', border: '2px solid', borderColor: editData.seized ? 'hsl(0,65%,40%)' : 'hsl(220,15%,70%)', padding: '6px', background: editData.seized ? 'hsl(0,80%,97%)' : 'transparent' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: editData.seized ? '6px' : '0' }}>
+                  <input type="checkbox" id="seizureCheck" checked={!!editData.seized}
+                    onChange={(e) => {
+                      if (!e.target.checked) {
+                        setEditData({...editData, seized: false, seizing_agency: '', seizure_case_number: '', seizure_date: '', seizure_reason: ''});
+                      } else {
+                        setEditData({...editData, seized: true});
+                      }
+                    }} />
+                  <label htmlFor="seizureCheck" style={{ fontSize: '11px', fontWeight: 'bold', color: editData.seized ? 'hsl(0,65%,40%)' : 'inherit' }}>
+                    ⚠️ DRIVE SEIZED / UNDER LEGAL HOLD
+                  </label>
+                </div>
+                {editData.seized && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+                      <div style={{ flex: '1 1 160px' }}>
+                        <label style={{ fontSize: '10px', fontWeight: 'bold', display: 'block' }}>SEIZING AGENCY:</label>
+                        <input className="win-input" style={{ width: '100%', fontSize: '11px' }} value={editData.seizing_agency}
+                          onChange={(e) => setEditData({...editData, seizing_agency: e.target.value})}
+                          placeholder="e.g., NHCSO, NHCPD, NCSHP" />
+                      </div>
+                      <div style={{ flex: '1 1 120px' }}>
+                        <label style={{ fontSize: '10px', fontWeight: 'bold', display: 'block' }}>CASE #:</label>
+                        <input className="win-input" style={{ width: '100%', fontSize: '11px' }} value={editData.seizure_case_number}
+                          onChange={(e) => setEditData({...editData, seizure_case_number: e.target.value})}
+                          placeholder="e.g., 2024-CR-1234" />
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+                      <div style={{ flex: '1 1 160px' }}>
+                        <label style={{ fontSize: '10px', fontWeight: 'bold', display: 'block' }}>DATE / TIME OF SEIZURE:</label>
+                        <input type="datetime-local" className="win-input" style={{ width: '100%', fontSize: '11px' }} value={editData.seizure_date}
+                          onChange={(e) => setEditData({...editData, seizure_date: e.target.value})} />
+                      </div>
+                      <div style={{ flex: '1 1 160px' }}>
+                        <label style={{ fontSize: '10px', fontWeight: 'bold', display: 'block' }}>SEIZURE REASON:</label>
+                        <select className="win-input" style={{ width: '100%', fontSize: '11px' }} value={editData.seizure_reason}
+                          onChange={(e) => setEditData({...editData, seizure_reason: e.target.value})}>
+                          <option value="">-- Select Reason --</option>
+                          <option value="Title 9 Investigation">Title 9 Investigation</option>
+                          <option value="Crash Investigation">Crash Investigation</option>
+                          <option value="Criminal Investigation">Criminal Investigation</option>
+                          <option value="Civil Litigation">Civil Litigation</option>
+                          <option value="Internal Affairs">Internal Affairs</option>
+                          <option value="Child Welfare Investigation">Child Welfare Investigation</option>
+                          <option value="Law Enforcement Request">Law Enforcement Request</option>
+                          <option value="Court Order">Court Order</option>
+                          <option value="Other">Other</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
               <div style={{ display: 'flex', gap: '4px', marginTop: '4px' }}>
                 <button className="win-button" style={{ flex: 1, background: 'hsl(220,70%,35%)', color: 'white' }}
-                  onClick={() => updateDriveMutation.mutate({ id: editDrive.id, data: editData })}>SAVE</button>
+                  onClick={() => {
+                    const saveData = { ...editData, current_location: buildLocation(editData.fleet_location, editData.sub_location) };
+                    if (!saveData.seized) {
+                      saveData.seizing_agency = '';
+                      saveData.seizure_case_number = '';
+                      saveData.seizure_date = '';
+                      saveData.seizure_reason = '';
+                    }
+                    updateDriveMutation.mutate({ id: editDrive.id, data: saveData });
+                  }}>SAVE</button>
                 <button className="win-button" style={{ flex: 1 }} onClick={() => { setShowEditForm(false); setEditDrive(null); }}>CANCEL</button>
               </div>
             </div>
