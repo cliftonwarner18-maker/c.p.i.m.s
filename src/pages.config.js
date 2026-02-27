@@ -47,6 +47,7 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
+import AdminPanel from './pages/AdminPanel';
 import Assets from './pages/Assets';
 import BusProfile from './pages/BusProfile';
 import Dashboard from './pages/Dashboard';
@@ -58,11 +59,11 @@ import NewInspection from './pages/NewInspection';
 import NewWorkOrder from './pages/NewWorkOrder';
 import WorkOrderDetail from './pages/WorkOrderDetail';
 import WorkOrders from './pages/WorkOrders';
-import AdminPanel from './pages/AdminPanel';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
+    "AdminPanel": AdminPanel,
     "Assets": Assets,
     "BusProfile": BusProfile,
     "Dashboard": Dashboard,
@@ -74,7 +75,6 @@ export const PAGES = {
     "NewWorkOrder": NewWorkOrder,
     "WorkOrderDetail": WorkOrderDetail,
     "WorkOrders": WorkOrders,
-    "AdminPanel": AdminPanel,
 }
 
 export const pagesConfig = {
