@@ -217,9 +217,10 @@ Deno.serve(async (req) => {
       doc.setFontSize(7);
       doc.text('SERIAL #', margin + 1, y + 4);
       doc.text('SEIZING AGENCY', margin + 35, y + 4);
-      doc.text('CASE #', margin + 80, y + 4);
-      doc.text('DATE/TIME OF SEIZURE', margin + 115, y + 4);
-      doc.text('REASON', margin + 175, y + 4);
+      doc.text('SEIZING PERSON', margin + 72, y + 4);
+      doc.text('CASE #', margin + 110, y + 4);
+      doc.text('DATE/TIME', margin + 138, y + 4);
+      doc.text('REASON', margin + 178, y + 4);
       doc.setTextColor(0, 0, 0);
       y += 7;
 
