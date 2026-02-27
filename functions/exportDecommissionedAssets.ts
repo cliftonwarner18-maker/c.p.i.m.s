@@ -52,6 +52,10 @@ Deno.serve(async (req) => {
       doc.text(`Status Filter: ${statusFilter}`, pageWidth / 2, y, { align: 'center' });
       y += 6;
     }
+    if (filterOutOfInventory) {
+      doc.text('Filter: Out of Inventory Only', pageWidth / 2, y, { align: 'center' });
+      y += 6;
+    }
 
     y += 4;
 
