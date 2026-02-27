@@ -93,50 +93,50 @@ export default function BusProfile() {
         <div className="text-[11px]">{bus.bus_type} | {bus.status}</div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-        {/* Vehicle Data */}
-        <WinWindow title="VEHICLE DATA" icon="🚌">
-          <div className="win-panel-inset p-2">
-            <DataRow label="BUS #" value={bus.bus_number} />
-            <DataRow label="TYPE" value={bus.bus_type} />
-            <DataRow label="BASE LOCATION" value={bus.base_location} />
-            <DataRow label="YEAR" value={bus.year} />
-            <DataRow label="MAKE" value={bus.make} />
-            <DataRow label="MODEL" value={bus.model} />
-            <DataRow label="VIN" value={bus.vin} />
-            <DataRow label="ENGINE" value={bus.engine} />
-            <DataRow label="CAPACITY" value={bus.passenger_capacity} />
-            <DataRow label="WHEELCHAIR" value={bus.wheelchair_accessible ? 'YES' : 'NO'} />
-            <DataRow label="STATUS" value={bus.status} />
-          </div>
-        </WinWindow>
+      <div className="grid grid-cols-1 gap-2">
+         {/* Vehicle Data */}
+         <WinWindow title="VEHICLE DATA" icon="🚌">
+           <div className="win-panel-inset p-2">
+             <DataRow label="BUS #" value={bus.bus_number} />
+             <DataRow label="TYPE" value={bus.bus_type} />
+             <DataRow label="BASE LOCATION" value={bus.base_location} />
+             <DataRow label="YEAR" value={bus.year} />
+             <DataRow label="MAKE" value={bus.make} />
+             <DataRow label="MODEL" value={bus.model} />
+             <DataRow label="VIN" value={bus.vin} />
+             <DataRow label="ENGINE" value={bus.engine} />
+             <DataRow label="CAPACITY" value={bus.passenger_capacity} />
+             <DataRow label="WHEELCHAIR" value={bus.wheelchair_accessible ? 'YES' : 'NO'} />
+             <DataRow label="STATUS" value={bus.status} />
+           </div>
+         </WinWindow>
 
-        {/* Camera System */}
-        <WinWindow title="CAMERA SYSTEM DATA" icon="📹">
-          <div className="win-panel-inset p-2">
-            <DataRow label="CAMERA SYSTEM" value={bus.camera_system_type} />
-            <DataRow label="SERIAL #" value={bus.camera_serial_number} />
-            <DataRow label="MODEL #" value={bus.camera_model_number} />
-            <DataRow label="DVR ASSET #" value={bus.asset_number} />
-            <div className="mt-2 text-[10px] font-bold bg-primary text-primary-foreground px-2 py-0.5">AI CAMERA (SAMSARA)</div>
-            <DataRow label="SAMSARA" value={bus.samsara_enabled ? '☑ YES' : '☐ NO'} />
-            <DataRow label="SAM AV" value={bus.samsara_av_enabled ? '☑ YES' : '☐ NO'} />
-            <DataRow label="SAM INPUTS" value={bus.samsara_inputs_enabled ? '☑ YES' : '☐ NO'} />
-            <DataRow label="DASH CAM SID#" value={bus.dash_cam_sid} />
-            <DataRow label="GATEWAY SID#" value={bus.gateway_sid} />
-          </div>
-          {/* Inspection Status */}
-          <div className={`mt-1 p-2 text-center text-[11px] font-bold ${overdue ? 'bg-destructive/10 status-cancelled' : 'bg-primary/10 status-completed'}`}>
-            {overdue ? (
-              <><AlertTriangle className="w-4 h-4 inline mr-1" />INSPECTION OVERDUE — DUE: {moment(bus.next_inspection_due).format('MM/DD/YYYY')}</>
-            ) : bus.next_inspection_due ? (
-              <><CheckCircle className="w-4 h-4 inline mr-1" />NEXT INSPECTION: {moment(bus.next_inspection_due).format('MM/DD/YYYY')}</>
-            ) : (
-              'NO INSPECTION DATE SET'
-            )}
-          </div>
-        </WinWindow>
-      </div>
+         {/* Camera System */}
+         <WinWindow title="CAMERA SYSTEM DATA" icon="📹">
+           <div className="win-panel-inset p-2">
+             <DataRow label="CAMERA SYSTEM" value={bus.camera_system_type} />
+             <DataRow label="SERIAL #" value={bus.camera_serial_number} />
+             <DataRow label="MODEL #" value={bus.camera_model_number} />
+             <DataRow label="DVR ASSET #" value={bus.asset_number} />
+             <div className="mt-2 text-[10px] font-bold bg-primary text-primary-foreground px-2 py-0.5">AI CAMERA (SAMSARA)</div>
+             <DataRow label="SAMSARA" value={bus.samsara_enabled ? '☑ YES' : '☐ NO'} />
+             <DataRow label="SAM AV" value={bus.samsara_av_enabled ? '☑ YES' : '☐ NO'} />
+             <DataRow label="SAM INPUTS" value={bus.samsara_inputs_enabled ? '☑ YES' : '☐ NO'} />
+             <DataRow label="DASH CAM SID#" value={bus.dash_cam_sid} />
+             <DataRow label="GATEWAY SID#" value={bus.gateway_sid} />
+           </div>
+           {/* Inspection Status */}
+           <div className={`mt-1 p-2 text-center text-[11px] font-bold ${overdue ? 'bg-destructive/10 status-cancelled' : 'bg-primary/10 status-completed'}`}>
+             {overdue ? (
+               <><AlertTriangle className="w-4 h-4 inline mr-1" />INSPECTION OVERDUE — DUE: {moment(bus.next_inspection_due).format('MM/DD/YYYY')}</>
+             ) : bus.next_inspection_due ? (
+               <><CheckCircle className="w-4 h-4 inline mr-1" />NEXT INSPECTION: {moment(bus.next_inspection_due).format('MM/DD/YYYY')}</>
+             ) : (
+               'NO INSPECTION DATE SET'
+             )}
+           </div>
+         </WinWindow>
+       </div>
 
       {/* Repair History */}
       <WinWindow title={`REPAIR HISTORY — BUS #${bus.bus_number}`} icon="🔧">
