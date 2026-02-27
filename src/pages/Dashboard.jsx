@@ -64,9 +64,11 @@ export default function Dashboard() {
       </div>
 
       {/* Stats */}
-      <div style={{display:'flex',flexDirection:'column',width:'100%',boxSizing:'border-box',margin:0,padding:0}}>
-        <div className="win-titlebar" style={{width:'100%',margin:'0 !important',padding:'0 !important',boxSizing:'border-box'}}>📊 SYSTEM STATUS OVERVIEW</div>
-        <DashboardStats buses={buses} workOrders={workOrders} inspections={inspections} />
+      <div style={{display:'flex !important',flexDirection:'column !important',width:'100% !important',maxWidth:'100% !important',boxSizing:'border-box',margin:'0 !important',padding:'0 !important',overflow:'hidden'}}>
+        <div className="win-titlebar" style={{width:'100% !important',margin:'0 !important',padding:'0 !important',boxSizing:'border-box',minWidth:'0'}}>📊 SYSTEM STATUS OVERVIEW</div>
+        <div style={{width:'100% !important',maxWidth:'100% !important',boxSizing:'border-box',minWidth:'0'}}>
+          <DashboardStats buses={buses} workOrders={workOrders} inspections={inspections} />
+        </div>
       </div>
 
       {/* Quick Actions */}
