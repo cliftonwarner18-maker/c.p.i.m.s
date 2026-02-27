@@ -226,52 +226,54 @@ export default function BusProfile() {
 
       {/* Manual History */}
        <WinWindow title={`MANUAL HISTORY LOG — BUS #${bus.bus_number}`} icon="📝">
-         <div className="flex justify-end mb-2 no-print">
-           <button
-             className="win-button flex items-center gap-1 text-[11px] !bg-primary !text-primary-foreground"
-             onClick={() => setShowAddHistory(true)}
-           >
-             <Plus className="w-3 h-3" /> ADD HISTORY ENTRY
-           </button>
+          <div className="flex justify-end mb-2 no-print">
+            <button
+              className="win-button flex items-center gap-1 text-[11px] !bg-primary !text-primary-foreground"
+              onClick={() => setShowAddHistory(true)}
+            >
+              <Plus className="w-3 h-3" /> ADD HISTORY ENTRY
+            </button>
+          </div>
+         <div className="win-panel-inset">
+          <div style={{ maxHeight: '300px', overflow: 'auto', display: 'block' }}>
+            <table className="w-full text-[10px] font-mono" style={{tableLayout:'fixed', borderCollapse:'collapse', width:'100%'}}>
+              <thead style={{position:'sticky', top:0, zIndex:10}}>
+                <tr className="bg-primary text-primary-foreground">
+                  <th className="p-1 text-left whitespace-nowrap border-b border-primary-foreground">START</th>
+                  <th className="p-1 text-left whitespace-nowrap border-b border-primary-foreground">END</th>
+                  <th className="p-1 text-left whitespace-nowrap border-b border-primary-foreground">ELAPSED</th>
+                  <th className="p-1 text-left whitespace-nowrap border-b border-primary-foreground">TECH</th>
+                  <th className="p-1 text-left border-b border-primary-foreground">DESCRIPTION</th>
+                  <th className="p-1 text-left no-print whitespace-nowrap border-b border-primary-foreground">ACTION</th>
+                </tr>
+              </thead>
+              <tbody>
+                {busHistory.length === 0 && (
+                  <tr><td colSpan={6} className="p-3 text-center text-muted-foreground">NO HISTORY ENTRIES</td></tr>
+                )}
+                {busHistory.map((h, i) => (
+                  <tr key={h.id} className={i % 2 === 0 ? 'bg-card' : 'bg-background'}>
+                    <td className="p-1 whitespace-nowrap text-[9px]">{h.start_time ? moment(h.start_time).format('MM/DD/YY HH:mm') : '—'}</td>
+                    <td className="p-1 whitespace-nowrap text-[9px]">{h.end_time ? moment(h.end_time).format('MM/DD/YY HH:mm') : '—'}</td>
+                    <td className="p-1 font-bold whitespace-nowrap">{formatElapsed(h.elapsed_minutes)}</td>
+                    <td className="p-1 whitespace-nowrap text-[9px]">{h.technician}</td>
+                    <td className="p-1">{h.description}</td>
+                    <td className="p-1 no-print whitespace-nowrap">
+                      <button
+                        className="win-button !py-0 !px-1 text-[9px]"
+                        onClick={() => { if (confirm('Delete this entry?')) deleteHistory(h.id); }}
+                        title="Delete"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
          </div>
-        <div className="win-panel-inset overflow-auto" style={{ maxHeight: '300px' }}>
-         <table className="w-full text-[10px] font-mono" style={{tableLayout:'fixed', borderCollapse:'collapse'}}>
-           <thead style={{position:'sticky', top:0, zIndex:10}}>
-             <tr className="bg-primary text-primary-foreground">
-               <th className="p-1 text-left whitespace-nowrap border-b border-primary-foreground">START</th>
-               <th className="p-1 text-left whitespace-nowrap border-b border-primary-foreground">END</th>
-               <th className="p-1 text-left whitespace-nowrap border-b border-primary-foreground">ELAPSED</th>
-               <th className="p-1 text-left whitespace-nowrap border-b border-primary-foreground">TECH</th>
-               <th className="p-1 text-left border-b border-primary-foreground">DESCRIPTION</th>
-               <th className="p-1 text-left no-print whitespace-nowrap border-b border-primary-foreground">ACTION</th>
-             </tr>
-           </thead>
-           <tbody>
-             {busHistory.length === 0 && (
-               <tr><td colSpan={6} className="p-3 text-center text-muted-foreground">NO HISTORY ENTRIES</td></tr>
-             )}
-             {busHistory.map((h, i) => (
-               <tr key={h.id} className={i % 2 === 0 ? 'bg-card' : 'bg-background'}>
-                 <td className="p-1 whitespace-nowrap text-[9px]">{h.start_time ? moment(h.start_time).format('MM/DD/YY HH:mm') : '—'}</td>
-                 <td className="p-1 whitespace-nowrap text-[9px]">{h.end_time ? moment(h.end_time).format('MM/DD/YY HH:mm') : '—'}</td>
-                 <td className="p-1 font-bold whitespace-nowrap">{formatElapsed(h.elapsed_minutes)}</td>
-                 <td className="p-1 whitespace-nowrap text-[9px]">{h.technician}</td>
-                 <td className="p-1">{h.description}</td>
-                 <td className="p-1 no-print whitespace-nowrap">
-                   <button
-                     className="win-button !py-0 !px-1 text-[9px]"
-                     onClick={() => { if (confirm('Delete this entry?')) deleteHistory(h.id); }}
-                     title="Delete"
-                   >
-                     <Trash2 className="w-3 h-3" />
-                   </button>
-                 </td>
-               </tr>
-             ))}
-           </tbody>
-         </table>
-        </div>
-      </WinWindow>
+       </WinWindow>
 
       {/* Notes */}
       {bus.notes && (
