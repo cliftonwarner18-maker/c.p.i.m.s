@@ -146,6 +146,9 @@ export default function Dashboard() {
         <div>&gt; DATABASE CONNECTION: <span className="status-completed font-bold">ONLINE</span></div>
         <div>&gt; TOTAL RECORDS: {buses.length} VEHICLES | {workOrders.length} WORK ORDERS | {inspections.length} INSPECTIONS</div>
         <div>&gt; SESSION ACTIVE — {moment().format('dddd, MMMM D, YYYY HH:mm:ss')}</div>
+        <div style={{marginTop:'4px',paddingTop:'4px',borderTop:'1px solid hsl(220,15%,70%)',color:'hsl(220,10%,50%)',fontStyle:'italic',textAlign:'right',fontSize:'9px',letterSpacing:'0.04em'}}>
+          Powered by Base44 &nbsp;|&nbsp; Developed by Clifton Warner M. &nbsp;&copy; {new Date().getFullYear()}
+        </div>
       </div>
       </div>
       </>
