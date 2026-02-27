@@ -206,7 +206,7 @@ Deno.serve(async (req) => {
       doc.setFont('courier', 'bold');
       doc.setFontSize(9);
       doc.setTextColor(180, 60, 0);
-      doc.text('⚠ SEIZED / LEGAL HOLD DRIVES', margin, y);
+      doc.text('*** SEIZED / LEGAL HOLD DRIVES ***', margin, y);
       doc.setTextColor(0, 0, 0);
       y += 5;
 
