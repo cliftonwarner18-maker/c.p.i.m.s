@@ -114,6 +114,24 @@ export default function HdriveManagement() {
 
   const getDriveHistory = (serial) => custody.filter(c => c.hdrive_serial === serial);
 
+  const handleExportAudit = async () => {
+    setIsExporting(true);
+    const response = await base44.functions.invoke('exportHDriveAudit', {
+      search: auditSearch,
+      userFilter: auditUserFilter,
+    });
+    const blob = new Blob([response.data], { type: 'application/pdf' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `hdrive-audit-report-${new Date().toISOString().slice(0,10)}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    a.remove();
+    setIsExporting(false);
+  };
+
   return (
     <>
       <LoadingScreen isLoading={isLoading} message="LOADING H-DRIVE INVENTORY..." />
