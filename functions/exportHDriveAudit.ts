@@ -269,22 +269,51 @@ Deno.serve(async (req) => {
 
     // Footer signature block
     y += 10;
-    if (y > pageHeight - 30) {
+    if (y > pageHeight - 50) {
       doc.addPage();
       pageNum++;
       addHeader(pageNum);
       y = 30;
     }
+
+    // Liability disclosure box
     doc.setDrawColor(0, 0, 0);
+    doc.setLineWidth(0.5);
+    doc.rect(margin, y, pageWidth - margin * 2, 22);
+    doc.setFillColor(240, 240, 240);
+    doc.rect(margin, y, pageWidth - margin * 2, 6, 'F');
+    doc.setFont('courier', 'bold');
+    doc.setFontSize(7.5);
+    doc.setTextColor(0, 0, 0);
+    doc.text('CHAIN OF CUSTODY ACCOUNTABILITY AND LIABILITY DISCLOSURE', pageWidth / 2, y + 4.2, { align: 'center' });
+
+    doc.setFont('courier', 'normal');
+    doc.setFontSize(6.5);
+    const disclaimer1 = 'By signing below, the undersigned acknowledges receipt and current custody of the H-Drive unit(s) listed above. The signing party accepts full personal responsibility';
+    const disclaimer2 = 'for the security, safekeeping, and proper handling of all assigned drives. The signing party is fully liable for any loss, theft, or intentional damage to assigned';
+    const disclaimer3 = 'H-Drive units. By signing, the undersigned agrees to immediately report any loss or suspected theft to their direct supervisor and the Transportation Department.';
+    doc.text(disclaimer1, margin + 2, y + 10);
+    doc.text(disclaimer2, margin + 2, y + 14.5);
+    doc.text(disclaimer3, margin + 2, y + 19);
+    y += 26;
+
+    // Signature lines
     doc.setLineWidth(0.4);
-    doc.line(margin, y, margin + 60, y);
-    doc.line(margin + 80, y, margin + 140, y);
-    doc.line(margin + 160, y, pageWidth - margin, y);
+    const sig1end = margin + 70;
+    const sig2start = margin + 80;
+    const sig2end = margin + 160;
+    const sig3start = margin + 170;
+    const sig3end = pageWidth - margin;
+
+    doc.line(margin, y, sig1end, y);
+    doc.line(sig2start, y, sig2end, y);
+    doc.line(sig3start, y, sig3end, y);
+
     doc.setFont('courier', 'normal');
     doc.setFontSize(7);
-    doc.text('AUDITOR SIGNATURE', margin, y + 4);
-    doc.text('PRINTED NAME / TITLE', margin + 80, y + 4);
-    doc.text('DATE', margin + 160, y + 4);
+    doc.text('RESPONSIBLE PARTY SIGNATURE', margin, y + 4);
+    doc.text('PRINTED NAME / TITLE', sig2start, y + 4);
+    doc.text('DATE', sig3start, y + 4);
 
     const pdf = doc.output('arraybuffer');
     return new Response(pdf, {
