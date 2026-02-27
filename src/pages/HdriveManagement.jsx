@@ -154,7 +154,8 @@ export default function HdriveManagement() {
       d.current_location?.toLowerCase().includes(search.toLowerCase());
     const matchUser = !userFilter || d.current_user === userFilter;
     const matchLocation = !locationFilter || d.current_location?.toLowerCase().includes(locationFilter.toLowerCase());
-    return matchSearch && matchUser && matchLocation;
+    const matchSeized = !seizedFilter || !!d.seized;
+    return matchSearch && matchUser && matchLocation && matchSeized;
   });
 
   const serialCounts = drives.reduce((acc, d) => {
