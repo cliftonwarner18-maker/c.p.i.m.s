@@ -73,10 +73,11 @@ export default function Inspections() {
            </div>
          </div>
 
-        <div className="win-panel-inset" style={{ maxHeight: '500px', overflow: 'auto', width: '100%', boxSizing: 'border-box' }}>
-          <table style={{ width: '100%', fontSize: '11px', fontFamily: "'Courier Prime', monospace" }}>
-            <thead>
-              <tr style={{background:'hsl(220,70%,35%)',color:'white',position:'sticky',top:0}}>
+        <div className="win-panel-inset" style={{width: '100%', boxSizing: 'border-box'}}>
+          <div style={{ maxHeight: '500px', overflow: 'auto', display: 'block' }}>
+            <table style={{ width: '100%', fontSize: '11px', fontFamily: "'Courier Prime', monospace" }}>
+              <thead style={{position:'sticky',top:0,zIndex:10}}>
+                <tr style={{background:'hsl(220,70%,35%)',color:'white'}}>
                 <th style={{padding:'4px',textAlign:'left'}}>INSP#</th>
                 <th style={{padding:'4px',textAlign:'left'}}>DATE</th>
                 <th style={{padding:'4px',textAlign:'left'}}>BUS#</th>
