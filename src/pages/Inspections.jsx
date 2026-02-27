@@ -142,5 +142,6 @@ export default function Inspections() {
             </div>
             </WinWindow>
             </div>
+            </>
             );
             }

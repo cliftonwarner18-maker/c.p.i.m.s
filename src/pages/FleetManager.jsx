@@ -223,5 +223,6 @@ export default function FleetManager() {
         </div>
         </WinWindow>
         </div>
+        </>
         );
         }
