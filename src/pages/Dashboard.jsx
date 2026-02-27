@@ -125,7 +125,7 @@ export default function Dashboard() {
 
       {/* Recently Completed */}
       <WinWindow title="RECENTLY COMPLETED REPAIRS" icon="✅">
-        <div className="win-panel-inset" style={{ maxHeight: '320px', minHeight: '80px', overflow: 'auto', padding: '8px' }}>
+        <div className="win-panel-inset" style={{ display: 'block', width: '100%', maxHeight: '320px', minHeight: '80px', overflow: 'auto', padding: '8px', boxSizing: 'border-box' }}>
           {recentCompleted.length === 0 ? (
             <div className="text-center text-[13px] p-4 text-muted-foreground">NO COMPLETED REPAIRS</div>
           ) : (
