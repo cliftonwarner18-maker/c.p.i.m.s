@@ -151,7 +151,40 @@
 .status-completed { color: hsl(140, 60%, 30%); }
 .status-cancelled { color: hsl(0, 60%, 45%); }
 
-/* Menu bar layout - PERMANENT FIX */
+/* LAYOUT ENFORCER - All pages must be full-width column layout */
+body, #root, [class*="Layout"], [class*="Page"] {
+  width: 100% !important;
+  max-width: 100% !important;
+  display: block !important;
+}
+
+main, [role="main"], .main-content {
+  width: 100% !important;
+  max-width: none !important;
+  display: block !important;
+}
+
+/* Force all divs to respect full width UNLESS explicitly contained */
+div {
+  box-sizing: border-box !important;
+}
+
+/* Title-on-top + full-width stacked layout */
+.win-titlebar {
+  width: 100% !important;
+  display: block !important;
+  margin-bottom: 0 !important;
+}
+
+.win-panel, .win-window {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* Menu bar layout */
 .win-panel {
   display: flex !important;
   align-items: center !important;
@@ -160,7 +193,7 @@
   width: 100% !important;
 }
 
-/* Table header sticky - PERMANENT FIX */
+/* Table header sticky */
 table thead,
 table thead tr {
   position: sticky !important;
@@ -172,15 +205,6 @@ table thead tr {
 table thead th {
   background-color: inherit !important;
   position: relative !important;
-}
-
-/* Menu bar layout fix */
-.win-panel {
-  display: flex !important;
-  align-items: center !important;
-  gap: 2px !important;
-  flex-wrap: nowrap !important;
-  width: 100% !important;
 }
 
 /* Scrollbar styling */
