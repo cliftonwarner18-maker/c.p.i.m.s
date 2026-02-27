@@ -172,6 +172,15 @@ table thead th {
   position: relative !important;
 }
 
+/* Menu bar layout fix */
+.win-panel {
+  display: flex !important;
+  align-items: center !important;
+  gap: 2px !important;
+  flex-wrap: nowrap !important;
+  width: 100% !important;
+}
+
 /* Scrollbar styling */
 ::-webkit-scrollbar {
   width: 16px;
