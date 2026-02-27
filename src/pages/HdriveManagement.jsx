@@ -6,7 +6,7 @@ import LoadingScreen from '../components/LoadingScreen';
 import { Plus, ArrowRight, Trash2, Search, Upload, FileDown, Pencil } from 'lucide-react';
 import DeleteConfirmModal from '../components/DeleteConfirmModal';
 
-const FLEET_LOCATIONS = ['Main', 'North', 'Central Fleet'];
+const FLEET_LOCATIONS = ['Main', 'North', 'Central'];
 
 // ---- User Dropdown ----
 function UserDropdown({ value, onChange, placeholder = 'Select user...', style = {} }) {
