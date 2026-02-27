@@ -11,6 +11,7 @@ export default function DecommissionedAssetsSection() {
   const [statusFilter, setStatusFilter] = useState('All');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [filterOutOfInventory, setFilterOutOfInventory] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const queryClient = useQueryClient();
 
