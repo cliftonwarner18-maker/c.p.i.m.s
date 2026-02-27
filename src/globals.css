@@ -92,12 +92,12 @@
 }
 
 .win-titlebar {
-  background: linear-gradient(to right, hsl(220, 70%, 30%), hsl(220, 60%, 50%));
-  color: white;
-  font-weight: bold;
-  padding: 3px 6px;
-  font-size: 13px;
-  font-family: 'Courier Prime', monospace;
+  background: linear-gradient(to right, hsl(220, 70%, 30%), hsl(220, 60%, 50%)) !important;
+  color: white !important;
+  font-weight: bold !important;
+  padding: 3px 6px !important;
+  font-size: 13px !important;
+  font-family: 'Courier Prime', monospace !important;
 }
 
 .win-button {
