@@ -18,11 +18,11 @@ Deno.serve(async (req) => {
     // Fetch all records of the entity
     const allRecords = await base44.asServiceRole.entities[entityName].list();
     
-    // Group by serial_number
+    // Group by serial_number (case-insensitive, trimmed)
     const grouped = {};
     allRecords.forEach(record => {
       const serial = record.serial_number?.trim().toLowerCase();
-      if (serial) {
+      if (serial && serial !== '') {
         if (!grouped[serial]) grouped[serial] = [];
         grouped[serial].push(record);
       }
@@ -34,15 +34,16 @@ Deno.serve(async (req) => {
 
     Object.entries(grouped).forEach(([serial, records]) => {
       if (records.length > 1) {
+        // Found duplicates with same serial number
         // Sort by number of non-empty fields (descending), then by creation date (newer first)
         const sorted = records.sort((a, b) => {
-          const aFields = Object.values(a).filter(v => v && v !== '' && v !== false).length;
-          const bFields = Object.values(b).filter(v => v && v !== '' && v !== false).length;
+          const aFields = Object.values(a).filter(v => v && v !== '' && v !== false && v !== 'false').length;
+          const bFields = Object.values(b).filter(v => v && v !== '' && v !== false && v !== 'false').length;
           if (aFields !== bFields) return bFields - aFields; // More fields = keep
           return new Date(b.created_date) - new Date(a.created_date); // Newer = keep
         });
 
-        // Keep the first (best), delete the rest
+        // Keep the first (most detailed), delete the rest
         for (let i = 1; i < sorted.length; i++) {
           toDelete.push(sorted[i].id);
         }
