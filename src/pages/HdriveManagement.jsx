@@ -180,12 +180,16 @@ export default function HdriveManagement() {
         {showAddForm && (
           <WinWindow title="ADD NEW H-DRIVE" icon="💾">
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              {[['MAKE', 'make'], ['MODEL', 'model'], ['SERIAL NUMBER', 'serial_number'], ['CURRENT LOCATION', 'current_location']].map(([label, field]) => (
+              {[['MAKE', 'make'], ['MODEL', 'model'], ['SERIAL NUMBER', 'serial_number']].map(([label, field]) => (
                 <div key={field}>
                   <label style={{ fontSize: '11px', fontWeight: 'bold' }}>{label}:</label>
                   <input className="win-input" value={formData[field]} onChange={(e) => setFormData({...formData, [field]: e.target.value})} />
                 </div>
               ))}
+              <div>
+                <label style={{ fontSize: '11px', fontWeight: 'bold' }}>LOCATION:</label>
+                <LocationFields fleetKey="fleet_location" subKey="sub_location" values={formData} onChange={v => setFormData({...formData, ...v})} />
+              </div>
               <div>
                 <label style={{ fontSize: '11px', fontWeight: 'bold' }}>CURRENT USER:</label>
                 <UserDropdown value={formData.current_user} onChange={v => setFormData({...formData, current_user: v})} />
