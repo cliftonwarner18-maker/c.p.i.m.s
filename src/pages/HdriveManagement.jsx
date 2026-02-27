@@ -51,6 +51,9 @@ function LocationFields({ fleetKey, subKey, values, onChange }) {
 export default function HdriveManagement() {
   const queryClient = useQueryClient();
   const [showAddForm, setShowAddForm] = useState(false);
+  const [showEditForm, setShowEditForm] = useState(false);
+  const [editDrive, setEditDrive] = useState(null);
+  const [editData, setEditData] = useState({ make: '', model: '', serial_number: '', fleet_location: '', sub_location: '', current_user: '' });
   const [showTransferForm, setShowTransferForm] = useState(false);
   const [showBulkImport, setShowBulkImport] = useState(false);
   const [search, setSearch] = useState('');
