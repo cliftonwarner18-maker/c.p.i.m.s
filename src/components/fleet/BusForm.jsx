@@ -131,8 +131,9 @@ export default function BusForm({ bus, onClose, onSaved }) {
             <Field label="INSP. DUE">
               <input type="date" className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.next_inspection_due} onChange={e => setForm({...form, next_inspection_due: e.target.value})} />
             </Field>
-            <div style={{display:'flex',alignItems:'flex-end'}}>
-              <Check label="WHEELCHAIR" checked={form.wheelchair_accessible} onChange={e => setForm({...form, wheelchair_accessible: e.target.checked})} />
+            <div style={{display:'flex',alignItems:'center',gap:'4px',fontSize:'11px',cursor:'pointer',marginBottom:'12px'}}>
+             <input type="checkbox" checked={form.wheelchair_accessible} onChange={e => setForm({...form, wheelchair_accessible: e.target.checked})} style={{accentColor:'hsl(220,70%,35%)'}} />
+             WHEELCHAIR
             </div>
           </div>
         </div>
@@ -161,8 +162,8 @@ export default function BusForm({ bus, onClose, onSaved }) {
         </div>
 
         {/* AI Camera / Samsara */}
-        <div className="win-panel" style={{padding:'4px',boxSizing:'border-box'}}>
-          <div style={{fontSize:'10px',fontWeight:'bold',background:'hsl(220,70%,35%)',color:'white',padding:'2px 4px',marginBottom:'2px'}}>▸ AI CAMERA SYSTEM (SAMSARA)</div>
+         <div className="win-panel" style={{padding:'4px',boxSizing:'border-box',display:'flex',flexDirection:'column',width:'100%'}}>
+           <div style={{fontSize:'10px',fontWeight:'bold',background:'hsl(220,70%,35%)',color:'white',padding:'2px 4px',marginBottom:'12px',width:'100%',display:'block'}}>▸ AI CAMERA SYSTEM (SAMSARA)</div>
           <div style={{display:'flex',flexDirection:'column',gap:'12px',marginBottom:'12px'}}>
             <Check label="Samsara" checked={form.samsara_enabled} onChange={e => setForm({...form, samsara_enabled: e.target.checked})} />
             <Check label="Sam AV" checked={form.samsara_av_enabled} onChange={e => setForm({...form, samsara_av_enabled: e.target.checked})} />
@@ -179,17 +180,23 @@ export default function BusForm({ bus, onClose, onSaved }) {
         </div>
 
         {/* Notes */}
-        <div className="win-panel" style={{padding:'4px',boxSizing:'border-box'}}>
-          <div style={{fontSize:'10px',fontWeight:'bold',background:'hsl(220,70%,35%)',color:'white',padding:'2px 4px',marginBottom:'2px'}}>▸ NOTES</div>
-          <textarea className="win-input" style={{width:'100%',fontSize:'11px',height:'60px',resize:'none'}} value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} />
-        </div>
+         <div className="win-panel" style={{padding:'4px',boxSizing:'border-box',display:'flex',flexDirection:'column',width:'100%'}}>
+           <div style={{fontSize:'10px',fontWeight:'bold',background:'hsl(220,70%,35%)',color:'white',padding:'2px 4px',marginBottom:'12px',width:'100%',display:'block'}}>▸ NOTES</div>
+           <div style={{display:'flex',flexDirection:'column',width:'100%'}}>
+
+          <textarea className="win-input" style={{width:'100%',fontSize:'11px',height:'60px',resize:'none',display:'block'}} value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} />
+          </div>
+          </div>
 
         {/* Legacy Upload */}
-        <div className="win-panel" style={{padding:'4px',boxSizing:'border-box'}}>
-          <div style={{fontSize:'10px',fontWeight:'bold',background:'hsl(220,70%,35%)',color:'white',padding:'2px 4px',marginBottom:'2px'}}>▸ LEGACY UPLOAD</div>
-          <textarea className="win-input" style={{width:'100%',fontSize:'11px',height:'120px',fontFamily:'monospace',resize:'none'}} placeholder="Paste audit/repair log text here..." value={form.legacy_upload || ''} onChange={e => setForm({...form, legacy_upload: e.target.value})} />
+        <div className="win-panel" style={{padding:'4px',boxSizing:'border-box',display:'flex',flexDirection:'column',width:'100%'}}>
+          <div style={{fontSize:'10px',fontWeight:'bold',background:'hsl(220,70%,35%)',color:'white',padding:'2px 4px',marginBottom:'12px',width:'100%',display:'block'}}>▸ LEGACY UPLOAD</div>
+          <div style={{display:'flex',flexDirection:'column',width:'100%'}}>
+
+          <textarea className="win-input" style={{width:'100%',fontSize:'11px',height:'120px',fontFamily:'monospace',resize:'none',display:'block'}} placeholder="Paste audit/repair log text here..." value={form.legacy_upload || ''} onChange={e => setForm({...form, legacy_upload: e.target.value})} />
           <div style={{fontSize:'9px',color:'hsl(220,10%,40%)',marginTop:'2px'}}>Audit/repair log text — will be preserved with vehicle record</div>
-        </div>
+          </div>
+          </div>
 
         <div style={{display:'flex',gap:'4px'}}>
           <button type="submit" className="win-button" style={{display:'flex',alignItems:'center',gap:'4px',background:'hsl(220,70%,35%)',color:'white'}} disabled={isPending}>

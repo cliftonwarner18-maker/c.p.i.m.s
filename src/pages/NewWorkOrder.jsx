@@ -92,28 +92,28 @@ export default function NewWorkOrder() {
   }
 
   return (
-    <div style={{maxWidth:'640px',margin:'0 auto',display:'flex',flexDirection:'column',gap:'4px'}}>
-       <WinWindow title="CREATE NEW WORK ORDER — CAMERA REPAIR REQUEST" icon="📝">
-         <form onSubmit={handleSubmit} style={{display:'flex',flexDirection:'column',gap:'4px'}}>
+     <div style={{maxWidth:'640px',margin:'0 auto',display:'flex',flexDirection:'column',gap:'4px'}}>
+        <WinWindow title="CREATE NEW WORK ORDER — CAMERA REPAIR REQUEST" icon="📝">
+          <form onSubmit={handleSubmit} style={{display:'flex',flexDirection:'column',width:'100%',padding:'16px'}}>
           {/* Auto fields */}
-          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'4px'}}>
-            <div>
-              <label style={{fontSize:'11px',fontWeight:'bold',display:'block',marginBottom:'2px'}}>DATE/TIME (AUTO)</label>
-              <div className="win-input" style={{width:'100%',background:'hsl(220,20%,92%)',fontSize:'12px',padding:'4px'}}>
+          <div style={{display:'flex',flexDirection:'column',gap:'12px',marginBottom:'12px'}}>
+            <div style={{display:'flex',flexDirection:'column',width:'100%',marginBottom:'0'}}>
+              <label style={{fontSize:'11px',fontWeight:'bold',display:'block',marginBottom:'4px',width:'100%'}}>DATE/TIME (AUTO)</label>
+              <div className="win-input" style={{width:'100%',background:'hsl(220,20%,92%)',fontSize:'12px',padding:'4px',display:'block'}}>
                 {moment().format('MM/DD/YYYY HH:mm:ss')}
               </div>
             </div>
-            <div>
-              <label style={{fontSize:'11px',fontWeight:'bold',display:'block',marginBottom:'2px'}}>ORDER # (AUTO)</label>
-              <div className="win-input" style={{width:'100%',background:'hsl(220,20%,92%)',fontSize:'12px',padding:'4px'}}>
+            <div style={{display:'flex',flexDirection:'column',width:'100%',marginBottom:'0'}}>
+              <label style={{fontSize:'11px',fontWeight:'bold',display:'block',marginBottom:'4px',width:'100%'}}>ORDER # (AUTO)</label>
+              <div className="win-input" style={{width:'100%',background:'hsl(220,20%,92%)',fontSize:'12px',padding:'4px',display:'block'}}>
                 {generateOrderNumber()}
               </div>
             </div>
           </div>
 
           {/* Reporter */}
-          <div>
-            <label style={{fontSize:'11px',fontWeight:'bold',display:'block',marginBottom:'2px'}}>REPORTING PERSON *</label>
+          <div style={{display:'flex',flexDirection:'column',width:'100%',marginBottom:'12px'}}>
+            <label style={{fontSize:'11px',fontWeight:'bold',display:'block',marginBottom:'4px',width:'100%'}}>REPORTING PERSON *</label>
             <select
               className="win-input"
               style={{width:'100%',fontSize:'12px',fontFamily:"'Courier Prime', monospace"}}
@@ -126,11 +126,11 @@ export default function NewWorkOrder() {
                 <option key={u.id} value={u.name}>{u.name}{u.role ? ` (${u.role})` : ''}</option>
               ))}
             </select>
-          </div>
+            </div>
 
-          {/* Base Location */}
-          <div>
-            <label style={{fontSize:'11px',fontWeight:'bold',display:'block',marginBottom:'2px'}}>BASE LOCATION *</label>
+            {/* Base Location */}
+            <div style={{display:'flex',flexDirection:'column',width:'100%',marginBottom:'12px'}}>
+            <label style={{fontSize:'11px',fontWeight:'bold',display:'block',marginBottom:'4px',width:'100%'}}>BASE LOCATION *</label>
             <select
               className="win-input"
               style={{width:'100%',fontSize:'12px'}}
@@ -144,11 +144,11 @@ export default function NewWorkOrder() {
               <option value="Central">Central</option>
               <option value="Sold">Sold</option>
             </select>
-          </div>
+            </div>
 
-          {/* Bus Selection */}
-          <div>
-            <label style={{fontSize:'11px',fontWeight:'bold',display:'block',marginBottom:'2px'}}>SELECT BUS # *</label>
+            {/* Bus Selection */}
+            <div style={{display:'flex',flexDirection:'column',width:'100%',marginBottom:'12px'}}>
+            <label style={{fontSize:'11px',fontWeight:'bold',display:'block',marginBottom:'4px',width:'100%'}}>SELECT BUS # *</label>
             <select
               className="win-input"
               style={{width:'100%',fontSize:'12px'}}
@@ -163,11 +163,11 @@ export default function NewWorkOrder() {
                 </option>
               ))}
             </select>
-          </div>
+            </div>
 
-          {/* Issue Description */}
-          <div>
-            <label style={{fontSize:'11px',fontWeight:'bold',display:'block',marginBottom:'2px'}}>ISSUE DESCRIPTION *</label>
+            {/* Issue Description */}
+            <div style={{display:'flex',flexDirection:'column',width:'100%',marginBottom:'12px'}}>
+            <label style={{fontSize:'11px',fontWeight:'bold',display:'block',marginBottom:'4px',width:'100%'}}>ISSUE DESCRIPTION *</label>
             <textarea
               className="win-input"
               style={{width:'100%',fontSize:'12px',height:'128px',resize:'none'}}
