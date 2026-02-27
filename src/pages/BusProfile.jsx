@@ -142,7 +142,7 @@ export default function BusProfile() {
       <WinWindow title={`REPAIR HISTORY — BUS #${bus.bus_number}`} icon="🔧">
         <div className="win-panel-inset overflow-auto" style={{ maxHeight: '300px' }}>
           <table className="w-full text-[10px] font-mono" style={{tableLayout:'fixed', borderCollapse:'collapse'}}>
-            <thead style={{position:'sticky', top:0, zIndex:10}}>
+            <thead>
               <tr className="bg-primary text-primary-foreground">
                 <th className="p-1 text-left whitespace-nowrap border-b border-primary-foreground">ORDER#</th>
                 <th className="p-1 text-left whitespace-nowrap border-b border-primary-foreground">DATE</th>
@@ -183,7 +183,7 @@ export default function BusProfile() {
       <WinWindow title={`INSPECTION HISTORY — BUS #${bus.bus_number}`} icon="📋">
         <div className="win-panel-inset overflow-auto" style={{ maxHeight: '300px' }}>
           <table className="w-full text-[10px] font-mono" style={{tableLayout:'fixed', borderCollapse:'collapse'}}>
-            <thead style={{position:'sticky', top:0, zIndex:10}}>
+            <thead>
               <tr className="bg-primary text-primary-foreground">
                 <th className="p-1 text-left whitespace-nowrap border-b border-primary-foreground">INSP#</th>
                 <th className="p-1 text-left whitespace-nowrap border-b border-primary-foreground">DATE</th>
