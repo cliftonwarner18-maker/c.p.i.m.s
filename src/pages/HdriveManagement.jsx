@@ -3,86 +3,9 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import WinWindow from '../components/WinWindow';
 import LoadingScreen from '../components/LoadingScreen';
-import { Plus, ArrowRight, Trash2, Search, Upload, FileDown, ShieldAlert, Pencil } from 'lucide-react';
+import { Plus, ArrowRight, Trash2, Search, Upload, FileDown } from 'lucide-react';
 
-// ---- Admin Section ----
-function AdminSection() {
-  const queryClient = useQueryClient();
-  const [showForm, setShowForm] = useState(false);
-  const [editingUser, setEditingUser] = useState(null);
-  const [name, setName] = useState('');
-  const [role, setRole] = useState('');
-
-  const { data: systemUsers = [] } = useQuery({
-    queryKey: ['systemUsers'],
-    queryFn: () => base44.entities.SystemUser.list('name'),
-  });
-
-  const createMutation = useMutation({
-    mutationFn: (data) => base44.entities.SystemUser.create(data),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['systemUsers'] }); setName(''); setRole(''); setShowForm(false); },
-  });
-
-  const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.SystemUser.update(id, data),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['systemUsers'] }); setEditingUser(null); setName(''); setRole(''); },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.SystemUser.delete(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['systemUsers'] }),
-  });
-
-  const startEdit = (u) => { setEditingUser(u); setName(u.name); setRole(u.role || ''); setShowForm(true); };
-  const cancel = () => { setEditingUser(null); setName(''); setRole(''); setShowForm(false); };
-  const save = () => {
-    if (!name.trim()) return;
-    if (editingUser) updateMutation.mutate({ id: editingUser.id, data: { name: name.trim(), role: role.trim(), active: true } });
-    else createMutation.mutate({ name: name.trim(), role: role.trim(), active: true });
-  };
-
-  return (
-    <div style={{ border: '3px solid', borderColor: 'hsl(0,15%,40%) hsl(0,60%,25%) hsl(0,60%,25%) hsl(0,15%,40%)', marginBottom: '4px' }}>
-      {/* Red title bar */}
-      <div style={{ background: 'linear-gradient(to right, hsl(0,75%,28%), hsl(0,65%,40%))', color: 'white', padding: '3px 8px', display: 'flex', alignItems: 'center', gap: '6px', fontFamily: "'Courier Prime', monospace", fontSize: '12px', fontWeight: 'bold', letterSpacing: '0.08em' }}>
-        <ShieldAlert style={{ width: 14, height: 14, flexShrink: 0 }} />
-        ADMIN — SYSTEM USERS MANAGEMENT
-      </div>
-      <div style={{ background: 'hsl(0,30%,93%)', padding: '6px' }}>
-        <div style={{ fontSize: '9px', color: 'hsl(0,60%,30%)', marginBottom: '6px', fontWeight: 'bold', fontFamily: "'Courier Prime', monospace" }}>
-          AUTHORIZED PERSONNEL ROSTER — Users listed here appear in all staff dropdowns throughout the system.
-        </div>
-
-        {/* User list */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginBottom: '6px' }}>
-          {systemUsers.map(u => (
-            <div key={u.id} style={{ border: '2px solid', borderColor: 'hsl(220,15%,50%) hsl(220,15%,96%) hsl(220,15%,96%) hsl(220,15%,50%)', background: 'white', padding: '2px 6px', fontSize: '10px', display: 'flex', alignItems: 'center', gap: '4px', fontFamily: "'Courier Prime', monospace" }}>
-              <span style={{ fontWeight: 'bold' }}>{u.name}</span>
-              {u.role && <span style={{ color: 'hsl(220,10%,45%)', fontSize: '9px' }}>({u.role})</span>}
-              <button onClick={() => startEdit(u)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex' }}><Pencil style={{ width: 10, height: 10, color: 'hsl(220,70%,35%)' }} /></button>
-              <button onClick={() => { if (confirm(`Remove ${u.name}?`)) deleteMutation.mutate(u.id); }} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex' }}><Trash2 style={{ width: 10, height: 10, color: 'hsl(0,60%,45%)' }} /></button>
-            </div>
-          ))}
-        </div>
-
-        {!showForm ? (
-          <button className="win-button" style={{ fontSize: '10px', display: 'inline-flex', alignItems: 'center', gap: '4px' }} onClick={() => setShowForm(true)}>
-            <Plus style={{ width: 10, height: 10 }} /> ADD USER
-          </button>
-        ) : (
-          <div style={{ display: 'flex', gap: '4px', alignItems: 'center', flexWrap: 'wrap' }}>
-            <input className="win-input" style={{ fontSize: '11px', width: '140px' }} placeholder="Full Name" value={name} onChange={e => setName(e.target.value)} />
-            <input className="win-input" style={{ fontSize: '11px', width: '120px' }} placeholder="Role/Title (optional)" value={role} onChange={e => setRole(e.target.value)} />
-            <button className="win-button" style={{ fontSize: '10px', background: 'hsl(220,70%,35%)', color: 'white' }} onClick={save}>
-              {editingUser ? 'UPDATE' : 'ADD'}
-            </button>
-            <button className="win-button" style={{ fontSize: '10px' }} onClick={cancel}>CANCEL</button>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
+const FLEET_LOCATIONS = ['Main', 'North', 'Central Fleet'];
 
 // ---- User Dropdown ----
 function UserDropdown({ value, onChange, placeholder = 'Select user...', style = {} }) {
