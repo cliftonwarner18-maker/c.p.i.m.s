@@ -19,7 +19,7 @@ const navItems = [
 
 export default function Layout({ children, currentPageName }) {
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col font-mono" style={{fontFamily: "'Courier Prime', monospace"}}>
+    <div className="w-full min-h-screen bg-background text-foreground flex flex-col font-mono" style={{fontFamily: "'Courier Prime', monospace"}}>
       {/* Top Header Bar */}
       <div style={{background:'hsl(220,70%,35%)',color:'white',padding:'4px 12px',display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'nowrap',minHeight:0,fontFamily:"'Courier Prime',monospace"}}>
         <div style={{display:'flex',alignItems:'center',gap:8,flexShrink:0}}>
