@@ -36,24 +36,22 @@ export default function Layout({ children, currentPageName }) {
       </div>
 
       {/* Menu Bar — horizontal, single line */}
-      <div className="win-panel no-print" style={{display:'flex !important',alignItems:'center !important',padding:'2px 4px !important',gap:'2px !important',overflowX:'auto !important',width:'100% !important',flexWrap:'nowrap !important',fontFamily:"'Courier Prime',monospace"}}>
+      <div className="no-print" style={{display:'flex',alignItems:'center',padding:'4px 6px',gap:'2px',overflowX:'auto',width:'100%',flexWrap:'nowrap',fontFamily:"'Courier Prime',monospace",background:'hsl(220,20%,94%)',borderBottom:'1px solid hsl(220,18%,75%)'}}>
         {navItems.map((item) => (
           <Link
             key={item.page}
             to={createPageUrl(item.page)}
             style={{
-              display:'inline-flex',alignItems:'center',gap:4,
-              padding:'2px 12px',fontSize:11,textDecoration:'none',
-              background: item.red ? (currentPageName === item.page ? 'hsl(0,65%,28%)' : 'hsl(0,65%,40%)') : item.page === 'NewWorkOrder' ? 'hsl(140,70%,40%)' : currentPageName === item.page ? 'hsl(220,70%,35%)' : 'hsl(220,15%,90%)',
-              color: item.red || item.page === 'NewWorkOrder' || currentPageName === item.page ? 'white' : 'inherit',
-              border:'2px solid',
-              borderColor: item.red || item.page === 'NewWorkOrder' || currentPageName === item.page
-                ? 'hsl(220,15%,55%) hsl(220,15%,98%) hsl(220,15%,98%) hsl(220,15%,55%)'
-                : 'hsl(220,15%,98%) hsl(220,15%,55%) hsl(220,15%,55%) hsl(220,15%,98%)',
-              fontFamily:"'Courier Prime',monospace",fontWeight:'bold',whiteSpace:'nowrap',flexShrink:0
+              display:'inline-flex',alignItems:'center',gap:5,
+              padding:'4px 10px',fontSize:11,textDecoration:'none',
+              background: item.red ? (currentPageName === item.page ? 'hsl(0,65%,38%)' : 'hsl(0,65%,48%)') : item.page === 'NewWorkOrder' ? 'hsl(140,60%,42%)' : currentPageName === item.page ? 'hsl(220,50%,38%)' : 'hsl(220,18%,88%)',
+              color: item.red || item.page === 'NewWorkOrder' || currentPageName === item.page ? 'white' : 'hsl(220,20%,20%)',
+              border:'1px solid',
+              borderColor: item.red || item.page === 'NewWorkOrder' || currentPageName === item.page ? 'rgba(0,0,0,0.2)' : 'hsl(220,18%,70%)',
+              fontFamily:"'Courier Prime',monospace",fontWeight:'500',whiteSpace:'nowrap',flexShrink:0,borderRadius:'2px',transition:'all 0.15s',cursor:'pointer'
             }}
           >
-            <item.icon style={{width:12,height:12,flexShrink:0}} />
+            <item.icon style={{width:13,height:13,flexShrink:0}} />
             {item.name}
           </Link>
         ))}
