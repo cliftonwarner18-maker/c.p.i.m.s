@@ -182,16 +182,16 @@ export default function BusProfile() {
       {/* Inspection History */}
       <WinWindow title={`INSPECTION HISTORY — BUS #${bus.bus_number}`} icon="📋">
         <div className="win-panel-inset overflow-auto" style={{ maxHeight: '300px' }}>
-          <table className="w-full text-[10px] font-mono" style={{tableLayout:'auto'}}>
-            <thead>
-              <tr className="bg-primary text-primary-foreground sticky top-0">
-                <th className="p-1 text-left whitespace-nowrap">INSP#</th>
-                <th className="p-1 text-left whitespace-nowrap">DATE</th>
-                <th className="p-1 text-left whitespace-nowrap">INSPECTOR</th>
-                <th className="p-1 text-left">CAMERA</th>
-                <th className="p-1 text-left">LENSES</th>
-                <th className="p-1 text-left">DVR</th>
-                <th className="p-1 text-left">RESULT</th>
+          <table className="w-full text-[10px] font-mono" style={{tableLayout:'fixed', borderCollapse:'collapse'}}>
+            <thead style={{position:'sticky', top:0, zIndex:10}}>
+              <tr className="bg-primary text-primary-foreground">
+                <th className="p-1 text-left whitespace-nowrap border-b border-primary-foreground">INSP#</th>
+                <th className="p-1 text-left whitespace-nowrap border-b border-primary-foreground">DATE</th>
+                <th className="p-1 text-left whitespace-nowrap border-b border-primary-foreground">INSPECTOR</th>
+                <th className="p-1 text-left border-b border-primary-foreground">CAMERA</th>
+                <th className="p-1 text-left border-b border-primary-foreground">LENSES</th>
+                <th className="p-1 text-left border-b border-primary-foreground">DVR</th>
+                <th className="p-1 text-left border-b border-primary-foreground">RESULT</th>
               </tr>
             </thead>
             <tbody>
