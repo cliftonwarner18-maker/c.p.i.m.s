@@ -148,6 +148,19 @@ export default function LoadingScreen({ isLoading, message = 'INITIALIZING SYSTE
           <div>&gt; Loading database connections...</div>
           <div>&gt; Initializing user interface...</div>
         </div>
+
+        {/* Branding */}
+        <div style={{
+          marginTop: '8px',
+          textAlign: 'center',
+          fontSize: '8px',
+          color: 'hsl(220,10%,50%)',
+          fontFamily: "'Courier Prime', monospace",
+          letterSpacing: '0.05em',
+          fontStyle: 'italic'
+        }}>
+          Powered by Base44 &nbsp;|&nbsp; Developed by Clifton Warner M.
+        </div>
       </div>
     </div>
   );
