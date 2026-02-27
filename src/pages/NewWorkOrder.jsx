@@ -114,15 +114,18 @@ export default function NewWorkOrder() {
           {/* Reporter */}
           <div>
             <label style={{fontSize:'11px',fontWeight:'bold',display:'block',marginBottom:'2px'}}>REPORTING PERSON *</label>
-            <input
-              type="text"
+            <select
               className="win-input"
-              style={{width:'100%',fontSize:'12px'}}
-              placeholder="Enter your full name..."
+              style={{width:'100%',fontSize:'12px',fontFamily:"'Courier Prime', monospace"}}
               value={form.reported_by}
               onChange={(e) => setForm({ ...form, reported_by: e.target.value })}
               required
-            />
+            >
+              <option value="">-- SELECT PERSON --</option>
+              {systemUsers.filter(u => u.active !== false).map(u => (
+                <option key={u.id} value={u.name}>{u.name}{u.role ? ` (${u.role})` : ''}</option>
+              ))}
+            </select>
           </div>
 
           {/* Base Location */}
