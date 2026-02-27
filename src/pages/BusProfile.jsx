@@ -141,16 +141,16 @@ export default function BusProfile() {
       {/* Repair History */}
       <WinWindow title={`REPAIR HISTORY — BUS #${bus.bus_number}`} icon="🔧">
         <div className="win-panel-inset overflow-auto" style={{ maxHeight: '300px' }}>
-          <table className="w-full text-[10px] font-mono" style={{tableLayout:'auto'}}>
-            <thead>
-              <tr className="bg-primary text-primary-foreground sticky top-0">
-                <th className="p-1 text-left whitespace-nowrap">ORDER#</th>
-                <th className="p-1 text-left whitespace-nowrap">DATE</th>
-                <th className="p-1 text-left whitespace-nowrap">REPORTED</th>
-                <th className="p-1 text-left">ISSUE</th>
-                <th className="p-1 text-left whitespace-nowrap">STATUS</th>
-                <th className="p-1 text-left whitespace-nowrap">TECH</th>
-                <th className="p-1 text-left">REPAIRS</th>
+          <table className="w-full text-[10px] font-mono" style={{tableLayout:'fixed', borderCollapse:'collapse'}}>
+            <thead style={{position:'sticky', top:0, zIndex:10}}>
+              <tr className="bg-primary text-primary-foreground">
+                <th className="p-1 text-left whitespace-nowrap border-b border-primary-foreground">ORDER#</th>
+                <th className="p-1 text-left whitespace-nowrap border-b border-primary-foreground">DATE</th>
+                <th className="p-1 text-left whitespace-nowrap border-b border-primary-foreground">REPORTED</th>
+                <th className="p-1 text-left border-b border-primary-foreground">ISSUE</th>
+                <th className="p-1 text-left whitespace-nowrap border-b border-primary-foreground">STATUS</th>
+                <th className="p-1 text-left whitespace-nowrap border-b border-primary-foreground">TECH</th>
+                <th className="p-1 text-left border-b border-primary-foreground">REPAIRS</th>
               </tr>
             </thead>
             <tbody>
