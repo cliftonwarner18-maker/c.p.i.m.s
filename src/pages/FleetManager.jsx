@@ -73,6 +73,12 @@ export default function FleetManager() {
   return (
     <>
       <LoadingScreen isLoading={isLoading} message="LOADING FLEET..." />
+      <DeleteConfirmModal
+        isOpen={!!deleteTarget}
+        label={deleteTarget ? `Bus #${deleteTarget.bus_number}` : ''}
+        onConfirm={() => { deleteMutation.mutate(deleteTarget.id); setDeleteTarget(null); }}
+        onCancel={() => setDeleteTarget(null)}
+      />
       <div style={{display:'flex',flexDirection:'column',gap:'4px'}}>
        {showForm && (
         <BusForm
@@ -198,7 +204,7 @@ export default function FleetManager() {
                       <button
                         className="win-button"
                         style={{padding:'0 2px',fontSize:'10px',display:'inline-flex',alignItems:'center',justifyContent:'center'}}
-                        onClick={() => { if (confirm('Delete this vehicle?')) deleteMutation.mutate(b.id); }}
+                        onClick={() => setDeleteTarget(b)}
                         title="Delete"
                       >
                         <Trash2 className="w-3 h-3" />
