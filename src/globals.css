@@ -131,15 +131,15 @@
 }
 
 .win-panel {
-  background: hsl(220, 15%, 90%);
-  border: 2px solid;
-  border-color: hsl(220, 15%, 96%) hsl(220, 15%, 50%) hsl(220, 15%, 50%) hsl(220, 15%, 96%);
+  background: hsl(220, 15%, 90%) !important;
+  border: 2px solid !important;
+  border-color: hsl(220, 15%, 96%) hsl(220, 15%, 50%) hsl(220, 15%, 50%) hsl(220, 15%, 96%) !important;
 }
 
 .win-panel-inset {
-  background: white;
-  border: 2px solid;
-  border-color: hsl(220, 15%, 50%) hsl(220, 15%, 96%) hsl(220, 15%, 96%) hsl(220, 15%, 50%);
+  background: white !important;
+  border: 2px solid !important;
+  border-color: hsl(220, 15%, 50%) hsl(220, 15%, 96%) hsl(220, 15%, 96%) hsl(220, 15%, 50%) !important;
 }
 
 .terminal-text {
