@@ -174,6 +174,81 @@ export default function HdriveManagement() {
     if (drivesToImport.length > 0) bulkImportMutation.mutate(drivesToImport);
   };
 
+  const handleExportList = async () => {
+    setIsExportingList(true);
+    const { jsPDF } = await import('jspdf');
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'letter' });
+    const pageW = doc.internal.pageSize.getWidth();
+    const now = new Date();
+
+    // Header
+    doc.setFillColor(30, 60, 120);
+    doc.rect(0, 0, pageW, 36, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(13);
+    doc.setFont('courier', 'bold');
+    doc.text('NEW HANOVER COUNTY SCHOOLS — TRANSPORTATION DEPT.', pageW / 2, 14, { align: 'center' });
+    doc.setFontSize(10);
+    doc.text('H-DRIVE INVENTORY LIST', pageW / 2, 27, { align: 'center' });
+
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(8);
+    doc.setFont('courier', 'normal');
+    const filterDesc = [
+      userFilter ? `User: ${userFilter}` : '',
+      locationFilter ? `Location: ${locationFilter}` : '',
+      seizedFilter ? 'SEIZED ONLY' : '',
+      search ? `Search: "${search}"` : '',
+    ].filter(Boolean).join(' | ');
+    doc.text(`Generated: ${now.toLocaleDateString()} ${now.toLocaleTimeString()}   Filters: ${filterDesc || 'None'}   Total: ${filtered.length}`, 20, 50);
+
+    // Table
+    const cols = [
+      { label: '#', x: 20, w: 20 },
+      { label: 'SERIAL NUMBER', x: 40, w: 120 },
+      { label: 'MAKE', x: 160, w: 80 },
+      { label: 'MODEL', x: 240, w: 110 },
+      { label: 'CURRENT USER', x: 350, w: 120 },
+      { label: 'LOCATION', x: 470, w: 200 },
+      { label: 'SEIZED', x: 670, w: 50 },
+    ];
+
+    let y = 62;
+    // Header row
+    doc.setFillColor(30, 60, 120);
+    doc.rect(20, y, pageW - 40, 14, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(8);
+    doc.setFont('courier', 'bold');
+    cols.forEach(c => doc.text(c.label, c.x + 2, y + 10));
+    y += 14;
+
+    doc.setFont('courier', 'normal');
+    filtered.forEach((d, i) => {
+      if (y > 540) {
+        doc.addPage();
+        y = 20;
+      }
+      const bg = d.seized ? [255, 230, 180] : i % 2 === 0 ? [245, 247, 252] : [255, 255, 255];
+      doc.setFillColor(...bg);
+      doc.rect(20, y, pageW - 40, 12, 'F');
+      doc.setTextColor(0, 0, 0);
+      doc.setFontSize(7.5);
+      const clean = s => (s || '-').replace(/[^\x00-\x7F]/g, '');
+      doc.text(String(i + 1), cols[0].x + 2, y + 9);
+      doc.text(clean(d.serial_number).substring(0, 20), cols[1].x + 2, y + 9);
+      doc.text(clean(d.make).substring(0, 12), cols[2].x + 2, y + 9);
+      doc.text(clean(d.model).substring(0, 16), cols[3].x + 2, y + 9);
+      doc.text(clean(d.current_user).substring(0, 18), cols[4].x + 2, y + 9);
+      doc.text(clean(d.current_location).substring(0, 30), cols[5].x + 2, y + 9);
+      if (d.seized) { doc.setTextColor(180, 0, 0); doc.text('YES', cols[6].x + 2, y + 9); doc.setTextColor(0, 0, 0); }
+      y += 12;
+    });
+
+    doc.save(`hdrive-inventory-${now.toISOString().slice(0,10)}.pdf`);
+    setIsExportingList(false);
+  };
+
   const handleExportAudit = async () => {
     setIsExporting(true);
     const response = await base44.functions.invoke('exportHDriveAudit', { search: auditSearch, userFilter: auditUserFilter, locationFilter: auditLocationFilter, seizedOnly: auditSiezedOnly });
