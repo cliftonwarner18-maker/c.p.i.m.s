@@ -69,7 +69,7 @@ export default function BusProfile() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-2">
+    <div className="w-full space-y-2" style={{padding:'4px',boxSizing:'border-box'}}>
       {showAddHistory && (
         <AddHistoryForm
           busNumber={busNumber}
