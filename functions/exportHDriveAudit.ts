@@ -149,11 +149,11 @@ Deno.serve(async (req) => {
       const textY = y + 5.5;
       doc.text(String(idx + 1), cols.num.x + 1, textY);
       doc.setFont('courier', 'bold');
-      doc.text((drive.serial_number || '—').substring(0, 18), cols.serial.x + 1, textY);
+      doc.text((drive.serial_number || '-').substring(0, 18), cols.serial.x + 1, textY);
       doc.setFont('courier', 'normal');
-      doc.text((`${drive.make || ''} ${drive.model || ''}`).substring(0, 18), cols.make.x + 1, textY);
-      doc.text((drive.current_user || '—').substring(0, 20), cols.user.x + 1, textY);
-      doc.text((drive.current_location || '—').substring(0, 32), cols.loc.x + 1, textY);
+      doc.text((`${drive.make || ''} ${drive.model || ''}`).trim().substring(0, 18) || '-', cols.make.x + 1, textY);
+      doc.text((drive.current_user || '-').substring(0, 20), cols.user.x + 1, textY);
+      doc.text((drive.current_location || '-').substring(0, 32), cols.loc.x + 1, textY);
       doc.text(String(custodyCount), cols.hist.x + 1, textY);
 
       // Audit fill-in fields
