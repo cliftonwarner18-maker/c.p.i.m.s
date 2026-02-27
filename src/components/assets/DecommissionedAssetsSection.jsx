@@ -292,6 +292,7 @@ export default function DecommissionedAssetsSection() {
                 <th style={{textAlign:'left',padding:'4px',fontWeight:'bold'}}>Make/Model</th>
                 <th style={{textAlign:'left',padding:'4px',fontWeight:'bold'}}>Serial #</th>
                 <th style={{textAlign:'left',padding:'4px',fontWeight:'bold'}}>Decom Status</th>
+                <th style={{textAlign:'center',padding:'4px',fontWeight:'bold'}}>Out of Inv.</th>
                 <th style={{textAlign:'center',padding:'4px',fontWeight:'bold'}}>Actions</th>
               </tr>
             </thead>
