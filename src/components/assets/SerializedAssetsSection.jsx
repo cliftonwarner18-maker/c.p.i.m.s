@@ -109,6 +109,12 @@ export default function SerializedAssetsSection() {
 
   return (
     <WinWindow title="SERIALIZED ASSETS — DVR RECORDERS & HIGH VALUE EQUIPMENT" icon="🎥">
+      <DeleteConfirmModal
+        isOpen={!!deleteTarget}
+        label={deleteTarget ? `${deleteTarget.brand} ${deleteTarget.model} (S/N: ${deleteTarget.serial_number})` : ''}
+        onConfirm={() => { deleteMutation.mutate(deleteTarget.id); setDeleteTarget(null); }}
+        onCancel={() => setDeleteTarget(null)}
+      />
       <div style={{display:'flex',flexDirection:'column',gap:'8px'}}>
         <div style={{display:'flex',gap:'8px',flexWrap:'wrap',alignItems:'center'}}>
           <button
@@ -270,7 +276,7 @@ export default function SerializedAssetsSection() {
                     <button onClick={() => handleEdit(asset)} style={{background:'none',border:'none',cursor:'pointer',color:'hsl(220,70%,35%)',fontSize:'10px'}}>
                       <Edit2 style={{width:12,height:12}} />
                     </button>
-                    <button onClick={() => deleteMutation.mutate(asset.id)} style={{background:'none',border:'none',cursor:'pointer',color:'hsl(0,72%,45%)',fontSize:'10px'}}>
+                    <button onClick={() => setDeleteTarget(asset)} style={{background:'none',border:'none',cursor:'pointer',color:'hsl(0,72%,45%)',fontSize:'10px'}}>
                       <Trash2 style={{width:12,height:12}} />
                     </button>
                   </td>
