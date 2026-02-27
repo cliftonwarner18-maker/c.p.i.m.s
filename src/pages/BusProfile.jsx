@@ -10,6 +10,7 @@ import { FileDown, ArrowLeft, AlertTriangle, CheckCircle, Plus, Trash2 } from 'l
 import { base44 } from '@/api/base44Client';
 export default function BusProfile() {
   const [showAddHistory, setShowAddHistory] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   const urlParams = new URLSearchParams(window.location.search);
   const busNumber = urlParams.get('bus');
 
