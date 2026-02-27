@@ -73,11 +73,13 @@ export default function HdriveManagement() {
     queryFn: () => base44.entities.CustodyLog.list('-transfer_date'),
   });
 
+  const buildLocation = (fleet, sub) => [fleet, sub].filter(Boolean).join(' — ');
+
   const createDriveMutation = useMutation({
-    mutationFn: (data) => base44.entities.HDrive.create(data),
+    mutationFn: (data) => base44.entities.HDrive.create({ ...data, current_location: buildLocation(data.fleet_location, data.sub_location) }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['hdrives'] });
-      setFormData({ make: '', model: '', serial_number: '', current_location: '', current_user: '' });
+      setFormData({ make: '', model: '', serial_number: '', fleet_location: '', sub_location: '', current_user: '' });
       setShowAddForm(false);
     },
   });
