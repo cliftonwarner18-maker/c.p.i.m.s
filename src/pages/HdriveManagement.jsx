@@ -237,7 +237,7 @@ export default function HdriveManagement() {
               </div>
               <div>
                 <label style={{ fontSize: '11px', fontWeight: 'bold' }}>NEW LOCATION:</label>
-                <input className="win-input" placeholder="e.g., Desk drawer locked" value={transferData.new_location} onChange={(e) => setTransferData({...transferData, new_location: e.target.value})} />
+                <LocationFields fleetKey="fleet_location" subKey="sub_location" values={transferData} onChange={v => setTransferData({...transferData, ...v})} />
               </div>
               <div>
                 <label style={{ fontSize: '11px', fontWeight: 'bold' }}>REASON FOR TRANSFER:</label>
