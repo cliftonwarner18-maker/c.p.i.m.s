@@ -6,7 +6,8 @@ import AddHistoryForm from '../components/fleet/AddHistoryForm';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Printer, ArrowLeft, AlertTriangle, CheckCircle, Plus, Trash2 } from 'lucide-react';
+import { FileDown, ArrowLeft, AlertTriangle, CheckCircle, Plus, Trash2 } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
 export default function BusProfile() {
   const [showAddHistory, setShowAddHistory] = useState(false);
   const urlParams = new URLSearchParams(window.location.search);
