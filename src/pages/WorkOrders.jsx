@@ -35,9 +35,7 @@ export default function WorkOrders() {
   });
 
   const handleDelete = (wo) => {
-    if (window.confirm(`DELETE work order ${wo.order_number} for Bus #${wo.bus_number}? This cannot be undone.`)) {
-      deleteMutation.mutate(wo.id);
-    }
+    setDeleteTarget(wo);
   };
 
   const statusClass = (s) => {
@@ -50,6 +48,12 @@ export default function WorkOrders() {
   return (
     <>
       <LoadingScreen isLoading={isLoading} message="LOADING WORK ORDERS..." />
+      <DeleteConfirmModal
+        isOpen={!!deleteTarget}
+        label={deleteTarget ? `Work Order ${deleteTarget.order_number} (Bus #${deleteTarget.bus_number})` : ''}
+        onConfirm={() => { deleteMutation.mutate(deleteTarget.id); setDeleteTarget(null); }}
+        onCancel={() => setDeleteTarget(null)}
+      />
       <div style={{display:'flex',flexDirection:'column',gap:'4px'}}>
        <WinWindow title="ALL WORK ORDERS — SURVEILLANCE REPAIR LOG" icon="📋">
          {/* Filters */}
