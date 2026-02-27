@@ -45,6 +45,7 @@ export default function EditInspectionForm({ inspection, onClose, onSaved }) {
     mutationFn: (data) => base44.entities.Inspection.update(inspection.id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['inspections'] });
+      queryClient.invalidateQueries({ queryKey: ['buses'] });
       onSaved();
     },
   });
@@ -52,6 +53,13 @@ export default function EditInspectionForm({ inspection, onClose, onSaved }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     updateMutation.mutate(form);
+    // Sync next inspection due to fleet
+    if (form.next_inspection_due && form.bus_number) {
+      const bus = buses.find(b => b.bus_number === form.bus_number);
+      if (bus) {
+        base44.entities.Bus.update(bus.id, { next_inspection_due: form.next_inspection_due });
+      }
+    }
   };
 
   return (
