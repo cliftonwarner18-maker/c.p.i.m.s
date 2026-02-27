@@ -99,6 +99,12 @@ export default function DecommissionedAssetsSection() {
 
   return (
     <WinWindow title="DECOMMISSIONED ASSETS — SALVAGE & DISPOSAL LOG" icon="🗑️">
+      <DeleteConfirmModal
+        isOpen={!!deleteTarget}
+        label={deleteTarget ? `${deleteTarget.make} ${deleteTarget.model}${deleteTarget.serial_number ? ` (S/N: ${deleteTarget.serial_number})` : ''}` : ''}
+        onConfirm={() => { deleteMutation.mutate(deleteTarget.id); setDeleteTarget(null); }}
+        onCancel={() => setDeleteTarget(null)}
+      />
       <div style={{display:'flex',flexDirection:'column',gap:'8px'}}>
         <div style={{display:'flex',gap:'8px',flexWrap:'wrap',alignItems:'center'}}>
           <button
@@ -331,7 +337,7 @@ export default function DecommissionedAssetsSection() {
                     <button onClick={() => handleEdit(asset)} style={{background:'none',border:'none',cursor:'pointer',color:'hsl(220,70%,35%)',fontSize:'10px'}}>
                       <Edit2 style={{width:12,height:12}} />
                     </button>
-                    <button onClick={() => deleteMutation.mutate(asset.id)} style={{background:'none',border:'none',cursor:'pointer',color:'hsl(0,72%,45%)',fontSize:'10px'}}>
+                    <button onClick={() => setDeleteTarget(asset)} style={{background:'none',border:'none',cursor:'pointer',color:'hsl(0,72%,45%)',fontSize:'10px'}}>
                       <Trash2 style={{width:12,height:12}} />
                     </button>
                   </td>
