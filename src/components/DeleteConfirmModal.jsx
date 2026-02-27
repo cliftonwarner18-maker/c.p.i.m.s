@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Trash2, ShieldAlert } from 'lucide-react';
 
 // Secret delete code — change this to whatever you want
-const DELETE_CODE = 'NHCS2024';
+const DELETE_CODE = '877421';
 
 /**
  * Usage:
