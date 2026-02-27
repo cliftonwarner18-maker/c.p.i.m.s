@@ -259,6 +259,12 @@ export default function HdriveManagement() {
                           onChange={(e) => setEditData({...editData, seizing_agency: e.target.value})}
                           placeholder="e.g., NHCSO, NHCPD, NCSHP" />
                       </div>
+                      <div style={{ flex: '1 1 160px' }}>
+                        <label style={{ fontSize: '10px', fontWeight: 'bold', display: 'block' }}>SEIZING PERSON (NAME):</label>
+                        <input className="win-input" style={{ width: '100%', fontSize: '11px' }} value={editData.seizing_person}
+                          onChange={(e) => setEditData({...editData, seizing_person: e.target.value})}
+                          placeholder="e.g., Det. John Smith" />
+                      </div>
                       <div style={{ flex: '1 1 120px' }}>
                         <label style={{ fontSize: '10px', fontWeight: 'bold', display: 'block' }}>CASE #:</label>
                         <input className="win-input" style={{ width: '100%', fontSize: '11px' }} value={editData.seizure_case_number}
@@ -288,6 +294,13 @@ export default function HdriveManagement() {
                           <option value="Other">Other</option>
                         </select>
                       </div>
+                    </div>
+                    <div>
+                      <label style={{ fontSize: '10px', fontWeight: 'bold', display: 'block' }}>SEIZURE NOTES:</label>
+                      <textarea className="win-input" rows="2" style={{ width: '100%', fontSize: '11px', fontFamily: "'Courier Prime', monospace" }}
+                        value={editData.seizure_notes}
+                        onChange={(e) => setEditData({...editData, seizure_notes: e.target.value})}
+                        placeholder="Additional details, badge numbers, receipt #, etc." />
                     </div>
                   </div>
                 )}
