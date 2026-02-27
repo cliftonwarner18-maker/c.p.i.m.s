@@ -94,7 +94,7 @@ export default function FleetManager() {
 
       <WinWindow title="FLEET MANAGEMENT — VEHICLE DATABASE" icon="🚌">
         <div style={{display:'flex',flexWrap:'wrap',gap:'4px',marginBottom:'4px',alignItems:'center'}}>
-           <button
+          <button
               className="win-button"
               style={{display:'flex',alignItems:'center',gap:'4px',fontSize:'11px',background:'hsl(220,70%,35%)',color:'white'}}
               onClick={() => { setEditingBus(null); setShowForm(true); }}

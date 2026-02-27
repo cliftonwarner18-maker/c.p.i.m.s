@@ -141,5 +141,6 @@ export default function Inspections() {
             TOTAL INSPECTIONS: {filtered.length}
             </div>
             </WinWindow>
+            </div>
             );
             }
