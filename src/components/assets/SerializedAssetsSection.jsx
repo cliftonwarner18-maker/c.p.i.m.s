@@ -10,6 +10,7 @@ export default function SerializedAssetsSection() {
   const [editingAsset, setEditingAsset] = useState(null);
   const [formData, setFormData] = useState({});
   const [statusFilter, setStatusFilter] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
   const [isExporting, setIsExporting] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [isCleaningUp, setIsCleaningUp] = useState(false);
@@ -122,6 +123,17 @@ export default function SerializedAssetsSection() {
     (a.serial_number && serialCounts[a.serial_number.trim().toLowerCase()] > 1) ||
     (a.asset_number && assetNumCounts[a.asset_number.trim().toLowerCase()] > 1);
 
+  const filteredAssets = assets.filter(asset => {
+    const statusMatch = statusFilter === 'All' || asset.status === statusFilter;
+    const searchMatch = searchQuery === '' || 
+      asset.asset_number?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.brand?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.model?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.serial_number?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      asset.current_location?.toLowerCase().includes(searchQuery.toLowerCase());
+    return statusMatch && searchMatch;
+  });
+
   return (
     <WinWindow title="SERIALIZED ASSETS — DVR RECORDERS & HIGH VALUE EQUIPMENT" icon="🎥">
       <DeleteConfirmModal
@@ -143,6 +155,15 @@ export default function SerializedAssetsSection() {
           >
             <Plus style={{width:12,height:12}} /> Add Asset
           </button>
+
+          <input
+            type="text"
+            placeholder="Search assets..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="win-input"
+            style={{fontSize:'11px',padding:'4px 8px',minWidth:'150px'}}
+          />
           
           <select
             value={statusFilter}
@@ -268,6 +289,9 @@ export default function SerializedAssetsSection() {
           </div>
         )}
 
+        <div style={{fontSize:'10px',marginBottom:'6px',color:'hsl(220,10%,50%)'}}>
+          Found {filteredAssets.length} of {assets.length} assets
+        </div>
         <div className="win-panel-inset" style={{padding:'8px',fontSize:'10px',maxHeight:'400px',overflowY:'auto'}}>
           <table style={{width:'100%',borderCollapse:'collapse'}}>
             <thead>
@@ -283,7 +307,7 @@ export default function SerializedAssetsSection() {
               </tr>
             </thead>
             <tbody>
-              {assets.map(asset => {
+              {filteredAssets.map(asset => {
                 const dup = isAssetDuplicate(asset);
                 return <tr key={asset.id} style={{borderBottom:'1px solid hsl(220,15%,85%)', backgroundColor: dup ? 'hsl(0,80%,92%)' : '', outline: dup ? '2px solid hsl(0,72%,45%)' : 'none'}}>
                   <td style={{padding:'4px'}}>
