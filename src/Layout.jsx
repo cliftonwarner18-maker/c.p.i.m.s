@@ -63,14 +63,14 @@ export default function Layout({ children, currentPageName }) {
       </div>
 
       {/* Bottom Status Bar */}
-      <div className="win-border-inset bg-secondary flex items-center text-[10px] font-mono px-1 h-5 no-print" style={{fontFamily:"'Courier Prime',monospace"}}>
-        <div className="win-border-inset px-2 bg-card flex-1">
-          NHCS — SCHOOL BUS SURVEILLANCE MANAGEMENT SYSTEM
+      <div style={{background:'hsl(220,18%,92%)',borderTop:'1px solid hsl(220,18%,75%)',display:'flex',alignItems:'center',fontSize:'10px',fontFamily:"'Courier Prime',monospace",padding:'4px 8px',gap:'8px',height:'auto',minHeight:'28px',flexWrap:'wrap'}}>
+        <div style={{flex:1,paddingLeft:'4px',color:'hsl(220,20%,25%)'}}>
+          NHCS Vehicle Surveillance System
         </div>
-        <div className="win-border-inset px-2 bg-card" style={{fontStyle:'italic',color:'hsl(220,10%,45%)',fontSize:'8px',letterSpacing:'0.03em'}}>
-          Powered by Base44 · Developed by Clifton Warner M.
+        <div style={{fontSize:'9px',color:'hsl(220,10%,50%)',letterSpacing:'0.04em'}}>
+          Powered by Base44
         </div>
-        <div className="win-border-inset px-2 bg-card">
+        <div style={{borderLeft:'1px solid hsl(220,18%,70%)',paddingLeft:'8px',color:'hsl(220,10%,45%)',whiteSpace:'nowrap'}}>
           {new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}
         </div>
       </div>
