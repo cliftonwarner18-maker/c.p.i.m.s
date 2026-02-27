@@ -22,6 +22,10 @@ const Check = ({ label, field, form, setForm }) => (
 
 export default function EditInspectionForm({ inspection, onClose, onSaved }) {
   const queryClient = useQueryClient();
+  const { data: buses = [] } = useQuery({
+    queryKey: ['buses'],
+    queryFn: () => base44.entities.Bus.list('bus_number'),
+  });
   const [form, setForm] = useState({
     bus_number: inspection.bus_number || '',
     inspector_name: inspection.inspector_name || '',
