@@ -66,8 +66,8 @@ export default function BusForm({ bus, onClose, onSaved }) {
   const isPending = createMutation.isPending || updateMutation.isPending;
 
   const Field = ({ label, children }) => (
-    <div style={{display:'flex',flexDirection:'column'}}>
-      <label style={{fontSize:'10px',fontWeight:'bold',display:'block',marginBottom:'2px'}}>{label}</label>
+    <div style={{display:'flex',flexDirection:'column',width:'100%',marginBottom:'12px'}}>
+      <label style={{fontSize:'10px',fontWeight:'bold',display:'block',marginBottom:'4px',width:'100%'}}>{label}</label>
       {children}
     </div>
   );
@@ -81,11 +81,11 @@ export default function BusForm({ bus, onClose, onSaved }) {
 
   return (
     <WinWindow title={bus ? `EDIT VEHICLE — BUS #${bus.bus_number}` : 'ADD NEW VEHICLE'} icon="🚌">
-      <form onSubmit={handleSubmit} style={{display:'flex',flexDirection:'column',gap:'4px'}}>
+      <form onSubmit={handleSubmit} style={{display:'flex',flexDirection:'column',width:'100%',padding:'16px'}}>
         {/* Vehicle Info */}
          <div className="win-panel" style={{padding:'4px',boxSizing:'border-box',display:'flex',flexDirection:'column',width:'100%'}}>
-           <div style={{fontSize:'10px',fontWeight:'bold',background:'hsl(220,70%,35%)',color:'white',padding:'2px 4px',marginBottom:'2px',width:'100%',display:'block'}}>▸ VEHICLE INFORMATION</div>
-           <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(150px, 1fr))',gap:'4px',width:'100%'}}>
+           <div style={{fontSize:'10px',fontWeight:'bold',background:'hsl(220,70%,35%)',color:'white',padding:'2px 4px',marginBottom:'12px',width:'100%',display:'block'}}>▸ VEHICLE INFORMATION</div>
+           <div style={{display:'flex',flexDirection:'column',gap:'0',width:'100%'}}>
             <Field label="BUS # *">
                <input className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.bus_number} onChange={e => setForm({...form, bus_number: e.target.value})} required />
              </Field>
@@ -139,8 +139,8 @@ export default function BusForm({ bus, onClose, onSaved }) {
 
         {/* Camera System */}
         <div className="win-panel" style={{padding:'4px',boxSizing:'border-box',display:'flex',flexDirection:'column',width:'100%'}}>
-          <div style={{fontSize:'10px',fontWeight:'bold',background:'hsl(220,70%,35%)',color:'white',padding:'2px 4px',marginBottom:'2px',width:'100%',display:'block'}}>▸ CAMERA SYSTEM</div>
-          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(150px, 1fr))',gap:'4px',width:'100%'}}>
+          <div style={{fontSize:'10px',fontWeight:'bold',background:'hsl(220,70%,35%)',color:'white',padding:'2px 4px',marginBottom:'12px',width:'100%',display:'block'}}>▸ CAMERA SYSTEM</div>
+          <div style={{display:'flex',flexDirection:'column',gap:'0',width:'100%'}}>
             <Field label="CAMERA SYSTEM">
               <select className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.camera_system_type} onChange={e => setForm({...form, camera_system_type: e.target.value})}>
                 <option value="Seon">Seon</option>
@@ -163,12 +163,12 @@ export default function BusForm({ bus, onClose, onSaved }) {
         {/* AI Camera / Samsara */}
         <div className="win-panel" style={{padding:'4px',boxSizing:'border-box'}}>
           <div style={{fontSize:'10px',fontWeight:'bold',background:'hsl(220,70%,35%)',color:'white',padding:'2px 4px',marginBottom:'2px'}}>▸ AI CAMERA SYSTEM (SAMSARA)</div>
-          <div style={{display:'flex',flexWrap:'wrap',gap:'8px',marginBottom:'4px'}}>
+          <div style={{display:'flex',flexDirection:'column',gap:'12px',marginBottom:'12px'}}>
             <Check label="Samsara" checked={form.samsara_enabled} onChange={e => setForm({...form, samsara_enabled: e.target.checked})} />
             <Check label="Sam AV" checked={form.samsara_av_enabled} onChange={e => setForm({...form, samsara_av_enabled: e.target.checked})} />
             <Check label="Sam Inputs" checked={form.samsara_inputs_enabled} onChange={e => setForm({...form, samsara_inputs_enabled: e.target.checked})} />
           </div>
-          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(150px, 1fr))',gap:'4px'}}>
+          <div style={{display:'flex',flexDirection:'column',gap:'0',width:'100%'}}>
             <Field label="DASH CAM SID#">
               <input className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.dash_cam_sid} onChange={e => setForm({...form, dash_cam_sid: e.target.value})} />
             </Field>
