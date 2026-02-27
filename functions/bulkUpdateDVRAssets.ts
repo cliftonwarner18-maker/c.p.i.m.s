@@ -21,31 +21,41 @@ Deno.serve(async (req) => {
     let skipCount = 0;
     let errors = [];
 
-    // Process each update
-    for (const update of updates) {
-      const { bus_number, asset_number } = update;
+    // Process updates in batches of 10 with 500ms delay between batches
+    const batchSize = 10;
+    for (let i = 0; i < updates.length; i += batchSize) {
+      const batch = updates.slice(i, i + batchSize);
       
-      // Skip if no asset number
-      if (!asset_number || asset_number === 'NA' || asset_number.trim() === '') {
-        skipCount++;
-        continue;
-      }
+      for (const update of batch) {
+        const { bus_number, asset_number } = update;
+        
+        // Skip if no asset number
+        if (!asset_number || asset_number === 'NA' || asset_number.trim() === '') {
+          skipCount++;
+          continue;
+        }
 
-      // Find the bus
-      const bus = allBuses.find(b => b.bus_number === bus_number);
-      if (!bus) {
-        errors.push(`Bus #${bus_number} not found`);
-        continue;
-      }
+        // Find the bus
+        const bus = allBuses.find(b => b.bus_number === bus_number);
+        if (!bus) {
+          errors.push(`Bus #${bus_number} not found`);
+          continue;
+        }
 
-      try {
-        // Update the bus with the asset number
-        await base44.asServiceRole.entities.Bus.update(bus.id, {
-          asset_number: asset_number.toString().trim()
-        });
-        successCount++;
-      } catch (error) {
-        errors.push(`Bus #${bus_number}: ${error.message}`);
+        try {
+          // Update the bus with the asset number
+          await base44.asServiceRole.entities.Bus.update(bus.id, {
+            asset_number: asset_number.toString().trim()
+          });
+          successCount++;
+        } catch (error) {
+          errors.push(`Bus #${bus_number}: ${error.message}`);
+        }
+      }
+      
+      // Add delay between batches to avoid rate limiting
+      if (i + batchSize < updates.length) {
+        await new Promise(resolve => setTimeout(resolve, 500));
       }
     }
 
