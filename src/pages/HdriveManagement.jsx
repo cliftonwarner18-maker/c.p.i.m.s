@@ -53,13 +53,16 @@ export default function HdriveManagement() {
   const [showAddForm, setShowAddForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
   const [editDrive, setEditDrive] = useState(null);
-  const [editData, setEditData] = useState({ make: '', model: '', serial_number: '', fleet_location: '', sub_location: '', current_user: '' });
+  const [editData, setEditData] = useState({ make: '', model: '', serial_number: '', fleet_location: '', sub_location: '', current_user: '', seized: false, seizing_agency: '', seizure_case_number: '', seizure_date: '', seizure_reason: '' });
   const [showTransferForm, setShowTransferForm] = useState(false);
   const [showBulkImport, setShowBulkImport] = useState(false);
   const [search, setSearch] = useState('');
   const [userFilter, setUserFilter] = useState('');
+  const [locationFilter, setLocationFilter] = useState('');
   const [auditSearch, setAuditSearch] = useState('');
   const [auditUserFilter, setAuditUserFilter] = useState('');
+  const [auditLocationFilter, setAuditLocationFilter] = useState('');
+  const [auditSiezedOnly, setAuditSeizedOnly] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [selectedDrive, setSelectedDrive] = useState(null);
   const [formData, setFormData] = useState({ make: '', model: '', serial_number: '', fleet_location: '', sub_location: '', current_user: '' });
