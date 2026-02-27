@@ -121,6 +121,14 @@ export default function EditInspectionForm({ inspection, onClose, onSaved }) {
                 <div>
                   <label className="text-[10px] font-bold block mb-0.5">NEXT INSPECTION DUE:</label>
                   <input type="date" className="win-input w-full text-[11px]" value={form.next_inspection_due} onChange={(e) => setForm({ ...form, next_inspection_due: e.target.value })} />
+                  <div style={{display:'flex',gap:'2px',marginTop:'3px',flexWrap:'wrap'}}>
+                    {[{label:'30D',days:30},{label:'60D',days:60},{label:'90D',days:90},{label:'1YR',days:365}].map(({label,days})=>(
+                      <button key={label} type="button" className="win-button" style={{fontSize:'9px',padding:'1px 6px',background:'hsl(220,70%,35%)',color:'white'}}
+                        onClick={() => setForm({...form, next_inspection_due: moment().add(days,'days').format('YYYY-MM-DD')})}>
+                        {label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
               <div className="mt-2">
