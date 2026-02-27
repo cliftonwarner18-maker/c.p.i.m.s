@@ -100,22 +100,22 @@ export default function BusForm({ bus, onClose, onSaved }) {
               </select>
             </Field>
             <Field label="YEAR">
-              <input className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.year} onChange={e => setForm({...form, year: e.target.value})} />
+              <input className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.year} onChange={e => handleFieldChange('year', e.target.value)} />
             </Field>
             <Field label="MAKE">
-              <input className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.make} onChange={e => setForm({...form, make: e.target.value})} />
+              <input className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.make} onChange={e => handleFieldChange('make', e.target.value)} />
             </Field>
             <Field label="MODEL">
-              <input className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.model} onChange={e => setForm({...form, model: e.target.value})} />
+              <input className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.model} onChange={e => handleFieldChange('model', e.target.value)} />
             </Field>
             <Field label="VIN">
-              <input className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.vin} onChange={e => setForm({...form, vin: e.target.value})} />
+              <input className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.vin} onChange={e => handleFieldChange('vin', e.target.value)} />
             </Field>
             <Field label="ENGINE">
-              <input className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.engine} onChange={e => setForm({...form, engine: e.target.value})} />
+              <input className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.engine} onChange={e => handleFieldChange('engine', e.target.value)} />
             </Field>
             <Field label="CAPACITY">
-              <input type="number" className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.passenger_capacity} onChange={e => setForm({...form, passenger_capacity: e.target.value})} />
+              <input type="number" className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.passenger_capacity} onChange={e => handleFieldChange('passenger_capacity', e.target.value)} />
             </Field>
             <Field label="BASE LOCATION">
               <select className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.base_location} onChange={e => setForm({...form, base_location: e.target.value})}>
