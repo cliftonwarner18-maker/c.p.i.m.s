@@ -40,7 +40,16 @@ export default function ActiveWorkOrders({ workOrders }) {
   };
 
   return (
-    <div className="win-panel-inset overflow-auto" style={{ display: 'block', width: '100%', maxHeight: '520px', minHeight: '100px', boxSizing: 'border-box' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', width: '100%' }}>
+      <button
+        onClick={handleExport}
+        disabled={isExporting}
+        className="win-button"
+        style={{display:'flex',alignItems:'center',gap:'4px',fontSize:'11px',background:isExporting ? 'hsl(220,15%,75%)' : 'hsl(220,70%,35%)',color:'white',width:'fit-content'}}
+      >
+        <FileDown style={{width:12,height:12}} /> {isExporting ? 'EXPORTING...' : 'EXPORT PDF'}
+      </button>
+      <div className="win-panel-inset overflow-auto" style={{ display: 'block', width: '100%', maxHeight: '520px', minHeight: '100px', boxSizing: 'border-box' }}>
       <table className="w-full text-[12px] font-mono" style={{ display: 'block', width: '100%', boxSizing: 'border-box' }}>
         <thead>
           <tr className="bg-primary text-primary-foreground">
