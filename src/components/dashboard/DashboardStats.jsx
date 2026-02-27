@@ -20,7 +20,7 @@ export default function DashboardStats({ buses, workOrders, inspections }) {
   ];
 
   return (
-    <div style={{display:'grid',gridTemplateColumns:'repeat(5, 1fr)',width:'100%',gap:'4px',padding:'8px',background:'hsl(220,20%,10%)',border:'2px solid hsl(220,70%,35%)'}}>
+    <div style={{display:'grid',gridTemplateColumns:'repeat(5, 1fr)',width:'100% !important',maxWidth:'none !important',gap:'4px',padding:'8px',background:'hsl(220,20%,10%)',border:'2px solid hsl(220,70%,35%)',boxSizing:'border-box'}}>
       {stats.map((stat, i) => (
         <div key={i} style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',textAlign:'center',padding:'16px 12px',background:'hsl(220,20%,8%)',border:'2px solid',borderColor:stat.color,boxShadow:`0 0 12px ${stat.color}40`,minHeight:'100px',boxSizing:'border-box'}}>
           <stat.icon style={{width:'28px',height:'28px',color:stat.color,marginBottom:'8px',filter:'drop-shadow(0 0 4px ' + stat.color + ')'}} />
