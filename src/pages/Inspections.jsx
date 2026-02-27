@@ -37,6 +37,12 @@ export default function Inspections() {
   return (
     <>
       <LoadingScreen isLoading={isLoading} message="LOADING INSPECTIONS..." />
+      <DeleteConfirmModal
+        isOpen={!!deleteTarget}
+        label={deleteTarget ? `Inspection ${deleteTarget.inspection_number} (Bus #${deleteTarget.bus_number})` : ''}
+        onConfirm={() => { deleteMutation.mutate(deleteTarget.id); setDeleteTarget(null); }}
+        onCancel={() => setDeleteTarget(null)}
+      />
       <div style={{display:'flex',flexDirection:'column',gap:'4px'}}>
        {editingInsp && (
          <EditInspectionForm
@@ -118,7 +124,7 @@ export default function Inspections() {
                     <button
                       className="win-button"
                       style={{padding:'0 2px',fontSize:'10px',display:'inline-flex',alignItems:'center',justifyContent:'center'}}
-                      onClick={() => { if (confirm('Delete this inspection?')) deleteMutation.mutate(insp.id); }}
+                      onClick={() => setDeleteTarget(insp)}
                       title="Delete"
                     >
                       <Trash2 className="w-3 h-3" />
