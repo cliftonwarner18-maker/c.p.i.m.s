@@ -60,6 +60,8 @@ export default function HdriveManagement() {
   const [search, setSearch] = useState('');
   const [userFilter, setUserFilter] = useState('');
   const [locationFilter, setLocationFilter] = useState('');
+  const [seizedFilter, setSeizedFilter] = useState(false);
+  const [isExportingList, setIsExportingList] = useState(false);
   const [auditSearch, setAuditSearch] = useState('');
   const [auditUserFilter, setAuditUserFilter] = useState('');
   const [auditLocationFilter, setAuditLocationFilter] = useState('');
