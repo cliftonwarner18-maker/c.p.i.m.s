@@ -231,15 +231,15 @@ export default function BusProfile() {
            </button>
          </div>
         <div className="win-panel-inset overflow-auto" style={{ maxHeight: '300px' }}>
-         <table className="w-full text-[10px] font-mono" style={{tableLayout:'auto'}}>
-           <thead>
-             <tr className="bg-primary text-primary-foreground sticky top-0">
-               <th className="p-1 text-left whitespace-nowrap">START</th>
-               <th className="p-1 text-left whitespace-nowrap">END</th>
-               <th className="p-1 text-left whitespace-nowrap">ELAPSED</th>
-               <th className="p-1 text-left whitespace-nowrap">TECH</th>
-               <th className="p-1 text-left">DESCRIPTION</th>
-               <th className="p-1 text-left no-print whitespace-nowrap">ACTION</th>
+         <table className="w-full text-[10px] font-mono" style={{tableLayout:'fixed', borderCollapse:'collapse'}}>
+           <thead style={{position:'sticky', top:0, zIndex:10}}>
+             <tr className="bg-primary text-primary-foreground">
+               <th className="p-1 text-left whitespace-nowrap border-b border-primary-foreground">START</th>
+               <th className="p-1 text-left whitespace-nowrap border-b border-primary-foreground">END</th>
+               <th className="p-1 text-left whitespace-nowrap border-b border-primary-foreground">ELAPSED</th>
+               <th className="p-1 text-left whitespace-nowrap border-b border-primary-foreground">TECH</th>
+               <th className="p-1 text-left border-b border-primary-foreground">DESCRIPTION</th>
+               <th className="p-1 text-left no-print whitespace-nowrap border-b border-primary-foreground">ACTION</th>
              </tr>
            </thead>
            <tbody>
