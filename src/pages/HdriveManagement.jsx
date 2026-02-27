@@ -173,9 +173,6 @@ export default function HdriveManagement() {
       <LoadingScreen isLoading={isLoading} message="LOADING H-DRIVE INVENTORY..." />
       <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
 
-        {/* ADMIN SECTION */}
-        <AdminSection />
-
         {/* Add Drive Form */}
         {showAddForm && (
           <WinWindow title="ADD NEW H-DRIVE" icon="💾">
