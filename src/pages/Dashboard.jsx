@@ -64,8 +64,8 @@ export default function Dashboard() {
       </div>
 
       {/* Stats */}
-      <div className="win-panel" style={{padding:0,margin:0}}>
-        <div className="win-titlebar">📊 SYSTEM STATUS OVERVIEW</div>
+      <div style={{display:'flex',flexDirection:'column',width:'100%'}}>
+        <div className="win-titlebar" style={{width:'100%',margin:0}}>📊 SYSTEM STATUS OVERVIEW</div>
         <DashboardStats buses={buses} workOrders={workOrders} inspections={inspections} />
       </div>
 
