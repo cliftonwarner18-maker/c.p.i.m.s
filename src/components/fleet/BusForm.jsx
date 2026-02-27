@@ -83,8 +83,8 @@ export default function BusForm({ bus, onClose, onSaved }) {
     <WinWindow title={bus ? `EDIT VEHICLE — BUS #${bus.bus_number}` : 'ADD NEW VEHICLE'} icon="🚌">
       <form onSubmit={handleSubmit} style={{display:'flex',flexDirection:'column',width:'100%',padding:'16px'}}>
         {/* Vehicle Info */}
-         <div className="win-panel" style={{padding:'4px',boxSizing:'border-box',display:'flex',flexDirection:'column',width:'100%'}}>
-           <div style={{fontSize:'10px',fontWeight:'bold',background:'hsl(220,70%,35%)',color:'white',padding:'2px 4px',marginBottom:'12px',width:'100%',display:'block'}}>▸ VEHICLE INFORMATION</div>
+         <div style={{display:'flex',flexDirection:'column',width:'100%',marginBottom:'12px'}}>
+           <div style={{width:'100%',display:'block',backgroundColor:'hsl(220,70%,35%)',color:'white',padding:'8px 12px',fontFamily:'monospace',fontSize:'11px',fontWeight:'bold',boxSizing:'border-box',marginBottom:'12px'}}>▸ VEHICLE INFORMATION</div>
            <div style={{display:'flex',flexDirection:'column',gap:'0',width:'100%'}}>
             <Field label="BUS # *">
                <input className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.bus_number} onChange={e => setForm({...form, bus_number: e.target.value})} required />
@@ -139,8 +139,8 @@ export default function BusForm({ bus, onClose, onSaved }) {
         </div>
 
         {/* Camera System */}
-        <div className="win-panel" style={{padding:'4px',boxSizing:'border-box',display:'flex',flexDirection:'column',width:'100%'}}>
-          <div style={{fontSize:'10px',fontWeight:'bold',background:'hsl(220,70%,35%)',color:'white',padding:'2px 4px',marginBottom:'12px',width:'100%',display:'block'}}>▸ CAMERA SYSTEM</div>
+         <div style={{display:'flex',flexDirection:'column',width:'100%',marginBottom:'12px'}}>
+           <div style={{width:'100%',display:'block',backgroundColor:'hsl(220,70%,35%)',color:'white',padding:'8px 12px',fontFamily:'monospace',fontSize:'11px',fontWeight:'bold',boxSizing:'border-box',marginBottom:'12px'}}>▸ CAMERA SYSTEM</div>
           <div style={{display:'flex',flexDirection:'column',gap:'0',width:'100%'}}>
             <Field label="CAMERA SYSTEM">
               <select className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.camera_system_type} onChange={e => setForm({...form, camera_system_type: e.target.value})}>
@@ -162,8 +162,8 @@ export default function BusForm({ bus, onClose, onSaved }) {
         </div>
 
         {/* AI Camera / Samsara */}
-         <div className="win-panel" style={{padding:'4px',boxSizing:'border-box',display:'flex',flexDirection:'column',width:'100%'}}>
-           <div style={{fontSize:'10px',fontWeight:'bold',background:'hsl(220,70%,35%)',color:'white',padding:'2px 4px',marginBottom:'12px',width:'100%',display:'block'}}>▸ AI CAMERA SYSTEM (SAMSARA)</div>
+         <div style={{display:'flex',flexDirection:'column',width:'100%',marginBottom:'12px'}}>
+           <div style={{width:'100%',display:'block',backgroundColor:'hsl(220,70%,35%)',color:'white',padding:'8px 12px',fontFamily:'monospace',fontSize:'11px',fontWeight:'bold',boxSizing:'border-box',marginBottom:'12px'}}>▸ AI CAMERA SYSTEM (SAMSARA)</div>
           <div style={{display:'flex',flexDirection:'column',gap:'12px',marginBottom:'12px'}}>
             <Check label="Samsara" checked={form.samsara_enabled} onChange={e => setForm({...form, samsara_enabled: e.target.checked})} />
             <Check label="Sam AV" checked={form.samsara_av_enabled} onChange={e => setForm({...form, samsara_av_enabled: e.target.checked})} />
@@ -180,8 +180,8 @@ export default function BusForm({ bus, onClose, onSaved }) {
         </div>
 
         {/* Notes */}
-         <div className="win-panel" style={{padding:'4px',boxSizing:'border-box',display:'flex',flexDirection:'column',width:'100%'}}>
-           <div style={{fontSize:'10px',fontWeight:'bold',background:'hsl(220,70%,35%)',color:'white',padding:'2px 4px',marginBottom:'12px',width:'100%',display:'block'}}>▸ NOTES</div>
+         <div style={{display:'flex',flexDirection:'column',width:'100%',marginBottom:'12px'}}>
+           <div style={{width:'100%',display:'block',backgroundColor:'hsl(220,70%,35%)',color:'white',padding:'8px 12px',fontFamily:'monospace',fontSize:'11px',fontWeight:'bold',boxSizing:'border-box',marginBottom:'12px'}}>▸ NOTES</div>
            <div style={{display:'flex',flexDirection:'column',width:'100%'}}>
 
           <textarea className="win-input" style={{width:'100%',fontSize:'11px',height:'60px',resize:'none',display:'block'}} value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} />
@@ -189,8 +189,8 @@ export default function BusForm({ bus, onClose, onSaved }) {
           </div>
 
         {/* Legacy Upload */}
-        <div className="win-panel" style={{padding:'4px',boxSizing:'border-box',display:'flex',flexDirection:'column',width:'100%'}}>
-          <div style={{fontSize:'10px',fontWeight:'bold',background:'hsl(220,70%,35%)',color:'white',padding:'2px 4px',marginBottom:'12px',width:'100%',display:'block'}}>▸ LEGACY UPLOAD</div>
+        <div style={{display:'flex',flexDirection:'column',width:'100%',marginBottom:'12px'}}>
+          <div style={{width:'100%',display:'block',backgroundColor:'hsl(220,70%,35%)',color:'white',padding:'8px 12px',fontFamily:'monospace',fontSize:'11px',fontWeight:'bold',boxSizing:'border-box',marginBottom:'12px'}}>▸ LEGACY UPLOAD</div>
           <div style={{display:'flex',flexDirection:'column',width:'100%'}}>
 
           <textarea className="win-input" style={{width:'100%',fontSize:'11px',height:'120px',fontFamily:'monospace',resize:'none',display:'block'}} placeholder="Paste audit/repair log text here..." value={form.legacy_upload || ''} onChange={e => setForm({...form, legacy_upload: e.target.value})} />
