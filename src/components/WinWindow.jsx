@@ -1,16 +1,29 @@
-import React from 'react';
-import { X, Minus, Square } from 'lucide-react';
-
-export default function WinWindow({ title, children, className = "", icon = null, noPadding = false }) {
+export default function WinWindow({ title, children }) {
   return (
-    <div style={{display:'flex',flexDirection:'column',width:'100%',maxWidth:'100%',margin:'0',padding:'0',boxSizing:'border-box'}}>
-      <div className="win-titlebar" style={{display:'block',width:'100%',padding:'2px 4px',margin:'0',boxSizing:'border-box'}}>
-        <div style={{display:'flex',alignItems:'center',gap:'4px'}}>
-          {icon && <span style={{fontSize:'10px'}}>{icon}</span>}
-          <span style={{fontSize:'10px',letterSpacing:'0.05em',fontWeight:'bold'}}>{title}</span>
-        </div>
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      width: '100%',
+      marginBottom: '16px'
+    }}>
+      <div style={{
+        width: '100%',
+        backgroundColor: '#1a3a6b',
+        color: 'white',
+        padding: '8px 12px',
+        fontFamily: 'monospace',
+        fontSize: '12px',
+        fontWeight: 'bold',
+        display: 'block',
+        boxSizing: 'border-box'
+      }}>
+        {title}
       </div>
-      <div style={{display:'block',width:'100%',maxWidth:'100%',boxSizing:'border-box',padding:noPadding ? '0' : '8px',margin:'0'}}>
+      <div style={{
+        width: '100%',
+        display: 'block',
+        boxSizing: 'border-box'
+      }}>
         {children}
       </div>
     </div>
