@@ -101,22 +101,24 @@
 }
 
 .win-button {
-  background: hsl(220, 15%, 90%);
-  border: 2px solid;
-  border-color: hsl(220, 15%, 98%) hsl(220, 15%, 55%) hsl(220, 15%, 55%) hsl(220, 15%, 98%);
-  padding: 4px 16px;
-  font-family: 'Courier Prime', monospace;
-  font-size: 13px;
-  cursor: pointer;
-  font-weight: bold;
+  background: hsl(220, 15%, 90%) !important;
+  border: 2px solid !important;
+  border-color: hsl(220, 15%, 98%) hsl(220, 15%, 55%) hsl(220, 15%, 55%) hsl(220, 15%, 98%) !important;
+  padding: 4px 16px !important;
+  font-family: 'Courier Prime', monospace !important;
+  font-size: 13px !important;
+  cursor: pointer !important;
+  font-weight: bold !important;
+  display: inline-flex !important;
+  align-items: center !important;
 }
 
 .win-button:active {
-  border-color: hsl(220, 15%, 55%) hsl(220, 15%, 98%) hsl(220, 15%, 98%) hsl(220, 15%, 55%);
+  border-color: hsl(220, 15%, 55%) hsl(220, 15%, 98%) hsl(220, 15%, 98%) hsl(220, 15%, 55%) !important;
 }
 
 .win-button:hover {
-  background: hsl(220, 15%, 85%);
+  background: hsl(220, 15%, 85%) !important;
 }
 
 .win-input {
