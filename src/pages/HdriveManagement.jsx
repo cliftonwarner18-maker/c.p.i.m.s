@@ -437,7 +437,7 @@ export default function HdriveManagement() {
                           onClick={() => {
                             const parts = (d.current_location || '').split(' — ');
                             setEditDrive(d);
-                            setEditData({ make: d.make || '', model: d.model || '', serial_number: d.serial_number || '', fleet_location: parts[0] || '', sub_location: parts.slice(1).join(' — ') || '', current_user: d.current_user || '' });
+                            setEditData({ make: d.make || '', model: d.model || '', serial_number: d.serial_number || '', fleet_location: parts[0] || '', sub_location: parts.slice(1).join(' — ') || '', current_user: d.current_user || '', seized: !!d.seized, seizing_agency: d.seizing_agency || '', seizure_case_number: d.seizure_case_number || '', seizure_date: d.seizure_date ? d.seizure_date.slice(0,16) : '', seizure_reason: d.seizure_reason || '' });
                             setShowEditForm(true);
                           }} title="Edit">
                           <Pencil className="w-3 h-3" /> EDIT
