@@ -171,7 +171,7 @@ export default function HdriveManagement() {
 
   const handleExportAudit = async () => {
     setIsExporting(true);
-    const response = await base44.functions.invoke('exportHDriveAudit', { search: auditSearch, userFilter: auditUserFilter });
+    const response = await base44.functions.invoke('exportHDriveAudit', { search: auditSearch, userFilter: auditUserFilter, locationFilter: auditLocationFilter, seizedOnly: auditSiezedOnly });
     const blob = new Blob([response.data], { type: 'application/pdf' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
