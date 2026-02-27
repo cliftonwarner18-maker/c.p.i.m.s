@@ -215,7 +215,8 @@ export default function FleetManager() {
                 );
               })}
             </tbody>
-          </table>
+            </table>
+          </div>
         </div>
         <div style={{fontSize:'10px',color:'hsl(220,10%,40%)',marginTop:'2px'}}>
           TOTAL FLEET: {filtered.length} VEHICLES
