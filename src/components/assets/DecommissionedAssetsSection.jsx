@@ -75,7 +75,8 @@ export default function DecommissionedAssetsSection() {
       const response = await base44.functions.invoke('exportDecommissionedAssets', {
         statusFilter,
         startDate,
-        endDate
+        endDate,
+        filterOutOfInventory
       });
       
       const blob = new Blob([response.data], { type: 'application/pdf' });
