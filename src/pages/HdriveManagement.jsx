@@ -117,7 +117,7 @@ export default function HdriveManagement() {
   });
 
   const updateDriveMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.HDrive.update(id, { ...data, current_location: buildLocation(data.fleet_location, data.sub_location) }),
+    mutationFn: ({ id, data }) => base44.entities.HDrive.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['hdrives'] });
       setShowEditForm(false);
