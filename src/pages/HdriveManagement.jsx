@@ -11,6 +11,9 @@ export default function HdriveManagement() {
   const [showTransferForm, setShowTransferForm] = useState(false);
   const [showBulkImport, setShowBulkImport] = useState(false);
   const [search, setSearch] = useState('');
+  const [auditSearch, setAuditSearch] = useState('');
+  const [auditUserFilter, setAuditUserFilter] = useState('');
+  const [isExporting, setIsExporting] = useState(false);
   const [selectedDrive, setSelectedDrive] = useState(null);
   const [formData, setFormData] = useState({ make: '', model: '', serial_number: '', current_location: '', current_user: '' });
   const [transferData, setTransferData] = useState({ transferred_to: '', new_location: '', reason: '' });
