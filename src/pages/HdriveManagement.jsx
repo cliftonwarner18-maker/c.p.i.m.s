@@ -384,22 +384,26 @@ export default function HdriveManagement() {
         {/* Main H-Drive List */}
         <WinWindow title="H-DRIVE INVENTORY — CHAIN OF CUSTODY TRACKING SYSTEM" icon="💾">
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginBottom: '4px', alignItems: 'center' }}>
-            <button className="win-button" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', background: 'hsl(220,70%,35%)', color: 'white' }}
-              onClick={() => setShowAddForm(true)}>
-              <Plus className="w-3 h-3" /> ADD H-DRIVE
-            </button>
-            <button className="win-button" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', background: 'hsl(140,70%,40%)', color: 'white' }}
-              onClick={() => setShowBulkImport(true)}>
-              <Upload className="w-3 h-3" /> BULK IMPORT
-            </button>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginLeft: 'auto', flexWrap: 'wrap' }}>
-              <Search className="w-3 h-3" />
-              <input className="win-input" style={{ fontSize: '11px', width: '160px' }} placeholder="Search serial/make/location..." value={search} onChange={(e) => setSearch(e.target.value)} />
-              <UserDropdown value={userFilter} onChange={setUserFilter} placeholder="Filter by user..." style={{ width: '160px' }} />
-              {(search || userFilter) && (
-                <button className="win-button" style={{ fontSize: '10px' }} onClick={() => { setSearch(''); setUserFilter(''); }}>CLEAR</button>
-              )}
-            </div>
+          <button className="win-button" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', background: 'hsl(220,70%,35%)', color: 'white' }}
+            onClick={() => setShowAddForm(true)}>
+            <Plus className="w-3 h-3" /> ADD H-DRIVE
+          </button>
+          <button className="win-button" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', background: 'hsl(140,70%,40%)', color: 'white' }}
+            onClick={() => setShowBulkImport(true)}>
+            <Upload className="w-3 h-3" /> BULK IMPORT
+          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginLeft: 'auto', flexWrap: 'wrap' }}>
+            <Search className="w-3 h-3" />
+            <input className="win-input" style={{ fontSize: '11px', width: '140px' }} placeholder="Search serial/make/location..." value={search} onChange={(e) => setSearch(e.target.value)} />
+            <UserDropdown value={userFilter} onChange={setUserFilter} placeholder="Filter by user..." style={{ width: '140px' }} />
+            <select className="win-input" style={{ fontSize: '11px', width: '130px', fontFamily: "'Courier Prime', monospace" }} value={locationFilter} onChange={e => setLocationFilter(e.target.value)}>
+              <option value="">All Locations</option>
+              {FLEET_LOCATIONS.map(l => <option key={l} value={l}>{l}</option>)}
+            </select>
+            {(search || userFilter || locationFilter) && (
+              <button className="win-button" style={{ fontSize: '10px' }} onClick={() => { setSearch(''); setUserFilter(''); setLocationFilter(''); }}>CLEAR</button>
+            )}
+          </div>
           </div>
 
           <div className="win-panel-inset" style={{ maxHeight: '600px', overflow: 'auto', width: '100%', boxSizing: 'border-box' }}>
