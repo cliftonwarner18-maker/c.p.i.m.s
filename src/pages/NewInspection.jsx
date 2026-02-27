@@ -136,7 +136,7 @@ export default function NewInspection() {
             <div className="text-[10px] font-bold bg-primary text-primary-foreground px-2 py-0.5 mb-1">
               ▸ SURVEILLANCE SYSTEM INSPECTION CHECKLIST
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
+            <div className="space-y-0">
               <Check label="CAMERA SYSTEM FUNCTIONAL" field="camera_system_functional" />
               <Check label="MOUNTING SECURE" field="mounting_secure" />
               <Check label="DVR SYSTEM FUNCTIONAL" field="dvr_functional" />
