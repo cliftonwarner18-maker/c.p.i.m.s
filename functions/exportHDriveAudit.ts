@@ -257,11 +257,11 @@ Deno.serve(async (req) => {
       doc.setFont('courier', 'bold');
       doc.text((c.hdrive_serial || '').substring(0, 18), cCols.serial.x + 1, textY2);
       doc.setFont('courier', 'normal');
-      doc.text((c.transferred_from || '—').substring(0, 22), cCols.from.x + 1, textY2);
-      doc.text((c.transferred_to || '—').substring(0, 22), cCols.to.x + 1, textY2);
-      doc.text((c.previous_location || '—').substring(0, 32), cCols.prevLoc.x + 1, textY2);
-      doc.text((c.new_location || '—').substring(0, 32), cCols.newLoc.x + 1, textY2);
-      doc.text((c.reason || '—').substring(0, 26), cCols.reason.x + 1, textY2);
+      doc.text((c.transferred_from || '-').substring(0, 22), cCols.from.x + 1, textY2);
+      doc.text((c.transferred_to || '-').substring(0, 22), cCols.to.x + 1, textY2);
+      doc.text((c.previous_location || '-').substring(0, 32), cCols.prevLoc.x + 1, textY2);
+      doc.text((c.new_location || '-').substring(0, 32), cCols.newLoc.x + 1, textY2);
+      doc.text((c.reason || '-').substring(0, 26), cCols.reason.x + 1, textY2);
       const dt = c.transfer_date ? new Date(c.transfer_date) : null;
       doc.text(dt ? `${dt.toLocaleDateString()} ${dt.toLocaleTimeString()}` : '—', cCols.date.x + 1, textY2);
       y += rowH;
