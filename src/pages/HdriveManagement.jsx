@@ -69,6 +69,7 @@ export default function HdriveManagement() {
   const [formData, setFormData] = useState({ make: '', model: '', serial_number: '', fleet_location: '', sub_location: '', current_user: '' });
   const [transferData, setTransferData] = useState({ transferred_to: '', fleet_location: '', sub_location: '', reason: '' });
   const [bulkText, setBulkText] = useState('');
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   const { data: drives = [], isLoading } = useQuery({
     queryKey: ['hdrives'],

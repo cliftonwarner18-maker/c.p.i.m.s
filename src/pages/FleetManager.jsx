@@ -17,6 +17,7 @@ export default function FleetManager() {
   const [typeFilter, setTypeFilter] = useState('All');
   const [locationFilter, setLocationFilter] = useState('All');
   const [isExporting, setIsExporting] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   const { data: buses = [], isLoading } = useQuery({
     queryKey: ['buses'],

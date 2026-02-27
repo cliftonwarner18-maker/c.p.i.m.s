@@ -11,6 +11,7 @@ export default function SerializedAssetsSection() {
   const [formData, setFormData] = useState({});
   const [statusFilter, setStatusFilter] = useState('All');
   const [isExporting, setIsExporting] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState(null);
   const queryClient = useQueryClient();
 
   const { data: assets = [], isLoading } = useQuery({

@@ -11,6 +11,7 @@ export default function AdminPanel() {
   const [showForm, setShowForm] = useState(false);
   const [editUser, setEditUser] = useState(null);
   const [formData, setFormData] = useState({ name: '', role: '', active: true });
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   const { data: systemUsers = [], isLoading } = useQuery({
     queryKey: ['systemUsers'],

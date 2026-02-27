@@ -12,6 +12,7 @@ import DeleteConfirmModal from '../components/DeleteConfirmModal';
 export default function WorkOrders() {
   const [statusFilter, setStatusFilter] = useState('All');
   const [search, setSearch] = useState('');
+  const [deleteTarget, setDeleteTarget] = useState(null);
   const queryClient = useQueryClient();
 
   const { data: workOrders = [], isLoading } = useQuery({

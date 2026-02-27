@@ -13,6 +13,7 @@ import DeleteConfirmModal from '../components/DeleteConfirmModal';
 export default function Inspections() {
   const [search, setSearch] = useState('');
   const [editingInsp, setEditingInsp] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
   const queryClient = useQueryClient();
 
   const { data: inspections = [], isLoading } = useQuery({

@@ -10,6 +10,7 @@ export default function NonSerializedAssetsSection() {
   const [editingAsset, setEditingAsset] = useState(null);
   const [formData, setFormData] = useState({});
   const [isExporting, setIsExporting] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState(null);
   const queryClient = useQueryClient();
 
   const { data: assets = [], isLoading } = useQuery({
