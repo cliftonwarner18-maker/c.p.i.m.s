@@ -515,8 +515,17 @@ export default function HdriveManagement() {
               <option value="">All Locations</option>
               {FLEET_LOCATIONS.map(l => <option key={l} value={l}>{l}</option>)}
             </select>
-            {(search || userFilter || locationFilter) && (
-              <button className="win-button" style={{ fontSize: '10px' }} onClick={() => { setSearch(''); setUserFilter(''); setLocationFilter(''); }}>CLEAR</button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <input type="checkbox" id="seizedFilter" checked={seizedFilter} onChange={e => setSeizedFilter(e.target.checked)} />
+              <label htmlFor="seizedFilter" style={{ fontSize: '10px', fontWeight: 'bold', color: seizedFilter ? 'hsl(0,65%,40%)' : 'inherit', whiteSpace: 'nowrap' }}>SEIZED ONLY</label>
+            </div>
+            <button className="win-button"
+              style={{ display: 'flex', alignItems: 'center', gap: '3px', fontSize: '10px', background: isExportingList ? 'hsl(220,15%,75%)' : 'hsl(140,60%,35%)', color: 'white' }}
+              onClick={handleExportList} disabled={isExportingList}>
+              <FileDown style={{ width: 11, height: 11 }} /> {isExportingList ? 'EXPORTING...' : 'EXPORT LIST'}
+            </button>
+            {(search || userFilter || locationFilter || seizedFilter) && (
+              <button className="win-button" style={{ fontSize: '10px' }} onClick={() => { setSearch(''); setUserFilter(''); setLocationFilter(''); setSeizedFilter(false); }}>CLEAR</button>
             )}
           </div>
           </div>
