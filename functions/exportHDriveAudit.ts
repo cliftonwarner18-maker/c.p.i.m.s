@@ -237,11 +237,12 @@ Deno.serve(async (req) => {
         doc.setFont('courier', 'bold');
         doc.text((d.serial_number || '-').substring(0, 20), margin + 1, textY);
         doc.setFont('courier', 'normal');
-        doc.text((d.seizing_agency || '-').substring(0, 24), margin + 35, textY);
-        doc.text((d.seizure_case_number || '-').substring(0, 18), margin + 80, textY);
+        doc.text((d.seizing_agency || '-').substring(0, 20), margin + 35, textY);
+        doc.text((d.seizing_person || '-').substring(0, 20), margin + 72, textY);
+        doc.text((d.seizure_case_number || '-').substring(0, 14), margin + 110, textY);
         const sd = d.seizure_date ? new Date(d.seizure_date) : null;
-        doc.text(sd ? `${sd.toLocaleDateString()} ${sd.toLocaleTimeString()}` : '-', margin + 115, textY);
-        doc.text((d.seizure_reason || '-').substring(0, 30), margin + 175, textY);
+        doc.text(sd ? `${sd.toLocaleDateString()} ${sd.toLocaleTimeString()}` : '-', margin + 138, textY);
+        doc.text((d.seizure_reason || '-').substring(0, 20), margin + 178, textY);
         y += rowH;
       });
     }
