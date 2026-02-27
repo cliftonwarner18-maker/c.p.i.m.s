@@ -82,13 +82,13 @@
 
 /* Windows Classic 2000s styling */
 .win-border {
-  border: 2px solid;
-  border-color: hsl(220, 15%, 96%) hsl(220, 15%, 50%) hsl(220, 15%, 50%) hsl(220, 15%, 96%);
+  border: 2px solid !important;
+  border-color: hsl(220, 15%, 96%) hsl(220, 15%, 50%) hsl(220, 15%, 50%) hsl(220, 15%, 96%) !important;
 }
 
 .win-border-inset {
-  border: 2px solid;
-  border-color: hsl(220, 15%, 50%) hsl(220, 15%, 96%) hsl(220, 15%, 96%) hsl(220, 15%, 50%);
+  border: 2px solid !important;
+  border-color: hsl(220, 15%, 50%) hsl(220, 15%, 96%) hsl(220, 15%, 96%) hsl(220, 15%, 50%) !important;
 }
 
 .win-titlebar {
