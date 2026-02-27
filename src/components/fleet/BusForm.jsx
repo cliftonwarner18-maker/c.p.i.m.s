@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useMutation } from '@tanstack/react-query';
 import WinWindow from '../WinWindow';
@@ -11,7 +11,7 @@ export default function BusForm({ bus, onClose, onSaved }) {
     asset_number: '', camera_system_type: 'None', camera_serial_number: '',
     camera_model_number: '', samsara_enabled: false, samsara_av_enabled: false,
     samsara_inputs_enabled: false, dash_cam_sid: '', gateway_sid: '',
-    next_inspection_due: '', status: 'Active', notes: '',
+    next_inspection_due: '', status: 'Active', notes: '', legacy_upload: '',
   });
 
   useEffect(() => {
@@ -39,6 +39,7 @@ export default function BusForm({ bus, onClose, onSaved }) {
         next_inspection_due: bus.next_inspection_due || '',
         status: bus.status || 'Active',
         notes: bus.notes || '',
+        legacy_upload: bus.legacy_upload || '',
       });
     }
   }, [bus]);
@@ -118,7 +119,7 @@ export default function BusForm({ bus, onClose, onSaved }) {
               <input type="number" className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.passenger_capacity} onChange={e => handleFieldChange('passenger_capacity', e.target.value)} />
             </Field>
             <Field label="BASE LOCATION">
-              <select className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.base_location} onChange={e => setForm({...form, base_location: e.target.value})}>
+              <select className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.base_location} onChange={e => handleFieldChange('base_location', e.target.value)}>
                 <option value="Main">Main</option>
                 <option value="North">North</option>
                 <option value="Central">Central</option>
@@ -126,7 +127,7 @@ export default function BusForm({ bus, onClose, onSaved }) {
               </select>
             </Field>
             <Field label="STATUS">
-              <select className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.status} onChange={e => setForm({...form, status: e.target.value})}>
+              <select className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.status} onChange={e => handleFieldChange('status', e.target.value)}>
                 <option value="Active">Active</option>
                 <option value="Out of Service">Out of Service</option>
                 <option value="Retired">Retired</option>
@@ -147,7 +148,7 @@ export default function BusForm({ bus, onClose, onSaved }) {
            <div style={{width:'100%',display:'block',backgroundColor:'hsl(220,70%,35%)',color:'white',padding:'8px 12px',fontFamily:'monospace',fontSize:'11px',fontWeight:'bold',boxSizing:'border-box',marginBottom:'12px'}}>▸ CAMERA SYSTEM</div>
           <div style={{display:'flex',flexDirection:'column',gap:'0',width:'100%'}}>
             <Field label="CAMERA SYSTEM">
-              <select className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.camera_system_type} onChange={e => setForm({...form, camera_system_type: e.target.value})}>
+              <select className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.camera_system_type} onChange={e => handleFieldChange('camera_system_type', e.target.value)}>
                 <option value="Seon">Seon</option>
                 <option value="Safety Vision">Safety Vision</option>
                 <option value="None">None</option>
@@ -187,7 +188,6 @@ export default function BusForm({ bus, onClose, onSaved }) {
          <div style={{display:'flex',flexDirection:'column',width:'100%',marginBottom:'12px'}}>
            <div style={{width:'100%',display:'block',backgroundColor:'hsl(220,70%,35%)',color:'white',padding:'8px 12px',fontFamily:'monospace',fontSize:'11px',fontWeight:'bold',boxSizing:'border-box',marginBottom:'12px'}}>▸ NOTES</div>
            <div style={{display:'flex',flexDirection:'column',width:'100%'}}>
-
           <textarea className="win-input" style={{width:'100%',fontSize:'11px',height:'60px',resize:'none',display:'block'}} value={form.notes} onChange={e => handleFieldChange('notes', e.target.value)} />
           </div>
           </div>
@@ -196,7 +196,6 @@ export default function BusForm({ bus, onClose, onSaved }) {
         <div style={{display:'flex',flexDirection:'column',width:'100%',marginBottom:'12px'}}>
           <div style={{width:'100%',display:'block',backgroundColor:'hsl(220,70%,35%)',color:'white',padding:'8px 12px',fontFamily:'monospace',fontSize:'11px',fontWeight:'bold',boxSizing:'border-box',marginBottom:'12px'}}>▸ LEGACY UPLOAD</div>
           <div style={{display:'flex',flexDirection:'column',width:'100%'}}>
-
           <textarea className="win-input" style={{width:'100%',fontSize:'11px',height:'120px',fontFamily:'monospace',resize:'none',display:'block'}} placeholder="Paste audit/repair log text here..." value={form.legacy_upload || ''} onChange={e => handleFieldChange('legacy_upload', e.target.value)} />
           <div style={{fontSize:'9px',color:'hsl(220,10%,40%)',marginTop:'2px'}}>Audit/repair log text — will be preserved with vehicle record</div>
           </div>
