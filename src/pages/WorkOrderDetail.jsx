@@ -15,8 +15,12 @@ export default function WorkOrderDetail() {
 
   const { data: workOrder, isLoading } = useQuery({
     queryKey: ['workOrder', id],
-    queryFn: () => base44.entities.WorkOrder.list().then(orders => orders.find(o => o.id === id)),
+    queryFn: async () => {
+      const orders = await base44.entities.WorkOrder.list();
+      return orders.find(o => o.id === id);
+    },
     enabled: !!id,
+    staleTime: 1000 * 60 * 5,
   });
 
   const [form, setForm] = useState({
