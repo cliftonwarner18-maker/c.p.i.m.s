@@ -212,6 +212,33 @@ export default function HdriveManagement() {
           </WinWindow>
         )}
 
+        {/* Edit Drive Form */}
+        {showEditForm && editDrive && (
+          <WinWindow title={`EDIT H-DRIVE — ${editDrive.serial_number}`} icon="✏️">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              {[['MAKE', 'make'], ['MODEL', 'model'], ['SERIAL NUMBER', 'serial_number']].map(([label, field]) => (
+                <div key={field}>
+                  <label style={{ fontSize: '11px', fontWeight: 'bold' }}>{label}:</label>
+                  <input className="win-input" value={editData[field]} onChange={(e) => setEditData({...editData, [field]: e.target.value})} />
+                </div>
+              ))}
+              <div>
+                <label style={{ fontSize: '11px', fontWeight: 'bold' }}>LOCATION:</label>
+                <LocationFields fleetKey="fleet_location" subKey="sub_location" values={editData} onChange={v => setEditData({...editData, ...v})} />
+              </div>
+              <div>
+                <label style={{ fontSize: '11px', fontWeight: 'bold' }}>CURRENT USER:</label>
+                <UserDropdown value={editData.current_user} onChange={v => setEditData({...editData, current_user: v})} />
+              </div>
+              <div style={{ display: 'flex', gap: '4px', marginTop: '4px' }}>
+                <button className="win-button" style={{ flex: 1, background: 'hsl(220,70%,35%)', color: 'white' }}
+                  onClick={() => updateDriveMutation.mutate({ id: editDrive.id, data: editData })}>SAVE</button>
+                <button className="win-button" style={{ flex: 1 }} onClick={() => { setShowEditForm(false); setEditDrive(null); }}>CANCEL</button>
+              </div>
+            </div>
+          </WinWindow>
+        )}
+
         {/* Bulk Import Form */}
         {showBulkImport && (
           <WinWindow title="BULK IMPORT H-DRIVES" icon="📋">
