@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import WinWindow from '../components/WinWindow';
 import LoadingScreen from '../components/LoadingScreen';
-import { Plus, ArrowRight, Trash2, Search, Upload, FileDown } from 'lucide-react';
+import { Plus, ArrowRight, Trash2, Search, Upload, FileDown, Pencil } from 'lucide-react';
 
 const FLEET_LOCATIONS = ['Main', 'North', 'Central Fleet'];
 
