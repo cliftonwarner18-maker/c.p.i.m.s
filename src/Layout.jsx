@@ -36,7 +36,7 @@ export default function Layout({ children, currentPageName }) {
       </div>
 
       {/* Menu Bar — horizontal, single line */}
-      <div className="win-panel no-print" style={{display:'flex',alignItems:'center',padding:'2px 4px',gap:'2px',overflowX:'auto',width:'100%',fontFamily:"'Courier Prime',monospace"}}>
+      <div className="win-panel no-print" style={{display:'flex !important',alignItems:'center !important',padding:'2px 4px !important',gap:'2px !important',overflowX:'auto !important',width:'100% !important',flexWrap:'nowrap !important',fontFamily:"'Courier Prime',monospace"}}>
         {navItems.map((item) => (
           <Link
             key={item.page}
