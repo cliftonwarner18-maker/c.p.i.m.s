@@ -100,7 +100,7 @@ export default function Dashboard() {
 
       {/* Overdue Inspections - full width */}
       <WinWindow title="OVERDUE INSPECTIONS" icon="🔴">
-        <div className="win-panel-inset" style={{ maxHeight: '400px', minHeight: '80px', overflow: 'auto', padding: '8px' }}>
+        <div className="win-panel-inset" style={{ display: 'block', width: '100%', maxHeight: '400px', minHeight: '80px', overflow: 'auto', padding: '8px', boxSizing: 'border-box' }}>
           {overdueInspections.length === 0 ? (
             <div className="text-center text-[13px] p-4 text-muted-foreground">NO OVERDUE INSPECTIONS</div>
           ) : (
