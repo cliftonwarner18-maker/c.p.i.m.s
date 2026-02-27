@@ -141,15 +141,15 @@ export default function BusProfile() {
       {/* Repair History */}
       <WinWindow title={`REPAIR HISTORY — BUS #${bus.bus_number}`} icon="🔧">
         <div className="win-panel-inset overflow-auto" style={{ maxHeight: '300px' }}>
-          <table className="w-full text-[11px] font-mono">
+          <table className="w-full text-[10px] font-mono" style={{tableLayout:'auto'}}>
             <thead>
-              <tr className="bg-primary text-primary-foreground">
-                <th className="p-1 text-left">ORDER#</th>
-                <th className="p-1 text-left">DATE</th>
-                <th className="p-1 text-left">REPORTED BY</th>
+              <tr className="bg-primary text-primary-foreground sticky top-0">
+                <th className="p-1 text-left whitespace-nowrap">ORDER#</th>
+                <th className="p-1 text-left whitespace-nowrap">DATE</th>
+                <th className="p-1 text-left whitespace-nowrap">REPORTED</th>
                 <th className="p-1 text-left">ISSUE</th>
-                <th className="p-1 text-left">STATUS</th>
-                <th className="p-1 text-left">TECHNICIAN</th>
+                <th className="p-1 text-left whitespace-nowrap">STATUS</th>
+                <th className="p-1 text-left whitespace-nowrap">TECH</th>
                 <th className="p-1 text-left">REPAIRS</th>
               </tr>
             </thead>
@@ -159,19 +159,19 @@ export default function BusProfile() {
               )}
               {busWorkOrders.map((wo, i) => (
                 <tr key={wo.id} className={i % 2 === 0 ? 'bg-card' : 'bg-background'}>
-                  <td className="p-1 font-bold">
+                  <td className="p-1 font-bold whitespace-nowrap">
                     <Link to={createPageUrl('WorkOrderDetail') + `?id=${wo.id}`} className="text-primary underline">
                       {wo.order_number}
                     </Link>
                   </td>
-                  <td className="p-1">{moment(wo.created_date).format('MM/DD/YY')}</td>
-                  <td className="p-1">{wo.reported_by}</td>
-                  <td className="p-1 max-w-[150px] truncate">{wo.issue_description}</td>
-                  <td className={`p-1 font-bold ${wo.status === 'Completed' ? 'status-completed' : wo.status === 'Pending' ? 'status-pending' : 'status-progress'}`}>
+                  <td className="p-1 whitespace-nowrap">{moment(wo.created_date).format('MM/DD/YY')}</td>
+                  <td className="p-1 whitespace-nowrap text-[9px]">{wo.reported_by}</td>
+                  <td className="p-1">{wo.issue_description}</td>
+                  <td className={`p-1 font-bold whitespace-nowrap ${wo.status === 'Completed' ? 'status-completed' : wo.status === 'Pending' ? 'status-pending' : 'status-progress'}`}>
                     [{wo.status?.toUpperCase()}]
                   </td>
-                  <td className="p-1">{wo.technician_name || '—'}</td>
-                  <td className="p-1 max-w-[150px] truncate">{wo.repairs_rendered || '—'}</td>
+                  <td className="p-1 whitespace-nowrap text-[9px]">{wo.technician_name || '—'}</td>
+                  <td className="p-1">{wo.repairs_rendered || '—'}</td>
                 </tr>
               ))}
             </tbody>
