@@ -11,7 +11,7 @@ Deno.serve(async (req) => {
     }
 
     const body = await req.json();
-    const { statusFilter, startDate, endDate } = body;
+    const { statusFilter, startDate, endDate, filterOutOfInventory } = body;
 
     let assets = await base44.entities.DecommissionedAsset.list();
     
@@ -26,6 +26,10 @@ Deno.serve(async (req) => {
         if (endDate && assetDate > new Date(endDate)) return false;
         return true;
       });
+    }
+
+    if (filterOutOfInventory) {
+      assets = assets.filter(a => a.out_of_inventory === true);
     }
 
     const doc = new jsPDF();
