@@ -244,7 +244,7 @@ export default function HdriveManagement() {
               <div style={{ display: 'flex', gap: '4px', marginTop: '4px' }}>
                 <button className="win-button" style={{ flex: 1, background: 'hsl(220,70%,35%)', color: 'white' }}
                   onClick={() => transferMutation.mutate(transferData)}>TRANSFER</button>
-                <button className="win-button" style={{ flex: 1 }} onClick={() => { setShowTransferForm(false); setSelectedDrive(null); }}>CANCEL</button>
+                <button className="win-button" style={{ flex: 1 }} onClick={() => { setShowTransferForm(false); setSelectedDrive(null); setTransferData({ transferred_to: '', fleet_location: '', sub_location: '', reason: '' }); }}>CANCEL</button>
               </div>
             </div>
           </WinWindow>
