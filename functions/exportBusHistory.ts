@@ -132,26 +132,27 @@ Deno.serve(async (req) => {
       yPos += 4;
     } else {
       inspections.slice(0, 10).forEach((insp) => {
-        if (yPos > pageHeight - 12) {
+        if (yPos > pageHeight - 18) {
           doc.addPage();
           yPos = 10;
         }
         doc.setFont(undefined, 'bold');
         doc.setFontSize(9);
         doc.text(`Inspection #${insp.inspection_number} - ${moment(insp.inspection_date).format('MM/DD/YYYY')}`, 10, yPos);
-        yPos += 3;
+        yPos += 4;
         doc.setFont(undefined, 'normal');
         doc.setFontSize(8);
         doc.text(`Inspector: ${insp.inspector_name} | Result: ${insp.overall_status || 'N/A'}`, 12, yPos);
-        yPos += 2;
+        yPos += 3;
         doc.text(`Camera: ${insp.camera_system_functional ? '✓' : '✗'} | DVR: ${insp.dvr_functional ? '✓' : '✗'} | Mounting: ${insp.mounting_secure ? '✓' : '✗'}`, 12, yPos);
-        yPos += 2;
+        yPos += 3;
         if (insp.inspection_notes) {
           const wrapped = doc.splitTextToSize(insp.inspection_notes, pageWidth - 24);
           doc.text(wrapped, 12, yPos);
-          yPos += wrapped.length * 2 + 1;
+          yPos += wrapped.length * 2.5 + 2;
+        } else {
+          yPos += 1;
         }
-        yPos += 2;
       });
     }
     yPos += 2;
