@@ -134,12 +134,13 @@ export default function Inspections() {
                 </tr>
               ))}
             </tbody>
-          </table>
-        </div>
-        <div style={{fontSize:'10px',color:'hsl(220,10%,40%)',marginTop:'2px'}}>
-          TOTAL INSPECTIONS: {filtered.length}
-        </div>
-        </WinWindow>
+            </table>
+            </div>
+            </div>
+            <div style={{fontSize:'10px',color:'hsl(220,10%,40%)',marginTop:'2px'}}>
+            TOTAL INSPECTIONS: {filtered.length}
+            </div>
+            </WinWindow>
         </div>
         </>
         );
