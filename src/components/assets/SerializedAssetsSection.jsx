@@ -274,7 +274,8 @@ export default function SerializedAssetsSection() {
                     </button>
                   </td>
                 </tr>
-              ))}
+                );
+              })}
             </tbody>
           </table>
         </div>
