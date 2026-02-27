@@ -98,7 +98,7 @@ export default function HdriveManagement() {
       await base44.entities.CustodyLog.create(custodyEntry);
       await base44.entities.HDrive.update(selectedDrive.id, {
         current_user: data.transferred_to,
-        current_location: data.new_location,
+        current_location: buildLocation(data.fleet_location, data.sub_location),
       });
     },
     onSuccess: () => {
