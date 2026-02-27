@@ -58,7 +58,12 @@ Deno.serve(async (req) => {
       // Report meta line
       doc.setFont('courier', 'normal');
       doc.setFontSize(7.5);
-      const meta = `Report Generated: ${new Date().toLocaleDateString('en-US')}  ${new Date().toLocaleTimeString('en-US')}   |   Total Records: ${drives.length}${userFilter ? `   |   User Filter: ${userFilter}` : ''}${search ? `   |   Search: "${search}"` : ''}   |   Page ${pg}`;
+      const filterParts = [];
+      if (userFilter) filterParts.push(`User: ${userFilter}`);
+      if (locationFilter) filterParts.push(`Location: ${locationFilter}`);
+      if (seizedOnly) filterParts.push('SEIZED ONLY');
+      if (search) filterParts.push(`Search: "${search}"`);
+      const meta = `Generated: ${new Date().toLocaleDateString('en-US')} ${new Date().toLocaleTimeString('en-US')}   |   Records: ${drives.length}${filterParts.length ? '   |   Filters: ' + filterParts.join(', ') : ''}   |   Page ${pg}`;
       doc.text(meta, pageWidth / 2, 23, { align: 'center' });
     };
 
