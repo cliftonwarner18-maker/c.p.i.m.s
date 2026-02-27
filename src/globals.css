@@ -80,66 +80,72 @@
   }
 }
 
-/* Windows Classic 2000s styling */
+/* Professional Retro Government Terminal Styling */
 .win-border {
-  border: 2px solid !important;
-  border-color: hsl(220, 15%, 96%) hsl(220, 15%, 50%) hsl(220, 15%, 50%) hsl(220, 15%, 96%) !important;
+  border: 1px solid !important;
+  border-color: hsl(220, 18%, 65%) !important;
+  background: hsl(220, 20%, 97%) !important;
 }
 
 .win-border-inset {
-  border: 2px solid !important;
-  border-color: hsl(220, 15%, 50%) hsl(220, 15%, 96%) hsl(220, 15%, 96%) hsl(220, 15%, 50%) !important;
+  border: 1px solid !important;
+  border-color: hsl(220, 18%, 60%) !important;
+  background: hsl(220, 10%, 99%) !important;
 }
 
 .win-titlebar {
-  background: linear-gradient(to right, hsl(220, 70%, 30%), hsl(220, 60%, 50%)) !important;
+  background: linear-gradient(to right, hsl(220, 50%, 35%), hsl(220, 45%, 40%)) !important;
   color: white !important;
-  font-weight: bold !important;
-  padding: 3px 6px !important;
-  font-size: 13px !important;
+  font-weight: 600 !important;
+  padding: 6px 10px !important;
+  font-size: 12px !important;
   font-family: 'Courier Prime', monospace !important;
+  letter-spacing: 0.5px !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08) !important;
 }
 
 .win-button {
-  background: hsl(220, 15%, 90%) !important;
-  border: 2px solid !important;
-  border-color: hsl(220, 15%, 98%) hsl(220, 15%, 55%) hsl(220, 15%, 55%) hsl(220, 15%, 98%) !important;
-  padding: 4px 16px !important;
+  background: hsl(220, 18%, 88%) !important;
+  border: 1px solid hsl(220, 18%, 70%) !important;
+  padding: 5px 14px !important;
   font-family: 'Courier Prime', monospace !important;
-  font-size: 13px !important;
+  font-size: 12px !important;
   cursor: pointer !important;
-  font-weight: bold !important;
+  font-weight: 500 !important;
   display: inline-flex !important;
   align-items: center !important;
-}
-
-.win-button:active {
-  border-color: hsl(220, 15%, 55%) hsl(220, 15%, 98%) hsl(220, 15%, 98%) hsl(220, 15%, 55%) !important;
+  transition: all 0.15s !important;
+  border-radius: 2px !important;
 }
 
 .win-button:hover {
-  background: hsl(220, 15%, 85%) !important;
+  background: hsl(220, 18%, 82%) !important;
+  border-color: hsl(220, 18%, 60%) !important;
+}
+
+.win-button:active {
+  background: hsl(220, 18%, 78%) !important;
 }
 
 .win-input {
-  border: 2px solid !important;
-  border-color: hsl(220, 15%, 50%) hsl(220, 15%, 96%) hsl(220, 15%, 96%) hsl(220, 15%, 50%) !important;
-  background: white !important;
-  padding: 4px 8px !important;
+  border: 1px solid hsl(220, 18%, 70%) !important;
+  background: hsl(220, 10%, 99%) !important;
+  padding: 5px 8px !important;
   font-family: 'Courier Prime', monospace !important;
-  font-size: 13px !important;
+  font-size: 12px !important;
+  border-radius: 2px !important;
 }
 
 .win-panel {
-  background: hsl(220, 15%, 90%) !important;
-  border: 2px solid !important;
-  border-color: hsl(220, 15%, 96%) hsl(220, 15%, 50%) hsl(220, 15%, 50%) hsl(220, 15%, 96%) !important;
+  background: hsl(220, 18%, 94%) !important;
+  border: 1px solid hsl(220, 18%, 75%) !important;
+  border-radius: 2px !important;
 }
 
 .win-panel-inset {
-  background: white !important;
-  border: 2px solid !important;
-  border-color: hsl(220, 15%, 50%) hsl(220, 15%, 96%) hsl(220, 15%, 96%) hsl(220, 15%, 50%) !important;
+  background: hsl(220, 10%, 99%) !important;
+  border: 1px solid hsl(220, 18%, 70%) !important;
+  border-radius: 2px !important;
 }
 
 .terminal-text {
