@@ -245,6 +245,20 @@ Deno.serve(async (req) => {
         doc.text(sd ? `${sd.toLocaleDateString()} ${sd.toLocaleTimeString()}` : '-', margin + 138, textY);
         doc.text((d.seizure_reason || '-').substring(0, 20), margin + 178, textY);
         y += rowH;
+        // Notes sub-row
+        if (d.seizure_notes) {
+          if (y > pageHeight - 15) { doc.addPage(); pageNum++; addHeader(pageNum); y = 30; }
+          doc.setFillColor(255, 245, 220);
+          doc.rect(margin, y, pageWidth - margin * 2, 7, 'F');
+          doc.setFont('courier', 'italic');
+          doc.setFontSize(7);
+          doc.setTextColor(120, 60, 0);
+          doc.text(`  NOTE: ${d.seizure_notes.substring(0, 120)}`, margin + 3, y + 5);
+          doc.setTextColor(0, 0, 0);
+          doc.setFont('courier', 'normal');
+          doc.setFontSize(7.5);
+          y += 7;
+        }
       });
     }
 
