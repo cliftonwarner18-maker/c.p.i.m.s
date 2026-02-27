@@ -4,6 +4,20 @@ import { useMutation } from '@tanstack/react-query';
 import WinWindow from '../WinWindow';
 import { Save, X } from 'lucide-react';
 
+const Field = ({ label, children }) => (
+  <div style={{display:'flex',flexDirection:'column',width:'100%',marginBottom:'12px'}}>
+    <label style={{fontSize:'10px',fontWeight:'bold',display:'block',marginBottom:'4px',width:'100%'}}>{label}</label>
+    {children}
+  </div>
+);
+
+const Check = React.memo(({ label, checked, onChange }) => (
+  <label style={{display:'flex',alignItems:'center',gap:'4px',fontSize:'11px',cursor:'pointer'}}>
+    <input type="checkbox" checked={checked} onChange={onChange} style={{accentColor:'hsl(220,70%,35%)'}} />
+    {label}
+  </label>
+));
+
 export default function BusForm({ bus, onClose, onSaved }) {
   const [form, setForm] = useState({
     bus_number: '', bus_type: 'School Bus', base_location: 'Main', year: '', make: '', model: '',
@@ -65,20 +79,6 @@ export default function BusForm({ bus, onClose, onSaved }) {
   };
 
   const isPending = createMutation.isPending || updateMutation.isPending;
-
-  const Field = ({ label, children }) => (
-    <div style={{display:'flex',flexDirection:'column',width:'100%',marginBottom:'12px'}}>
-      <label style={{fontSize:'10px',fontWeight:'bold',display:'block',marginBottom:'4px',width:'100%'}}>{label}</label>
-      {children}
-    </div>
-  );
-
-  const Check = React.memo(({ label, checked, onChange }) => (
-    <label style={{display:'flex',alignItems:'center',gap:'4px',fontSize:'11px',cursor:'pointer'}}>
-      <input type="checkbox" checked={checked} onChange={onChange} style={{accentColor:'hsl(220,70%,35%)'}} />
-      {label}
-    </label>
-  ));
 
   return (
     <WinWindow title={bus ? `EDIT VEHICLE — BUS #${bus.bus_number}` : 'ADD NEW VEHICLE'} icon="🚌">
