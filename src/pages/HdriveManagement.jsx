@@ -91,7 +91,7 @@ export default function HdriveManagement() {
         transferred_from: selectedDrive.current_user || 'Unknown',
         transferred_to: data.transferred_to,
         previous_location: selectedDrive.current_location || 'Unknown',
-        new_location: data.new_location,
+        new_location: buildLocation(data.fleet_location, data.sub_location),
         reason: data.reason,
         transfer_date: new Date().toISOString(),
       };
