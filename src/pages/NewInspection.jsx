@@ -68,18 +68,18 @@ export default function NewInspection() {
   };
 
   const Check = ({ label, field }) => (
-    <label className="flex items-center gap-2 text-[11px] p-1 win-panel-inset cursor-pointer">
+    <div className="flex items-center gap-2 text-[11px] p-2 win-panel-inset border-b border-border last:border-b-0">
       <input
         type="checkbox"
         checked={form[field]}
         onChange={(e) => setForm({ ...form, [field]: e.target.checked })}
-        className="accent-primary w-4 h-4"
+        className="accent-primary w-4 h-4 flex-shrink-0"
       />
-      <span className="font-bold">{label}</span>
-      <span className={`ml-auto font-bold ${form[field] ? 'status-completed' : 'status-cancelled'}`}>
+      <span className="font-bold flex-1">{label}</span>
+      <span className={`font-bold flex-shrink-0 ${form[field] ? 'status-completed' : 'status-cancelled'}`}>
         {form[field] ? '[PASS]' : '[FAIL]'}
       </span>
-    </label>
+    </div>
   );
 
   return (
