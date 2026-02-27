@@ -16,6 +16,11 @@ export default function NewWorkOrder() {
     queryFn: () => base44.entities.Bus.list('bus_number'),
   });
 
+  const { data: systemUsers = [] } = useQuery({
+    queryKey: ['systemUsers'],
+    queryFn: () => base44.entities.SystemUser.list('name'),
+  });
+
   const { data: workOrders = [] } = useQuery({
     queryKey: ['workOrders'],
     queryFn: () => base44.entities.WorkOrder.list('-created_date'),
