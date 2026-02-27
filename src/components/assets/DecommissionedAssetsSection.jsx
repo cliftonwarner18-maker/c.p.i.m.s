@@ -143,6 +143,17 @@ export default function DecommissionedAssetsSection() {
             placeholder="End Date"
           />
 
+          <div style={{display:'flex',alignItems:'center',gap:'6px',padding:'4px 8px',border:'2px solid',borderColor:'hsl(220,15%,50%) hsl(220,15%,96%) hsl(220,15%,96%) hsl(220,15%,50%)',background:'white'}}>
+            <input
+              type="checkbox"
+              id="filter_out_of_inv"
+              checked={filterOutOfInventory}
+              onChange={(e) => setFilterOutOfInventory(e.target.checked)}
+              style={{width:'13px',height:'13px',cursor:'pointer'}}
+            />
+            <label htmlFor="filter_out_of_inv" style={{fontSize:'11px',cursor:'pointer',whiteSpace:'nowrap'}}>Out of Inv. Only</label>
+          </div>
+
           <button
             onClick={handleExportPDF}
             disabled={isExporting}
