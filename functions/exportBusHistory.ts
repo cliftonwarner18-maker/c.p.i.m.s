@@ -164,17 +164,18 @@ Deno.serve(async (req) => {
       doc.text('No history entries', 10, yPos);
     } else {
       history.slice(0, 15).forEach((h) => {
-        if (yPos > pageHeight - 10) {
+        if (yPos > pageHeight - 12) {
           doc.addPage();
           yPos = 10;
         }
         doc.setFont(undefined, 'bold');
         doc.setFontSize(8);
         doc.text(`${moment(h.start_time).format('MM/DD/YY HH:mm')} - ${h.technician}`, 10, yPos);
-        yPos += 2;
+        yPos += 3;
         doc.setFont(undefined, 'normal');
-        doc.text(h.description, 12, yPos);
-        yPos += 2;
+        const descWrapped = doc.splitTextToSize(h.description, pageWidth - 24);
+        doc.text(descWrapped, 12, yPos);
+        yPos += descWrapped.length * 2.5 + 2;
       });
     }
 
