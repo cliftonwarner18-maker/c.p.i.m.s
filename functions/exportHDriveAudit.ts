@@ -178,7 +178,8 @@ Deno.serve(async (req) => {
       doc.setFont('courier', 'normal');
       doc.text((`${drive.make || ''} ${drive.model || ''}`).trim().substring(0, 18) || '-', cols.make.x + 1, textY);
       doc.text((drive.current_user || '-').substring(0, 20), cols.user.x + 1, textY);
-      doc.text((drive.current_location || '-').substring(0, 32), cols.loc.x + 1, textY);
+      const cleanLoc = (drive.current_location || '-').replace(/[^\x00-\x7F]/g, '').substring(0, 32);
+      doc.text(cleanLoc, cols.loc.x + 1, textY);
       doc.text(String(custodyCount), cols.hist.x + 1, textY);
 
       // Audit fill-in fields
