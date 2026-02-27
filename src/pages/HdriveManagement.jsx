@@ -312,9 +312,11 @@ export default function HdriveManagement() {
                     const saveData = { ...editData, current_location: buildLocation(editData.fleet_location, editData.sub_location) };
                     if (!saveData.seized) {
                       saveData.seizing_agency = '';
+                      saveData.seizing_person = '';
                       saveData.seizure_case_number = '';
                       saveData.seizure_date = '';
                       saveData.seizure_reason = '';
+                      saveData.seizure_notes = '';
                     }
                     updateDriveMutation.mutate({ id: editDrive.id, data: saveData });
                   }}>SAVE</button>
