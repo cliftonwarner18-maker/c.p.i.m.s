@@ -90,6 +90,12 @@ export default function NonSerializedAssetsSection() {
 
   return (
     <WinWindow title="NON-SERIALIZED ASSETS — SPARE PARTS INVENTORY" icon="🔧">
+      <DeleteConfirmModal
+        isOpen={!!deleteTarget}
+        label={deleteTarget ? `${deleteTarget.part_name} (${deleteTarget.brand})` : ''}
+        onConfirm={() => { deleteMutation.mutate(deleteTarget.id); setDeleteTarget(null); }}
+        onCancel={() => setDeleteTarget(null)}
+      />
       <div style={{display:'flex',flexDirection:'column',gap:'8px'}}>
         <div style={{display:'flex',gap:'8px',flexWrap:'wrap',alignItems:'center'}}>
           <button
@@ -215,7 +221,7 @@ export default function NonSerializedAssetsSection() {
                     <button onClick={() => handleEdit(asset)} style={{background:'none',border:'none',cursor:'pointer',color:'hsl(220,70%,35%)',fontSize:'10px'}}>
                       <Edit2 style={{width:12,height:12}} />
                     </button>
-                    <button onClick={() => deleteMutation.mutate(asset.id)} style={{background:'none',border:'none',cursor:'pointer',color:'hsl(0,72%,45%)',fontSize:'10px'}}>
+                    <button onClick={() => setDeleteTarget(asset)} style={{background:'none',border:'none',cursor:'pointer',color:'hsl(0,72%,45%)',fontSize:'10px'}}>
                       <Trash2 style={{width:12,height:12}} />
                     </button>
                   </td>
