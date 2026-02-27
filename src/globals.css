@@ -176,12 +176,10 @@ div {
   margin-bottom: 0 !important;
 }
 
-.win-panel, .win-window {
-  width: 100% !important;
-  max-width: none !important;
-  margin: 0 !important;
-  display: flex !important;
-  flex-direction: column !important;
+.win-panel {
+  background: hsl(220, 15%, 90%) !important;
+  border: 2px solid !important;
+  border-color: hsl(220, 15%, 96%) hsl(220, 15%, 50%) hsl(220, 15%, 50%) hsl(220, 15%, 96%) !important;
 }
 
 /* Menu bar layout */
