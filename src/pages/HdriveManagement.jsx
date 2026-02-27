@@ -3,14 +3,116 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import WinWindow from '../components/WinWindow';
 import LoadingScreen from '../components/LoadingScreen';
-import { Plus, ArrowRight, Trash2, Search, Upload, FileDown } from 'lucide-react';
+import { Plus, ArrowRight, Trash2, Search, Upload, FileDown, ShieldAlert, Pencil } from 'lucide-react';
 
+// ---- Admin Section ----
+function AdminSection() {
+  const queryClient = useQueryClient();
+  const [showForm, setShowForm] = useState(false);
+  const [editingUser, setEditingUser] = useState(null);
+  const [name, setName] = useState('');
+  const [role, setRole] = useState('');
+
+  const { data: systemUsers = [] } = useQuery({
+    queryKey: ['systemUsers'],
+    queryFn: () => base44.entities.SystemUser.list('name'),
+  });
+
+  const createMutation = useMutation({
+    mutationFn: (data) => base44.entities.SystemUser.create(data),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['systemUsers'] }); setName(''); setRole(''); setShowForm(false); },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }) => base44.entities.SystemUser.update(id, data),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['systemUsers'] }); setEditingUser(null); setName(''); setRole(''); },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id) => base44.entities.SystemUser.delete(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['systemUsers'] }),
+  });
+
+  const startEdit = (u) => { setEditingUser(u); setName(u.name); setRole(u.role || ''); setShowForm(true); };
+  const cancel = () => { setEditingUser(null); setName(''); setRole(''); setShowForm(false); };
+  const save = () => {
+    if (!name.trim()) return;
+    if (editingUser) updateMutation.mutate({ id: editingUser.id, data: { name: name.trim(), role: role.trim(), active: true } });
+    else createMutation.mutate({ name: name.trim(), role: role.trim(), active: true });
+  };
+
+  return (
+    <div style={{ border: '3px solid', borderColor: 'hsl(0,15%,40%) hsl(0,60%,25%) hsl(0,60%,25%) hsl(0,15%,40%)', marginBottom: '4px' }}>
+      {/* Red title bar */}
+      <div style={{ background: 'linear-gradient(to right, hsl(0,75%,28%), hsl(0,65%,40%))', color: 'white', padding: '3px 8px', display: 'flex', alignItems: 'center', gap: '6px', fontFamily: "'Courier Prime', monospace", fontSize: '12px', fontWeight: 'bold', letterSpacing: '0.08em' }}>
+        <ShieldAlert style={{ width: 14, height: 14, flexShrink: 0 }} />
+        ADMIN — SYSTEM USERS MANAGEMENT
+      </div>
+      <div style={{ background: 'hsl(0,30%,93%)', padding: '6px' }}>
+        <div style={{ fontSize: '9px', color: 'hsl(0,60%,30%)', marginBottom: '6px', fontWeight: 'bold', fontFamily: "'Courier Prime', monospace" }}>
+          AUTHORIZED PERSONNEL ROSTER — Users listed here appear in all staff dropdowns throughout the system.
+        </div>
+
+        {/* User list */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginBottom: '6px' }}>
+          {systemUsers.map(u => (
+            <div key={u.id} style={{ border: '2px solid', borderColor: 'hsl(220,15%,50%) hsl(220,15%,96%) hsl(220,15%,96%) hsl(220,15%,50%)', background: 'white', padding: '2px 6px', fontSize: '10px', display: 'flex', alignItems: 'center', gap: '4px', fontFamily: "'Courier Prime', monospace" }}>
+              <span style={{ fontWeight: 'bold' }}>{u.name}</span>
+              {u.role && <span style={{ color: 'hsl(220,10%,45%)', fontSize: '9px' }}>({u.role})</span>}
+              <button onClick={() => startEdit(u)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex' }}><Pencil style={{ width: 10, height: 10, color: 'hsl(220,70%,35%)' }} /></button>
+              <button onClick={() => { if (confirm(`Remove ${u.name}?`)) deleteMutation.mutate(u.id); }} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex' }}><Trash2 style={{ width: 10, height: 10, color: 'hsl(0,60%,45%)' }} /></button>
+            </div>
+          ))}
+        </div>
+
+        {!showForm ? (
+          <button className="win-button" style={{ fontSize: '10px', display: 'inline-flex', alignItems: 'center', gap: '4px' }} onClick={() => setShowForm(true)}>
+            <Plus style={{ width: 10, height: 10 }} /> ADD USER
+          </button>
+        ) : (
+          <div style={{ display: 'flex', gap: '4px', alignItems: 'center', flexWrap: 'wrap' }}>
+            <input className="win-input" style={{ fontSize: '11px', width: '140px' }} placeholder="Full Name" value={name} onChange={e => setName(e.target.value)} />
+            <input className="win-input" style={{ fontSize: '11px', width: '120px' }} placeholder="Role/Title (optional)" value={role} onChange={e => setRole(e.target.value)} />
+            <button className="win-button" style={{ fontSize: '10px', background: 'hsl(220,70%,35%)', color: 'white' }} onClick={save}>
+              {editingUser ? 'UPDATE' : 'ADD'}
+            </button>
+            <button className="win-button" style={{ fontSize: '10px' }} onClick={cancel}>CANCEL</button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ---- User Dropdown ----
+function UserDropdown({ value, onChange, placeholder = 'Select user...', style = {} }) {
+  const { data: systemUsers = [] } = useQuery({
+    queryKey: ['systemUsers'],
+    queryFn: () => base44.entities.SystemUser.list('name'),
+  });
+  return (
+    <select
+      className="win-input"
+      value={value}
+      onChange={e => onChange(e.target.value)}
+      style={{ fontFamily: "'Courier Prime', monospace", fontSize: '11px', ...style }}
+    >
+      <option value="">{placeholder}</option>
+      {systemUsers.filter(u => u.active !== false).map(u => (
+        <option key={u.id} value={u.name}>{u.name}{u.role ? ` (${u.role})` : ''}</option>
+      ))}
+    </select>
+  );
+}
+
+// ---- Main Page ----
 export default function HdriveManagement() {
   const queryClient = useQueryClient();
   const [showAddForm, setShowAddForm] = useState(false);
   const [showTransferForm, setShowTransferForm] = useState(false);
   const [showBulkImport, setShowBulkImport] = useState(false);
   const [search, setSearch] = useState('');
+  const [userFilter, setUserFilter] = useState('');
   const [auditSearch, setAuditSearch] = useState('');
   const [auditUserFilter, setAuditUserFilter] = useState('');
   const [isExporting, setIsExporting] = useState(false);
@@ -49,7 +151,6 @@ export default function HdriveManagement() {
         reason: data.reason,
         transfer_date: new Date().toISOString(),
       };
-      
       await base44.entities.CustodyLog.create(custodyEntry);
       await base44.entities.HDrive.update(selectedDrive.id, {
         current_user: data.transferred_to,
@@ -82,12 +183,15 @@ export default function HdriveManagement() {
     },
   });
 
-  const filtered = drives.filter(d => 
-    !search || 
-    d.serial_number?.toLowerCase().includes(search.toLowerCase()) ||
-    d.model?.toLowerCase().includes(search.toLowerCase()) ||
-    d.make?.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = drives.filter(d => {
+    const matchSearch = !search ||
+      d.serial_number?.toLowerCase().includes(search.toLowerCase()) ||
+      d.model?.toLowerCase().includes(search.toLowerCase()) ||
+      d.make?.toLowerCase().includes(search.toLowerCase()) ||
+      d.current_location?.toLowerCase().includes(search.toLowerCase());
+    const matchUser = !userFilter || d.current_user === userFilter;
+    return matchSearch && matchUser;
+  });
 
   const serialCounts = drives.reduce((acc, d) => {
     const key = d.serial_number?.trim().toLowerCase();
@@ -100,26 +204,14 @@ export default function HdriveManagement() {
     const lines = bulkText.trim().split('\n').filter(l => l.trim());
     const drivesToImport = lines.map(line => {
       const parts = line.split('\t').map(p => p.trim());
-      return {
-        make: parts[0],
-        model: parts[1],
-        serial_number: parts[2],
-      };
+      return { make: parts[0], model: parts[1], serial_number: parts[2] };
     });
-    
-    if (drivesToImport.length > 0) {
-      bulkImportMutation.mutate(drivesToImport);
-    }
+    if (drivesToImport.length > 0) bulkImportMutation.mutate(drivesToImport);
   };
-
-  const getDriveHistory = (serial) => custody.filter(c => c.hdrive_serial === serial);
 
   const handleExportAudit = async () => {
     setIsExporting(true);
-    const response = await base44.functions.invoke('exportHDriveAudit', {
-      search: auditSearch,
-      userFilter: auditUserFilter,
-    });
+    const response = await base44.functions.invoke('exportHDriveAudit', { search: auditSearch, userFilter: auditUserFilter });
     const blob = new Blob([response.data], { type: 'application/pdf' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -136,36 +228,27 @@ export default function HdriveManagement() {
     <>
       <LoadingScreen isLoading={isLoading} message="LOADING H-DRIVE INVENTORY..." />
       <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-        
+
+        {/* ADMIN SECTION */}
+        <AdminSection />
+
         {/* Add Drive Form */}
         {showAddForm && (
           <WinWindow title="ADD NEW H-DRIVE" icon="💾">
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              <div>
-                <label style={{ fontSize: '11px', fontWeight: 'bold' }}>MAKE:</label>
-                <input className="win-input" value={formData.make} onChange={(e) => setFormData({...formData, make: e.target.value})} />
-              </div>
-              <div>
-                <label style={{ fontSize: '11px', fontWeight: 'bold' }}>MODEL:</label>
-                <input className="win-input" value={formData.model} onChange={(e) => setFormData({...formData, model: e.target.value})} />
-              </div>
-              <div>
-                <label style={{ fontSize: '11px', fontWeight: 'bold' }}>SERIAL NUMBER:</label>
-                <input className="win-input" value={formData.serial_number} onChange={(e) => setFormData({...formData, serial_number: e.target.value})} />
-              </div>
-              <div>
-                <label style={{ fontSize: '11px', fontWeight: 'bold' }}>CURRENT LOCATION:</label>
-                <input className="win-input" placeholder="e.g., Desk drawer locked" value={formData.current_location} onChange={(e) => setFormData({...formData, current_location: e.target.value})} />
-              </div>
+              {[['MAKE', 'make'], ['MODEL', 'model'], ['SERIAL NUMBER', 'serial_number'], ['CURRENT LOCATION', 'current_location']].map(([label, field]) => (
+                <div key={field}>
+                  <label style={{ fontSize: '11px', fontWeight: 'bold' }}>{label}:</label>
+                  <input className="win-input" value={formData[field]} onChange={(e) => setFormData({...formData, [field]: e.target.value})} />
+                </div>
+              ))}
               <div>
                 <label style={{ fontSize: '11px', fontWeight: 'bold' }}>CURRENT USER:</label>
-                <input className="win-input" value={formData.current_user} onChange={(e) => setFormData({...formData, current_user: e.target.value})} />
+                <UserDropdown value={formData.current_user} onChange={v => setFormData({...formData, current_user: v})} />
               </div>
               <div style={{ display: 'flex', gap: '4px', marginTop: '4px' }}>
-                <button className="win-button" style={{ flex: 1, background: 'hsl(220,70%,35%)', color: 'white' }} 
-                  onClick={() => createDriveMutation.mutate(formData)}>
-                  SAVE
-                </button>
+                <button className="win-button" style={{ flex: 1, background: 'hsl(220,70%,35%)', color: 'white' }}
+                  onClick={() => createDriveMutation.mutate(formData)}>SAVE</button>
                 <button className="win-button" style={{ flex: 1 }} onClick={() => setShowAddForm(false)}>CANCEL</button>
               </div>
             </div>
@@ -179,11 +262,11 @@ export default function HdriveManagement() {
               <div style={{ fontSize: '10px', color: 'hsl(220,10%,40%)', marginBottom: '4px' }}>
                 Paste tab-separated data (MAKE, MODEL#, SERIAL#) with one drive per line:
               </div>
-              <textarea className="win-input" rows="10" value={bulkText} onChange={(e) => setBulkText(e.target.value)} 
-                placeholder="SEON&#9;TL-H320G&#9;E0504639&#10;SEON&#9;TL-H320G&#9;E0505655" 
+              <textarea className="win-input" rows="10" value={bulkText} onChange={(e) => setBulkText(e.target.value)}
+                placeholder={"SEON\tTL-H320G\tE0504639\nSEON\tTL-H320G\tE0505655"}
                 style={{ fontFamily: "'Courier Prime', monospace", fontSize: '10px' }} />
               <div style={{ display: 'flex', gap: '4px', marginTop: '4px' }}>
-                <button className="win-button" style={{ flex: 1, background: 'hsl(220,70%,35%)', color: 'white' }} 
+                <button className="win-button" style={{ flex: 1, background: 'hsl(220,70%,35%)', color: 'white' }}
                   onClick={handleBulkImport} disabled={bulkImportMutation.isPending}>
                   IMPORT {bulkImportMutation.isPending ? '...' : ''}
                 </button>
@@ -202,22 +285,20 @@ export default function HdriveManagement() {
               </div>
               <div>
                 <label style={{ fontSize: '11px', fontWeight: 'bold' }}>TRANSFER TO (USER):</label>
-                <input className="win-input" value={transferData.transferred_to} onChange={(e) => setTransferData({...transferData, transferred_to: e.target.value})} />
+                <UserDropdown value={transferData.transferred_to} onChange={v => setTransferData({...transferData, transferred_to: v})} />
               </div>
               <div>
                 <label style={{ fontSize: '11px', fontWeight: 'bold' }}>NEW LOCATION:</label>
-                <input className="win-input" placeholder="e.g., Desk drawer locked, Filing cabinet brown" value={transferData.new_location} onChange={(e) => setTransferData({...transferData, new_location: e.target.value})} />
+                <input className="win-input" placeholder="e.g., Desk drawer locked" value={transferData.new_location} onChange={(e) => setTransferData({...transferData, new_location: e.target.value})} />
               </div>
               <div>
                 <label style={{ fontSize: '11px', fontWeight: 'bold' }}>REASON FOR TRANSFER:</label>
-                <textarea className="win-input" rows="3" value={transferData.reason} onChange={(e) => setTransferData({...transferData, reason: e.target.value})} 
+                <textarea className="win-input" rows="3" value={transferData.reason} onChange={(e) => setTransferData({...transferData, reason: e.target.value})}
                   style={{ fontFamily: "'Courier Prime', monospace", fontSize: '10px' }} />
               </div>
               <div style={{ display: 'flex', gap: '4px', marginTop: '4px' }}>
-                <button className="win-button" style={{ flex: 1, background: 'hsl(220,70%,35%)', color: 'white' }} 
-                  onClick={() => transferMutation.mutate(transferData)}>
-                  TRANSFER
-                </button>
+                <button className="win-button" style={{ flex: 1, background: 'hsl(220,70%,35%)', color: 'white' }}
+                  onClick={() => transferMutation.mutate(transferData)}>TRANSFER</button>
                 <button className="win-button" style={{ flex: 1 }} onClick={() => { setShowTransferForm(false); setSelectedDrive(null); }}>CANCEL</button>
               </div>
             </div>
@@ -228,36 +309,19 @@ export default function HdriveManagement() {
         <WinWindow title="EXPORT AUDIT REPORT — PDF" icon="📋">
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', alignItems: 'flex-end' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-              <label style={{ fontSize: '10px', fontWeight: 'bold' }}>SEARCH (serial / make / model / location):</label>
-              <input
-                className="win-input"
-                style={{ fontSize: '11px', width: '220px' }}
-                placeholder="e.g. SEON, E050..."
-                value={auditSearch}
-                onChange={(e) => setAuditSearch(e.target.value)}
-              />
+              <label style={{ fontSize: '10px', fontWeight: 'bold' }}>SEARCH (serial / make / model):</label>
+              <input className="win-input" style={{ fontSize: '11px', width: '200px' }} placeholder="e.g. SEON, E050..."
+                value={auditSearch} onChange={(e) => setAuditSearch(e.target.value)} />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
               <label style={{ fontSize: '10px', fontWeight: 'bold' }}>FILTER BY CURRENT USER:</label>
-              <input
-                className="win-input"
-                style={{ fontSize: '11px', width: '180px' }}
-                placeholder="e.g. John Smith"
-                value={auditUserFilter}
-                onChange={(e) => setAuditUserFilter(e.target.value)}
-              />
+              <UserDropdown value={auditUserFilter} onChange={setAuditUserFilter} placeholder="All users" style={{ width: '160px' }} />
             </div>
-            <button
-              className="win-button"
+            <button className="win-button"
               style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', background: isExporting ? 'hsl(220,15%,75%)' : 'hsl(0,65%,40%)', color: 'white', alignSelf: 'flex-end' }}
-              onClick={handleExportAudit}
-              disabled={isExporting}
-            >
+              onClick={handleExportAudit} disabled={isExporting}>
               <FileDown style={{ width: 13, height: 13 }} /> {isExporting ? 'GENERATING...' : 'EXPORT AUDIT PDF'}
             </button>
-            <div style={{ fontSize: '9px', color: 'hsl(220,10%,40%)', alignSelf: 'flex-end', paddingBottom: '4px' }}>
-              Exports inventory with date / checkbox / initials rows for chain-of-custody sign-off, plus full transfer log.
-            </div>
           </div>
         </WinWindow>
 
@@ -272,9 +336,13 @@ export default function HdriveManagement() {
               onClick={() => setShowBulkImport(true)}>
               <Upload className="w-3 h-3" /> BULK IMPORT
             </button>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginLeft: 'auto' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginLeft: 'auto', flexWrap: 'wrap' }}>
               <Search className="w-3 h-3" />
-              <input className="win-input" style={{ fontSize: '11px', width: '192px' }} placeholder="Search serial..." value={search} onChange={(e) => setSearch(e.target.value)} />
+              <input className="win-input" style={{ fontSize: '11px', width: '160px' }} placeholder="Search serial/make/location..." value={search} onChange={(e) => setSearch(e.target.value)} />
+              <UserDropdown value={userFilter} onChange={setUserFilter} placeholder="Filter by user..." style={{ width: '160px' }} />
+              {(search || userFilter) && (
+                <button className="win-button" style={{ fontSize: '10px' }} onClick={() => { setSearch(''); setUserFilter(''); }}>CLEAR</button>
+              )}
             </div>
           </div>
 
@@ -296,32 +364,32 @@ export default function HdriveManagement() {
                 {filtered.map((d, i) => {
                   const dup = isDuplicate(d);
                   return (
-                  <tr key={d.id} style={{ backgroundColor: dup ? 'hsl(0,80%,92%)' : i % 2 === 0 ? 'hsl(220,15%,96%)' : 'hsl(220,20%,92%)', height: '24px', lineHeight: '24px', outline: dup ? '2px solid hsl(0,72%,45%)' : 'none' }}>
-                    <td style={{ padding: '0 4px', fontWeight: 'bold' }}>
-                      {dup && <span style={{ background: 'hsl(0,72%,45%)', color: 'white', fontSize: '8px', padding: '0 3px', marginRight: '4px', fontWeight: 'bold' }}>⚠ DUPLICATE</span>}
-                      {d.serial_number}
-                    </td>
-                    <td style={{ padding: '0 4px' }}>{d.make} / {d.model}</td>
-                    <td style={{ padding: '0 4px' }}>{d.current_user || '—'}</td>
-                    <td style={{ padding: '0 4px', fontSize: '9px' }}>{d.current_location || '—'}</td>
-                    <td style={{ padding: '0 4px', display: 'flex', gap: '2px', whiteSpace: 'nowrap', alignItems: 'center' }}>
-                      <button className="win-button" style={{ padding: '0 4px', fontSize: '10px', display: 'inline-flex', alignItems: 'center', gap: '2px' }}
-                        onClick={() => { setSelectedDrive(d); setShowTransferForm(true); }} title="Transfer">
-                        <ArrowRight className="w-3 h-3" /> TRANSFER
-                      </button>
-                      <button className="win-button" style={{ padding: '0 2px', fontSize: '10px', display: 'inline-flex' }}
-                        onClick={() => { if (confirm('Delete this H-Drive?')) deleteMutation.mutate(d.id); }} title="Delete">
-                        <Trash2 className="w-3 h-3" />
-                      </button>
-                    </td>
-                  </tr>
+                    <tr key={d.id} style={{ backgroundColor: dup ? 'hsl(0,80%,92%)' : i % 2 === 0 ? 'hsl(220,15%,96%)' : 'hsl(220,20%,92%)', height: '24px', lineHeight: '24px', outline: dup ? '2px solid hsl(0,72%,45%)' : 'none' }}>
+                      <td style={{ padding: '0 4px', fontWeight: 'bold' }}>
+                        {dup && <span style={{ background: 'hsl(0,72%,45%)', color: 'white', fontSize: '8px', padding: '0 3px', marginRight: '4px', fontWeight: 'bold' }}>DUPLICATE</span>}
+                        {d.serial_number}
+                      </td>
+                      <td style={{ padding: '0 4px' }}>{d.make} / {d.model}</td>
+                      <td style={{ padding: '0 4px' }}>{d.current_user || '-'}</td>
+                      <td style={{ padding: '0 4px', fontSize: '9px' }}>{d.current_location || '-'}</td>
+                      <td style={{ padding: '0 4px', display: 'flex', gap: '2px', whiteSpace: 'nowrap', alignItems: 'center' }}>
+                        <button className="win-button" style={{ padding: '0 4px', fontSize: '10px', display: 'inline-flex', alignItems: 'center', gap: '2px' }}
+                          onClick={() => { setSelectedDrive(d); setShowTransferForm(true); }} title="Transfer">
+                          <ArrowRight className="w-3 h-3" /> TRANSFER
+                        </button>
+                        <button className="win-button" style={{ padding: '0 2px', fontSize: '10px', display: 'inline-flex' }}
+                          onClick={() => { if (confirm('Delete this H-Drive?')) deleteMutation.mutate(d.id); }} title="Delete">
+                          <Trash2 className="w-3 h-3" />
+                        </button>
+                      </td>
+                    </tr>
                   );
                 })}
               </tbody>
             </table>
           </div>
           <div style={{ fontSize: '10px', color: 'hsl(220,10%,40%)', marginTop: '2px' }}>
-            TOTAL H-DRIVES: {filtered.length}
+            TOTAL H-DRIVES: {filtered.length} {userFilter || search ? `(filtered from ${drives.length})` : ''}
           </div>
         </WinWindow>
 
@@ -335,7 +403,8 @@ export default function HdriveManagement() {
                 <thead>
                   <tr style={{ background: 'hsl(220,70%,35%)', color: 'white', position: 'sticky', top: 0 }}>
                     <th style={{ padding: '4px', textAlign: 'left' }}>SERIAL #</th>
-                    <th style={{ padding: '4px', textAlign: 'left' }}>FROM → TO</th>
+                    <th style={{ padding: '4px', textAlign: 'left' }}>FROM</th>
+                    <th style={{ padding: '4px', textAlign: 'left' }}>TO</th>
                     <th style={{ padding: '4px', textAlign: 'left' }}>LOCATION</th>
                     <th style={{ padding: '4px', textAlign: 'left' }}>REASON</th>
                     <th style={{ padding: '4px', textAlign: 'left' }}>DATE/TIME</th>
@@ -345,9 +414,10 @@ export default function HdriveManagement() {
                   {custody.map((c, i) => (
                     <tr key={c.id} style={{ backgroundColor: i % 2 === 0 ? 'hsl(220,15%,96%)' : 'hsl(220,20%,92%)' }}>
                       <td style={{ padding: '2px 4px', fontWeight: 'bold' }}>{c.hdrive_serial}</td>
-                      <td style={{ padding: '2px 4px', fontSize: '8px' }}>{c.transferred_from} → {c.transferred_to}</td>
-                      <td style={{ padding: '2px 4px', fontSize: '8px' }}>{c.previous_location} → {c.new_location}</td>
-                      <td style={{ padding: '2px 4px', fontSize: '8px', maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis' }}>{c.reason}</td>
+                      <td style={{ padding: '2px 4px' }}>{c.transferred_from || '-'}</td>
+                      <td style={{ padding: '2px 4px' }}>{c.transferred_to || '-'}</td>
+                      <td style={{ padding: '2px 4px', fontSize: '8px' }}>{c.previous_location || '-'} → {c.new_location || '-'}</td>
+                      <td style={{ padding: '2px 4px', fontSize: '8px', maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis' }}>{c.reason || '-'}</td>
                       <td style={{ padding: '2px 4px', fontSize: '8px', whiteSpace: 'nowrap' }}>{new Date(c.transfer_date).toLocaleDateString()} {new Date(c.transfer_date).toLocaleTimeString()}</td>
                     </tr>
                   ))}
