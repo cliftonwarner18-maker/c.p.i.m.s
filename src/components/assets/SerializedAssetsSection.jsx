@@ -91,6 +91,20 @@ export default function SerializedAssetsSection() {
     }
   };
 
+  const serialCounts = assets.reduce((acc, a) => {
+    const key = a.serial_number?.trim().toLowerCase();
+    if (key) acc[key] = (acc[key] || 0) + 1;
+    return acc;
+  }, {});
+  const assetNumCounts = assets.reduce((acc, a) => {
+    const key = a.asset_number?.trim().toLowerCase();
+    if (key) acc[key] = (acc[key] || 0) + 1;
+    return acc;
+  }, {});
+  const isAssetDuplicate = (a) =>
+    (a.serial_number && serialCounts[a.serial_number.trim().toLowerCase()] > 1) ||
+    (a.asset_number && assetNumCounts[a.asset_number.trim().toLowerCase()] > 1);
+
   return (
     <WinWindow title="SERIALIZED ASSETS — DVR RECORDERS & HIGH VALUE EQUIPMENT" icon="🎥">
       <div style={{display:'flex',flexDirection:'column',gap:'8px'}}>

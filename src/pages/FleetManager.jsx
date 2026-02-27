@@ -27,6 +27,13 @@ export default function FleetManager() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['buses'] }),
   });
 
+  const busNumCounts = buses.reduce((acc, b) => {
+    const key = b.bus_number?.trim().toLowerCase();
+    if (key) acc[key] = (acc[key] || 0) + 1;
+    return acc;
+  }, {});
+  const isBusDuplicate = (b) => busNumCounts[b.bus_number?.trim().toLowerCase()] > 1;
+
   const filtered = buses.filter(b => {
     const matchSearch = !search || 
       b.bus_number?.toLowerCase().includes(search.toLowerCase()) ||

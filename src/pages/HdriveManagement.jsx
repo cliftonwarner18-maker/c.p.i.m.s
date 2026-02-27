@@ -86,6 +86,13 @@ export default function HdriveManagement() {
     d.make?.toLowerCase().includes(search.toLowerCase())
   );
 
+  const serialCounts = drives.reduce((acc, d) => {
+    const key = d.serial_number?.trim().toLowerCase();
+    if (key) acc[key] = (acc[key] || 0) + 1;
+    return acc;
+  }, {});
+  const isDuplicate = (d) => serialCounts[d.serial_number?.trim().toLowerCase()] > 1;
+
   const handleBulkImport = () => {
     const lines = bulkText.trim().split('\n').filter(l => l.trim());
     const drivesToImport = lines.map(line => {
