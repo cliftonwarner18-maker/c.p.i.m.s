@@ -83,9 +83,9 @@ export default function BusForm({ bus, onClose, onSaved }) {
     <WinWindow title={bus ? `EDIT VEHICLE — BUS #${bus.bus_number}` : 'ADD NEW VEHICLE'} icon="🚌">
       <form onSubmit={handleSubmit} style={{display:'flex',flexDirection:'column',gap:'4px'}}>
         {/* Vehicle Info */}
-        <div className="win-panel" style={{padding:'4px',boxSizing:'border-box'}}>
-          <div style={{fontSize:'10px',fontWeight:'bold',background:'hsl(220,70%,35%)',color:'white',padding:'2px 4px',marginBottom:'2px'}}>▸ VEHICLE INFORMATION</div>
-          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(150px, 1fr))',gap:'4px'}}>
+         <div className="win-panel" style={{padding:'4px',boxSizing:'border-box',display:'flex',flexDirection:'column',width:'100%'}}>
+           <div style={{fontSize:'10px',fontWeight:'bold',background:'hsl(220,70%,35%)',color:'white',padding:'2px 4px',marginBottom:'2px',width:'100%',display:'block'}}>▸ VEHICLE INFORMATION</div>
+           <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(150px, 1fr))',gap:'4px',width:'100%'}}>
             <Field label="BUS # *">
                <input className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.bus_number} onChange={e => setForm({...form, bus_number: e.target.value})} required />
              </Field>
@@ -138,9 +138,9 @@ export default function BusForm({ bus, onClose, onSaved }) {
         </div>
 
         {/* Camera System */}
-        <div className="win-panel" style={{padding:'4px',boxSizing:'border-box'}}>
-          <div style={{fontSize:'10px',fontWeight:'bold',background:'hsl(220,70%,35%)',color:'white',padding:'2px 4px',marginBottom:'2px'}}>▸ CAMERA SYSTEM</div>
-          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(150px, 1fr))',gap:'4px'}}>
+        <div className="win-panel" style={{padding:'4px',boxSizing:'border-box',display:'flex',flexDirection:'column',width:'100%'}}>
+          <div style={{fontSize:'10px',fontWeight:'bold',background:'hsl(220,70%,35%)',color:'white',padding:'2px 4px',marginBottom:'2px',width:'100%',display:'block'}}>▸ CAMERA SYSTEM</div>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(150px, 1fr))',gap:'4px',width:'100%'}}>
             <Field label="CAMERA SYSTEM">
               <select className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.camera_system_type} onChange={e => setForm({...form, camera_system_type: e.target.value})}>
                 <option value="Seon">Seon</option>
