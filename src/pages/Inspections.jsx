@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import moment from 'moment';
 import { Plus, Search, Eye, Pencil, Trash2 } from 'lucide-react';
+import DeleteConfirmModal from '../components/DeleteConfirmModal';
 
 export default function Inspections() {
   const [search, setSearch] = useState('');

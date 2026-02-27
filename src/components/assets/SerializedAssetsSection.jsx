@@ -3,6 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import WinWindow from '../WinWindow';
 import { Plus, Edit2, Trash2, FileDown } from 'lucide-react';
+import DeleteConfirmModal from '../DeleteConfirmModal';
 
 export default function SerializedAssetsSection() {
   const [showForm, setShowForm] = useState(false);

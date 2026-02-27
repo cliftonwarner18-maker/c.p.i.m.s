@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import WinWindow from '../components/WinWindow';
 import LoadingScreen from '../components/LoadingScreen';
 import { Plus, ArrowRight, Trash2, Search, Upload, FileDown, Pencil } from 'lucide-react';
+import DeleteConfirmModal from '../components/DeleteConfirmModal';
 
 const FLEET_LOCATIONS = ['Main', 'North', 'Central Fleet'];
 

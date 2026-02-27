@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import moment from 'moment';
 import { Search, Filter, Trash2 } from 'lucide-react';
+import DeleteConfirmModal from '../components/DeleteConfirmModal';
 
 export default function WorkOrders() {
   const [statusFilter, setStatusFilter] = useState('All');

@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import WinWindow from '../components/WinWindow';
 import LoadingScreen from '../components/LoadingScreen';
 import { Plus, Trash2, Pencil } from 'lucide-react';
+import DeleteConfirmModal from '../components/DeleteConfirmModal';
 
 export default function AdminPanel() {
   const queryClient = useQueryClient();
