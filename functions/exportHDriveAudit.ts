@@ -61,7 +61,7 @@ Deno.serve(async (req) => {
     let y = 29;
     doc.setFont('courier', 'bold');
     doc.setFontSize(9);
-    doc.text('INVENTORY AUDIT — CHAIN OF CUSTODY VERIFICATION', margin, y);
+    doc.text('INVENTORY AUDIT - CHAIN OF CUSTODY VERIFICATION', margin, y);
     y += 5;
 
     // Column layout for inventory table
