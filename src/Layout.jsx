@@ -21,17 +21,17 @@ export default function Layout({ children, currentPageName }) {
   return (
     <div className="w-full min-h-screen bg-background text-foreground flex flex-col font-mono" style={{fontFamily: "'Courier Prime', monospace"}}>
       {/* Top Header Bar */}
-      <div style={{background:'hsl(220,70%,35%)',color:'white',padding:'4px 12px',display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'nowrap',minHeight:0,fontFamily:"'Courier Prime',monospace"}}>
-        <div style={{display:'flex',alignItems:'center',gap:8,flexShrink:0}}>
-          <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/736f6667e_nhcs.png" style={{width:24,height:24,objectFit:'contain',flexShrink:0}} alt="NHCS Logo" />
-          <div style={{lineHeight:'1.1'}}>
-            <div style={{fontSize:10,fontWeight:'bold',letterSpacing:'0.15em',textTransform:'uppercase',whiteSpace:'nowrap'}}>NEW HANOVER COUNTY SCHOOLS</div>
-            <div style={{fontSize:8,letterSpacing:'0.1em',textTransform:'uppercase',opacity:0.8,whiteSpace:'nowrap'}}>TRANSPORTATION DEPT. — MOBILE VEHICLE SURVEILLANCE SYSTEM</div>
+      <div style={{background:'linear-gradient(to right, hsl(220,50%,32%), hsl(220,45%,38%))',color:'white',padding:'6px 14px',display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'nowrap',minHeight:0,fontFamily:"'Courier Prime',monospace",boxShadow:'0 2px 6px rgba(0,0,0,0.12)'}}>
+        <div style={{display:'flex',alignItems:'center',gap:10,flexShrink:0}}>
+          <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/736f6667e_nhcs.png" style={{width:28,height:28,objectFit:'contain',flexShrink:0}} alt="NHCS Logo" />
+          <div style={{lineHeight:'1.2',borderLeft:'1px solid rgba(255,255,255,0.3)',paddingLeft:10}}>
+            <div style={{fontSize:11,fontWeight:'600',letterSpacing:'0.08em',textTransform:'uppercase',whiteSpace:'nowrap'}}>New Hanover County Schools</div>
+            <div style={{fontSize:9,letterSpacing:'0.05em',textTransform:'uppercase',opacity:0.85,whiteSpace:'nowrap'}}>Transportation — Vehicle Surveillance System</div>
           </div>
         </div>
-        <div style={{display:'flex',alignItems:'center',gap:4,fontSize:9,opacity:0.7,flexShrink:0}}>
-          <Database style={{width:12,height:12}} />
-          <span style={{whiteSpace:'nowrap'}}>NCDPI-MVSS v2.1.04</span>
+        <div style={{display:'flex',alignItems:'center',gap:6,fontSize:10,opacity:0.8,flexShrink:0}}>
+          <Database style={{width:14,height:14}} />
+          <span style={{whiteSpace:'nowrap'}}>v2.1.04</span>
         </div>
       </div>
 
