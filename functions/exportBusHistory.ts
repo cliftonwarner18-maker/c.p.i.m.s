@@ -97,26 +97,29 @@ Deno.serve(async (req) => {
       yPos += 4;
     } else {
       workOrders.slice(0, 10).forEach((wo) => {
-        if (yPos > pageHeight - 15) {
+        if (yPos > pageHeight - 20) {
           doc.addPage();
           yPos = 10;
         }
         doc.setFont(undefined, 'bold');
         doc.setFontSize(9);
         doc.text(`Order #${wo.order_number} - ${moment(wo.created_date).format('MM/DD/YYYY')}`, 10, yPos);
-        yPos += 3;
+        yPos += 4;
         doc.setFont(undefined, 'normal');
         doc.setFontSize(8);
-        doc.text(`Status: ${wo.status} | Tech: ${wo.technician_name || 'N/A'}`, 12, yPos);
-        yPos += 2;
-        doc.text(`Issue: ${wo.issue_description}`, 12, yPos);
-        yPos += 2;
+        const statusLine = `Status: ${wo.status} | Tech: ${wo.technician_name || 'N/A'}`;
+        doc.text(statusLine, 12, yPos);
+        yPos += 3;
+        const issueWrapped = doc.splitTextToSize(`Issue: ${wo.issue_description}`, pageWidth - 24);
+        doc.text(issueWrapped, 12, yPos);
+        yPos += issueWrapped.length * 2.5 + 1;
         if (wo.repairs_rendered) {
-          const wrapped = doc.splitTextToSize(wo.repairs_rendered, pageWidth - 24);
-          doc.text(wrapped, 12, yPos);
-          yPos += wrapped.length * 2 + 1;
+          const repairsWrapped = doc.splitTextToSize(`Repairs: ${wo.repairs_rendered}`, pageWidth - 24);
+          doc.text(repairsWrapped, 12, yPos);
+          yPos += repairsWrapped.length * 2.5 + 2;
+        } else {
+          yPos += 1;
         }
-        yPos += 2;
       });
     }
     yPos += 2;
