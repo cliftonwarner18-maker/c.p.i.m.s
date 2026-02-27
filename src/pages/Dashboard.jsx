@@ -51,7 +51,7 @@ export default function Dashboard() {
   return (
     <>
       <LoadingScreen isLoading={isLoading} message="LOADING FLEET DATA..." />
-      <div style={{display:'flex',flexDirection:'column',gap:'4px'}}>
+      <div style={{display:'flex',flexDirection:'column',gap:'4px',width:'100%',padding:'4px',boxSizing:'border-box'}}>
       {/* Header Banner */}
       <div className="win-panel-inset" style={{padding:'8px',boxSizing:'border-box',display:'flex',alignItems:'center',justifyContent:'space-between',gap:'12px'}}>
         <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/736f6667e_nhcs.png" style={{width:40,height:40,objectFit:'contain',flexShrink:0}} alt="NHCS Logo" />
