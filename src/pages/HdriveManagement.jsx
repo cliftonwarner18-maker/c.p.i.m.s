@@ -28,6 +28,25 @@ function UserDropdown({ value, onChange, placeholder = 'Select user...', style =
   );
 }
 
+// ---- Location Fields ----
+function LocationFields({ fleetKey, subKey, values, onChange }) {
+  return (
+    <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+      <div style={{ flex: '0 0 auto' }}>
+        <label style={{ fontSize: '10px', fontWeight: 'bold', display: 'block' }}>FLEET LOCATION:</label>
+        <select className="win-input" style={{ fontSize: '11px', width: '140px' }} value={values[fleetKey]} onChange={e => onChange({ [fleetKey]: e.target.value })}>
+          <option value="">-- Select --</option>
+          {FLEET_LOCATIONS.map(l => <option key={l} value={l}>{l}</option>)}
+        </select>
+      </div>
+      <div style={{ flex: '1 1 140px' }}>
+        <label style={{ fontSize: '10px', fontWeight: 'bold', display: 'block' }}>SUB-LOCATION / DETAIL:</label>
+        <input className="win-input" style={{ fontSize: '11px', width: '100%' }} placeholder="e.g., Desk drawer, Filing cabinet" value={values[subKey]} onChange={e => onChange({ [subKey]: e.target.value })} />
+      </div>
+    </div>
+  );
+}
+
 // ---- Main Page ----
 export default function HdriveManagement() {
   const queryClient = useQueryClient();
@@ -40,8 +59,8 @@ export default function HdriveManagement() {
   const [auditUserFilter, setAuditUserFilter] = useState('');
   const [isExporting, setIsExporting] = useState(false);
   const [selectedDrive, setSelectedDrive] = useState(null);
-  const [formData, setFormData] = useState({ make: '', model: '', serial_number: '', current_location: '', current_user: '' });
-  const [transferData, setTransferData] = useState({ transferred_to: '', new_location: '', reason: '' });
+  const [formData, setFormData] = useState({ make: '', model: '', serial_number: '', fleet_location: '', sub_location: '', current_user: '' });
+  const [transferData, setTransferData] = useState({ transferred_to: '', fleet_location: '', sub_location: '', reason: '' });
   const [bulkText, setBulkText] = useState('');
 
   const { data: drives = [], isLoading } = useQuery({
