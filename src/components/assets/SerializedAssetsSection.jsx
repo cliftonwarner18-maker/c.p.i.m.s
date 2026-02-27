@@ -253,8 +253,7 @@ export default function SerializedAssetsSection() {
             <tbody>
               {assets.map(asset => {
                 const dup = isAssetDuplicate(asset);
-                return (
-                <tr key={asset.id} style={{borderBottom:'1px solid hsl(220,15%,85%)', backgroundColor: dup ? 'hsl(0,80%,92%)' : '', outline: dup ? '2px solid hsl(0,72%,45%)' : 'none'}}>
+                return <tr key={asset.id} style={{borderBottom:'1px solid hsl(220,15%,85%)', backgroundColor: dup ? 'hsl(0,80%,92%)' : '', outline: dup ? '2px solid hsl(0,72%,45%)' : 'none'}}>
                   <td style={{padding:'4px'}}>
                     {dup && <span style={{background:'hsl(0,72%,45%)',color:'white',fontSize:'8px',padding:'0 3px',marginRight:'4px',fontWeight:'bold'}}>⚠ DUP</span>}
                     {asset.asset_number}
@@ -273,8 +272,7 @@ export default function SerializedAssetsSection() {
                       <Trash2 style={{width:12,height:12}} />
                     </button>
                   </td>
-                </tr>
-                );
+                </tr>;
               })}
             </tbody>
           </table>
