@@ -60,8 +60,10 @@ export default function Layout({ children, currentPageName }) {
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-auto" style={{fontFamily:"'Courier Prime',monospace", padding: '0', width: '100%', boxSizing: 'border-box'}}>
-        {children}
+      <div className="flex-1 overflow-auto" style={{fontFamily:"'Courier Prime',monospace", padding: '0', width: '100%', boxSizing: 'border-box', display: 'flex', justifyContent: 'center'}}>
+        <div style={{width: '100%', maxWidth: '1400px', boxSizing: 'border-box'}}>
+          {children}
+        </div>
       </div>
 
       {/* Bottom Status Bar */}
