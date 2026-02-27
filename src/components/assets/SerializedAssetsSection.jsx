@@ -12,6 +12,7 @@ export default function SerializedAssetsSection() {
   const [statusFilter, setStatusFilter] = useState('All');
   const [isExporting, setIsExporting] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [isCleaningUp, setIsCleaningUp] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: assets = [], isLoading } = useQuery({
@@ -93,6 +94,20 @@ export default function SerializedAssetsSection() {
     }
   };
 
+  const handleCleanupDuplicates = async () => {
+    if (!window.confirm('Delete duplicate serialized assets (keeping most detailed records)?\n\nThis cannot be undone.')) return;
+    setIsCleaningUp(true);
+    try {
+      const response = await base44.functions.invoke('cleanupDuplicates', { entityName: 'SerializedAsset' });
+      queryClient.invalidateQueries({ queryKey: ['serializedAssets'] });
+      alert(`Cleanup complete!\n${response.data.message}`);
+    } catch (error) {
+      alert(`Error during cleanup: ${error.message}`);
+    } finally {
+      setIsCleaningUp(false);
+    }
+  };
+
   const serialCounts = assets.reduce((acc, a) => {
     const key = a.serial_number?.trim().toLowerCase();
     if (key) acc[key] = (acc[key] || 0) + 1;
@@ -150,6 +165,15 @@ export default function SerializedAssetsSection() {
             style={{display:'flex',alignItems:'center',gap:'4px',fontSize:'11px',background:isExporting ? 'hsl(220,15%,75%)' : 'hsl(220,70%,35%)',color:'white'}}
           >
             <FileDown style={{width:12,height:12}} /> Export PDF
+          </button>
+
+          <button
+            onClick={handleCleanupDuplicates}
+            disabled={isCleaningUp}
+            className="win-button"
+            style={{display:'flex',alignItems:'center',gap:'4px',fontSize:'11px',background:'hsl(0,65%,45%)',color:'white'}}
+          >
+            🧹 {isCleaningUp ? 'CLEANING...' : 'CLEAN UP DUPLICATES'}
           </button>
         </div>
 
