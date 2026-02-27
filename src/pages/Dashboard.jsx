@@ -51,16 +51,16 @@ export default function Dashboard() {
   return (
     <>
       <LoadingScreen isLoading={isLoading} message="LOADING FLEET DATA..." />
-      <div style={{display:'flex',flexDirection:'column',gap:'4px',width:'100%',padding:'4px',boxSizing:'border-box'}}>
+      <div style={{display:'flex',flexDirection:'column',gap:'8px',width:'100%',padding:'12px',boxSizing:'border-box',maxWidth:'1400px',margin:'0 auto'}}>
       {/* Header Banner */}
-      <div className="win-panel-inset" style={{padding:'8px',boxSizing:'border-box',display:'flex',alignItems:'center',justifyContent:'space-between',gap:'12px'}}>
-        <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/736f6667e_nhcs.png" style={{width:40,height:40,objectFit:'contain',flexShrink:0}} alt="NHCS Logo" />
-        <div style={{flex:1,textAlign:'center',lineHeight:'1.2'}}>
-          <div style={{fontSize:'10px',fontWeight:'bold',letterSpacing:'0.1em',textTransform:'uppercase',color:'hsl(220,10%,40%)',marginBottom:'2px'}}>New Hanover County Schools</div>
-          <div style={{fontSize:'16px',fontWeight:'bold',letterSpacing:'0.08em',textTransform:'uppercase',color:'hsl(220,70%,35%)',marginBottom:'2px',fontFamily:"'Courier Prime', monospace"}}>SCHOOL BUS SURVEILLANCE SYSTEM</div>
-          <div style={{fontSize:'9px',letterSpacing:'0.08em',textTransform:'uppercase',color:'hsl(220,10%,40%)'}}>Camera Repair &amp; Maintenance Management Database</div>
+      <div className="win-panel-inset" style={{padding:'16px',boxSizing:'border-box',display:'flex',alignItems:'center',justifyContent:'space-between',gap:'16px'}}>
+        <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/736f6667e_nhcs.png" style={{width:48,height:48,objectFit:'contain',flexShrink:0}} alt="NHCS Logo" />
+        <div style={{flex:1,textAlign:'center',lineHeight:'1.4'}}>
+          <div style={{fontSize:'12px',fontWeight:'bold',letterSpacing:'0.1em',textTransform:'uppercase',color:'hsl(220,10%,40%)',marginBottom:'4px'}}>New Hanover County Schools</div>
+          <div style={{fontSize:'18px',fontWeight:'bold',letterSpacing:'0.08em',textTransform:'uppercase',color:'hsl(220,70%,35%)',marginBottom:'4px',fontFamily:"'Courier Prime', monospace"}}>SCHOOL BUS SURVEILLANCE SYSTEM</div>
+          <div style={{fontSize:'11px',letterSpacing:'0.08em',textTransform:'uppercase',color:'hsl(220,10%,40%)'}}>Camera Repair &amp; Maintenance Management Database</div>
         </div>
-        <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/736f6667e_nhcs.png" style={{width:40,height:40,objectFit:'contain',flexShrink:0}} alt="NHCS Logo" />
+        <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/736f6667e_nhcs.png" style={{width:48,height:48,objectFit:'contain',flexShrink:0}} alt="NHCS Logo" />
       </div>
 
       {/* Stats */}
@@ -70,19 +70,19 @@ export default function Dashboard() {
       </div>
 
       {/* Quick Actions */}
-      <div style={{display:'flex',gap:'4px',flexWrap:'wrap'}}>
-        <Link to={createPageUrl('NewWorkOrder')} className="win-button text-[12px] no-underline" style={{display:'flex',alignItems:'center',gap:'4px',background:'hsl(140,70%,40%)',color:'white',fontWeight:'bold'}}>
+      <div style={{display:'flex',gap:'8px',flexWrap:'wrap'}}>
+        <Link to={createPageUrl('NewWorkOrder')} className="win-button no-underline" style={{display:'flex',alignItems:'center',gap:'6px',padding:'8px 16px',fontSize:'13px',background:'hsl(140,70%,40%)',color:'white',fontWeight:'bold'}}>
           <PlusCircle className="w-4 h-4" /> NEW WORK ORDER
         </Link>
-        <Link to={createPageUrl('FleetManager')} className="win-button text-[12px] no-underline text-foreground" style={{display:'flex',alignItems:'center',gap:'4px'}}>
+        <Link to={createPageUrl('FleetManager')} className="win-button no-underline text-foreground" style={{display:'flex',alignItems:'center',gap:'6px',padding:'8px 16px',fontSize:'13px'}}>
           <Bus className="w-4 h-4" /> MANAGE FLEET
         </Link>
-        <Link to={createPageUrl('Inspections')} className="win-button text-[12px] no-underline text-foreground" style={{display:'flex',alignItems:'center',gap:'4px'}}>
+        <Link to={createPageUrl('Inspections')} className="win-button no-underline text-foreground" style={{display:'flex',alignItems:'center',gap:'6px',padding:'8px 16px',fontSize:'13px'}}>
           <ClipboardCheck className="w-4 h-4" /> INSPECTIONS
         </Link>
         <button
-          className="win-button text-[12px] font-bold"
-          style={{display:'flex',alignItems:'center',gap:'4px',background:'hsl(45,90%,50%)',color:'hsl(220,20%,10%)'}}
+          className="win-button font-bold"
+          style={{display:'flex',alignItems:'center',gap:'6px',padding:'8px 16px',fontSize:'13px',background:'hsl(45,90%,50%)',color:'hsl(220,20%,10%)'}}
           onClick={() => setShowTranscribe(true)}
         >
           <Zap className="w-4 h-4" /> QUICK TRANSCRIBE
@@ -98,22 +98,22 @@ export default function Dashboard() {
 
       {/* Overdue Inspections - full width */}
       <WinWindow title="OVERDUE INSPECTIONS" icon="🔴">
-        <div className="win-panel-inset" style={{ maxHeight: '400px', minHeight: '80px', overflow: 'auto', padding: '4px' }}>
+        <div className="win-panel-inset" style={{ maxHeight: '400px', minHeight: '80px', overflow: 'auto', padding: '8px' }}>
           {overdueInspections.length === 0 ? (
-            <div className="text-center text-[11px] p-3 text-muted-foreground">NO OVERDUE INSPECTIONS</div>
+            <div className="text-center text-[13px] p-4 text-muted-foreground">NO OVERDUE INSPECTIONS</div>
           ) : (
             overdueInspections.map(b => (
-              <div key={b.id} style={{display:'flex',alignItems:'center',justifyContent:'space-between',fontSize:'12px',padding:'4px',borderBottom:'1px solid hsl(220,15%,70%)'}}>
-                <div style={{display:'flex',alignItems:'center',gap:'4px'}}>
-                  <AlertTriangle className="w-4 h-4" style={{color:'hsl(0,60%,45%)',flexShrink:0}} />
-                  <div>
+              <div key={b.id} style={{display:'flex',alignItems:'center',justifyContent:'space-between',fontSize:'13px',padding:'8px',borderBottom:'1px solid hsl(220,15%,70%)'}}>
+                <div style={{display:'flex',alignItems:'center',gap:'8px',flex:1}}>
+                  <AlertTriangle className="w-5 h-5" style={{color:'hsl(0,60%,45%)',flexShrink:0}} />
+                  <div style={{minWidth:0}}>
                     <div style={{fontWeight:'bold'}}>BUS #{b.bus_number}</div>
-                    <div style={{fontSize:'10px',color:'hsl(220,10%,40%)'}}>{b.year} {b.make} {b.model}</div>
+                    <div style={{fontSize:'12px',color:'hsl(220,10%,40%)'}}>{b.year} {b.make} {b.model}</div>
                   </div>
                 </div>
-                <div style={{textAlign:'right'}}>
-                  <div style={{color:'hsl(0,60%,45%)',fontWeight:'bold',fontSize:'11px'}}>OVERDUE</div>
-                  <div style={{fontWeight:'bold',fontSize:'11px'}}>DUE: {moment(b.next_inspection_due).format('MM/DD/YY')}</div>
+                <div style={{textAlign:'right',flexShrink:0}}>
+                  <div style={{color:'hsl(0,60%,45%)',fontWeight:'bold',fontSize:'12px'}}>OVERDUE</div>
+                  <div style={{fontWeight:'bold',fontSize:'12px'}}>DUE: {moment(b.next_inspection_due).format('MM/DD/YY')}</div>
                 </div>
               </div>
             ))
@@ -123,18 +123,18 @@ export default function Dashboard() {
 
       {/* Recently Completed */}
       <WinWindow title="RECENTLY COMPLETED REPAIRS" icon="✅">
-        <div className="win-panel-inset" style={{ maxHeight: '320px', minHeight: '80px', overflow: 'auto', padding: '4px' }}>
+        <div className="win-panel-inset" style={{ maxHeight: '320px', minHeight: '80px', overflow: 'auto', padding: '8px' }}>
           {recentCompleted.length === 0 ? (
-            <div className="text-center text-[11px] p-3 text-muted-foreground">NO COMPLETED REPAIRS</div>
+            <div className="text-center text-[13px] p-4 text-muted-foreground">NO COMPLETED REPAIRS</div>
           ) : (
             recentCompleted.map(wo => (
-              <div key={wo.id} style={{fontSize:'11px',padding:'4px',borderBottom:'1px solid hsl(220,15%,70%)'}}>
+              <div key={wo.id} style={{fontSize:'13px',padding:'8px',borderBottom:'1px solid hsl(220,15%,70%)'}}>
                 <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
                   <span style={{fontWeight:'bold'}}>{wo.order_number} — BUS #{wo.bus_number}</span>
                   <span style={{color:'hsl(140,60%,30%)',fontWeight:'bold'}}>[DONE]</span>
                 </div>
-                <div style={{color:'hsl(220,10%,40%)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{wo.repairs_rendered}</div>
-                {wo.technician_name && <div style={{fontSize:'10px',color:'hsl(220,10%,40%)'}}>TECH: {wo.technician_name}</div>}
+                <div style={{color:'hsl(220,10%,40%)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',marginTop:'4px'}}>{wo.repairs_rendered}</div>
+                {wo.technician_name && <div style={{fontSize:'12px',color:'hsl(220,10%,40%)',marginTop:'2px'}}>TECH: {wo.technician_name}</div>}
               </div>
             ))
           )}
@@ -142,12 +142,12 @@ export default function Dashboard() {
       </WinWindow>
 
       {/* System Log Footer */}
-      <div className="win-panel-inset text-[10px] font-mono text-muted-foreground" style={{padding:'4px',margin:0,boxSizing:'border-box'}}>
+      <div className="win-panel-inset font-mono text-muted-foreground" style={{padding:'8px',margin:0,boxSizing:'border-box',fontSize:'12px',lineHeight:'1.6'}}>
         <div>&gt; SYSTEM INITIALIZED — NHCS MOBILE VEHICLE SURVEILLANCE INSPECTION SYSTEM</div>
         <div>&gt; DATABASE CONNECTION: <span className="status-completed font-bold">ONLINE</span></div>
         <div>&gt; TOTAL RECORDS: {buses.length} VEHICLES | {workOrders.length} WORK ORDERS | {inspections.length} INSPECTIONS</div>
         <div>&gt; SESSION ACTIVE — {moment().format('dddd, MMMM D, YYYY HH:mm:ss')}</div>
-        <div style={{marginTop:'4px',paddingTop:'4px',borderTop:'1px solid hsl(220,15%,70%)',color:'hsl(220,10%,50%)',fontStyle:'italic',textAlign:'right',fontSize:'9px',letterSpacing:'0.04em'}}>
+        <div style={{marginTop:'8px',paddingTop:'8px',borderTop:'1px solid hsl(220,15%,70%)',color:'hsl(220,10%,50%)',fontStyle:'italic',textAlign:'right',fontSize:'11px',letterSpacing:'0.04em'}}>
           Powered by Base44 &nbsp;|&nbsp; Developed by Clifton Warner M. &nbsp;&copy; {new Date().getFullYear()}
         </div>
       </div>
