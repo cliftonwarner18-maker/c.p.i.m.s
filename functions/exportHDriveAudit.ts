@@ -8,7 +8,7 @@ Deno.serve(async (req) => {
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
     const body = await req.json();
-    const { search, userFilter } = body;
+    const { search, userFilter, locationFilter, seizedOnly } = body;
 
     let drives = await base44.entities.HDrive.list('-created_date');
 
@@ -24,8 +24,16 @@ Deno.serve(async (req) => {
     }
 
     if (userFilter && userFilter.trim()) {
-      const u = userFilter.trim().toLowerCase();
-      drives = drives.filter(d => d.current_user?.toLowerCase().includes(u));
+      drives = drives.filter(d => d.current_user === userFilter.trim());
+    }
+
+    if (locationFilter && locationFilter.trim()) {
+      const lf = locationFilter.trim().toLowerCase();
+      drives = drives.filter(d => d.current_location?.toLowerCase().includes(lf));
+    }
+
+    if (seizedOnly) {
+      drives = drives.filter(d => d.seized === true);
     }
 
     const allCustody = await base44.entities.CustodyLog.list('-transfer_date');
