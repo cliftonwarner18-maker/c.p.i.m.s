@@ -231,41 +231,41 @@ export default function BusProfile() {
            </button>
          </div>
         <div className="win-panel-inset overflow-auto" style={{ maxHeight: '300px' }}>
-          <table className="w-full text-[11px] font-mono">
-            <thead>
-              <tr className="bg-primary text-primary-foreground">
-                <th className="p-1 text-left">DATE/TIME START</th>
-                <th className="p-1 text-left">DATE/TIME END</th>
-                <th className="p-1 text-left">ELAPSED</th>
-                <th className="p-1 text-left">TECHNICIAN</th>
-                <th className="p-1 text-left">DESCRIPTION</th>
-                <th className="p-1 text-left no-print">ACTION</th>
-              </tr>
-            </thead>
-            <tbody>
-              {busHistory.length === 0 && (
-                <tr><td colSpan={5} className="p-3 text-center text-muted-foreground">NO HISTORY ENTRIES</td></tr>
-              )}
-              {busHistory.map((h, i) => (
-                <tr key={h.id} className={i % 2 === 0 ? 'bg-card' : 'bg-background'}>
-                  <td className="p-1">{h.start_time ? moment(h.start_time).format('MM/DD/YY HH:mm') : '—'}</td>
-                  <td className="p-1">{h.end_time ? moment(h.end_time).format('MM/DD/YY HH:mm') : '—'}</td>
-                  <td className="p-1 font-bold">{formatElapsed(h.elapsed_minutes)}</td>
-                  <td className="p-1">{h.technician}</td>
-                  <td className="p-1">{h.description}</td>
-                  <td className="p-1 no-print">
-                    <button
-                      className="win-button !py-0 !px-1 text-[10px]"
-                      onClick={() => { if (confirm('Delete this entry?')) deleteHistory(h.id); }}
-                      title="Delete"
-                    >
-                      <Trash2 className="w-3 h-3" />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+         <table className="w-full text-[10px] font-mono" style={{tableLayout:'auto'}}>
+           <thead>
+             <tr className="bg-primary text-primary-foreground sticky top-0">
+               <th className="p-1 text-left whitespace-nowrap">START</th>
+               <th className="p-1 text-left whitespace-nowrap">END</th>
+               <th className="p-1 text-left whitespace-nowrap">ELAPSED</th>
+               <th className="p-1 text-left whitespace-nowrap">TECH</th>
+               <th className="p-1 text-left">DESCRIPTION</th>
+               <th className="p-1 text-left no-print whitespace-nowrap">ACTION</th>
+             </tr>
+           </thead>
+           <tbody>
+             {busHistory.length === 0 && (
+               <tr><td colSpan={6} className="p-3 text-center text-muted-foreground">NO HISTORY ENTRIES</td></tr>
+             )}
+             {busHistory.map((h, i) => (
+               <tr key={h.id} className={i % 2 === 0 ? 'bg-card' : 'bg-background'}>
+                 <td className="p-1 whitespace-nowrap text-[9px]">{h.start_time ? moment(h.start_time).format('MM/DD/YY HH:mm') : '—'}</td>
+                 <td className="p-1 whitespace-nowrap text-[9px]">{h.end_time ? moment(h.end_time).format('MM/DD/YY HH:mm') : '—'}</td>
+                 <td className="p-1 font-bold whitespace-nowrap">{formatElapsed(h.elapsed_minutes)}</td>
+                 <td className="p-1 whitespace-nowrap text-[9px]">{h.technician}</td>
+                 <td className="p-1">{h.description}</td>
+                 <td className="p-1 no-print whitespace-nowrap">
+                   <button
+                     className="win-button !py-0 !px-1 text-[9px]"
+                     onClick={() => { if (confirm('Delete this entry?')) deleteHistory(h.id); }}
+                     title="Delete"
+                   >
+                     <Trash2 className="w-3 h-3" />
+                   </button>
+                 </td>
+               </tr>
+             ))}
+           </tbody>
+         </table>
         </div>
       </WinWindow>
 
