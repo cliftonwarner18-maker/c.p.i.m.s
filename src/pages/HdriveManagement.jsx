@@ -224,6 +224,43 @@ export default function HdriveManagement() {
           </WinWindow>
         )}
 
+        {/* Audit Export Panel */}
+        <WinWindow title="EXPORT AUDIT REPORT — PDF" icon="📋">
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', alignItems: 'flex-end' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+              <label style={{ fontSize: '10px', fontWeight: 'bold' }}>SEARCH (serial / make / model / location):</label>
+              <input
+                className="win-input"
+                style={{ fontSize: '11px', width: '220px' }}
+                placeholder="e.g. SEON, E050..."
+                value={auditSearch}
+                onChange={(e) => setAuditSearch(e.target.value)}
+              />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+              <label style={{ fontSize: '10px', fontWeight: 'bold' }}>FILTER BY CURRENT USER:</label>
+              <input
+                className="win-input"
+                style={{ fontSize: '11px', width: '180px' }}
+                placeholder="e.g. John Smith"
+                value={auditUserFilter}
+                onChange={(e) => setAuditUserFilter(e.target.value)}
+              />
+            </div>
+            <button
+              className="win-button"
+              style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', background: isExporting ? 'hsl(220,15%,75%)' : 'hsl(0,65%,40%)', color: 'white', alignSelf: 'flex-end' }}
+              onClick={handleExportAudit}
+              disabled={isExporting}
+            >
+              <FileDown style={{ width: 13, height: 13 }} /> {isExporting ? 'GENERATING...' : 'EXPORT AUDIT PDF'}
+            </button>
+            <div style={{ fontSize: '9px', color: 'hsl(220,10%,40%)', alignSelf: 'flex-end', paddingBottom: '4px' }}>
+              Exports inventory with date / checkbox / initials rows for chain-of-custody sign-off, plus full transfer log.
+            </div>
+          </div>
+        </WinWindow>
+
         {/* Main H-Drive List */}
         <WinWindow title="H-DRIVE INVENTORY — CHAIN OF CUSTODY TRACKING SYSTEM" icon="💾">
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginBottom: '4px', alignItems: 'center' }}>
