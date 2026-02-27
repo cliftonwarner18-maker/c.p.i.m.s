@@ -103,8 +103,8 @@ export default function BusProfile() {
         <Link to={createPageUrl('FleetManager')} className="win-button flex items-center gap-1 text-[11px] no-underline text-foreground">
           <ArrowLeft className="w-3 h-3" /> BACK TO FLEET
         </Link>
-        <button className="win-button flex items-center gap-1 text-[11px]" onClick={() => window.print()}>
-          <Printer className="w-3 h-3" /> PRINT FULL HISTORY REPORT
+        <button className="win-button flex items-center gap-1 text-[11px] !bg-primary !text-primary-foreground" onClick={handleExportPDF} disabled={isExporting}>
+          <FileDown className="w-3 h-3" /> {isExporting ? 'EXPORTING...' : 'EXPORT PDF REPORT'}
         </button>
       </div>
 
