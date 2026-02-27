@@ -361,6 +361,15 @@ export default function HdriveManagement() {
                           onClick={() => { setSelectedDrive(d); setShowTransferForm(true); }} title="Transfer">
                           <ArrowRight className="w-3 h-3" /> TRANSFER
                         </button>
+                        <button className="win-button" style={{ padding: '0 4px', fontSize: '10px', display: 'inline-flex', alignItems: 'center', gap: '2px' }}
+                          onClick={() => {
+                            const parts = (d.current_location || '').split(' — ');
+                            setEditDrive(d);
+                            setEditData({ make: d.make || '', model: d.model || '', serial_number: d.serial_number || '', fleet_location: parts[0] || '', sub_location: parts.slice(1).join(' — ') || '', current_user: d.current_user || '' });
+                            setShowEditForm(true);
+                          }} title="Edit">
+                          <Pencil className="w-3 h-3" /> EDIT
+                        </button>
                         <button className="win-button" style={{ padding: '0 2px', fontSize: '10px', display: 'inline-flex' }}
                           onClick={() => { if (confirm('Delete this H-Drive?')) deleteMutation.mutate(d.id); }} title="Delete">
                           <Trash2 className="w-3 h-3" />
