@@ -241,7 +241,7 @@ export default function HdriveManagement() {
                   <input type="checkbox" id="seizureCheck" checked={!!editData.seized}
                     onChange={(e) => {
                       if (!e.target.checked) {
-                        setEditData({...editData, seized: false, seizing_agency: '', seizure_case_number: '', seizure_date: '', seizure_reason: ''});
+                        setEditData({...editData, seized: false, seizing_agency: '', seizing_person: '', seizure_case_number: '', seizure_date: '', seizure_reason: '', seizure_notes: ''});
                       } else {
                         setEditData({...editData, seized: true});
                       }
