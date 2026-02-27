@@ -70,6 +70,26 @@ export default function BusProfile() {
     return h > 0 ? `${h}h ${m}m` : `${m}m`;
   };
 
+  const handleExportPDF = async () => {
+    setIsExporting(true);
+    try {
+      const response = await base44.functions.invoke('exportBusHistory', { busNumber });
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `bus-${busNumber}-history.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      a.remove();
+    } catch (error) {
+      alert('Export failed: ' + error.message);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <div className="w-full space-y-2" style={{padding:'4px',boxSizing:'border-box'}}>
       {showAddHistory && (
