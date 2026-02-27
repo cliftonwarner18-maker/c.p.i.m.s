@@ -42,9 +42,9 @@ Deno.serve(async (req) => {
       doc.setTextColor(255, 255, 255);
       doc.setFont('courier', 'bold');
       doc.setFontSize(11);
-      doc.text('NEW HANOVER COUNTY SCHOOLS — TRANSPORTATION DEPT.', pageWidth / 2, 12, { align: 'center' });
+      doc.text('NEW HANOVER COUNTY SCHOOLS - TRANSPORTATION DEPT.', pageWidth / 2, 12, { align: 'center' });
       doc.setFontSize(8);
-      doc.text('MOBILE VEHICLE SURVEILLANCE SYSTEM — H-DRIVE CHAIN OF CUSTODY AUDIT REPORT', pageWidth / 2, 17, { align: 'center' });
+      doc.text('MOBILE VEHICLE SURVEILLANCE SYSTEM - H-DRIVE CHAIN OF CUSTODY AUDIT REPORT', pageWidth / 2, 17, { align: 'center' });
       doc.setTextColor(0, 0, 0);
 
       // Report meta line
