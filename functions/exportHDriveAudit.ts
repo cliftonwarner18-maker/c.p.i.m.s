@@ -193,6 +193,54 @@ Deno.serve(async (req) => {
       y += rowH;
     });
 
+    // ---- Seized Drives Section ----
+    const seizedDrives = drives.filter(d => d.seized);
+    if (seizedDrives.length > 0) {
+      y += 8;
+      if (y > pageHeight - 40) { doc.addPage(); pageNum++; addHeader(pageNum); y = 30; }
+      doc.setFont('courier', 'bold');
+      doc.setFontSize(9);
+      doc.setTextColor(180, 60, 0);
+      doc.text('⚠ SEIZED / LEGAL HOLD DRIVES', margin, y);
+      doc.setTextColor(0, 0, 0);
+      y += 5;
+
+      doc.setFillColor(200, 80, 0);
+      doc.rect(margin, y, pageWidth - margin * 2, 6, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFont('courier', 'bold');
+      doc.setFontSize(7);
+      doc.text('SERIAL #', margin + 1, y + 4);
+      doc.text('SEIZING AGENCY', margin + 35, y + 4);
+      doc.text('CASE #', margin + 80, y + 4);
+      doc.text('DATE/TIME OF SEIZURE', margin + 115, y + 4);
+      doc.text('REASON', margin + 175, y + 4);
+      doc.setTextColor(0, 0, 0);
+      y += 7;
+
+      doc.setFont('courier', 'normal');
+      doc.setFontSize(7.5);
+      seizedDrives.forEach((d, idx) => {
+        if (y > pageHeight - 15) { doc.addPage(); pageNum++; addHeader(pageNum); y = 30; }
+        const rowH = 8;
+        doc.setFillColor(255, 235, 200);
+        doc.rect(margin, y, pageWidth - margin * 2, rowH, 'F');
+        doc.setDrawColor(200, 100, 0);
+        doc.setLineWidth(0.3);
+        doc.rect(margin, y, pageWidth - margin * 2, rowH);
+        const textY = y + 5.5;
+        doc.setFont('courier', 'bold');
+        doc.text((d.serial_number || '-').substring(0, 20), margin + 1, textY);
+        doc.setFont('courier', 'normal');
+        doc.text((d.seizing_agency || '-').substring(0, 24), margin + 35, textY);
+        doc.text((d.seizure_case_number || '-').substring(0, 18), margin + 80, textY);
+        const sd = d.seizure_date ? new Date(d.seizure_date) : null;
+        doc.text(sd ? `${sd.toLocaleDateString()} ${sd.toLocaleTimeString()}` : '-', margin + 115, textY);
+        doc.text((d.seizure_reason || '-').substring(0, 30), margin + 175, textY);
+        y += rowH;
+      });
+    }
+
     // ---- Custody Log section ----
     y += 8;
     if (y > pageHeight - 40) {
