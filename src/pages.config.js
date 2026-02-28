@@ -54,8 +54,6 @@ import FleetManager from './pages/FleetManager';
 import InspectionDetail from './pages/InspectionDetail';
 import Inspections from './pages/Inspections';
 import NewInspection from './pages/NewInspection';
-import NewWorkOrder from './pages/NewWorkOrder';
-import WorkOrderDetail from './pages/WorkOrderDetail';
 import WorkOrders from './pages/WorkOrders';
 import AdminPanel from './pages/AdminPanel';
 import __Layout from './Layout.jsx';
@@ -69,8 +67,6 @@ export const PAGES = {
     "InspectionDetail": InspectionDetail,
     "Inspections": Inspections,
     "NewInspection": NewInspection,
-    "NewWorkOrder": NewWorkOrder,
-    "WorkOrderDetail": WorkOrderDetail,
     "WorkOrders": WorkOrders,
     "AdminPanel": AdminPanel,
 }
