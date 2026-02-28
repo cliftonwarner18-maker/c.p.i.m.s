@@ -246,7 +246,17 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Footer
+    // Footer line on last page
+    doc.setDrawColor(30, 60, 120);
+    doc.setLineWidth(0.5);
+    doc.line(margin, pageHeight - 18, pageWidth - margin, pageHeight - 18);
+    doc.setFontSize(7);
+    doc.setFont(undefined, 'italic');
+    doc.setTextColor(80, 80, 80);
+    doc.text('New Hanover County Schools — Transportation Department — Vehicle Surveillance System', pageWidth / 2, pageHeight - 13, { align: 'center' });
+    doc.text(`Confidential Document — Bus #${busNumber} — ${moment().format('MM/DD/YYYY')}`, pageWidth / 2, pageHeight - 9, { align: 'center' });
+    doc.setTextColor(0, 0, 0);
+
     const pdfBytes = doc.output('arraybuffer');
     return new Response(pdfBytes, {
       status: 200,
