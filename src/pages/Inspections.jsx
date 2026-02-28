@@ -18,6 +18,7 @@ export default function Inspections() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [editingInsp, setEditingInsp] = useState(null);
   const queryClient = useQueryClient();
 
   const { data: inspections = [], isLoading } = useQuery({
