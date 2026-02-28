@@ -98,7 +98,7 @@ export default function SerializedAssetsSection() {
               <div>
                 <label style={labelStyle}>Status:</label>
                 <select style={inputStyle} value={formData.status || 'In-Service'} onChange={e => setFormData({ ...formData, status: e.target.value })}>
-                  {['In-Service', 'Decommissioned', 'Awaiting Auction', 'Sold', 'In Repair'].map(s => <option key={s}>{s}</option>)}
+                  {['In-Service', 'Decommissioned', 'Awaiting Auction', 'Sold', 'In Repair', 'Spares'].map(s => <option key={s}>{s}</option>)}
                 </select>
               </div>
               <div>
