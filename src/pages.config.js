@@ -47,15 +47,9 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
-import AdminPanel from './pages/AdminPanel';
 import Assets from './pages/Assets';
 import BusProfile from './pages/BusProfile';
-import Dashboard from './pages/Dashboard';
 import FleetManager from './pages/FleetManager';
-import HdriveManagement from './pages/HdriveManagement';
-import NewWorkOrder from './pages/NewWorkOrder';
-import WorkOrderDetail from './pages/WorkOrderDetail';
-import WorkOrders from './pages/WorkOrders';
 import Inspections from './pages/Inspections';
 import NewInspection from './pages/NewInspection';
 import InspectionDetail from './pages/InspectionDetail';
@@ -63,22 +57,16 @@ import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    "AdminPanel": AdminPanel,
     "Assets": Assets,
     "BusProfile": BusProfile,
-    "Dashboard": Dashboard,
     "FleetManager": FleetManager,
-    "HdriveManagement": HdriveManagement,
-    "NewWorkOrder": NewWorkOrder,
-    "WorkOrderDetail": WorkOrderDetail,
-    "WorkOrders": WorkOrders,
     "Inspections": Inspections,
     "NewInspection": NewInspection,
     "InspectionDetail": InspectionDetail,
 }
 
 export const pagesConfig = {
-    mainPage: "Dashboard",
+    mainPage: "Assets",
     Pages: PAGES,
     Layout: __Layout,
 };
