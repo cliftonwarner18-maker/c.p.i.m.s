@@ -53,6 +53,7 @@ import FleetManager from './pages/FleetManager';
 import Inspections from './pages/Inspections';
 import NewInspection from './pages/NewInspection';
 import InspectionDetail from './pages/InspectionDetail';
+import Dashboard from './pages/Dashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -63,6 +64,7 @@ export const PAGES = {
     "Inspections": Inspections,
     "NewInspection": NewInspection,
     "InspectionDetail": InspectionDetail,
+    "Dashboard": Dashboard,
 }
 
 export const pagesConfig = {
