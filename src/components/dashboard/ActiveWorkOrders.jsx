@@ -3,51 +3,45 @@ import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
+const FF = "'Courier Prime', monospace";
+
+const statusColor = (s) => {
+  if (s === 'Pending') return 'hsl(45,90%,38%)';
+  if (s === 'In Progress') return 'hsl(220,65%,42%)';
+  if (s === 'Completed') return 'hsl(140,55%,30%)';
+  return 'hsl(0,60%,45%)';
+};
+
 export default function ActiveWorkOrders({ workOrders }) {
   const active = workOrders
     .filter(w => w.status === 'Pending' || w.status === 'In Progress')
     .sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
 
-  const statusClass = (s) => {
-    if (s === 'Pending') return 'status-pending';
-    if (s === 'In Progress') return 'status-progress';
-    if (s === 'Completed') return 'status-completed';
-    return 'status-cancelled';
-  };
-
   return (
-    <div className="win-panel-inset overflow-auto" style={{ display: 'block', width: '100%', maxHeight: '520px', minHeight: '100px', boxSizing: 'border-box' }}>
-      <table className="w-full text-[12px] font-mono" style={{ display: 'block', width: '100%', boxSizing: 'border-box' }}>
+    <div style={{ maxHeight: 480, overflowY: 'auto', width: '100%' }}>
+      <table style={{ width: '100%', fontSize: '11px', fontFamily: FF, borderCollapse: 'collapse' }}>
         <thead>
-          <tr className="bg-primary text-primary-foreground">
-            <th className="p-1 text-left">ORDER#</th>
-            <th className="p-1 text-left">DATE</th>
-            <th className="p-1 text-left">BUS#</th>
-            <th className="p-1 text-left">REPORTED BY</th>
-            <th className="p-1 text-left">ISSUE</th>
-            <th className="p-1 text-left">STATUS</th>
-            <th className="p-1 text-left">ACTION</th>
+          <tr style={{ background: 'hsl(220,45%,28%)', color: 'white', position: 'sticky', top: 0 }}>
+            {['ORDER#', 'DATE', 'BUS#', 'REPORTED BY', 'ISSUE', 'STATUS', 'ACTION'].map(h => (
+              <th key={h} style={{ padding: '6px 8px', textAlign: 'left', fontSize: '10px', fontWeight: '700', letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>{h}</th>
+            ))}
           </tr>
         </thead>
         <tbody>
           {active.length === 0 && (
-            <tr><td colSpan={7} className="p-4 text-center text-muted-foreground">NO ACTIVE WORK ORDERS</td></tr>
+            <tr><td colSpan={7} style={{ padding: '16px', textAlign: 'center', color: 'hsl(220,10%,50%)', fontFamily: FF }}>NO ACTIVE WORK ORDERS</td></tr>
           )}
           {active.map((wo, i) => (
-            <tr key={wo.id} className={i % 2 === 0 ? 'bg-card' : 'bg-background'}>
-              <td className="p-1 font-bold">{wo.order_number}</td>
-              <td className="p-1">{moment(wo.created_date).format('MM/DD/YY HH:mm')}</td>
-              <td className="p-1 font-bold">{wo.bus_number}</td>
-              <td className="p-1">{wo.reported_by}</td>
-              <td className="p-1 max-w-[200px] truncate">{wo.issue_description}</td>
-              <td className={`p-1 font-bold ${statusClass(wo.status)}`}>
-                [{wo.status.toUpperCase()}]
-              </td>
-              <td className="p-1">
-                <Link 
-                  to={createPageUrl('WorkOrderDetail') + `?id=${wo.id}`}
-                  className="win-button !py-0 !px-2 text-[10px] inline-block no-underline text-foreground"
-                >
+            <tr key={wo.id} style={{ background: i % 2 === 0 ? 'white' : 'hsl(220,18%,97%)', borderBottom: '1px solid hsl(220,18%,90%)' }}>
+              <td style={{ padding: '5px 8px', fontWeight: '700' }}>{wo.order_number}</td>
+              <td style={{ padding: '5px 8px', whiteSpace: 'nowrap' }}>{moment(wo.created_date).format('MM/DD/YY HH:mm')}</td>
+              <td style={{ padding: '5px 8px', fontWeight: '700' }}>{wo.bus_number}</td>
+              <td style={{ padding: '5px 8px' }}>{wo.reported_by}</td>
+              <td style={{ padding: '5px 8px', maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{wo.issue_description}</td>
+              <td style={{ padding: '5px 8px', fontWeight: '700', color: statusColor(wo.status), whiteSpace: 'nowrap' }}>[{wo.status?.toUpperCase()}]</td>
+              <td style={{ padding: '5px 8px' }}>
+                <Link to={createPageUrl('WorkOrderDetail') + `?id=${wo.id}`}
+                  style={{ display: 'inline-block', padding: '2px 8px', fontSize: '10px', fontFamily: FF, fontWeight: '700', background: 'hsl(220,18%,88%)', color: 'hsl(220,20%,20%)', border: '1px solid hsl(220,18%,70%)', borderRadius: '2px', textDecoration: 'none', cursor: 'pointer' }}>
                   OPEN
                 </Link>
               </td>
