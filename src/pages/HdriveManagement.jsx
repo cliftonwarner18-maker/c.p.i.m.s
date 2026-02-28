@@ -210,8 +210,20 @@ export default function HdriveManagement() {
           <SectionHeader title={`CUSTODY TRANSFER — ${custodyDrive.serial_number}`} />
           <form onSubmit={handleCustodySubmit}>
             <div style={rowStyle}>
-              <div style={fieldStyle}><label style={labelStyle}>TRANSFERRED FROM *</label><input required value={custodyForm.transferred_from} onChange={e => setCustodyForm({ ...custodyForm, transferred_from: e.target.value })} style={inputStyle} /></div>
-              <div style={fieldStyle}><label style={labelStyle}>TRANSFERRED TO *</label><input required value={custodyForm.transferred_to} onChange={e => setCustodyForm({ ...custodyForm, transferred_to: e.target.value })} style={inputStyle} /></div>
+              <div style={fieldStyle}>
+                <label style={labelStyle}>TRANSFERRED FROM *</label>
+                <select required value={custodyForm.transferred_from} onChange={e => setCustodyForm({ ...custodyForm, transferred_from: e.target.value })} style={inputStyle}>
+                  <option value="">— Select User —</option>
+                  {activeUsers.map(u => <option key={u.id} value={u.name}>{u.name}{u.role ? ` — ${u.role}` : ''}</option>)}
+                </select>
+              </div>
+              <div style={fieldStyle}>
+                <label style={labelStyle}>TRANSFERRED TO *</label>
+                <select required value={custodyForm.transferred_to} onChange={e => setCustodyForm({ ...custodyForm, transferred_to: e.target.value })} style={inputStyle}>
+                  <option value="">— Select User —</option>
+                  {activeUsers.map(u => <option key={u.id} value={u.name}>{u.name}{u.role ? ` — ${u.role}` : ''}</option>)}
+                </select>
+              </div>
             </div>
             <div style={rowStyle}>
               <div style={fieldStyle}><label style={labelStyle}>PREVIOUS LOCATION</label><input value={custodyForm.previous_location} onChange={e => setCustodyForm({ ...custodyForm, previous_location: e.target.value })} style={inputStyle} /></div>
