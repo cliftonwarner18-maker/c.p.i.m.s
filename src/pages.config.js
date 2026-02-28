@@ -49,32 +49,26 @@
  */
 import AdminPanel from './pages/AdminPanel';
 import Assets from './pages/Assets';
+import BusProfile from './pages/BusProfile';
 import Dashboard from './pages/Dashboard';
+import FleetManager from './pages/FleetManager';
 import HdriveManagement from './pages/HdriveManagement';
-import InspectionDetail from './pages/InspectionDetail';
-import Inspections from './pages/Inspections';
-import NewInspection from './pages/NewInspection';
 import NewWorkOrder from './pages/NewWorkOrder';
 import WorkOrderDetail from './pages/WorkOrderDetail';
 import WorkOrders from './pages/WorkOrders';
-import FleetManager from './pages/FleetManager';
-import BusProfile from './pages/BusProfile';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "AdminPanel": AdminPanel,
     "Assets": Assets,
+    "BusProfile": BusProfile,
     "Dashboard": Dashboard,
+    "FleetManager": FleetManager,
     "HdriveManagement": HdriveManagement,
-    "InspectionDetail": InspectionDetail,
-    "Inspections": Inspections,
-    "NewInspection": NewInspection,
     "NewWorkOrder": NewWorkOrder,
     "WorkOrderDetail": WorkOrderDetail,
     "WorkOrders": WorkOrders,
-    "FleetManager": FleetManager,
-    "BusProfile": BusProfile,
 }
 
 export const pagesConfig = {
