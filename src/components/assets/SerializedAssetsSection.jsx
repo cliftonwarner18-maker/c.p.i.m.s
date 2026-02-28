@@ -52,8 +52,7 @@ export default function SerializedAssetsSection() {
   };
 
   const serialCounts = assets.reduce((acc, a) => { const key = a.serial_number?.trim().toLowerCase(); if (key) acc[key] = (acc[key] || 0) + 1; return acc; }, {});
-  const assetNumCounts = assets.reduce((acc, a) => { const key = a.asset_number?.trim().toLowerCase(); if (key) acc[key] = (acc[key] || 0) + 1; return acc; }, {});
-  const isAssetDuplicate = (a) => (a.serial_number && serialCounts[a.serial_number.trim().toLowerCase()] > 1) || (a.asset_number && assetNumCounts[a.asset_number.trim().toLowerCase()] > 1);
+  const isAssetDuplicate = (a) => a.serial_number && serialCounts[a.serial_number.trim().toLowerCase()] > 1;
 
   const filteredAssets = assets.filter(asset => {
     const statusMatch = statusFilter === 'All' || asset.status === statusFilter;
