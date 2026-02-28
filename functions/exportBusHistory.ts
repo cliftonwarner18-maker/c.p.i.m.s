@@ -146,12 +146,12 @@ Deno.serve(async (req) => {
 
     // Vehicle Data
     addSection('VEHICLE INFORMATION');
-    addRow('Bus Type', bus.bus_type);
-    addRow('Year/Make/Model', `${bus.year} ${bus.make} ${bus.model}`);
-    addRow('VIN', bus.vin);
-    addRow('Base Location', bus.base_location);
-    addRow('Status', bus.status);
-    addRow('Passenger Capacity', bus.passenger_capacity);
+    addRow('Bus Type', sanitize(bus.bus_type));
+    addRow('Year/Make/Model', `${sanitize(bus.year)} ${sanitize(bus.make)} ${sanitize(bus.model)}`);
+    addRow('VIN', sanitize(bus.vin));
+    addRow('Base Location', sanitize(bus.base_location));
+    addRow('Status', sanitize(bus.status));
+    addRow('Passenger Capacity', sanitize(String(bus.passenger_capacity || '')));
     addRow('Wheelchair Accessible', bus.wheelchair_accessible ? 'Yes' : 'No');
     yPos += 3;
 
