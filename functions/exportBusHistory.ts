@@ -74,6 +74,19 @@ Deno.serve(async (req) => {
       yPos += 5;
     };
 
+    // ── Sanitize text (remove special characters) ──
+    const sanitize = (str) => {
+      if (!str) return '';
+      return String(str)
+        .replace(/[½¼¾⅓⅔⅛⅜⅝⅞]/g, '')
+        .replace(/[«»„""‟‚''‹›]/g, '"')
+        .replace(/[−–—]/g, '-')
+        .replace(/[…]/g, '...')
+        .replace(/[©®™]/g, '')
+        .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
+        .trim();
+    };
+
     const addRow = (label, value) => {
       if (yPos > pageHeight - 15) {
         doc.addPage();
