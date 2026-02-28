@@ -77,14 +77,16 @@ Deno.serve(async (req) => {
     // ── Sanitize text (remove special characters) ──
     const sanitize = (str) => {
       if (!str || str === null || str === undefined) return null;
-      const cleaned = String(str)
+      let cleaned = String(str)
         .replace(/[\uFFFD]/g, '')
+        .replace(/[ï¿½]/g, '')
         .replace(/[½¼¾⅓⅔⅛⅜⅝⅞]/g, '')
         .replace(/[«»„""‟‚''‹›]/g, '"')
         .replace(/[−–—]/g, '-')
         .replace(/[…]/g, '...')
         .replace(/[©®™]/g, '')
         .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
+        .replace(/[^\x20-\x7E]/g, '')
         .trim();
       return cleaned === '' ? null : cleaned;
     };
