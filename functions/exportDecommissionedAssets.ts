@@ -63,7 +63,7 @@ Deno.serve(async (req) => {
     doc.setFontSize(9);
     doc.setFont(undefined, 'bold');
     const headers = ['OOS Date', 'Employee', 'Make/Model', 'Serial #', 'Reason', 'Status'];
-    const colWidths = [16, 16, 18, 16, 24, 20];
+    const colWidths = [20, 24, 26, 24, 56, 26];
     let x = 8;
     headers.forEach((header, i) => {
       doc.text(header, x, y);
