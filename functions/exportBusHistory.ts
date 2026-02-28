@@ -157,34 +157,57 @@ Deno.serve(async (req) => {
     addSection('REPAIR WORK ORDERS');
     if (workOrders.length === 0) {
       doc.setFontSize(10);
-      doc.text('No repair history', 10, yPos);
+      doc.text('No repair history', margin + 2, yPos);
       yPos += 4;
     } else {
       workOrders.slice(0, 10).forEach((wo) => {
-        if (yPos > pageHeight - 20) {
+        if (yPos > pageHeight - 30) {
           doc.addPage();
           drawPageBorder();
           yPos = margin + 4;
         }
+        // Order header
         doc.setFont(undefined, 'bold');
         doc.setFontSize(9);
-        doc.text(`Order #${wo.order_number} - ${moment(wo.created_date).format('MM/DD/YYYY')}`, 10, yPos);
-        yPos += 4;
+        doc.text(`Order #${wo.order_number || wo.id?.slice(-6)} - ${moment(wo.created_date).format('MM/DD/YYYY')}`, margin + 2, yPos);
+        yPos += 5;
+        
+        // Status and tech on one line
         doc.setFont(undefined, 'normal');
         doc.setFontSize(8);
-        const statusLine = `Status: ${wo.status} | Tech: ${wo.technician_name || 'N/A'}`;
-        doc.text(statusLine, 12, yPos);
-        yPos += 3;
-        const issueWrapped = doc.splitTextToSize(`Issue: ${wo.issue_description}`, pageWidth - 24);
-        doc.text(issueWrapped, 12, yPos);
-        yPos += issueWrapped.length * 2.5 + 1;
-        if (wo.repairs_rendered) {
-          const repairsWrapped = doc.splitTextToSize(`Repairs: ${wo.repairs_rendered}`, pageWidth - 24);
-          doc.text(repairsWrapped, 12, yPos);
-          yPos += repairsWrapped.length * 2.5 + 2;
-        } else {
-          yPos += 1;
+        doc.text(`Status: ${wo.status}`, margin + 4, yPos);
+        doc.text(`Tech: ${wo.technician_name || 'N/A'}`, margin + 50, yPos);
+        yPos += 4;
+        
+        // Issue description
+        if (wo.issue_description) {
+          doc.setFont(undefined, 'bold');
+          doc.setFontSize(8);
+          doc.text('Issue:', margin + 4, yPos);
+          yPos += 3;
+          doc.setFont(undefined, 'normal');
+          const issueWrapped = doc.splitTextToSize(wo.issue_description, pageWidth - 20);
+          doc.text(issueWrapped, margin + 6, yPos);
+          yPos += issueWrapped.length * 3 + 2;
         }
+        
+        // Repairs rendered
+        if (wo.repairs_rendered) {
+          doc.setFont(undefined, 'bold');
+          doc.setFontSize(8);
+          doc.text('Repairs:', margin + 4, yPos);
+          yPos += 3;
+          doc.setFont(undefined, 'normal');
+          const repairsWrapped = doc.splitTextToSize(wo.repairs_rendered, pageWidth - 20);
+          doc.text(repairsWrapped, margin + 6, yPos);
+          yPos += repairsWrapped.length * 3 + 3;
+        }
+        
+        // Separator
+        doc.setDrawColor(180, 190, 220);
+        doc.setLineWidth(0.3);
+        doc.line(margin + 2, yPos, pageWidth - margin - 2, yPos);
+        yPos += 4;
       });
     }
     yPos += 2;
