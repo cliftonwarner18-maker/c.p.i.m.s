@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import { base44 } from '@/api/base44Client';
+import { FileDown } from 'lucide-react';
 
 const FF = "'Courier Prime', monospace";
 
@@ -13,12 +15,38 @@ const statusColor = (s) => {
 };
 
 export default function ActiveWorkOrders({ workOrders }) {
+  const [isExporting, setIsExporting] = useState(false);
   const active = workOrders
     .filter(w => w.status === 'Pending' || w.status === 'In Progress')
     .sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
 
+  const handleExportFieldPDF = async () => {
+    setIsExporting(true);
+    const response = await base44.functions.invoke('exportFieldWorkOrders');
+    const blob = new Blob([response.data], { type: 'application/pdf' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'field-work-orders.pdf';
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    a.remove();
+    setIsExporting(false);
+  };
+
   return (
-    <div style={{ maxHeight: 480, overflowY: 'auto', width: '100%' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
+      <div style={{ display: 'flex', gap: '6px' }}>
+        <button
+          onClick={handleExportFieldPDF}
+          disabled={isExporting}
+          style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '5px 10px', fontSize: '10px', fontFamily: FF, fontWeight: '700', background: 'hsl(140,55%,38%)', color: 'white', border: '1px solid hsl(140,55%,30%)', borderRadius: '2px', cursor: isExporting ? 'not-allowed' : 'pointer', opacity: isExporting ? 0.6 : 1 }}
+        >
+          <FileDown style={{ width: 11, height: 11 }} /> {isExporting ? 'EXPORTING...' : 'CLIPBOARD PDF'}
+        </button>
+      </div>
+      <div style={{ maxHeight: 480, overflowY: 'auto', width: '100%' }}>
       <table style={{ width: '100%', fontSize: '11px', fontFamily: FF, borderCollapse: 'collapse' }}>
         <thead>
           <tr style={{ background: 'hsl(220,45%,28%)', color: 'white', position: 'sticky', top: 0 }}>
@@ -49,6 +77,7 @@ export default function ActiveWorkOrders({ workOrders }) {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 }
