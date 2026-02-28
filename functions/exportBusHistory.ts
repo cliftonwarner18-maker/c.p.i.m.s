@@ -232,7 +232,8 @@ Deno.serve(async (req) => {
       history.slice(0, 15).forEach((h) => {
         if (yPos > pageHeight - 12) {
           doc.addPage();
-          yPos = 10;
+          drawPageBorder();
+          yPos = margin + 4;
         }
         doc.setFont(undefined, 'bold');
         doc.setFontSize(8);
