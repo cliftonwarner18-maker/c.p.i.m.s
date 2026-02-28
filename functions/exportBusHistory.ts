@@ -273,10 +273,10 @@ Deno.serve(async (req) => {
         }
         doc.setFont(undefined, 'bold');
         doc.setFontSize(8);
-        doc.text(`${moment(h.start_time).format('MM/DD/YY HH:mm')} - ${h.technician}`, 10, yPos);
+        doc.text(`${moment(h.start_time).format('MM/DD/YY HH:mm')} - ${sanitize(h.technician)}`, 10, yPos);
         yPos += 3;
         doc.setFont(undefined, 'normal');
-        const descWrapped = doc.splitTextToSize(h.description, pageWidth - 24);
+        const descWrapped = doc.splitTextToSize(sanitize(h.description), pageWidth - 24);
         doc.text(descWrapped, 12, yPos);
         yPos += descWrapped.length * 2.5 + 2;
       });
