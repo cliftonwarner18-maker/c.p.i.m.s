@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { formatDateTime24h } from '@/lib/timeUtils';
+import { format } from 'date-fns';
 import { 
   LayoutDashboard, Bus, FileText, ClipboardCheck, 
   PlusCircle, Database, Package2, HardDrive, ShieldAlert
@@ -72,7 +72,7 @@ export default function Layout({ children, currentPageName }) {
           Powered by Base44 &nbsp;|&nbsp; Developed by: Clifton M. Warner
         </div>
         <div style={{borderLeft:'1px solid hsl(220,18%,70%)',paddingLeft:'8px',color:'hsl(220,10%,45%)',whiteSpace:'nowrap'}}>
-          {formatDateTime24h()}
+          {format(new Date(), 'MM/dd/yyyy - HH:mm')}
         </div>
       </div>
     </div>
