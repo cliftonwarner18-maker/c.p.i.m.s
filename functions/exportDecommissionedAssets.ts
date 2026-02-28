@@ -100,7 +100,7 @@ Deno.serve(async (req) => {
       x += colWidths[2];
       doc.text(sanitize(asset.serial_number) || '-', x, y);
       x += colWidths[3];
-      doc.text((sanitize(asset.oos_reason) || '-').substring(0, 35), x, y);
+      doc.text((sanitize(asset.oos_reason) || '-').substring(0, 20), x, y);
       x += colWidths[4];
       doc.text(sanitize(asset.decom_status) || '-', x, y);
       y += 6;
