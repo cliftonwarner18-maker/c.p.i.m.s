@@ -158,10 +158,10 @@ Deno.serve(async (req) => {
     // Camera System
     addSection('CAMERA / SURVEILLANCE TECHNICAL DATA');
     addSubtitle('Vehicle camera system specifications and surveillance equipment details');
-    addRow('Camera System', bus.camera_system_type || 'None');
-    addRow('Serial Number', bus.camera_serial_number);
-    addRow('Model Number', bus.camera_model_number);
-    addRow('DVR Asset #', bus.asset_number);
+    addRow('Camera System', sanitize(bus.camera_system_type || 'None'));
+    addRow('Serial Number', sanitize(bus.camera_serial_number));
+    addRow('Model Number', sanitize(bus.camera_model_number));
+    addRow('DVR Asset #', sanitize(bus.asset_number));
     addRow('Samsara Enabled', bus.samsara_enabled ? 'Yes' : 'No');
     addRow('Next Inspection Due', bus.next_inspection_due ? moment(bus.next_inspection_due).format('MM/DD/YYYY') : 'Not Set');
     yPos += 3;
