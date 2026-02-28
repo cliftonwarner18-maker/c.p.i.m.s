@@ -80,9 +80,12 @@ Deno.serve(async (req) => {
       const boxHeight = 6;
 
       // Checkbox
+      doc.setDrawColor(0, 0, 0);
+      doc.setLineWidth(0.3);
+      doc.rect(fieldX, yPos - 3, 4, 4);
       doc.setFont(undefined, 'bold');
       doc.setFontSize(8);
-      doc.text('* REPAIR COMPLETE *', fieldX, yPos);
+      doc.text('REPAIR COMPLETE', fieldX + 6, yPos);
       yPos += 6;
 
       // Time
