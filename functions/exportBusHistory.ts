@@ -30,43 +30,106 @@ Deno.serve(async (req) => {
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
-    let yPos = 10;
+    const margin = 10;
+    let yPos = margin;
 
+    // ── Page border helper (drawn on each page) ──
+    const drawPageBorder = () => {
+      doc.setDrawColor(30, 60, 120);
+      doc.setLineWidth(1.2);
+      doc.rect(6, 6, pageWidth - 12, pageHeight - 12);
+      doc.setLineWidth(0.4);
+      doc.rect(8, 8, pageWidth - 16, pageHeight - 16);
+    };
+    drawPageBorder();
+
+    // ── Section header helper ──
     const addSection = (title) => {
-      if (yPos > pageHeight - 20) {
+      if (yPos > pageHeight - 30) {
         doc.addPage();
-        yPos = 10;
+        drawPageBorder();
+        yPos = margin + 4;
       }
-      doc.setFontSize(12);
+      yPos += 3;
+      doc.setFillColor(30, 60, 120);
+      doc.rect(margin, yPos, pageWidth - margin * 2, 7, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(10);
       doc.setFont(undefined, 'bold');
-      doc.text(title, 10, yPos);
-      yPos += 7;
+      doc.text(title, margin + 3, yPos + 5);
+      doc.setTextColor(0, 0, 0);
       doc.setFont(undefined, 'normal');
       doc.setFontSize(10);
+      yPos += 10;
+    };
+
+    // ── Section subtitle helper ──
+    const addSubtitle = (text) => {
+      doc.setFontSize(8);
+      doc.setFont(undefined, 'italic');
+      doc.setTextColor(80, 80, 80);
+      doc.text(text, margin + 2, yPos);
+      doc.setTextColor(0, 0, 0);
+      doc.setFont(undefined, 'normal');
+      yPos += 5;
     };
 
     const addRow = (label, value) => {
-      if (yPos > pageHeight - 10) {
+      if (yPos > pageHeight - 15) {
         doc.addPage();
-        yPos = 10;
+        drawPageBorder();
+        yPos = margin + 4;
       }
       doc.setFont(undefined, 'bold');
-      doc.setFontSize(10);
-      doc.text(label + ':', 10, yPos);
+      doc.setFontSize(9);
+      doc.text(label + ':', margin + 2, yPos);
       doc.setFont(undefined, 'normal');
-      const wrapped = doc.splitTextToSize(String(value || '—'), pageWidth - 60);
-      doc.text(wrapped, 50, yPos);
-      yPos += Math.max(4, wrapped.length * 3);
+      const wrapped = doc.splitTextToSize(String(value || '—'), pageWidth - 65);
+      doc.text(wrapped, 55, yPos);
+      // light separator line
+      doc.setDrawColor(200, 210, 230);
+      doc.setLineWidth(0.2);
+      doc.line(margin + 2, yPos + 2, pageWidth - margin - 2, yPos + 2);
+      doc.setDrawColor(0, 0, 0);
+      yPos += Math.max(5, wrapped.length * 3.5);
     };
 
-    // Header
+    // ── OFFICIAL HEADER ──
+    // Top logo/header block
+    doc.setFillColor(30, 60, 120);
+    doc.rect(margin, yPos, pageWidth - margin * 2, 24, 'F');
+
+    doc.setTextColor(255, 255, 255);
     doc.setFontSize(14);
     doc.setFont(undefined, 'bold');
-    doc.text('NHCS VEHICLE HISTORY REPORT', 10, yPos);
-    yPos += 6;
+    doc.text('NEW HANOVER COUNTY SCHOOLS', pageWidth / 2, yPos + 8, { align: 'center' });
     doc.setFontSize(11);
-    doc.text(`Bus #${bus.bus_number}`, 10, yPos);
-    yPos += 8;
+    doc.text('Transportation Department', pageWidth / 2, yPos + 14, { align: 'center' });
+    doc.setFontSize(9);
+    doc.setFont(undefined, 'normal');
+    doc.text('Vehicle History Transcript', pageWidth / 2, yPos + 20, { align: 'center' });
+    doc.setTextColor(0, 0, 0);
+    yPos += 28;
+
+    // Vehicle title bar
+    doc.setFillColor(230, 235, 245);
+    doc.setDrawColor(30, 60, 120);
+    doc.setLineWidth(0.5);
+    doc.rect(margin, yPos, pageWidth - margin * 2, 10, 'FD');
+    doc.setFontSize(11);
+    doc.setFont(undefined, 'bold');
+    doc.setTextColor(30, 60, 120);
+    doc.text(`Bus #${bus.bus_number}  —  ${bus.year || ''} ${bus.make || ''} ${bus.model || ''}`, pageWidth / 2, yPos + 7, { align: 'center' });
+    doc.setTextColor(0, 0, 0);
+    yPos += 14;
+
+    // Generated date line
+    doc.setFontSize(8);
+    doc.setFont(undefined, 'italic');
+    doc.setTextColor(100, 100, 100);
+    doc.text(`Generated: ${moment().format('MMMM D, YYYY [at] h:mm A')}`, pageWidth - margin - 2, yPos, { align: 'right' });
+    doc.setTextColor(0, 0, 0);
+    yPos += 6;
 
     // Vehicle Data
     addSection('VEHICLE INFORMATION');
