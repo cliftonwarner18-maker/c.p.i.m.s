@@ -47,6 +47,12 @@ export default function HdriveManagement() {
     queryFn: () => base44.entities.HDrive.list('serial_number'),
   });
 
+  const { data: systemUsers = [] } = useQuery({
+    queryKey: ['systemUsers'],
+    queryFn: () => base44.entities.SystemUser.list('name'),
+  });
+  const activeUsers = systemUsers.filter(u => u.active !== false);
+
   const { data: custodyLogs = [] } = useQuery({
     queryKey: ['custodyLogs'],
     queryFn: () => base44.entities.CustodyLog.list('-transfer_date'),
