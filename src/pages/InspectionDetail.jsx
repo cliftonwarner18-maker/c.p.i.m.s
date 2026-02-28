@@ -109,6 +109,19 @@ export default function InspectionDetail() {
     win.document.close();
   };
 
+  const exportFullReport = async () => {
+    const { data } = await base44.functions.invoke('exportInspectionReport', { inspectionId: inspection.id });
+    const blob = new Blob([data], { type: 'application/pdf' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `inspection-bus-${inspection.bus_number}-${moment().format('YYYYMMDD')}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    a.remove();
+  };
+
   const btnStyle = (primary) => ({
     display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '6px 12px',
     background: primary ? 'hsl(220,55%,38%)' : 'hsl(220,18%,88%)',
