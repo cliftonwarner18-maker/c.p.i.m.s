@@ -44,6 +44,125 @@ export default function HdriveManagement() {
   const [showLogs, setShowLogs] = useState(null); // serial number to show logs for
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [tab, setTab] = useState('drives'); // 'drives' | 'seized'
+  const [exportLot, setExportLot] = useState('');
+  const [exportUser, setExportUser] = useState('');
+
+  const getExportDrives = () => {
+    let result = drives.filter(d => !d.seized);
+    if (exportLot) result = result.filter(d => d.current_lot === exportLot);
+    if (exportUser) result = result.filter(d => d.current_user === exportUser);
+    return result;
+  };
+
+  const exportAuditPDF = () => {
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'letter' });
+    const data = getExportDrives();
+    const now = moment().format('MMMM D, YYYY [at] h:mm A');
+    const filterLabel = [exportLot || 'All Lots', exportUser ? `User: ${exportUser}` : 'All Users'].join(' — ');
+
+    // Header block
+    doc.setFillColor(30, 58, 120);
+    doc.rect(0, 0, 216, 28, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('courier', 'bold');
+    doc.setFontSize(14);
+    doc.text('NEW HANOVER COUNTY SCHOOLS', 12, 10);
+    doc.setFontSize(11);
+    doc.text('H-DRIVE CHAIN OF CUSTODY — AUDIT REPORT', 12, 17);
+    doc.setFontSize(8);
+    doc.setFont('courier', 'normal');
+    doc.text(`Generated: ${now}   |   Filter: ${filterLabel}   |   Total Drives: ${data.length}`, 12, 24);
+
+    // Signature block
+    doc.setTextColor(30, 58, 120);
+    doc.setFontSize(8);
+    doc.setFont('courier', 'bold');
+    doc.text('AUTHORIZED BY:', 12, 36);
+    doc.setFont('courier', 'normal');
+    doc.line(40, 36, 110, 36);
+    doc.text('DATE:', 120, 36);
+    doc.line(132, 36, 200, 36);
+
+    // Table
+    doc.autoTable({
+      startY: 42,
+      head: [['SERIAL #', 'MAKE', 'MODEL', 'CURRENT USER', 'LOT', 'SUB LOCATION', 'STATUS']],
+      body: data.map(d => [
+        d.serial_number,
+        d.make,
+        d.model,
+        d.current_user || '—',
+        d.current_lot || '—',
+        d.current_sublocation || '—',
+        d.seized ? 'SEIZED' : 'ACTIVE',
+      ]),
+      styles: { font: 'courier', fontSize: 8, cellPadding: 2 },
+      headStyles: { fillColor: [30, 58, 120], textColor: 255, fontStyle: 'bold', fontSize: 8 },
+      alternateRowStyles: { fillColor: [240, 244, 255] },
+      columnStyles: { 0: { fontStyle: 'bold', cellWidth: 28 }, 4: { cellWidth: 18 }, 5: { cellWidth: 50 }, 6: { cellWidth: 18 } },
+      margin: { left: 12, right: 12 },
+    });
+
+    // Footer on each page
+    const pages = doc.internal.getNumberOfPages();
+    for (let i = 1; i <= pages; i++) {
+      doc.setPage(i);
+      doc.setFont('courier', 'normal');
+      doc.setFontSize(7);
+      doc.setTextColor(120, 120, 120);
+      doc.text(`NHCS Vehicle Surveillance System — H-Drive Audit — Page ${i} of ${pages}`, 12, 277);
+      doc.text('CONFIDENTIAL — CHAIN OF CUSTODY DOCUMENT', 130, 277);
+    }
+
+    doc.save(`NHCS_HDrive_Audit_${moment().format('YYYYMMDD_HHmm')}.pdf`);
+  };
+
+  const exportInventoryPDF = () => {
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'letter' });
+    const data = getExportDrives();
+    const now = moment().format('MMMM D, YYYY');
+    const filterLabel = [exportLot || 'All Lots', exportUser ? `User: ${exportUser}` : 'All Users'].join(' — ');
+
+    doc.setFillColor(45, 80, 140);
+    doc.rect(0, 0, 280, 20, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('courier', 'bold');
+    doc.setFontSize(12);
+    doc.text('NHCS H-DRIVE SIMPLE INVENTORY', 12, 9);
+    doc.setFont('courier', 'normal');
+    doc.setFontSize(8);
+    doc.text(`${now}   |   ${filterLabel}   |   ${data.length} Drives`, 12, 16);
+
+    doc.autoTable({
+      startY: 24,
+      head: [['#', 'SERIAL NUMBER', 'MAKE', 'MODEL', 'CURRENT USER', 'LOT', 'SUB LOCATION']],
+      body: data.map((d, i) => [
+        i + 1,
+        d.serial_number,
+        d.make,
+        d.model,
+        d.current_user || '—',
+        d.current_lot || '—',
+        d.current_sublocation || '—',
+      ]),
+      styles: { font: 'courier', fontSize: 8, cellPadding: 2 },
+      headStyles: { fillColor: [45, 80, 140], textColor: 255, fontStyle: 'bold', fontSize: 8 },
+      alternateRowStyles: { fillColor: [245, 248, 255] },
+      columnStyles: { 0: { cellWidth: 10 }, 1: { fontStyle: 'bold', cellWidth: 32 }, 5: { cellWidth: 20 }, 6: { cellWidth: 65 } },
+      margin: { left: 12, right: 12 },
+    });
+
+    const pages = doc.internal.getNumberOfPages();
+    for (let i = 1; i <= pages; i++) {
+      doc.setPage(i);
+      doc.setFont('courier', 'normal');
+      doc.setFontSize(7);
+      doc.setTextColor(120, 120, 120);
+      doc.text(`NHCS VSS — H-Drive Inventory — Page ${i} of ${pages}`, 12, 210);
+    }
+
+    doc.save(`NHCS_HDrive_Inventory_${moment().format('YYYYMMDD_HHmm')}.pdf`);
+  };
 
   const { data: drives = [], isLoading } = useQuery({
     queryKey: ['hdrives'],
