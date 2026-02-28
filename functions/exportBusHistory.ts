@@ -163,7 +163,8 @@ Deno.serve(async (req) => {
       workOrders.slice(0, 10).forEach((wo) => {
         if (yPos > pageHeight - 20) {
           doc.addPage();
-          yPos = 10;
+          drawPageBorder();
+          yPos = margin + 4;
         }
         doc.setFont(undefined, 'bold');
         doc.setFontSize(9);
