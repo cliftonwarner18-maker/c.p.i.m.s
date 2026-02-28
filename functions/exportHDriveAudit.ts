@@ -353,7 +353,7 @@ Deno.serve(async (req) => {
       doc.text((c.new_location || '-').substring(0, 32), cCols.newLoc.x + 1, textY2);
       doc.text((c.reason || '-').substring(0, 26), cCols.reason.x + 1, textY2);
       const dt = c.transfer_date ? new Date(c.transfer_date) : null;
-      doc.text(dt ? `${dt.toLocaleDateString()} ${dt.toLocaleTimeString()}` : '—', cCols.date.x + 1, textY2);
+      doc.text(dt ? `${dt.toLocaleDateString()} ${dt.toLocaleTimeString()}` : '-', cCols.date.x + 1, textY2);
       y += rowH;
     });
 
