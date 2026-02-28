@@ -314,16 +314,38 @@ export default function WorkOrderDetail() {
         {/* Time fields */}
         <div style={rowStyle}>
           <div style={fieldStyle}>
-            <label style={labelStyle}>REPAIR START TIME</label>
+            <label style={labelStyle}>REPAIR START TIME (MM/DD/YYYY HH:MM)</label>
             <div style={{ display: 'flex', gap: '4px' }}>
-              <div style={{ ...roStyle, flex: 1 }}>{form.repair_start_time ? moment(form.repair_start_time).format('MM/DD/YYYY HH:mm') : '—'}</div>
+              <input
+                type="text"
+                placeholder="MM/DD/YYYY HH:MM"
+                value={form.repair_start_time ? moment(form.repair_start_time).format('MM/DD/YYYY HH:mm') : ''}
+                onChange={e => {
+                  const parsed = moment(e.target.value, 'MM/DD/YYYY HH:mm', true);
+                  if (parsed.isValid()) setForm({ ...form, repair_start_time: parsed.toISOString() });
+                  else setForm({ ...form, repair_start_time: e.target.value });
+                }}
+                style={{ ...inputStyle, flex: 1 }}
+              />
               <button onClick={() => { const now = new Date().toISOString(); setForm({ ...form, repair_start_time: now }); }} style={{ padding: '4px 8px', fontSize: '10px', fontFamily: FF, background: 'hsl(220,55%,38%)', color: 'white', border: 'none', borderRadius: '2px', cursor: 'pointer', fontWeight: '700' }}>NOW</button>
             </div>
           </div>
           <div style={fieldStyle}>
-            <label style={labelStyle}>REPAIR END TIME</label>
+            <label style={labelStyle}>REPAIR END TIME (MM/DD/YYYY HH:MM)</label>
             <div style={{ display: 'flex', gap: '4px' }}>
-              <div style={{ ...roStyle, flex: 1 }}>{form.repair_end_time ? moment(form.repair_end_time).format('MM/DD/YYYY HH:mm') : '—'}</div>
+              <input
+                type="text"
+                placeholder="MM/DD/YYYY HH:MM"
+                value={form.repair_end_time ? moment(form.repair_end_time).format('MM/DD/YYYY HH:mm') : ''}
+                onChange={e => {
+                  const parsed = moment(e.target.value, 'MM/DD/YYYY HH:mm', true);
+                  if (parsed.isValid()) {
+                    const elapsed = form.repair_start_time ? Math.round((parsed.toDate() - new Date(form.repair_start_time)) / 60000) : form.elapsed_time_minutes || 0;
+                    setForm({ ...form, repair_end_time: parsed.toISOString(), elapsed_time_minutes: elapsed });
+                  } else setForm({ ...form, repair_end_time: e.target.value });
+                }}
+                style={{ ...inputStyle, flex: 1 }}
+              />
               <button onClick={() => {
                 const now = new Date().toISOString();
                 const elapsed = form.repair_start_time ? Math.round((new Date() - new Date(form.repair_start_time)) / 60000) : form.elapsed_time_minutes || 0;
