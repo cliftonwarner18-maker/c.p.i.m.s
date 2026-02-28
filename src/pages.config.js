@@ -49,7 +49,6 @@
  */
 import AdminPanel from './pages/AdminPanel';
 import Assets from './pages/Assets';
-import BusProfile from './pages/BusProfile';
 import Dashboard from './pages/Dashboard';
 import HdriveManagement from './pages/HdriveManagement';
 import InspectionDetail from './pages/InspectionDetail';
@@ -65,7 +64,6 @@ import __Layout from './Layout.jsx';
 export const PAGES = {
     "AdminPanel": AdminPanel,
     "Assets": Assets,
-    "BusProfile": BusProfile,
     "Dashboard": Dashboard,
     "HdriveManagement": HdriveManagement,
     "InspectionDetail": InspectionDetail,
