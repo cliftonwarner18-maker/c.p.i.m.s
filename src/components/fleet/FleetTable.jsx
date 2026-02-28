@@ -128,7 +128,7 @@ export default function FleetTable({ buses, busNumCounts, onEdit, onDelete }) {
                   <td style={{ padding: '5px 8px', whiteSpace: 'nowrap' }}>
                     <div style={{ display: 'flex', gap: '3px', alignItems: 'center' }}>
                       <Link
-                        to={createPageUrl('BusProfile') + `?bus=${b.bus_number}`}
+                        to={`/BusProfile?bus=${b.bus_number}`}
                         title="View Profile"
                         style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 24, height: 24, background: 'hsl(220,55%,38%)', color: 'white', borderRadius: '2px', textDecoration: 'none', border: '1px solid hsl(220,55%,30%)' }}
                       >
