@@ -40,6 +40,17 @@ Deno.serve(async (req) => {
     });
     y += 6;
 
+    // Sanitize function
+    const sanitize = (str) => {
+      if (!str || str === null || str === undefined) return null;
+      let cleaned = String(str)
+        .replace(/[\uFFFD]/g, '')
+        .replace(/[ï¿½]/g, '')
+        .replace(/[^\x20-\x7E]/g, '')
+        .trim();
+      return cleaned === '' ? null : cleaned;
+    };
+
     // Data rows
     doc.setFont(undefined, 'normal');
     doc.setFontSize(8);
@@ -50,17 +61,17 @@ Deno.serve(async (req) => {
       }
       
       x = 8;
-      doc.text((asset.part_name || '-').substring(0, 25), x, y);
+      doc.text((sanitize(asset.part_name) || '-').substring(0, 25), x, y);
       x += colWidths[0];
-      doc.text(asset.brand || '-', x, y);
+      doc.text(sanitize(asset.brand) || '-', x, y);
       x += colWidths[1];
-      doc.text(asset.model_number || '-', x, y);
+      doc.text(sanitize(asset.model_number) || '-', x, y);
       x += colWidths[2];
-      doc.text((asset.use || '-').substring(0, 20), x, y);
+      doc.text((sanitize(asset.use) || '-').substring(0, 20), x, y);
       x += colWidths[3];
       doc.text(String(asset.quantity_on_hand || 0), x, y);
       x += colWidths[4];
-      doc.text((asset.current_location || '-').substring(0, 25), x, y);
+      doc.text((sanitize(asset.current_location) || '-').substring(0, 25), x, y);
       y += 6;
     });
 
