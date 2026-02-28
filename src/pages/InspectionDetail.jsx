@@ -148,8 +148,8 @@ export default function InspectionDetail() {
         <Link to="/Inspections" style={btnStyle(false)}>
           <ArrowLeft style={{ width: 13, height: 13 }} /> BACK TO INSPECTIONS
         </Link>
-        <button style={btnStyle(false)} onClick={() => window.print()}>
-          <Printer style={{ width: 13, height: 13 }} /> PRINT FULL REPORT
+        <button style={btnStyle(false)} onClick={exportFullReport}>
+          <FileText style={{ width: 13, height: 13 }} /> EXPORT PDF REPORT
         </button>
         <button style={btnStyle(true)} onClick={printStickerOnly}>
           <Printer style={{ width: 13, height: 13 }} /> PRINT STICKER ONLY
