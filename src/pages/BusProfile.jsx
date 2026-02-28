@@ -135,9 +135,9 @@ export default function BusProfile() {
           </Link>
           <Bus style={{ width: 20, height: 20 }} />
           <div>
-            <div style={{ fontSize: '14px', fontWeight: '700', letterSpacing: '0.08em' }}>BUS #{busNumber} — VEHICLE PROFILE</div>
+            <div style={{ fontSize: '14px', fontWeight: '700', letterSpacing: '0.08em' }}>Bus #{busNumber} - Vehicle Profile</div>
             <div style={{ fontSize: '10px', opacity: 0.8, letterSpacing: '0.05em' }}>
-              {bus ? `${bus.year || ''} ${bus.make || ''} ${bus.model || ''}`.trim() || 'VEHICLE DETAILS' : 'LOADING...'}
+              {bus ? `${bus.year || ''} ${bus.make || ''} ${bus.model || ''}`.trim() || 'Vehicle Details' : 'Loading...'}
             </div>
           </div>
           {bus && (
