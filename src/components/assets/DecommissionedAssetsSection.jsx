@@ -45,6 +45,7 @@ export default function DecommissionedAssetsSection() {
 
   const serialCounts = assets.reduce((acc, a) => { const key = a.serial_number?.trim().toLowerCase(); if (key) acc[key] = (acc[key] || 0) + 1; return acc; }, {});
   const isAssetDuplicate = (a) => a.serial_number && serialCounts[a.serial_number.trim().toLowerCase()] > 1;
+  const isMissingAssetNum = (a) => !a.asset_number || a.asset_number.trim() === '';
 
   const filteredAssets = assets.filter(a => {
     const statusMatch = statusFilter === 'All' || a.decom_status === statusFilter;
@@ -135,12 +136,16 @@ export default function DecommissionedAssetsSection() {
             <tbody>
               {filteredAssets.map((asset, i) => {
                 const dup = isAssetDuplicate(asset);
+                const missing = isMissingAssetNum(asset);
                 return (
-                  <tr key={asset.id} style={{ background: dup ? 'hsl(0,80%,93%)' : i % 2 === 0 ? 'white' : 'hsl(220,18%,97%)', borderBottom: '1px solid hsl(220,18%,90%)' }}>
+                  <tr key={asset.id} style={{ background: missing ? 'hsl(45,90%,93%)' : dup ? 'hsl(0,80%,93%)' : i % 2 === 0 ? 'white' : 'hsl(220,18%,97%)', borderBottom: '1px solid hsl(220,18%,90%)' }}>
                     <td style={{ padding: '4px 7px' }}>{asset.out_of_service_date}</td>
                     <td style={{ padding: '4px 7px' }}>{asset.employee}</td>
                     <td style={{ padding: '4px 7px' }}>{asset.bus_number || '—'}</td>
-                    <td style={{ padding: '4px 7px' }}>{asset.make} {asset.model}</td>
+                    <td style={{ padding: '4px 7px' }}>
+                      {missing && <span style={{ background: 'hsl(45,90%,50%)', color: 'hsl(30,80%,15%)', fontSize: '8px', padding: '0 3px', marginRight: 3, fontWeight: '700' }}>MISS</span>}
+                      {asset.make} {asset.model}
+                    </td>
                     <td style={{ padding: '4px 7px' }}>
                       {dup && <span style={{ background: 'hsl(0,65%,45%)', color: 'white', fontSize: '8px', padding: '0 3px', marginRight: 3, fontWeight: '700' }}>DUP</span>}
                       {asset.serial_number || '—'}
