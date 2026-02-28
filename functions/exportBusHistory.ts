@@ -143,7 +143,8 @@ Deno.serve(async (req) => {
     yPos += 3;
 
     // Camera System
-    addSection('CAMERA SYSTEM DATA');
+    addSection('CAMERA / SURVEILLANCE TECHNICAL DATA');
+    addSubtitle('Vehicle camera system specifications and surveillance equipment details');
     addRow('Camera System', bus.camera_system_type || 'None');
     addRow('Serial Number', bus.camera_serial_number);
     addRow('Model Number', bus.camera_model_number);
