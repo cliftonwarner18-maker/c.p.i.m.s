@@ -244,8 +244,18 @@ export default function HdriveManagement() {
               </div>
             </div>
             <div style={rowStyle}>
-              <div style={fieldStyle}><label style={labelStyle}>PREVIOUS LOCATION</label><input value={custodyForm.previous_location} onChange={e => setCustodyForm({ ...custodyForm, previous_location: e.target.value })} style={inputStyle} /></div>
-              <div style={fieldStyle}><label style={labelStyle}>NEW LOCATION *</label><input required value={custodyForm.new_location} onChange={e => setCustodyForm({ ...custodyForm, new_location: e.target.value })} style={inputStyle} /></div>
+              <div style={fieldStyle}><label style={labelStyle}>PREVIOUS LOCATION</label><input readOnly value={custodyForm.previous_location} style={{ ...inputStyle, background: 'hsl(220,15%,96%)', color: 'hsl(220,10%,50%)' }} /></div>
+              <div style={fieldStyle}>
+                <label style={labelStyle}>NEW LOT *</label>
+                <select required value={custodyForm.new_lot || ''} onChange={e => setCustodyForm({ ...custodyForm, new_lot: e.target.value })} style={inputStyle}>
+                  <option value="">— Select Lot —</option>
+                  {LOTS.map(l => <option key={l} value={l}>{l}</option>)}
+                </select>
+              </div>
+              <div style={fieldStyle}>
+                <label style={labelStyle}>NEW SUB LOCATION *</label>
+                <input required value={custodyForm.new_sublocation || ''} onChange={e => setCustodyForm({ ...custodyForm, new_sublocation: e.target.value })} style={inputStyle} placeholder="e.g. Officer drawer left side locked" />
+              </div>
             </div>
             <div><label style={labelStyle}>REASON FOR TRANSFER</label><textarea value={custodyForm.reason} onChange={e => setCustodyForm({ ...custodyForm, reason: e.target.value })} rows={3} style={{ ...inputStyle, resize: 'vertical', marginBottom: '10px' }} /></div>
             <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end', paddingTop: '10px', borderTop: '1px solid hsl(220,18%,85%)' }}>
