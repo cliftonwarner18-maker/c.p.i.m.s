@@ -166,14 +166,22 @@ export default function HdriveManagement() {
 
       // --- INSTRUCTIONS ---
       y += 8;
+      const instrLines = [
+        'INSTRUCTIONS: Review each drive listed below. Place a checkmark in the [VER] box to confirm physical',
+        'possession. Enter the date verified and your initials in each row.',
+      ];
+      const instrH = instrLines.length * 5.5 + 4;
       doc.setFillColor(240, 244, 252);
-      doc.rect(mL, y, contentW, 8, 'F');
+      doc.rect(mL, y, contentW, instrH, 'F');
       doc.setDrawColor(180, 195, 225);
-      doc.rect(mL, y, contentW, 8, 'S');
+      doc.rect(mL, y, contentW, instrH, 'S');
       doc.setFont('courier', 'normal');
       doc.setFontSize(7.5);
       doc.setTextColor(40, 60, 110);
-      doc.text('INSTRUCTIONS: Review each drive listed below. Place a checkmark in the [VER] box to confirm physical possession. Enter the date verified and your initials in each row.', mL + 2, y + 5.2);
+      instrLines.forEach((line, li) => {
+        doc.text(line, mL + 2, y + 4.5 + li * 5.5);
+      });
+      y += instrH;
 
       // --- TABLE HEADER ---
       y += 12;
