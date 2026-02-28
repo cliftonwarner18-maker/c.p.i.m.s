@@ -51,7 +51,6 @@ import AdminPanel from './pages/AdminPanel';
 import Assets from './pages/Assets';
 import BusProfile from './pages/BusProfile';
 import Dashboard from './pages/Dashboard';
-import FleetManager from './pages/FleetManager';
 import HdriveManagement from './pages/HdriveManagement';
 import InspectionDetail from './pages/InspectionDetail';
 import Inspections from './pages/Inspections';
@@ -67,7 +66,6 @@ export const PAGES = {
     "Assets": Assets,
     "BusProfile": BusProfile,
     "Dashboard": Dashboard,
-    "FleetManager": FleetManager,
     "HdriveManagement": HdriveManagement,
     "InspectionDetail": InspectionDetail,
     "Inspections": Inspections,
