@@ -78,6 +78,7 @@ Deno.serve(async (req) => {
     const sanitize = (str) => {
       if (!str || str === null || str === undefined) return null;
       const cleaned = String(str)
+        .replace(/[\uFFFD]/g, '')
         .replace(/[½¼¾⅓⅔⅛⅜⅝⅞]/g, '')
         .replace(/[«»„""‟‚''‹›]/g, '"')
         .replace(/[−–—]/g, '-')
