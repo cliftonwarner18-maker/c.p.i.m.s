@@ -99,8 +99,13 @@ Deno.serve(async (req) => {
       doc.setFontSize(9);
       doc.text(label + ':', margin + 2, yPos);
       doc.setFont(undefined, 'normal');
-      const sanitizedValue = sanitize(value);
-      const displayValue = sanitizedValue === null || sanitizedValue === undefined || sanitizedValue === '' ? '—' : String(sanitizedValue);
+      // Check if value is null/undefined/empty BEFORE sanitizing
+      if (value === null || value === undefined || value === '' || (typeof value === 'number' && isNaN(value))) {
+        var displayValue = '—';
+      } else {
+        const sanitizedValue = sanitize(String(value));
+        displayValue = sanitizedValue === null || sanitizedValue === undefined || sanitizedValue === '' ? '—' : sanitizedValue;
+      }
       const wrapped = doc.splitTextToSize(displayValue, pageWidth - 65);
       doc.text(wrapped, 55, yPos);
       // light separator line
