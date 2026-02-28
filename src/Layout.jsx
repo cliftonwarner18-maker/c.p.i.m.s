@@ -18,6 +18,11 @@ const navItems = [
 ];
 
 export default function Layout({ children, currentPageName }) {
+  // Redirect root to Dashboard
+  if (typeof window !== 'undefined' && (window.location.pathname === '/' || window.location.pathname === '')) {
+    window.location.replace('/Dashboard');
+    return null;
+  }
   return (
     <div className="w-full min-h-screen bg-background text-foreground flex flex-col font-mono" style={{fontFamily: "'Courier Prime', monospace"}}>
       {/* Top Header Bar */}
