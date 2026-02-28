@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
-import { Printer, ArrowLeft, CheckCircle, XCircle } from 'lucide-react';
+import { Printer, ArrowLeft, CheckCircle, XCircle, FileText } from 'lucide-react';
 
 export default function InspectionDetail() {
   const urlParams = new URLSearchParams(window.location.search);
