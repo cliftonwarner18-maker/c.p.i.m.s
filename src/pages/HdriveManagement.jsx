@@ -282,6 +282,31 @@ export default function HdriveManagement() {
         ))}
       </div>
 
+      {/* Export Panel */}
+      <div style={{ background: 'white', border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', padding: '10px 14px', display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', gap: '10px' }}>
+        <div style={{ fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,35%)', letterSpacing: '0.06em', alignSelf: 'center', marginRight: '4px' }}>PDF EXPORT:</div>
+        <div>
+          <div style={labelStyle}>FILTER BY LOT</div>
+          <select value={exportLot} onChange={e => setExportLot(e.target.value)} style={{ ...inputStyle, width: '130px' }}>
+            <option value="">All Lots</option>
+            {LOTS.map(l => <option key={l} value={l}>{l}</option>)}
+          </select>
+        </div>
+        <div>
+          <div style={labelStyle}>FILTER BY USER</div>
+          <select value={exportUser} onChange={e => setExportUser(e.target.value)} style={{ ...inputStyle, width: '160px' }}>
+            <option value="">All Users</option>
+            {activeUsers.map(u => <option key={u.id} value={u.name}>{u.name}</option>)}
+          </select>
+        </div>
+        <Btn onClick={exportAuditPDF} style={{ background: 'hsl(220,55%,38%)' }}>
+          <FileText style={{ width: 12, height: 12 }} /> AUDIT SHEET (PDF)
+        </Btn>
+        <Btn onClick={exportInventoryPDF} style={{ background: 'hsl(200,60%,38%)' }}>
+          <FileText style={{ width: 12, height: 12 }} /> SIMPLE INVENTORY (PDF)
+        </Btn>
+      </div>
+
       {/* Add/Edit Form */}
       {showForm && (
         <div style={{ background: 'white', border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', padding: '14px' }}>
