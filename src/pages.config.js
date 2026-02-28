@@ -56,6 +56,7 @@ import Inspections from './pages/Inspections';
 import NewInspection from './pages/NewInspection';
 import WorkOrders from './pages/WorkOrders';
 import AdminPanel from './pages/AdminPanel';
+import NewWorkOrder from './pages/NewWorkOrder';
 import __Layout from './Layout.jsx';
 
 
@@ -69,6 +70,7 @@ export const PAGES = {
     "NewInspection": NewInspection,
     "WorkOrders": WorkOrders,
     "AdminPanel": AdminPanel,
+    "NewWorkOrder": NewWorkOrder,
 }
 
 export const pagesConfig = {
