@@ -90,13 +90,19 @@ export default function HdriveManagement() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (editDrive) updateMutation.mutate({ id: editDrive.id, data: form });
-    else createMutation.mutate(form);
+    const combined = [form.current_lot, form.current_sublocation].filter(Boolean).join(' — ');
+    const data = { ...form, current_location: combined };
+    if (editDrive) updateMutation.mutate({ id: editDrive.id, data });
+    else createMutation.mutate(data);
   };
 
   const openEdit = (drive) => {
     setEditDrive(drive);
-    setForm({ ...drive });
+    // Try to split stored location back into lot/sublocation
+    const parts = (drive.current_location || '').split(' — ');
+    const lot = LOTS.includes(parts[0]) ? parts[0] : '';
+    const sub = lot ? parts.slice(1).join(' — ') : (drive.current_location || '');
+    setForm({ ...drive, current_lot: lot, current_sublocation: sub });
     setShowForm(true);
   };
 
