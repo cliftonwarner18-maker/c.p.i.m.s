@@ -58,6 +58,7 @@ import WorkOrders from './pages/WorkOrders';
 import AdminPanel from './pages/AdminPanel';
 import NewWorkOrder from './pages/NewWorkOrder';
 import WorkOrderDetail from './pages/WorkOrderDetail';
+import HdriveManagement from './pages/HdriveManagement';
 import __Layout from './Layout.jsx';
 
 
@@ -73,6 +74,7 @@ export const PAGES = {
     "AdminPanel": AdminPanel,
     "NewWorkOrder": NewWorkOrder,
     "WorkOrderDetail": WorkOrderDetail,
+    "HdriveManagement": HdriveManagement,
 }
 
 export const pagesConfig = {
