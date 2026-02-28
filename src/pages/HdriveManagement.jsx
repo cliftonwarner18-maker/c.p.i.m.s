@@ -172,7 +172,17 @@ export default function HdriveManagement() {
                   {activeUsers.map(u => <option key={u.id} value={u.name}>{u.name}{u.role ? ` — ${u.role}` : ''}</option>)}
                 </select>
               </div>
-              <div style={fieldStyle}><label style={labelStyle}>CURRENT LOCATION</label><input value={form.current_location} onChange={e => setForm({ ...form, current_location: e.target.value })} style={inputStyle} /></div>
+              <div style={fieldStyle}>
+                <label style={labelStyle}>LOT (GENERAL LOCATION)</label>
+                <select value={form.current_lot || ''} onChange={e => setForm({ ...form, current_lot: e.target.value })} style={inputStyle}>
+                  <option value="">— Select Lot —</option>
+                  {LOTS.map(l => <option key={l} value={l}>{l}</option>)}
+                </select>
+              </div>
+              <div style={fieldStyle}>
+                <label style={labelStyle}>SUB LOCATION (PINPOINTED)</label>
+                <input value={form.current_sublocation || ''} onChange={e => setForm({ ...form, current_sublocation: e.target.value })} style={inputStyle} placeholder="e.g. Officer drawer left side locked" />
+              </div>
             </div>
 
             {/* Seizure */}
