@@ -1,23 +1,19 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
-import WinWindow from '../WinWindow';
 import { X, Save } from 'lucide-react';
 import moment from 'moment';
 
+const inputStyle = { padding: '5px 8px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", border: '1px solid hsl(220,18%,70%)', borderRadius: '2px', background: 'white', width: '100%', outline: 'none', boxSizing: 'border-box' };
+const labelStyle = { fontSize: '10px', fontWeight: '700', display: 'block', marginBottom: '3px', letterSpacing: '0.05em', color: 'hsl(220,20%,30%)' };
+const sectionHeader = { background: 'linear-gradient(to right, hsl(220,50%,30%), hsl(220,45%,40%))', color: 'white', padding: '5px 10px', fontSize: '10px', fontWeight: '700', letterSpacing: '0.08em', marginBottom: '8px' };
+
 const Check = ({ label, field, form, setForm }) => (
-  <label className="flex items-center gap-2 text-[11px] p-1 win-panel-inset cursor-pointer">
-    <input
-      type="checkbox"
-      checked={form[field]}
-      onChange={(e) => setForm({ ...form, [field]: e.target.checked })}
-      className="accent-primary w-4 h-4"
-    />
-    <span className="font-bold">{label}</span>
-    <span className={`ml-auto font-bold ${form[field] ? 'status-completed' : 'status-cancelled'}`}>
-      {form[field] ? '[PASS]' : '[FAIL]'}
-    </span>
-  </label>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '6px 8px', borderBottom: '1px solid hsl(220,18%,88%)', background: form[field] ? '#f0fdf4' : '#fef9f9', cursor: 'pointer' }}>
+    <input type="checkbox" checked={form[field]} onChange={(e) => setForm({ ...form, [field]: e.target.checked })} style={{ width: 15, height: 15, flexShrink: 0, cursor: 'pointer' }} />
+    <span style={{ flex: 1, fontSize: '11px', fontWeight: '700', fontFamily: "'Courier Prime', monospace" }}>{label}</span>
+    <span style={{ fontSize: '11px', fontWeight: '700', color: form[field] ? '#166534' : '#991b1b', fontFamily: "'Courier Prime', monospace" }}>{form[field] ? '[PASS]' : '[FAIL]'}</span>
+  </div>
 );
 
 export default function EditInspectionForm({ inspection, onClose, onSaved }) {
@@ -26,6 +22,7 @@ export default function EditInspectionForm({ inspection, onClose, onSaved }) {
     queryKey: ['buses'],
     queryFn: () => base44.entities.Bus.list('bus_number'),
   });
+
   const [form, setForm] = useState({
     bus_number: inspection.bus_number || '',
     inspector_name: inspection.inspector_name || '',
@@ -53,43 +50,44 @@ export default function EditInspectionForm({ inspection, onClose, onSaved }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     updateMutation.mutate(form);
-    // Sync next inspection due to fleet
     if (form.next_inspection_due && form.bus_number) {
       const bus = buses.find(b => b.bus_number === form.bus_number);
-      if (bus) {
-        base44.entities.Bus.update(bus.id, { next_inspection_due: form.next_inspection_due });
-      }
+      if (bus) base44.entities.Bus.update(bus.id, { next_inspection_due: form.next_inspection_due });
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-2 overflow-auto">
-      <div className="win-panel w-full max-w-2xl max-h-[90vh] flex flex-col">
-        <div className="win-titlebar flex items-center justify-between">
-          <span className="text-xs tracking-wider uppercase">✏️ EDIT INSPECTION — {inspection.inspection_number}</span>
-          <button className="win-button !p-0 w-5 h-4 flex items-center justify-center" onClick={onClose}>
-            <X className="w-3 h-3" />
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 50, padding: '8px', overflowY: 'auto' }}>
+      <div style={{ background: 'hsl(220,18%,94%)', border: '1px solid hsl(220,18%,65%)', borderRadius: '2px', width: '100%', maxWidth: '680px', maxHeight: '90vh', display: 'flex', flexDirection: 'column', fontFamily: "'Courier Prime', monospace" }}>
+        {/* Title bar */}
+        <div style={{ background: 'linear-gradient(to right, hsl(220,50%,30%), hsl(220,45%,40%))', color: 'white', padding: '7px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '11px', fontWeight: '700', letterSpacing: '0.08em' }}>
+          <span>✏️ EDIT INSPECTION — {inspection.inspection_number}</span>
+          <button onClick={onClose} style={{ background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '2px', color: 'white', width: 22, height: 22, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+            <X style={{ width: 12, height: 12 }} />
           </button>
         </div>
-        <div className="p-3 overflow-auto flex-1">
-          <form onSubmit={handleSubmit} className="space-y-2">
-            <div className="win-panel p-2">
-              <div className="text-[10px] font-bold bg-primary text-primary-foreground px-2 py-0.5 mb-1">▸ INSPECTION DETAILS</div>
-              <div className="grid grid-cols-2 gap-2">
+
+        <div style={{ padding: '12px', overflowY: 'auto', flex: 1 }}>
+          <form onSubmit={handleSubmit}>
+            {/* Details */}
+            <div style={{ background: 'white', border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', padding: '10px', marginBottom: '8px' }}>
+              <div style={sectionHeader}>▸ INSPECTION DETAILS</div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 <div>
-                  <label className="text-[10px] font-bold block mb-0.5">BUS # *</label>
-                  <input className="win-input w-full text-[11px]" value={form.bus_number} onChange={(e) => setForm({ ...form, bus_number: e.target.value })} required />
+                  <label style={labelStyle}>BUS # *</label>
+                  <input style={inputStyle} value={form.bus_number} onChange={e => setForm({ ...form, bus_number: e.target.value })} required />
                 </div>
                 <div>
-                  <label className="text-[10px] font-bold block mb-0.5">INSPECTOR *</label>
-                  <input className="win-input w-full text-[11px]" value={form.inspector_name} onChange={(e) => setForm({ ...form, inspector_name: e.target.value })} required />
+                  <label style={labelStyle}>INSPECTOR *</label>
+                  <input style={inputStyle} value={form.inspector_name} onChange={e => setForm({ ...form, inspector_name: e.target.value })} required />
                 </div>
               </div>
             </div>
 
-            <div className="win-panel p-2">
-              <div className="text-[10px] font-bold bg-primary text-primary-foreground px-2 py-0.5 mb-1">▸ CHECKLIST</div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
+            {/* Checklist */}
+            <div style={{ background: 'white', border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', padding: '10px', marginBottom: '8px' }}>
+              <div style={sectionHeader}>▸ CHECKLIST</div>
+              <div style={{ border: '1px solid hsl(220,18%,82%)', borderRadius: '2px', overflow: 'hidden', marginBottom: '8px' }}>
                 <Check label="CAMERA SYSTEM FUNCTIONAL" field="camera_system_functional" form={form} setForm={setForm} />
                 <Check label="MOUNTING SECURE" field="mounting_secure" form={form} setForm={setForm} />
                 <Check label="DVR SYSTEM FUNCTIONAL" field="dvr_functional" form={form} setForm={setForm} />
@@ -97,9 +95,9 @@ export default function EditInspectionForm({ inspection, onClose, onSaved }) {
                 <Check label="SIGNALS & LIGHTS FUNCTIONAL" field="signals_lights_functional" form={form} setForm={setForm} />
                 <Check label="PROGRAMMING VERIFIED" field="programming_verified" form={form} setForm={setForm} />
               </div>
-              <div className="mt-2">
-                <label className="text-[10px] font-bold block mb-0.5">LENS CONDITION:</label>
-                <select className="win-input w-full text-[11px]" value={form.lenses_condition} onChange={(e) => setForm({ ...form, lenses_condition: e.target.value })}>
+              <div>
+                <label style={labelStyle}>LENS CONDITION:</label>
+                <select style={{ ...inputStyle, width: '200px' }} value={form.lenses_condition} onChange={e => setForm({ ...form, lenses_condition: e.target.value })}>
                   <option value="Pass">PASS</option>
                   <option value="Fail">FAIL</option>
                   <option value="Needs Repair">NEEDS REPAIR</option>
@@ -107,41 +105,44 @@ export default function EditInspectionForm({ inspection, onClose, onSaved }) {
               </div>
             </div>
 
-            <div className="win-panel p-2">
-              <div className="text-[10px] font-bold bg-primary text-primary-foreground px-2 py-0.5 mb-1">▸ RESULT</div>
-              <div className="grid grid-cols-2 gap-2">
+            {/* Result */}
+            <div style={{ background: 'white', border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', padding: '10px', marginBottom: '8px' }}>
+              <div style={sectionHeader}>▸ RESULT</div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '8px' }}>
                 <div>
-                  <label className="text-[10px] font-bold block mb-0.5">OVERALL STATUS:</label>
-                  <select className="win-input w-full text-[11px]" value={form.overall_status} onChange={(e) => setForm({ ...form, overall_status: e.target.value })}>
+                  <label style={labelStyle}>OVERALL STATUS:</label>
+                  <select style={inputStyle} value={form.overall_status} onChange={e => setForm({ ...form, overall_status: e.target.value })}>
                     <option value="Pass">PASS</option>
                     <option value="Fail">FAIL</option>
                     <option value="Conditional">CONDITIONAL</option>
                   </select>
                 </div>
                 <div>
-                  <label className="text-[10px] font-bold block mb-0.5">NEXT INSPECTION DUE:</label>
-                  <input type="date" className="win-input w-full text-[11px]" value={form.next_inspection_due} onChange={(e) => setForm({ ...form, next_inspection_due: e.target.value })} />
-                  <div style={{display:'flex',gap:'2px',marginTop:'3px',flexWrap:'wrap'}}>
-                    {[{label:'30D',days:30},{label:'60D',days:60},{label:'90D',days:90},{label:'1YR',days:365}].map(({label,days})=>(
-                      <button key={label} type="button" className="win-button" style={{fontSize:'9px',padding:'1px 6px',background:'hsl(220,70%,35%)',color:'white'}}
-                        onClick={() => setForm({...form, next_inspection_due: moment().add(days,'days').format('YYYY-MM-DD')})}>
+                  <label style={labelStyle}>NEXT INSPECTION DUE:</label>
+                  <input type="date" style={inputStyle} value={form.next_inspection_due} onChange={e => setForm({ ...form, next_inspection_due: e.target.value })} />
+                  <div style={{ display: 'flex', gap: '3px', marginTop: '4px' }}>
+                    {[{ label: '30D', days: 30 }, { label: '60D', days: 60 }, { label: '90D', days: 90 }, { label: '1YR', days: 365 }].map(({ label, days }) => (
+                      <button key={label} type="button" onClick={() => setForm({ ...form, next_inspection_due: moment().add(days, 'days').format('YYYY-MM-DD') })}
+                        style={{ padding: '2px 7px', fontSize: '10px', fontFamily: "'Courier Prime', monospace", background: 'hsl(220,55%,38%)', color: 'white', border: '1px solid hsl(220,55%,30%)', borderRadius: '2px', cursor: 'pointer', fontWeight: '700' }}>
                         {label}
                       </button>
                     ))}
                   </div>
                 </div>
               </div>
-              <div className="mt-2">
-                <label className="text-[10px] font-bold block mb-0.5">NOTES:</label>
-                <textarea className="win-input w-full text-[11px] h-16 resize-none" value={form.inspection_notes} onChange={(e) => setForm({ ...form, inspection_notes: e.target.value })} />
+              <div>
+                <label style={labelStyle}>NOTES:</label>
+                <textarea style={{ ...inputStyle, height: '64px', resize: 'vertical' }} value={form.inspection_notes} onChange={e => setForm({ ...form, inspection_notes: e.target.value })} />
               </div>
             </div>
 
-            <div className="flex gap-2">
-              <button type="submit" className="win-button flex items-center gap-1 !bg-primary !text-primary-foreground text-[11px]" disabled={updateMutation.isPending}>
-                <Save className="w-3 h-3" /> {updateMutation.isPending ? 'SAVING...' : 'SAVE CHANGES'}
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button type="submit" disabled={updateMutation.isPending} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '7px 16px', background: 'hsl(140,55%,38%)', color: 'white', border: '1px solid hsl(140,55%,30%)', borderRadius: '2px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", fontWeight: '700', cursor: 'pointer' }}>
+                <Save style={{ width: 13, height: 13 }} /> {updateMutation.isPending ? 'SAVING...' : 'SAVE CHANGES'}
               </button>
-              <button type="button" className="win-button text-[11px]" onClick={onClose}>CANCEL</button>
+              <button type="button" onClick={onClose} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '7px 16px', background: 'hsl(220,18%,88%)', color: 'hsl(220,20%,20%)', border: '1px solid hsl(220,18%,70%)', borderRadius: '2px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", cursor: 'pointer' }}>
+                CANCEL
+              </button>
             </div>
           </form>
         </div>
