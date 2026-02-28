@@ -10,8 +10,9 @@ const labelStyle = { fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,35
 const rowStyle = { display: 'flex', gap: '12px', flexWrap: 'wrap', marginBottom: '10px' };
 const fieldStyle = { flex: '1', minWidth: '160px' };
 
-const EMPTY_DRIVE = { make: '', model: '', serial_number: '', current_user: '', current_location: '', seized: false, seizing_agency: '', seizing_person: '', seizure_case_number: '', seizure_date: '', seizure_reason: '', seizure_notes: '' };
-const EMPTY_CUSTODY = { hdrive_serial: '', transferred_from: '', transferred_to: '', previous_location: '', new_location: '', reason: '', transfer_date: '' };
+const EMPTY_DRIVE = { make: '', model: '', serial_number: '', current_user: '', current_lot: '', current_sublocation: '', seized: false, seizing_agency: '', seizing_person: '', seizure_case_number: '', seizure_date: '', seizure_reason: '', seizure_notes: '' };
+const EMPTY_CUSTODY = { hdrive_serial: '', transferred_from: '', transferred_to: '', previous_location: '', new_lot: '', new_sublocation: '', reason: '', transfer_date: '' };
+const LOTS = ['Main', 'North', 'Central', 'Other'];
 
 function SectionHeader({ title }) {
   return (
