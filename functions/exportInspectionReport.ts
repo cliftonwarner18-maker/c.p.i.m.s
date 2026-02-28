@@ -1,6 +1,17 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 import { jsPDF } from 'npm:jspdf@4.0.0';
-import moment from 'npm:moment@2.30.1';
+import moment from 'npm:moment-timezone@0.5.45';
+
+const formatDateTime24h = (date = new Date()) => {
+  const offset = -5 * 60 * 60 * 1000;
+  const localDate = new Date(date.getTime() + offset);
+  const month = String(localDate.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(localDate.getUTCDate()).padStart(2, '0');
+  const year = localDate.getUTCFullYear();
+  const hours = String(localDate.getUTCHours()).padStart(2, '0');
+  const minutes = String(localDate.getUTCMinutes()).padStart(2, '0');
+  return `${month}/${day}/${year} ${hours}:${minutes}`;
+};
 
 Deno.serve(async (req) => {
   try {
@@ -91,7 +102,7 @@ Deno.serve(async (req) => {
     doc.setFontSize(8);
     doc.setFont(undefined, 'italic');
     doc.setTextColor(100, 100, 100);
-    doc.text(`Generated: ${moment().format('MMMM D, YYYY [at] h:mm A')}`, pageWidth - margin - 2, yPos, { align: 'right' });
+    doc.text(`Generated: ${formatDateTime24h()}`, pageWidth - margin - 2, yPos, { align: 'right' });
     doc.setTextColor(0, 0, 0);
     yPos += 6;
 
