@@ -134,7 +134,10 @@ Deno.serve(async (req) => {
     doc.setFontSize(11);
     doc.setFont(undefined, 'bold');
     doc.setTextColor(30, 60, 120);
-    doc.text(`Bus #${sanitize(bus.bus_number) || 'N/A'} - ${sanitize(bus.year) || ''} ${sanitize(bus.make) || ''} ${sanitize(bus.model) || ''}`, pageWidth / 2, yPos + 7, { align: 'center' });
+    const busYear = sanitize(bus.year) || '-';
+    const busMake = sanitize(bus.make) || '-';
+    const busModel = sanitize(bus.model) || '-';
+    doc.text(`Bus #${sanitize(bus.bus_number) || 'N/A'} - ${busYear} ${busMake} ${busModel}`.trim(), pageWidth / 2, yPos + 7, { align: 'center' });
     doc.setTextColor(0, 0, 0);
     yPos += 14;
 
