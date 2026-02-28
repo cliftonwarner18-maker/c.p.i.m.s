@@ -76,8 +76,8 @@ Deno.serve(async (req) => {
 
     // ── Sanitize text (remove special characters) ──
     const sanitize = (str) => {
-      if (!str) return '';
-      return String(str)
+      if (!str || str === null || str === undefined) return null;
+      const cleaned = String(str)
         .replace(/[½¼¾⅓⅔⅛⅜⅝⅞]/g, '')
         .replace(/[«»„""‟‚''‹›]/g, '"')
         .replace(/[−–—]/g, '-')
@@ -85,6 +85,7 @@ Deno.serve(async (req) => {
         .replace(/[©®™]/g, '')
         .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
         .trim();
+      return cleaned === '' ? null : cleaned;
     };
 
     const addRow = (label, value) => {
