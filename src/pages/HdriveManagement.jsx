@@ -100,50 +100,225 @@ export default function HdriveManagement() {
   };
 
   const exportAuditPDF = () => {
+    const allData = getExportDrives();
+    const now = moment().format('MMMM D, YYYY');
+    const pageW = 216, pageH = 279, mL = 14, mR = 14;
+    const contentW = pageW - mL - mR;
+
+    // Group by user
+    const userGroups = {};
+    allData.forEach(d => {
+      const u = d.current_user || '(Unassigned)';
+      if (!userGroups[u]) userGroups[u] = [];
+      userGroups[u].push(d);
+    });
+
     const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'letter' });
-    const data = getExportDrives();
-    const now = moment().format('MMMM D, YYYY [at] h:mm A');
-    const filterLabel = [exportLot || 'All Lots', exportUser ? `User: ${exportUser}` : 'All Users'].join(' — ');
-    const pageW = 216, pageH = 279, mL = 10, mR = 10;
+    let firstPage = true;
 
-    doc.setFillColor(30, 58, 120);
-    doc.rect(0, 0, pageW, 26, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFont('courier', 'bold');
-    doc.setFontSize(13);
-    doc.text('NEW HANOVER COUNTY SCHOOLS', mL, 10);
-    doc.setFontSize(10);
-    doc.text('H-DRIVE CHAIN OF CUSTODY — AUDIT REPORT', mL, 17);
-    doc.setFontSize(7.5);
-    doc.setFont('courier', 'normal');
-    doc.text(`Generated: ${now}   |   Filter: ${filterLabel}   |   Total: ${data.length} drives`, mL, 23);
+    Object.entries(userGroups).forEach(([userName, drives]) => {
+      if (!firstPage) doc.addPage();
+      firstPage = false;
 
-    doc.setTextColor(30, 58, 120);
-    doc.setFontSize(8);
-    doc.setFont('courier', 'bold');
-    doc.text('AUTHORIZED BY:', mL, 34);
-    doc.setDrawColor(30, 58, 120);
-    doc.line(42, 34, 110, 34);
-    doc.text('DATE:', 118, 34);
-    doc.line(130, 34, 200, 34);
+      // --- HEADER ---
+      doc.setFillColor(30, 58, 120);
+      doc.rect(0, 0, pageW, 28, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFont('courier', 'bold');
+      doc.setFontSize(13);
+      doc.text('NEW HANOVER COUNTY SCHOOLS', mL, 10);
+      doc.setFontSize(9.5);
+      doc.text('TRANSPORTATION — H-DRIVE VERIFICATION & ACCOUNTABILITY FORM', mL, 17);
+      doc.setFont('courier', 'normal');
+      doc.setFontSize(7.5);
+      doc.text(`Generated: ${now}   |   CONFIDENTIAL — CHAIN OF CUSTODY`, mL, 24);
 
-    const cols = [28, 18, 22, 28, 16, 62, 18]; // total ~192
-    drawTable(doc,
-      ['SERIAL #', 'MAKE', 'MODEL', 'CURRENT USER', 'LOT', 'SUB LOCATION', 'STATUS'],
-      data.map(d => [d.serial_number, d.make, d.model, d.current_user || '—', d.current_lot || '—', d.current_sublocation || '—', d.seized ? 'SEIZED' : 'ACTIVE']),
-      40, cols, pageH, mL, mR
-    );
+      // --- ASSIGNED USER BLOCK ---
+      let y = 36;
+      doc.setTextColor(30, 58, 120);
+      doc.setFont('courier', 'bold');
+      doc.setFontSize(9);
+      doc.text('ASSIGNED TO:', mL, y);
+      doc.setFont('courier', 'normal');
+      doc.setFontSize(11);
+      doc.setTextColor(10, 10, 10);
+      doc.text(userName, mL + 32, y);
+      doc.setDrawColor(30, 58, 120);
+      doc.setLineWidth(0.4);
+      doc.line(mL + 32, y + 1, mL + 32 + 80, y + 1);
 
-    const pages = doc.internal.getNumberOfPages();
-    for (let i = 1; i <= pages; i++) {
+      doc.setFont('courier', 'bold');
+      doc.setFontSize(9);
+      doc.setTextColor(30, 58, 120);
+      doc.text('LOT:', 148, y);
+      doc.setFont('courier', 'normal');
+      doc.setFontSize(10);
+      doc.setTextColor(10, 10, 10);
+      const lotLabel = exportLot || (drives[0]?.current_lot || '—');
+      doc.text(lotLabel, 159, y);
+
+      y += 8;
+      doc.setFont('courier', 'bold');
+      doc.setFontSize(8);
+      doc.setTextColor(80, 80, 80);
+      doc.text(`TOTAL DRIVES ISSUED TO THIS USER: ${drives.length}`, mL, y);
+      doc.text(`VERIFICATION DATE: _____ / _____ / __________`, 110, y);
+
+      // --- INSTRUCTIONS ---
+      y += 8;
+      doc.setFillColor(240, 244, 252);
+      doc.rect(mL, y, contentW, 8, 'F');
+      doc.setDrawColor(180, 195, 225);
+      doc.rect(mL, y, contentW, 8, 'S');
+      doc.setFont('courier', 'normal');
+      doc.setFontSize(7.5);
+      doc.setTextColor(40, 60, 110);
+      doc.text('INSTRUCTIONS: Review each drive listed below. Place a checkmark in the [VER] box to confirm physical possession. Enter the date verified and your initials in each row.', mL + 2, y + 5.2);
+
+      // --- TABLE HEADER ---
+      y += 12;
+      const col = { brand: 30, serial: 48, location: 72, ver: 14, date: 26, init: 14 };
+      // Header
+      doc.setFillColor(30, 58, 120);
+      doc.rect(mL, y, contentW, 8, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFont('courier', 'bold');
+      doc.setFontSize(8);
+      let x = mL;
+      doc.text('BRAND', x + 1.5, y + 5.5); x += col.brand;
+      doc.text('SERIAL NUMBER', x + 1.5, y + 5.5); x += col.serial;
+      doc.text('CURRENT LOT / LOCATION', x + 1.5, y + 5.5); x += col.location;
+      doc.text('[VER]', x + 1.5, y + 5.5); x += col.ver;
+      doc.text('DATE __/__/____', x + 1.5, y + 5.5); x += col.date;
+      doc.text('INIT.', x + 1.5, y + 5.5);
+      y += 8;
+
+      // --- TABLE ROWS ---
+      const rowH = 9;
+      drives.forEach((d, ri) => {
+        if (y + rowH > pageH - 70) {
+          doc.addPage();
+          y = 15;
+          // Re-draw mini header on continuation
+          doc.setFillColor(30, 58, 120);
+          doc.rect(mL, y, contentW, 8, 'F');
+          doc.setTextColor(255, 255, 255);
+          doc.setFont('courier', 'bold');
+          doc.setFontSize(8);
+          x = mL;
+          doc.text('BRAND', x + 1.5, y + 5.5); x += col.brand;
+          doc.text('SERIAL NUMBER', x + 1.5, y + 5.5); x += col.serial;
+          doc.text('CURRENT LOT / LOCATION', x + 1.5, y + 5.5); x += col.location;
+          doc.text('[VER]', x + 1.5, y + 5.5); x += col.ver;
+          doc.text('DATE __/__/____', x + 1.5, y + 5.5); x += col.date;
+          doc.text('INIT.', x + 1.5, y + 5.5);
+          y += 8;
+        }
+
+        const bg = ri % 2 === 0 ? [255, 255, 255] : [245, 248, 255];
+        doc.setFillColor(...bg);
+        doc.rect(mL, y, contentW, rowH, 'F');
+        doc.setDrawColor(200, 210, 228);
+        doc.rect(mL, y, contentW, rowH, 'S');
+
+        doc.setTextColor(20, 20, 20);
+        doc.setFont('courier', 'bold');
+        doc.setFontSize(8.5);
+        x = mL;
+        doc.text(String(d.make || '—'), x + 1.5, y + 6); x += col.brand;
+
+        doc.setFont('courier', 'bold');
+        doc.setFontSize(8.5);
+        doc.text(String(d.serial_number || '—'), x + 1.5, y + 6); x += col.serial;
+
+        doc.setFont('courier', 'normal');
+        doc.setFontSize(7.5);
+        const loc = [d.current_lot, d.current_sublocation].filter(Boolean).join(' — ') || d.current_location || '—';
+        const maxLocW = col.location - 3;
+        const locText = doc.getStringUnitWidth(loc) * 7.5 / doc.internal.scaleFactor > maxLocW
+          ? loc.substring(0, 38) + '…' : loc;
+        doc.text(locText, x + 1.5, y + 6); x += col.location;
+
+        // Checkbox
+        doc.setDrawColor(60, 60, 60);
+        doc.setLineWidth(0.5);
+        doc.rect(x + 2, y + 1.5, 6, 6, 'S');
+        x += col.ver;
+
+        // Date line
+        doc.setLineWidth(0.3);
+        doc.line(x + 1, y + rowH - 1.5, x + col.date - 2, y + rowH - 1.5);
+        x += col.date;
+
+        // Initials line
+        doc.line(x + 1, y + rowH - 1.5, x + col.init - 2, y + rowH - 1.5);
+
+        y += rowH;
+      });
+
+      // --- DISCLOSURE / SIGNATURE BLOCK ---
+      y += 6;
+      if (y + 52 > pageH - 10) { doc.addPage(); y = 20; }
+
+      doc.setDrawColor(30, 58, 120);
+      doc.setLineWidth(0.6);
+      doc.rect(mL, y, contentW, 50, 'S');
+
+      doc.setFillColor(30, 58, 120);
+      doc.rect(mL, y, contentW, 7, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFont('courier', 'bold');
+      doc.setFontSize(8.5);
+      doc.text('ACKNOWLEDGMENT & RESPONSIBILITY DISCLOSURE', mL + 3, y + 5);
+      y += 10;
+
+      doc.setTextColor(20, 20, 20);
+      doc.setFont('courier', 'normal');
+      doc.setFontSize(7.8);
+      const disclosure = [
+        'By signing below, I hereby acknowledge and certify the following:',
+        '',
+        '1. I have physically verified each H-Drive listed above and confirm that all listed drives are in my possession',
+        '   and/or secured at the location indicated.',
+        '',
+        '2. I understand that the H-Drives assigned to me contain recorded surveillance footage and are the property of',
+        '   New Hanover County Schools Transportation Department.',
+        '',
+        '3. I accept full personal responsibility for the safekeeping of each drive. Negligent damage, loss, or',
+        '   unauthorized transfer of any H-Drive is my sole responsibility and may result in disciplinary action.',
+        '',
+        '4. I understand that any discrepancy noted above must be reported immediately to a supervisor.',
+      ];
+      disclosure.forEach(line => {
+        doc.text(line, mL + 3, y);
+        y += 4.8;
+      });
+
+      y += 4;
+      doc.setLineWidth(0.4);
+      // Signature line
+      doc.setFont('courier', 'bold');
+      doc.setFontSize(8);
+      doc.setTextColor(30, 58, 120);
+      doc.text('SIGNATURE:', mL + 3, y);
+      doc.setDrawColor(40, 40, 40);
+      doc.line(mL + 26, y, mL + 95, y);
+      doc.text('DATE:', mL + 100, y);
+      doc.line(mL + 113, y, mL + 170, y);
+    });
+
+    // Page numbers
+    const totalPages = doc.internal.getNumberOfPages();
+    for (let i = 1; i <= totalPages; i++) {
       doc.setPage(i);
       doc.setFont('courier', 'normal');
       doc.setFontSize(7);
       doc.setTextColor(150, 150, 150);
-      doc.text(`NHCS VSS — H-Drive Audit — Page ${i} of ${pages}`, mL, pageH - 5);
-      doc.text('CONFIDENTIAL — CHAIN OF CUSTODY', 140, pageH - 5);
+      doc.text(`NHCS Transportation — H-Drive Verification Form — Page ${i} of ${totalPages}`, mL, pageH - 5);
+      doc.text('CONFIDENTIAL', 185, pageH - 5);
     }
-    doc.save(`NHCS_HDrive_Audit_${moment().format('YYYYMMDD_HHmm')}.pdf`);
+
+    doc.save(`NHCS_HDrive_Verification_${moment().format('YYYYMMDD_HHmm')}.pdf`);
   };
 
   const exportInventoryPDF = () => {
