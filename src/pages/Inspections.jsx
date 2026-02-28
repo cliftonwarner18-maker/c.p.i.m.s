@@ -57,6 +57,13 @@ export default function Inspections() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontFamily: "'Courier Prime', monospace" }}>
       <LoadingScreen isLoading={isLoading} message="LOADING INSPECTIONS..." />
+      {editingInsp && (
+        <EditInspectionForm
+          inspection={editingInsp}
+          onClose={() => setEditingInsp(null)}
+          onSaved={() => { setEditingInsp(null); queryClient.invalidateQueries({ queryKey: ['inspections'] }); }}
+        />
+      )}
       <DeleteConfirmModal
         isOpen={!!deleteTarget}
         label={deleteTarget ? `Inspection ${deleteTarget.inspection_number} (Bus #${deleteTarget.bus_number})` : ''}
