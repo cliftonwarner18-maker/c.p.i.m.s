@@ -288,6 +288,16 @@ Deno.serve(async (req) => {
         yPos += descWrapped.length * 2.5 + 2;
       });
     }
+    yPos += 2;
+
+    // Legacy Data Upload
+    if (bus.legacy_upload) {
+      addSection('LEGACY AUDIT / REPAIR LOG');
+      const legacyWrapped = doc.splitTextToSize(sanitize(bus.legacy_upload), pageWidth - 20);
+      doc.setFontSize(9);
+      doc.text(legacyWrapped, margin + 2, yPos);
+      yPos += legacyWrapped.length * 3.5 + 2;
+    }
 
     // Footer line on last page
     doc.setDrawColor(30, 60, 120);
