@@ -266,53 +266,59 @@ export default function HdriveManagement() {
 
       // --- DISCLOSURE / SIGNATURE BLOCK ---
       y += 6;
-      if (y + 52 > pageH - 10) { doc.addPage(); y = 20; }
 
+      const disclosureLines = [
+        'By signing below, I hereby acknowledge and certify the following:',
+        '',
+        '1. I have physically verified each H-Drive listed above and confirm that all listed drives are in my',
+        '   possession and/or secured at the location indicated.',
+        '',
+        '2. I understand that the H-Drives assigned to me contain recorded surveillance footage and are the',
+        '   property of New Hanover County Schools Transportation Department.',
+        '',
+        '3. I accept full personal responsibility for the safekeeping of each drive. Negligent damage, loss,',
+        '   or unauthorized transfer of any H-Drive is my sole responsibility and may result in disciplinary action.',
+        '',
+        '4. I understand that any discrepancy noted above must be reported immediately to a supervisor.',
+      ];
+      const lineH = 4.8;
+      const disclosureTextH = disclosureLines.length * lineH;
+      const sigH = 10;
+      const boxH = 9 + disclosureTextH + sigH + 4; // header + text + sig + padding
+
+      if (y + boxH > pageH - 10) { doc.addPage(); y = 20; }
+
+      const boxTop = y;
       doc.setDrawColor(30, 58, 120);
       doc.setLineWidth(0.6);
-      doc.rect(mL, y, contentW, 50, 'S');
+      doc.rect(mL, boxTop, contentW, boxH, 'S');
 
       doc.setFillColor(30, 58, 120);
-      doc.rect(mL, y, contentW, 7, 'F');
+      doc.rect(mL, boxTop, contentW, 7, 'F');
       doc.setTextColor(255, 255, 255);
       doc.setFont('courier', 'bold');
       doc.setFontSize(8.5);
-      doc.text('ACKNOWLEDGMENT & RESPONSIBILITY DISCLOSURE', mL + 3, y + 5);
-      y += 10;
+      doc.text('ACKNOWLEDGMENT & RESPONSIBILITY DISCLOSURE', mL + 3, boxTop + 5);
+      y = boxTop + 10;
 
       doc.setTextColor(20, 20, 20);
       doc.setFont('courier', 'normal');
       doc.setFontSize(7.8);
-      const disclosure = [
-        'By signing below, I hereby acknowledge and certify the following:',
-        '',
-        '1. I have physically verified each H-Drive listed above and confirm that all listed drives are in my possession',
-        '   and/or secured at the location indicated.',
-        '',
-        '2. I understand that the H-Drives assigned to me contain recorded surveillance footage and are the property of',
-        '   New Hanover County Schools Transportation Department.',
-        '',
-        '3. I accept full personal responsibility for the safekeeping of each drive. Negligent damage, loss, or',
-        '   unauthorized transfer of any H-Drive is my sole responsibility and may result in disciplinary action.',
-        '',
-        '4. I understand that any discrepancy noted above must be reported immediately to a supervisor.',
-      ];
-      disclosure.forEach(line => {
+      disclosureLines.forEach(line => {
         doc.text(line, mL + 3, y);
-        y += 4.8;
+        y += lineH;
       });
 
       y += 4;
       doc.setLineWidth(0.4);
-      // Signature line
       doc.setFont('courier', 'bold');
       doc.setFontSize(8);
       doc.setTextColor(30, 58, 120);
       doc.text('SIGNATURE:', mL + 3, y);
       doc.setDrawColor(40, 40, 40);
-      doc.line(mL + 26, y, mL + 95, y);
-      doc.text('DATE:', mL + 100, y);
-      doc.line(mL + 113, y, mL + 170, y);
+      doc.line(mL + 26, y, mL + 110, y);
+      doc.text('DATE:', mL + 115, y);
+      doc.line(mL + 128, y, mL + 200, y);
     });
 
     // Page numbers
