@@ -90,6 +90,12 @@ export default function SerializedAssetsSection() {
                 </div>
               ))}
               <div>
+                <label style={labelStyle}>Asset Type:</label>
+                <select style={inputStyle} value={formData.asset_type || 'DVR'} onChange={e => setFormData({ ...formData, asset_type: e.target.value })}>
+                  {['DVR', 'GPS', 'HD Camera', 'Other'].map(t => <option key={t}>{t}</option>)}
+                </select>
+              </div>
+              <div>
                 <label style={labelStyle}>Status:</label>
                 <select style={inputStyle} value={formData.status || 'In-Service'} onChange={e => setFormData({ ...formData, status: e.target.value })}>
                   {['In-Service', 'Decommissioned', 'Awaiting Auction', 'Sold', 'In Repair'].map(s => <option key={s}>{s}</option>)}
@@ -121,7 +127,7 @@ export default function SerializedAssetsSection() {
           <table style={{ width: '100%', fontSize: '10px', fontFamily: FF, borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ background: 'hsl(220,45%,28%)', color: 'white', position: 'sticky', top: 0 }}>
-                {['Asset #', 'Brand', 'Model', 'Serial #', 'Status', 'Bus #', 'Location', 'Actions'].map(h => (
+                {['Asset #', 'Brand', 'Model', 'Serial #', 'Type', 'Status', 'Bus #', 'Location', 'Actions'].map(h => (
                   <th key={h} style={{ padding: '5px 7px', textAlign: 'left', fontSize: '10px', fontWeight: '700', whiteSpace: 'nowrap' }}>{h}</th>
                 ))}
               </tr>
@@ -140,6 +146,7 @@ export default function SerializedAssetsSection() {
                     <td style={{ padding: '4px 7px' }}>{asset.brand}</td>
                     <td style={{ padding: '4px 7px' }}>{asset.model}</td>
                     <td style={{ padding: '4px 7px' }}>{asset.serial_number}</td>
+                    <td style={{ padding: '4px 7px' }}>{asset.asset_type || 'DVR'}</td>
                     <td style={{ padding: '4px 7px' }}>{asset.status}</td>
                     <td style={{ padding: '4px 7px' }}>{asset.assigned_bus_number || '—'}</td>
                     <td style={{ padding: '4px 7px' }}>{asset.current_location || '—'}</td>
