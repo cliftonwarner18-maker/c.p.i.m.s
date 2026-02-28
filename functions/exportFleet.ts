@@ -23,6 +23,20 @@ Deno.serve(async (req) => {
       buses = buses.filter(b => b.bus_type === busTypeFilter);
     }
 
+    // Sanitize function
+    const sanitize = (str) => {
+      if (!str || str === null || str === undefined) return null;
+      const cleaned = String(str)
+        .replace(/[½¼¾⅓⅔⅛⅜⅝⅞]/g, '')
+        .replace(/[«»„""‟‚''‹›]/g, '"')
+        .replace(/[−–—]/g, '-')
+        .replace(/[…]/g, '...')
+        .replace(/[©®™]/g, '')
+        .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
+        .trim();
+      return cleaned === '' ? null : cleaned;
+    };
+
     const doc = new jsPDF();
     const pageHeight = doc.internal.pageSize.height;
     const pageWidth = doc.internal.pageSize.width;
@@ -73,19 +87,19 @@ Deno.serve(async (req) => {
       }
       
       x = 8;
-      doc.text(bus.bus_number || '-', x, y);
+      doc.text(sanitize(bus.bus_number) || '-', x, y);
       x += colWidths[0];
-      doc.text((bus.bus_type || '-').substring(0, 15), x, y);
+      doc.text((sanitize(bus.bus_type) || '-').substring(0, 15), x, y);
       x += colWidths[1];
-      doc.text(bus.base_location || '-', x, y);
+      doc.text(sanitize(bus.base_location) || '-', x, y);
       x += colWidths[2];
-      doc.text(bus.year || '-', x, y);
+      doc.text(sanitize(bus.year) || '-', x, y);
       x += colWidths[3];
-      doc.text((bus.make || '-').substring(0, 15), x, y);
+      doc.text((sanitize(bus.make) || '-').substring(0, 15), x, y);
       x += colWidths[4];
-      doc.text((bus.model || '-').substring(0, 20), x, y);
+      doc.text((sanitize(bus.model) || '-').substring(0, 20), x, y);
       x += colWidths[5];
-      doc.text(bus.status || '-', x, y);
+      doc.text(sanitize(bus.status) || '-', x, y);
       y += 6;
     });
 
