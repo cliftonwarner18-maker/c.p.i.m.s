@@ -164,7 +164,13 @@ export default function HdriveManagement() {
               <div style={fieldStyle}><label style={labelStyle}>SERIAL NUMBER *</label><input required value={form.serial_number} onChange={e => setForm({ ...form, serial_number: e.target.value })} style={inputStyle} /></div>
             </div>
             <div style={rowStyle}>
-              <div style={fieldStyle}><label style={labelStyle}>CURRENT USER</label><input value={form.current_user} onChange={e => setForm({ ...form, current_user: e.target.value })} style={inputStyle} /></div>
+              <div style={fieldStyle}>
+                <label style={labelStyle}>CURRENT USER</label>
+                <select value={form.current_user} onChange={e => setForm({ ...form, current_user: e.target.value })} style={inputStyle}>
+                  <option value="">— Select User —</option>
+                  {activeUsers.map(u => <option key={u.id} value={u.name}>{u.name}{u.role ? ` — ${u.role}` : ''}</option>)}
+                </select>
+              </div>
               <div style={fieldStyle}><label style={labelStyle}>CURRENT LOCATION</label><input value={form.current_location} onChange={e => setForm({ ...form, current_location: e.target.value })} style={inputStyle} /></div>
             </div>
 
