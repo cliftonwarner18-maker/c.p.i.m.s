@@ -103,10 +103,10 @@ Deno.serve(async (req) => {
       doc.setFont(undefined, 'normal');
       // Check if value is null/undefined/empty BEFORE sanitizing
       if (value === null || value === undefined || value === '' || (typeof value === 'number' && isNaN(value))) {
-        var displayValue = '—';
+        var displayValue = '-';
       } else {
         const sanitizedValue = sanitize(String(value));
-        displayValue = sanitizedValue === null || sanitizedValue === undefined || sanitizedValue === '' ? '—' : sanitizedValue;
+        displayValue = sanitizedValue === null || sanitizedValue === undefined || sanitizedValue === '' ? '-' : sanitizedValue;
       }
       const wrapped = doc.splitTextToSize(displayValue, pageWidth - 65);
       doc.text(wrapped, 55, yPos);
