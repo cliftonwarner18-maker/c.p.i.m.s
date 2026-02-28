@@ -315,7 +315,7 @@ export default function HdriveManagement() {
       doc.setFontSize(7);
       doc.setTextColor(150, 150, 150);
       doc.text(`NHCS Transportation — H-Drive Verification Form — Page ${i} of ${totalPages}`, mL, pageH - 5);
-      doc.text('CONFIDENTIAL', 185, pageH - 5);
+      doc.text('CONFIDENTIAL', 248, pageH - 5);
     }
 
     doc.save(`NHCS_HDrive_Verification_${moment().format('YYYYMMDD_HHmm')}.pdf`);
