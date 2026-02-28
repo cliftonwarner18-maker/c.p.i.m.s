@@ -53,66 +53,96 @@ export default function HdriveManagement() {
     return result;
   };
 
+  const drawTable = (doc, headers, rows, startY, colWidths, pageH, marginL, marginR) => {
+    const rowH = 7;
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const tableWidth = pageWidth - marginL - marginR;
+    let y = startY;
+
+    const drawHeader = () => {
+      doc.setFillColor(30, 58, 120);
+      doc.rect(marginL, y, tableWidth, rowH, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFont('courier', 'bold');
+      doc.setFontSize(8);
+      let x = marginL;
+      headers.forEach((h, i) => { doc.text(h, x + 1.5, y + 5); x += colWidths[i]; });
+      y += rowH;
+    };
+
+    drawHeader();
+
+    rows.forEach((row, ri) => {
+      if (y + rowH > pageH - 15) {
+        doc.addPage();
+        y = 15;
+        drawHeader();
+      }
+      doc.setFillColor(ri % 2 === 0 ? 255 : 242, ri % 2 === 0 ? 255 : 246, ri % 2 === 0 ? 255 : 255);
+      doc.rect(marginL, y, tableWidth, rowH, 'F');
+      doc.setDrawColor(210, 218, 235);
+      doc.rect(marginL, y, tableWidth, rowH, 'S');
+      doc.setTextColor(30, 30, 30);
+      doc.setFont('courier', 'normal');
+      doc.setFontSize(8);
+      let x = marginL;
+      row.forEach((cell, i) => {
+        const text = String(cell ?? '—');
+        const maxW = colWidths[i] - 3;
+        const clipped = doc.getTextWidth(text) > maxW ? text.substring(0, Math.floor(maxW / (doc.getTextWidth(text) / text.length))) + '…' : text;
+        if (i === 0 || i === 1) { doc.setFont('courier', 'bold'); } else { doc.setFont('courier', 'normal'); }
+        doc.text(clipped, x + 1.5, y + 5);
+        x += colWidths[i];
+      });
+      y += rowH;
+    });
+    return y;
+  };
+
   const exportAuditPDF = () => {
     const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'letter' });
     const data = getExportDrives();
     const now = moment().format('MMMM D, YYYY [at] h:mm A');
     const filterLabel = [exportLot || 'All Lots', exportUser ? `User: ${exportUser}` : 'All Users'].join(' — ');
+    const pageW = 216, pageH = 279, mL = 10, mR = 10;
 
-    // Header block
     doc.setFillColor(30, 58, 120);
-    doc.rect(0, 0, 216, 28, 'F');
+    doc.rect(0, 0, pageW, 26, 'F');
     doc.setTextColor(255, 255, 255);
     doc.setFont('courier', 'bold');
-    doc.setFontSize(14);
-    doc.text('NEW HANOVER COUNTY SCHOOLS', 12, 10);
-    doc.setFontSize(11);
-    doc.text('H-DRIVE CHAIN OF CUSTODY — AUDIT REPORT', 12, 17);
-    doc.setFontSize(8);
+    doc.setFontSize(13);
+    doc.text('NEW HANOVER COUNTY SCHOOLS', mL, 10);
+    doc.setFontSize(10);
+    doc.text('H-DRIVE CHAIN OF CUSTODY — AUDIT REPORT', mL, 17);
+    doc.setFontSize(7.5);
     doc.setFont('courier', 'normal');
-    doc.text(`Generated: ${now}   |   Filter: ${filterLabel}   |   Total Drives: ${data.length}`, 12, 24);
+    doc.text(`Generated: ${now}   |   Filter: ${filterLabel}   |   Total: ${data.length} drives`, mL, 23);
 
-    // Signature block
     doc.setTextColor(30, 58, 120);
     doc.setFontSize(8);
     doc.setFont('courier', 'bold');
-    doc.text('AUTHORIZED BY:', 12, 36);
-    doc.setFont('courier', 'normal');
-    doc.line(40, 36, 110, 36);
-    doc.text('DATE:', 120, 36);
-    doc.line(132, 36, 200, 36);
+    doc.text('AUTHORIZED BY:', mL, 34);
+    doc.setDrawColor(30, 58, 120);
+    doc.line(42, 34, 110, 34);
+    doc.text('DATE:', 118, 34);
+    doc.line(130, 34, 200, 34);
 
-    // Table
-    doc.autoTable({
-      startY: 42,
-      head: [['SERIAL #', 'MAKE', 'MODEL', 'CURRENT USER', 'LOT', 'SUB LOCATION', 'STATUS']],
-      body: data.map(d => [
-        d.serial_number,
-        d.make,
-        d.model,
-        d.current_user || '—',
-        d.current_lot || '—',
-        d.current_sublocation || '—',
-        d.seized ? 'SEIZED' : 'ACTIVE',
-      ]),
-      styles: { font: 'courier', fontSize: 8, cellPadding: 2 },
-      headStyles: { fillColor: [30, 58, 120], textColor: 255, fontStyle: 'bold', fontSize: 8 },
-      alternateRowStyles: { fillColor: [240, 244, 255] },
-      columnStyles: { 0: { fontStyle: 'bold', cellWidth: 28 }, 4: { cellWidth: 18 }, 5: { cellWidth: 50 }, 6: { cellWidth: 18 } },
-      margin: { left: 12, right: 12 },
-    });
+    const cols = [28, 18, 22, 28, 16, 62, 18]; // total ~192
+    drawTable(doc,
+      ['SERIAL #', 'MAKE', 'MODEL', 'CURRENT USER', 'LOT', 'SUB LOCATION', 'STATUS'],
+      data.map(d => [d.serial_number, d.make, d.model, d.current_user || '—', d.current_lot || '—', d.current_sublocation || '—', d.seized ? 'SEIZED' : 'ACTIVE']),
+      40, cols, pageH, mL, mR
+    );
 
-    // Footer on each page
     const pages = doc.internal.getNumberOfPages();
     for (let i = 1; i <= pages; i++) {
       doc.setPage(i);
       doc.setFont('courier', 'normal');
       doc.setFontSize(7);
-      doc.setTextColor(120, 120, 120);
-      doc.text(`NHCS Vehicle Surveillance System — H-Drive Audit — Page ${i} of ${pages}`, 12, 277);
-      doc.text('CONFIDENTIAL — CHAIN OF CUSTODY DOCUMENT', 130, 277);
+      doc.setTextColor(150, 150, 150);
+      doc.text(`NHCS VSS — H-Drive Audit — Page ${i} of ${pages}`, mL, pageH - 5);
+      doc.text('CONFIDENTIAL — CHAIN OF CUSTODY', 140, pageH - 5);
     }
-
     doc.save(`NHCS_HDrive_Audit_${moment().format('YYYYMMDD_HHmm')}.pdf`);
   };
 
@@ -121,45 +151,33 @@ export default function HdriveManagement() {
     const data = getExportDrives();
     const now = moment().format('MMMM D, YYYY');
     const filterLabel = [exportLot || 'All Lots', exportUser ? `User: ${exportUser}` : 'All Users'].join(' — ');
+    const pageW = 279, pageH = 216, mL = 10, mR = 10;
 
     doc.setFillColor(45, 80, 140);
-    doc.rect(0, 0, 280, 20, 'F');
+    doc.rect(0, 0, pageW, 20, 'F');
     doc.setTextColor(255, 255, 255);
     doc.setFont('courier', 'bold');
     doc.setFontSize(12);
-    doc.text('NHCS H-DRIVE SIMPLE INVENTORY', 12, 9);
+    doc.text('NHCS H-DRIVE SIMPLE INVENTORY', mL, 9);
     doc.setFont('courier', 'normal');
     doc.setFontSize(8);
-    doc.text(`${now}   |   ${filterLabel}   |   ${data.length} Drives`, 12, 16);
+    doc.text(`${now}   |   ${filterLabel}   |   ${data.length} Drives`, mL, 16);
 
-    doc.autoTable({
-      startY: 24,
-      head: [['#', 'SERIAL NUMBER', 'MAKE', 'MODEL', 'CURRENT USER', 'LOT', 'SUB LOCATION']],
-      body: data.map((d, i) => [
-        i + 1,
-        d.serial_number,
-        d.make,
-        d.model,
-        d.current_user || '—',
-        d.current_lot || '—',
-        d.current_sublocation || '—',
-      ]),
-      styles: { font: 'courier', fontSize: 8, cellPadding: 2 },
-      headStyles: { fillColor: [45, 80, 140], textColor: 255, fontStyle: 'bold', fontSize: 8 },
-      alternateRowStyles: { fillColor: [245, 248, 255] },
-      columnStyles: { 0: { cellWidth: 10 }, 1: { fontStyle: 'bold', cellWidth: 32 }, 5: { cellWidth: 20 }, 6: { cellWidth: 65 } },
-      margin: { left: 12, right: 12 },
-    });
+    const cols = [10, 32, 20, 28, 32, 20, 110]; // total ~252
+    drawTable(doc,
+      ['#', 'SERIAL NUMBER', 'MAKE', 'MODEL', 'CURRENT USER', 'LOT', 'SUB LOCATION'],
+      data.map((d, i) => [i + 1, d.serial_number, d.make, d.model, d.current_user || '—', d.current_lot || '—', d.current_sublocation || '—']),
+      24, cols, pageH, mL, mR
+    );
 
     const pages = doc.internal.getNumberOfPages();
     for (let i = 1; i <= pages; i++) {
       doc.setPage(i);
       doc.setFont('courier', 'normal');
       doc.setFontSize(7);
-      doc.setTextColor(120, 120, 120);
-      doc.text(`NHCS VSS — H-Drive Inventory — Page ${i} of ${pages}`, 12, 210);
+      doc.setTextColor(150, 150, 150);
+      doc.text(`NHCS VSS — H-Drive Inventory — Page ${i} of ${pages}`, mL, pageH - 5);
     }
-
     doc.save(`NHCS_HDrive_Inventory_${moment().format('YYYYMMDD_HHmm')}.pdf`);
   };
 
