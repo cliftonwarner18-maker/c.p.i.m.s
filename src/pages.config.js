@@ -58,6 +58,7 @@ import NewWorkOrder from './pages/NewWorkOrder';
 import WorkOrderDetail from './pages/WorkOrderDetail';
 import WorkOrders from './pages/WorkOrders';
 import FleetManager from './pages/FleetManager';
+import BusProfile from './pages/BusProfile';
 import __Layout from './Layout.jsx';
 
 
@@ -73,6 +74,7 @@ export const PAGES = {
     "WorkOrderDetail": WorkOrderDetail,
     "WorkOrders": WorkOrders,
     "FleetManager": FleetManager,
+    "BusProfile": BusProfile,
 }
 
 export const pagesConfig = {
