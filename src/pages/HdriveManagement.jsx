@@ -177,7 +177,7 @@ export default function HdriveManagement() {
 
       // --- TABLE HEADER ---
       y += 12;
-      const col = { brand: 30, serial: 48, location: 72, ver: 14, date: 26, init: 14 };
+      const col = { brand: 32, serial: 52, location: 110, ver: 14, date: 28, init: 16 };
       // Header
       doc.setFillColor(30, 58, 120);
       doc.rect(mL, y, contentW, 8, 'F');
