@@ -82,7 +82,7 @@ Deno.serve(async (req) => {
       // Checkbox
       doc.setFont(undefined, 'bold');
       doc.setFontSize(8);
-      doc.text('☐ REPAIR COMPLETE', fieldX, yPos);
+      doc.text('* REPAIR COMPLETE *', fieldX, yPos);
       yPos += 6;
 
       // Time
