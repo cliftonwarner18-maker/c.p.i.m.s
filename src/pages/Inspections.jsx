@@ -6,6 +6,7 @@ import DeleteConfirmModal from '../components/DeleteConfirmModal';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { Plus, Search, Eye, Pencil, Trash2, ClipboardCheck } from 'lucide-react';
+import EditInspectionForm from '../components/inspections/EditInspectionForm';
 
 const STATUS_COLORS = {
   Pass: { bg: '#f0fdf4', color: '#166534', border: '#bbf7d0' },
