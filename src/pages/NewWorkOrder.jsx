@@ -5,9 +5,9 @@ import LoadingScreen from '../components/LoadingScreen';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, PlusCircle } from 'lucide-react';
+import moment from 'moment';
 
 const FF = "'Courier Prime', monospace";
-
 const inputStyle = { padding: '5px 8px', fontSize: '11px', fontFamily: FF, border: '1px solid hsl(220,18%,70%)', borderRadius: '2px', background: 'white', outline: 'none', width: '100%', boxSizing: 'border-box' };
 const labelStyle = { fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,35%)', letterSpacing: '0.06em', marginBottom: '3px', display: 'block' };
 const rowStyle = { display: 'flex', gap: '12px', flexWrap: 'wrap', marginBottom: '10px' };
@@ -15,7 +15,7 @@ const fieldStyle = { flex: '1', minWidth: '180px' };
 
 function SectionHeader({ title }) {
   return (
-    <div style={{ background: 'hsl(220,18%,94%)', border: '1px solid hsl(220,18%,78%)', borderLeft: '3px solid hsl(220,55%,40%)', padding: '6px 10px', fontSize: '10px', fontWeight: '700', letterSpacing: '0.08em', color: 'hsl(220,20%,25%)', marginBottom: '10px', marginTop: '10px', borderRadius: '2px' }}>
+    <div style={{ background: 'hsl(220,18%,94%)', border: '1px solid hsl(220,18%,78%)', borderLeft: '3px solid hsl(220,55%,40%)', padding: '6px 10px', fontSize: '10px', fontWeight: '700', letterSpacing: '0.08em', color: 'hsl(220,20%,25%)', marginBottom: '10px', marginTop: '6px', borderRadius: '2px' }}>
       {title}
     </div>
   );
@@ -24,6 +24,7 @@ function SectionHeader({ title }) {
 export default function NewWorkOrder() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const now = moment().format('MM/DD/YYYY HH:mm');
 
   const { data: existingOrders = [] } = useQuery({
     queryKey: ['workOrders'],
@@ -35,6 +36,11 @@ export default function NewWorkOrder() {
     queryFn: () => base44.entities.Bus.list('bus_number'),
   });
 
+  const { data: systemUsers = [] } = useQuery({
+    queryKey: ['systemUsers'],
+    queryFn: () => base44.entities.SystemUser.list('name'),
+  });
+
   const nextOrderNum = (() => {
     const nums = existingOrders
       .map(w => parseInt(w.order_number?.replace(/\D/g, ''), 10))
@@ -43,20 +49,21 @@ export default function NewWorkOrder() {
     return `WO-${String(max + 1).padStart(4, '0')}`;
   })();
 
+  const activeUsers = systemUsers.filter(u => u.active !== false);
+
   const [form, setForm] = useState({
-    bus_number: '',
+    lot: 'Main',
     reported_by: '',
+    bus_number: '',
     issue_description: '',
-    technician_name: '',
-    status: 'Pending',
-    repairs_rendered: '',
-    repair_start_time: '',
-    repair_end_time: '',
-    elapsed_time_minutes: 0,
   });
 
   const createMutation = useMutation({
-    mutationFn: (data) => base44.entities.WorkOrder.create({ ...data, order_number: nextOrderNum }),
+    mutationFn: (data) => base44.entities.WorkOrder.create({
+      ...data,
+      order_number: nextOrderNum,
+      status: 'Pending',
+    }),
     onSuccess: (newWo) => {
       queryClient.invalidateQueries({ queryKey: ['workOrders'] });
       navigate(`/WorkOrderDetail?id=${newWo.id}`);
@@ -75,8 +82,8 @@ export default function NewWorkOrder() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <PlusCircle style={{ width: 20, height: 20 }} />
           <div>
-            <div style={{ fontSize: '13px', fontWeight: '700', letterSpacing: '0.08em' }}>NEW WORK ORDER</div>
-            <div style={{ fontSize: '10px', opacity: 0.8, letterSpacing: '0.05em' }}>ORDER #: {nextOrderNum}</div>
+            <div style={{ fontSize: '13px', fontWeight: '700', letterSpacing: '0.08em' }}>NEW WORK ORDER — INITIAL COMPLAINT</div>
+            <div style={{ fontSize: '10px', opacity: 0.8 }}>ORDER #: {nextOrderNum} &nbsp;|&nbsp; DATE/TIME: {now}</div>
           </div>
         </div>
         <Link to={createPageUrl('WorkOrders')} style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '5px 10px', background: 'rgba(255,255,255,0.15)', color: 'white', border: '1px solid rgba(255,255,255,0.25)', borderRadius: '2px', fontSize: '11px', fontFamily: FF, textDecoration: 'none' }}>
@@ -84,61 +91,73 @@ export default function NewWorkOrder() {
         </Link>
       </div>
 
+      {/* Info banner */}
+      <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '2px', padding: '8px 12px', fontSize: '11px', color: '#1e40af', fontFamily: FF }}>
+        <strong>STEP 1 of 2:</strong> Fill out the initial complaint below and save. The technician will complete repairs in the next step after saving.
+      </div>
+
       {/* Form */}
       <div style={{ background: 'white', border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', padding: '16px' }}>
         <form onSubmit={handleSubmit}>
-          <SectionHeader title="VEHICLE & REPORTING INFORMATION" />
+          <SectionHeader title="WORK ORDER IDENTIFICATION" />
+
+          {/* Order # and Date/Time — read only */}
           <div style={rowStyle}>
             <div style={fieldStyle}>
-              <label style={labelStyle}>BUS NUMBER *</label>
-              <input
-                list="bus-list"
-                value={form.bus_number}
-                onChange={e => setForm({ ...form, bus_number: e.target.value })}
-                placeholder="Enter or select bus #"
-                required
-                style={inputStyle}
-              />
-              <datalist id="bus-list">
-                {buses.map(b => <option key={b.id} value={b.bus_number}>{b.bus_number} — {b.year} {b.make} {b.model}</option>)}
-              </datalist>
+              <label style={labelStyle}>ORDER NUMBER (AUTO)</label>
+              <input value={nextOrderNum} readOnly style={{ ...inputStyle, background: 'hsl(220,10%,96%)', color: 'hsl(220,10%,40%)', fontWeight: '700' }} />
             </div>
             <div style={fieldStyle}>
-              <label style={labelStyle}>REPORTED BY *</label>
-              <input value={form.reported_by} onChange={e => setForm({ ...form, reported_by: e.target.value })} placeholder="Name of reporter" required style={inputStyle} />
-            </div>
-            <div style={fieldStyle}>
-              <label style={labelStyle}>TECHNICIAN</label>
-              <input value={form.technician_name} onChange={e => setForm({ ...form, technician_name: e.target.value })} placeholder="Assigned technician" style={inputStyle} />
+              <label style={labelStyle}>DATE / TIME (AUTO)</label>
+              <input value={now} readOnly style={{ ...inputStyle, background: 'hsl(220,10%,96%)', color: 'hsl(220,10%,40%)' }} />
             </div>
           </div>
 
-          <div style={{ marginBottom: '10px' }}>
-            <label style={labelStyle}>ISSUE DESCRIPTION *</label>
-            <textarea value={form.issue_description} onChange={e => setForm({ ...form, issue_description: e.target.value })} placeholder="Describe the issue in detail..." rows={4} required style={{ ...inputStyle, resize: 'vertical' }} />
-          </div>
-
-          <SectionHeader title="INITIAL STATUS" />
+          <SectionHeader title="REPORTING INFORMATION" />
           <div style={rowStyle}>
+            {/* Lot dropdown */}
             <div style={fieldStyle}>
-              <label style={labelStyle}>STATUS</label>
-              <select value={form.status} onChange={e => setForm({ ...form, status: e.target.value })} style={inputStyle}>
-                {['Pending', 'In Progress', 'Completed', 'Cancelled'].map(s => <option key={s}>{s}</option>)}
+              <label style={labelStyle}>LOT *</label>
+              <select value={form.lot} onChange={e => setForm({ ...form, lot: e.target.value })} required style={inputStyle}>
+                <option value="">— Select Lot —</option>
+                {['Main', 'North', 'Central'].map(l => <option key={l} value={l}>{l}</option>)}
               </select>
             </div>
+
+            {/* Reported By dropdown from SystemUser */}
             <div style={fieldStyle}>
-              <label style={labelStyle}>REPAIR START TIME</label>
-              <input type="datetime-local" value={form.repair_start_time} onChange={e => setForm({ ...form, repair_start_time: e.target.value })} style={inputStyle} />
+              <label style={labelStyle}>REPORTED BY *</label>
+              <select value={form.reported_by} onChange={e => setForm({ ...form, reported_by: e.target.value })} required style={inputStyle}>
+                <option value="">— Select User —</option>
+                {activeUsers.map(u => <option key={u.id} value={u.name}>{u.name}{u.role ? ` — ${u.role}` : ''}</option>)}
+              </select>
             </div>
+
+            {/* Bus # dropdown from Fleet */}
             <div style={fieldStyle}>
-              <label style={labelStyle}>REPAIR END TIME</label>
-              <input type="datetime-local" value={form.repair_end_time} onChange={e => setForm({ ...form, repair_end_time: e.target.value })} style={inputStyle} />
+              <label style={labelStyle}>BUS NUMBER *</label>
+              <select value={form.bus_number} onChange={e => setForm({ ...form, bus_number: e.target.value })} required style={inputStyle}>
+                <option value="">— Select Bus —</option>
+                {buses.filter(b => b.status !== 'Retired').map(b => (
+                  <option key={b.id} value={b.bus_number}>
+                    {b.bus_number}{b.make ? ` — ${b.year || ''} ${b.make} ${b.model || ''}`.trim() : ''}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 
+          <SectionHeader title="INITIAL COMPLAINT" />
           <div style={{ marginBottom: '10px' }}>
-            <label style={labelStyle}>REPAIRS RENDERED (if already completed)</label>
-            <textarea value={form.repairs_rendered} onChange={e => setForm({ ...form, repairs_rendered: e.target.value })} placeholder="Describe repairs if already performed..." rows={3} style={{ ...inputStyle, resize: 'vertical' }} />
+            <label style={labelStyle}>DESCRIBE ISSUES WITH SYSTEM *</label>
+            <textarea
+              value={form.issue_description}
+              onChange={e => setForm({ ...form, issue_description: e.target.value })}
+              placeholder="Describe the issue(s) in detail..."
+              rows={6}
+              required
+              style={{ ...inputStyle, resize: 'vertical', lineHeight: '1.5' }}
+            />
           </div>
 
           {/* Submit */}
@@ -147,7 +166,7 @@ export default function NewWorkOrder() {
               CANCEL
             </Link>
             <button type="submit" disabled={createMutation.isPending} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 20px', background: 'hsl(140,55%,38%)', color: 'white', border: 'none', borderRadius: '2px', fontSize: '12px', fontFamily: FF, fontWeight: '700', cursor: createMutation.isPending ? 'default' : 'pointer', letterSpacing: '0.05em' }}>
-              <PlusCircle style={{ width: 13, height: 13 }} /> {createMutation.isPending ? 'CREATING...' : 'CREATE WORK ORDER'}
+              <PlusCircle style={{ width: 13, height: 13 }} /> {createMutation.isPending ? 'SAVING...' : 'SAVE COMPLAINT & OPEN WORK ORDER'}
             </button>
           </div>
         </form>
