@@ -184,16 +184,16 @@ export default function BusProfile() {
 
           {/* Camera System */}
           <div style={{ border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', overflow: 'hidden' }}>
-            <SectionHeader title="CAMERA SYSTEM" icon={ClipboardCheck} color="hsl(200,65%,30%)" />
-            <div style={{ padding: '12px 14px', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '12px', background: 'white' }}>
-              <Field label="System Type" value={bus.camera_system_type} />
-              <Field label="Serial Number" value={bus.camera_serial_number} />
-              <Field label="Model Number" value={bus.camera_model_number} />
+            <SectionHeader title="CAMERA & SURVEILLANCE SYSTEM" icon={ClipboardCheck} color="hsl(200,65%,30%)" />
+            <div style={{ padding: '12px 14px', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '12px', background: 'white' }}>
+              <Field label="Primary Camera Type" value={bus.camera_system_type} />
+              <Field label="Camera Serial Number" value={bus.camera_serial_number} />
+              <Field label="Camera Model Number" value={bus.camera_model_number} />
               <Field label="Dash Cam SID" value={bus.dash_cam_sid} />
               <Field label="Gateway SID" value={bus.gateway_sid} />
-              <Field label="Samsara" value={bus.samsara_enabled ? 'ENABLED' : 'DISABLED'} />
-              <Field label="Samsara AV" value={bus.samsara_av_enabled ? 'ENABLED' : 'DISABLED'} />
-              <Field label="Samsara Inputs" value={bus.samsara_inputs_enabled ? 'ENABLED' : 'DISABLED'} />
+              <Field label="Samsara Enabled" value={bus.samsara_enabled ? 'YES' : 'NO'} />
+              <Field label="Samsara Audio-Video" value={bus.samsara_av_enabled ? 'YES' : 'NO'} />
+              <Field label="Samsara Inputs Module" value={bus.samsara_inputs_enabled ? 'YES' : 'NO'} />
             </div>
           </div>
 
