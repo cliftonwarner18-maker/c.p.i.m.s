@@ -291,8 +291,8 @@ Deno.serve(async (req) => {
     doc.setFontSize(7);
     doc.setFont(undefined, 'italic');
     doc.setTextColor(80, 80, 80);
-    doc.text('New Hanover County Schools — Transportation Department — Vehicle Surveillance System', pageWidth / 2, pageHeight - 13, { align: 'center' });
-    doc.text(`Confidential Document — Bus #${busNumber} — ${moment().format('MM/DD/YYYY')}`, pageWidth / 2, pageHeight - 9, { align: 'center' });
+    doc.text('New Hanover County Schools | Transportation Department | Vehicle Surveillance System', pageWidth / 2, pageHeight - 13, { align: 'center' });
+    doc.text(`Confidential Document | Bus #${busNumber} | ${moment().format('MM/DD/YYYY')}`, pageWidth / 2, pageHeight - 9, { align: 'center' });
     doc.setTextColor(0, 0, 0);
 
     const pdfBytes = doc.output('arraybuffer');
