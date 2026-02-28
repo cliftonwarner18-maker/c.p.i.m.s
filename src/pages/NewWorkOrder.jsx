@@ -65,7 +65,7 @@ export default function NewWorkOrder() {
     }),
     onSuccess: (newWo) => {
       queryClient.invalidateQueries({ queryKey: ['workOrders'] });
-      navigate(`/WorkOrderDetail?id=${newWo.id}`);
+      navigate(createPageUrl(`WorkOrderDetail?id=${newWo.id}`));
     },
   });
 
