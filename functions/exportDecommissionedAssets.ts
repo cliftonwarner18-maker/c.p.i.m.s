@@ -71,6 +71,17 @@ Deno.serve(async (req) => {
     });
     y += 6;
 
+    // Sanitize function
+    const sanitize = (str) => {
+      if (!str || str === null || str === undefined) return null;
+      let cleaned = String(str)
+        .replace(/[\uFFFD]/g, '')
+        .replace(/[ï¿½]/g, '')
+        .replace(/[^\x20-\x7E]/g, '')
+        .trim();
+      return cleaned === '' ? null : cleaned;
+    };
+
     // Data rows
     doc.setFont(undefined, 'normal');
     doc.setFontSize(8);
@@ -81,17 +92,17 @@ Deno.serve(async (req) => {
       }
       
       x = 8;
-      doc.text(asset.out_of_service_date || '-', x, y);
+      doc.text(sanitize(asset.out_of_service_date) || '-', x, y);
       x += colWidths[0];
-      doc.text(asset.employee || '-', x, y);
+      doc.text(sanitize(asset.employee) || '-', x, y);
       x += colWidths[1];
-      doc.text(`${asset.make} ${asset.model}`.substring(0, 20), x, y);
+      doc.text((sanitize(`${asset.make} ${asset.model}`) || '-').substring(0, 20), x, y);
       x += colWidths[2];
-      doc.text(asset.serial_number || '-', x, y);
+      doc.text(sanitize(asset.serial_number) || '-', x, y);
       x += colWidths[3];
-      doc.text((asset.oos_reason || '-').substring(0, 35), x, y);
+      doc.text((sanitize(asset.oos_reason) || '-').substring(0, 35), x, y);
       x += colWidths[4];
-      doc.text(asset.decom_status || '-', x, y);
+      doc.text(sanitize(asset.decom_status) || '-', x, y);
       y += 6;
     });
 
