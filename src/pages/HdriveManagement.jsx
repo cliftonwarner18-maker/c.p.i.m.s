@@ -114,10 +114,11 @@ export default function HdriveManagement() {
 
   const handleCustodySubmit = (e) => {
     e.preventDefault();
+    const newLocation = [custodyForm.new_lot, custodyForm.new_sublocation].filter(Boolean).join(' — ');
     custodyMutation.mutate({
       driveId: custodyDrive.id,
-      logData: custodyForm,
-      driveUpdates: { current_user: custodyForm.transferred_to, current_location: custodyForm.new_location },
+      logData: { ...custodyForm, new_location: newLocation },
+      driveUpdates: { current_user: custodyForm.transferred_to, current_location: newLocation },
     });
   };
 
