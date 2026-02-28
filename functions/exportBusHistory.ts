@@ -182,14 +182,14 @@ Deno.serve(async (req) => {
         // Order header
         doc.setFont(undefined, 'bold');
         doc.setFontSize(9);
-        doc.text(`Order #${wo.order_number || wo.id?.slice(-6)} - ${moment(wo.created_date).format('MM/DD/YYYY')}`, margin + 2, yPos);
+        doc.text(`Order #${sanitize(wo.order_number || wo.id?.slice(-6))} - ${moment(wo.created_date).format('MM/DD/YYYY')}`, margin + 2, yPos);
         yPos += 5;
         
         // Status and tech on one line
         doc.setFont(undefined, 'normal');
         doc.setFontSize(8);
-        doc.text(`Status: ${wo.status}`, margin + 4, yPos);
-        doc.text(`Tech: ${wo.technician_name || 'N/A'}`, margin + 50, yPos);
+        doc.text(`Status: ${sanitize(wo.status)}`, margin + 4, yPos);
+        doc.text(`Tech: ${sanitize(wo.technician_name || 'N/A')}`, margin + 50, yPos);
         yPos += 4;
         
         // Issue description
@@ -199,7 +199,7 @@ Deno.serve(async (req) => {
           doc.text('Issue:', margin + 4, yPos);
           yPos += 3;
           doc.setFont(undefined, 'normal');
-          const issueWrapped = doc.splitTextToSize(wo.issue_description, pageWidth - 20);
+          const issueWrapped = doc.splitTextToSize(sanitize(wo.issue_description), pageWidth - 20);
           doc.text(issueWrapped, margin + 6, yPos);
           yPos += issueWrapped.length * 3 + 2;
         }
@@ -211,7 +211,7 @@ Deno.serve(async (req) => {
           doc.text('Repairs:', margin + 4, yPos);
           yPos += 3;
           doc.setFont(undefined, 'normal');
-          const repairsWrapped = doc.splitTextToSize(wo.repairs_rendered, pageWidth - 20);
+          const repairsWrapped = doc.splitTextToSize(sanitize(wo.repairs_rendered), pageWidth - 20);
           doc.text(repairsWrapped, margin + 6, yPos);
           yPos += repairsWrapped.length * 3 + 3;
         }
