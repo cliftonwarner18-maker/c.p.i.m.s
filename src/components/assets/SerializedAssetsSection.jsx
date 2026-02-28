@@ -15,6 +15,7 @@ export default function SerializedAssetsSection() {
   const [editingAsset, setEditingAsset] = useState(null);
   const [formData, setFormData] = useState({});
   const [statusFilter, setStatusFilter] = useState('All');
+  const [assetTypeFilter, setAssetTypeFilter] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [isExporting, setIsExporting] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
@@ -34,7 +35,7 @@ export default function SerializedAssetsSection() {
 
   const handleExportPDF = async () => {
     setIsExporting(true);
-    const response = await base44.functions.invoke('exportSerializedAssets', { statusFilter, startDate: '', endDate: '' });
+    const response = await base44.functions.invoke('exportSerializedAssets', { statusFilter, assetTypeFilter, startDate: '', endDate: '' });
     const blob = new Blob([response.data], { type: 'application/pdf' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a'); a.href = url; a.download = 'serialized-assets.pdf';
@@ -57,8 +58,9 @@ export default function SerializedAssetsSection() {
 
   const filteredAssets = assets.filter(asset => {
     const statusMatch = statusFilter === 'All' || asset.status === statusFilter;
+    const typeMatch = assetTypeFilter === 'All' || asset.asset_type === assetTypeFilter;
     const searchMatch = !searchQuery || asset.asset_number?.toLowerCase().includes(searchQuery.toLowerCase()) || asset.brand?.toLowerCase().includes(searchQuery.toLowerCase()) || asset.model?.toLowerCase().includes(searchQuery.toLowerCase()) || asset.serial_number?.toLowerCase().includes(searchQuery.toLowerCase());
-    return statusMatch && searchMatch;
+    return statusMatch && typeMatch && searchMatch;
   });
 
   return (
@@ -73,7 +75,10 @@ export default function SerializedAssetsSection() {
           <button onClick={() => { setEditingAsset(null); setFormData({}); setShowForm(!showForm); }} style={{ ...btnBase, background: 'hsl(220,55%,38%)', color: 'white', borderColor: 'hsl(220,55%,30%)' }}><Plus style={{ width: 12, height: 12 }} /> Add Asset</button>
           <input placeholder="Search assets..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} style={{ ...inputStyle, width: 160 }} />
           <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} style={{ ...inputStyle, width: 140 }}>
-            {['All', 'In-Service', 'Decommissioned', 'Awaiting Auction', 'Sold', 'In Repair'].map(s => <option key={s}>{s}</option>)}
+            {['All', 'In-Service', 'Decommissioned', 'Awaiting Auction', 'Sold', 'In Repair', 'Spares'].map(s => <option key={s}>{s}</option>)}
+          </select>
+          <select value={assetTypeFilter} onChange={e => setAssetTypeFilter(e.target.value)} style={{ ...inputStyle, width: 130 }}>
+            {['All', 'DVR', 'GPS', 'HD Camera', 'Other'].map(t => <option key={t}>{t}</option>)}
           </select>
           <button onClick={handleExportPDF} disabled={isExporting} style={{ ...btnBase, background: 'hsl(140,55%,38%)', color: 'white', borderColor: 'hsl(140,55%,30%)' }}><FileDown style={{ width: 12, height: 12 }} /> Export PDF</button>
           <button onClick={handleCleanupDuplicates} disabled={isCleaningUp} style={{ ...btnBase, background: 'hsl(0,65%,42%)', color: 'white', borderColor: 'hsl(0,65%,35%)' }}>🧹 {isCleaningUp ? 'CLEANING...' : 'CLEAN DUPLICATES'}</button>
