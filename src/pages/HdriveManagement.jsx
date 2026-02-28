@@ -108,7 +108,7 @@ export default function HdriveManagement() {
 
   const openCustody = (drive) => {
     setCustodyDrive(drive);
-    setCustodyForm({ ...EMPTY_CUSTODY, hdrive_serial: drive.serial_number, previous_location: drive.current_location || '', transferred_from: drive.current_user || '' });
+    setCustodyForm({ ...EMPTY_CUSTODY, hdrive_serial: drive.serial_number, previous_location: drive.current_location || '', transferred_from: drive.current_user || '', new_lot: '', new_sublocation: '' });
     setShowCustody(true);
   };
 
