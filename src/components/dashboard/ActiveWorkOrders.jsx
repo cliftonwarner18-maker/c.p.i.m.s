@@ -41,9 +41,9 @@ export default function ActiveWorkOrders({ workOrders }) {
         <button
           onClick={handleExportFieldPDF}
           disabled={isExporting}
-          style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '5px 10px', fontSize: '10px', fontFamily: FF, fontWeight: '700', background: 'hsl(140,55%,38%)', color: 'white', border: '1px solid hsl(140,55%,30%)', borderRadius: '2px', cursor: isExporting ? 'not-allowed' : 'pointer', opacity: isExporting ? 0.6 : 1 }}
+          style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '5px 10px', fontSize: '10px', fontFamily: FF, fontWeight: '700', background: 'hsl(280,55%,45%)', color: 'white', border: '1px solid hsl(280,55%,35%)', borderRadius: '2px', cursor: isExporting ? 'not-allowed' : 'pointer', opacity: isExporting ? 0.6 : 1 }}
         >
-          <FileDown style={{ width: 11, height: 11 }} /> {isExporting ? 'EXPORTING...' : 'CLIPBOARD PDF'}
+          <FileDown style={{ width: 11, height: 11 }} /> {isExporting ? 'EXPORTING...' : 'PRINT TECH SHEET'}
         </button>
       </div>
       <div style={{ maxHeight: 480, overflowY: 'auto', width: '100%' }}>
