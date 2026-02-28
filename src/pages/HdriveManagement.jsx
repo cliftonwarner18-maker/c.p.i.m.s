@@ -113,7 +113,7 @@ export default function HdriveManagement() {
       userGroups[u].push(d);
     });
 
-    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'letter' });
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'letter' });
     let firstPage = true;
 
     Object.entries(userGroups).forEach(([userName, drives]) => {
