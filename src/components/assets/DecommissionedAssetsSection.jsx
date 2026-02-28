@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import WinWindow from '../WinWindow';
-import { Plus, Edit2, Trash2, FileDown } from 'lucide-react';
 import DeleteConfirmModal from '../DeleteConfirmModal';
+import { Plus, Edit2, Trash2, FileDown } from 'lucide-react';
+
+const FF = "'Courier Prime', monospace";
+const inputStyle = { width: '100%', padding: '5px 8px', fontSize: '11px', fontFamily: FF, border: '1px solid hsl(220,18%,70%)', borderRadius: '2px', background: 'white', outline: 'none', boxSizing: 'border-box' };
+const labelStyle = { fontSize: '10px', fontWeight: '700', display: 'block', marginBottom: '3px' };
+const btnBase = { display: 'inline-flex', alignItems: 'center', gap: 4, padding: '4px 10px', fontSize: '10px', fontFamily: FF, fontWeight: '700', border: '1px solid', borderRadius: '2px', cursor: 'pointer' };
+const sectionHdr = { background: 'linear-gradient(to right, hsl(0,60%,32%), hsl(0,55%,42%))', color: 'white', padding: '7px 12px', fontSize: '11px', fontWeight: '700', letterSpacing: '0.08em', marginBottom: 0 };
 
 export default function DecommissionedAssetsSection() {
   const [showForm, setShowForm] = useState(false);
@@ -17,329 +22,130 @@ export default function DecommissionedAssetsSection() {
   const [deleteTarget, setDeleteTarget] = useState(null);
   const queryClient = useQueryClient();
 
-  const { data: assets = [], isLoading } = useQuery({
-    queryKey: ['decommissionedAssets'],
-    queryFn: () => base44.entities.DecommissionedAsset.list()
-  });
+  const { data: assets = [] } = useQuery({ queryKey: ['decommissionedAssets'], queryFn: () => base44.entities.DecommissionedAsset.list() });
+  const { data: buses = [] } = useQuery({ queryKey: ['buses'], queryFn: () => base44.entities.Bus.list() });
 
-  const { data: buses = [] } = useQuery({
-    queryKey: ['buses'],
-    queryFn: () => base44.entities.Bus.list()
-  });
+  const createMutation = useMutation({ mutationFn: (data) => base44.entities.DecommissionedAsset.create(data), onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['decommissionedAssets'] }); resetForm(); } });
+  const updateMutation = useMutation({ mutationFn: (data) => base44.entities.DecommissionedAsset.update(editingAsset.id, data), onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['decommissionedAssets'] }); resetForm(); } });
+  const deleteMutation = useMutation({ mutationFn: (id) => base44.entities.DecommissionedAsset.delete(id), onSuccess: () => queryClient.invalidateQueries({ queryKey: ['decommissionedAssets'] }) });
 
-  const createMutation = useMutation({
-    mutationFn: (data) => base44.entities.DecommissionedAsset.create(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['decommissionedAssets'] });
-      resetForm();
-    }
-  });
-
-  const updateMutation = useMutation({
-    mutationFn: (data) => base44.entities.DecommissionedAsset.update(editingAsset.id, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['decommissionedAssets'] });
-      resetForm();
-    }
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.DecommissionedAsset.delete(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['decommissionedAssets'] });
-    }
-  });
-
-  const resetForm = () => {
-    setFormData({});
-    setEditingAsset(null);
-    setShowForm(false);
-  };
-
-  const handleEdit = (asset) => {
-    setEditingAsset(asset);
-    setFormData(asset);
-    setShowForm(true);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (editingAsset) {
-      updateMutation.mutate(formData);
-    } else {
-      createMutation.mutate(formData);
-    }
-  };
+  const resetForm = () => { setFormData({}); setEditingAsset(null); setShowForm(false); };
+  const handleEdit = (asset) => { setEditingAsset(asset); setFormData(asset); setShowForm(true); };
+  const handleSubmit = (e) => { e.preventDefault(); editingAsset ? updateMutation.mutate(formData) : createMutation.mutate(formData); };
 
   const handleExportPDF = async () => {
     setIsExporting(true);
-    try {
-      const response = await base44.functions.invoke('exportDecommissionedAssets', {
-        statusFilter,
-        startDate,
-        endDate,
-        filterOutOfInventory
-      });
-      
-      const blob = new Blob([response.data], { type: 'application/pdf' });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'decommissioned-assets.pdf';
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      a.remove();
-    } catch (error) {
-      alert('Error exporting PDF: ' + error.message);
-    } finally {
-      setIsExporting(false);
-    }
+    const response = await base44.functions.invoke('exportDecommissionedAssets', { statusFilter, startDate, endDate, filterOutOfInventory });
+    const blob = new Blob([response.data], { type: 'application/pdf' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = 'decommissioned-assets.pdf';
+    document.body.appendChild(a); a.click(); window.URL.revokeObjectURL(url); a.remove();
+    setIsExporting(false);
   };
 
+  const filteredAssets = assets.filter(a => {
+    const statusMatch = statusFilter === 'All' || a.decom_status === statusFilter;
+    const startMatch = !startDate || a.out_of_service_date >= startDate;
+    const endMatch = !endDate || a.out_of_service_date <= endDate;
+    const invMatch = !filterOutOfInventory || !!a.out_of_inventory;
+    return statusMatch && startMatch && endMatch && invMatch;
+  });
+
   return (
-    <WinWindow title="DECOMMISSIONED ASSETS — SALVAGE & DISPOSAL LOG" icon="🗑️">
-      <DeleteConfirmModal
-        isOpen={!!deleteTarget}
-        label={deleteTarget ? `${deleteTarget.make} ${deleteTarget.model}${deleteTarget.serial_number ? ` (S/N: ${deleteTarget.serial_number})` : ''}` : ''}
-        onConfirm={() => { deleteMutation.mutate(deleteTarget.id); setDeleteTarget(null); }}
-        onCancel={() => setDeleteTarget(null)}
-      />
-      <div style={{display:'flex',flexDirection:'column',gap:'8px'}}>
-        <div style={{display:'flex',gap:'8px',flexWrap:'wrap',alignItems:'center'}}>
-          <button
-            onClick={() => {
-              setEditingAsset(null);
-              setFormData({});
-              setShowForm(!showForm);
-            }}
-            className="win-button"
-            style={{display:'flex',alignItems:'center',gap:'4px',fontSize:'11px'}}
-          >
-            <Plus style={{width:12,height:12}} /> Log Decommission
-          </button>
-          
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="win-input"
-            style={{fontSize:'11px',padding:'4px 8px'}}
-          >
-            <option>All</option>
-            <option>In Bad Parts</option>
-            <option>Awaiting Auction</option>
-            <option>Took to Auction</option>
-            <option>Rebuilt</option>
-            <option>Salvaged</option>
+    <div style={{ border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', overflow: 'hidden', fontFamily: FF }}>
+      <DeleteConfirmModal isOpen={!!deleteTarget} label={deleteTarget ? `${deleteTarget.make} ${deleteTarget.model}` : ''} onConfirm={() => { deleteMutation.mutate(deleteTarget.id); setDeleteTarget(null); }} onCancel={() => setDeleteTarget(null)} />
+
+      <div style={sectionHdr}>🗑️ DECOMMISSIONED ASSETS — SALVAGE & DISPOSAL LOG</div>
+
+      <div style={{ padding: '10px', background: 'hsl(220,10%,98%)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
+          <button onClick={() => { setEditingAsset(null); setFormData({}); setShowForm(!showForm); }} style={{ ...btnBase, background: 'hsl(0,60%,42%)', color: 'white', borderColor: 'hsl(0,60%,35%)' }}><Plus style={{ width: 12, height: 12 }} /> Log Decommission</button>
+          <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} style={{ ...inputStyle, width: 150 }}>
+            {['All', 'In Bad Parts', 'Awaiting Auction', 'Took to Auction', 'Rebuilt', 'Salvaged'].map(s => <option key={s}>{s}</option>)}
           </select>
-
-          <input
-            type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            className="win-input"
-            style={{fontSize:'11px',padding:'4px 8px'}}
-            placeholder="Start Date"
-          />
-          
-          <input
-            type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            className="win-input"
-            style={{fontSize:'11px',padding:'4px 8px'}}
-            placeholder="End Date"
-          />
-
-          <div style={{display:'flex',alignItems:'center',gap:'6px',padding:'4px 8px',border:'2px solid',borderColor:'hsl(220,15%,50%) hsl(220,15%,96%) hsl(220,15%,96%) hsl(220,15%,50%)',background:'white'}}>
-            <input
-              type="checkbox"
-              id="filter_out_of_inv"
-              checked={filterOutOfInventory}
-              onChange={(e) => setFilterOutOfInventory(e.target.checked)}
-              style={{width:'13px',height:'13px',cursor:'pointer'}}
-            />
-            <label htmlFor="filter_out_of_inv" style={{fontSize:'11px',cursor:'pointer',whiteSpace:'nowrap'}}>Out of Inv. Only</label>
+          <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} style={{ ...inputStyle, width: 140 }} />
+          <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} style={{ ...inputStyle, width: 140 }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '4px 8px', background: 'white', border: '1px solid hsl(220,18%,72%)', borderRadius: '2px' }}>
+            <input type="checkbox" id="filter_oo_inv" checked={filterOutOfInventory} onChange={e => setFilterOutOfInventory(e.target.checked)} style={{ cursor: 'pointer' }} />
+            <label htmlFor="filter_oo_inv" style={{ fontSize: '11px', cursor: 'pointer', whiteSpace: 'nowrap' }}>Out of Inv. Only</label>
           </div>
-
-          <button
-            onClick={handleExportPDF}
-            disabled={isExporting}
-            className="win-button"
-            style={{display:'flex',alignItems:'center',gap:'4px',fontSize:'11px',background:isExporting ? 'hsl(220,15%,75%)' : 'hsl(220,70%,35%)',color:'white'}}
-          >
-            <FileDown style={{width:12,height:12}} /> Export PDF
-          </button>
+          <button onClick={handleExportPDF} disabled={isExporting} style={{ ...btnBase, background: 'hsl(140,55%,38%)', color: 'white', borderColor: 'hsl(140,55%,30%)' }}><FileDown style={{ width: 12, height: 12 }} /> Export PDF</button>
         </div>
 
         {showForm && (
-          <div className="win-panel-inset" style={{padding:'12px',border:'2px solid hsl(220,15%,50%)',maxHeight:'500px',overflowY:'auto'}}>
-            <form onSubmit={handleSubmit} style={{display:'flex',flexDirection:'column',gap:'8px',fontSize:'11px'}}>
+          <div style={{ background: 'hsl(220,18%,96%)', border: '1px solid hsl(220,18%,80%)', borderRadius: '2px', padding: '12px', maxHeight: 480, overflowY: 'auto' }}>
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               <div>
-                <label style={{display:'block',marginBottom:'2px'}}>Out of Service Date:</label>
-                <input
-                  type="date"
-                  className="win-input"
-                  value={formData.out_of_service_date || ''}
-                  onChange={(e) => setFormData({...formData, out_of_service_date: e.target.value})}
-                  style={{width:'100%',fontSize:'11px'}}
-                />
+                <label style={labelStyle}>Out of Service Date:</label>
+                <input type="date" style={inputStyle} value={formData.out_of_service_date || ''} onChange={e => setFormData({ ...formData, out_of_service_date: e.target.value })} />
               </div>
               <div>
-                <label style={{display:'block',marginBottom:'2px'}}>Employee:</label>
-                <input
-                  type="text"
-                  className="win-input"
-                  value={formData.employee || ''}
-                  onChange={(e) => setFormData({...formData, employee: e.target.value})}
-                  style={{width:'100%',fontSize:'11px'}}
-                />
+                <label style={labelStyle}>Employee:</label>
+                <input style={inputStyle} value={formData.employee || ''} onChange={e => setFormData({ ...formData, employee: e.target.value })} />
               </div>
               <div>
-                <label style={{display:'block',marginBottom:'2px'}}>Bus # (if applicable):</label>
-                <select
-                  className="win-input"
-                  value={formData.bus_number || ''}
-                  onChange={(e) => setFormData({...formData, bus_number: e.target.value})}
-                  style={{width:'100%',fontSize:'11px'}}
-                >
+                <label style={labelStyle}>Bus # (if applicable):</label>
+                <select style={inputStyle} value={formData.bus_number || ''} onChange={e => setFormData({ ...formData, bus_number: e.target.value })}>
                   <option value="">None</option>
-                  {buses.map(bus => (
-                    <option key={bus.id} value={bus.bus_number}>{bus.bus_number}</option>
-                  ))}
+                  {buses.map(b => <option key={b.id} value={b.bus_number}>{b.bus_number}</option>)}
                 </select>
               </div>
+              {[['Purpose for OOS', 'purpose_for_oos'], ['Make', 'make'], ['Model', 'model'], ['Asset # (if applicable)', 'asset_number'], ['Serial # (if applicable)', 'serial_number']].map(([label, field]) => (
+                <div key={field}>
+                  <label style={labelStyle}>{label}:</label>
+                  <input style={inputStyle} value={formData[field] || ''} onChange={e => setFormData({ ...formData, [field]: e.target.value })} />
+                </div>
+              ))}
               <div>
-                <label style={{display:'block',marginBottom:'2px'}}>Purpose for OOS:</label>
-                <input
-                  type="text"
-                  className="win-input"
-                  value={formData.purpose_for_oos || ''}
-                  onChange={(e) => setFormData({...formData, purpose_for_oos: e.target.value})}
-                  style={{width:'100%',fontSize:'11px'}}
-                />
+                <label style={labelStyle}>Describe OOS Reason:</label>
+                <textarea style={{ ...inputStyle, minHeight: 60, resize: 'vertical' }} value={formData.oos_reason || ''} onChange={e => setFormData({ ...formData, oos_reason: e.target.value })} />
               </div>
               <div>
-                <label style={{display:'block',marginBottom:'2px'}}>Make:</label>
-                <input
-                  type="text"
-                  className="win-input"
-                  value={formData.make || ''}
-                  onChange={(e) => setFormData({...formData, make: e.target.value})}
-                  style={{width:'100%',fontSize:'11px'}}
-                />
-              </div>
-              <div>
-                <label style={{display:'block',marginBottom:'2px'}}>Model:</label>
-                <input
-                  type="text"
-                  className="win-input"
-                  value={formData.model || ''}
-                  onChange={(e) => setFormData({...formData, model: e.target.value})}
-                  style={{width:'100%',fontSize:'11px'}}
-                />
-              </div>
-              <div>
-                <label style={{display:'block',marginBottom:'2px'}}>Asset # (if applicable):</label>
-                <input
-                  type="text"
-                  className="win-input"
-                  value={formData.asset_number || ''}
-                  onChange={(e) => setFormData({...formData, asset_number: e.target.value})}
-                  style={{width:'100%',fontSize:'11px'}}
-                />
-              </div>
-              <div>
-                <label style={{display:'block',marginBottom:'2px'}}>Serial # (if applicable):</label>
-                <input
-                  type="text"
-                  className="win-input"
-                  value={formData.serial_number || ''}
-                  onChange={(e) => setFormData({...formData, serial_number: e.target.value})}
-                  style={{width:'100%',fontSize:'11px'}}
-                />
-              </div>
-              <div>
-                <label style={{display:'block',marginBottom:'2px'}}>Describe OOS Reason:</label>
-                <textarea
-                  className="win-input"
-                  value={formData.oos_reason || ''}
-                  onChange={(e) => setFormData({...formData, oos_reason: e.target.value})}
-                  style={{width:'100%',fontSize:'11px',minHeight:'60px',fontFamily:'inherit'}}
-                />
-              </div>
-              <div>
-                <label style={{display:'block',marginBottom:'2px'}}>Decom Status:</label>
-                <select
-                  className="win-input"
-                  value={formData.decom_status || 'Awaiting Auction'}
-                  onChange={(e) => setFormData({...formData, decom_status: e.target.value})}
-                  style={{width:'100%',fontSize:'11px'}}
-                >
-                  <option>In Bad Parts</option>
-                  <option>Awaiting Auction</option>
-                  <option>Took to Auction</option>
-                  <option>Rebuilt</option>
-                  <option>Salvaged</option>
+                <label style={labelStyle}>Decom Status:</label>
+                <select style={inputStyle} value={formData.decom_status || 'Awaiting Auction'} onChange={e => setFormData({ ...formData, decom_status: e.target.value })}>
+                  {['In Bad Parts', 'Awaiting Auction', 'Took to Auction', 'Rebuilt', 'Salvaged'].map(s => <option key={s}>{s}</option>)}
                 </select>
               </div>
-              <div style={{display:'flex',alignItems:'center',gap:'6px',padding:'6px',background:'hsl(45,90%,95%)',border:'1px solid hsl(45,90%,60%)'}}>
-                <input
-                  type="checkbox"
-                  id="out_of_inventory_check"
-                  checked={!!formData.out_of_inventory}
-                  onChange={(e) => setFormData({...formData, out_of_inventory: e.target.checked})}
-                  style={{width:'14px',height:'14px',cursor:'pointer'}}
-                />
-                <label htmlFor="out_of_inventory_check" style={{cursor:'pointer',fontWeight:'bold',color:'hsl(30,80%,30%)'}}>
-                  ✓ Device Out of Inventory — Sold/Auctioned, No Longer a Bus Garage Asset
-                </label>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px', background: 'hsl(45,90%,95%)', border: '1px solid hsl(45,90%,65%)', borderRadius: '2px' }}>
+                <input type="checkbox" id="out_of_inv_chk" checked={!!formData.out_of_inventory} onChange={e => setFormData({ ...formData, out_of_inventory: e.target.checked })} style={{ cursor: 'pointer' }} />
+                <label htmlFor="out_of_inv_chk" style={{ cursor: 'pointer', fontWeight: '700', color: 'hsl(30,80%,30%)', fontSize: '11px' }}>✓ Device Out of Inventory — Sold/Auctioned</label>
               </div>
-              <div style={{display:'flex',gap:'4px',justifyContent:'flex-end'}}>
-                <button type="button" className="win-button" onClick={resetForm} style={{fontSize:'11px'}}>Cancel</button>
-                <button type="submit" className="win-button" style={{background:'hsl(220,70%,35%)',color:'white',fontSize:'11px'}}>Save</button>
+              <div style={{ display: 'flex', gap: '6px', justifyContent: 'flex-end' }}>
+                <button type="button" onClick={resetForm} style={{ ...btnBase, background: 'hsl(220,18%,88%)', color: 'hsl(220,20%,20%)', borderColor: 'hsl(220,18%,70%)' }}>Cancel</button>
+                <button type="submit" style={{ ...btnBase, background: 'hsl(140,55%,38%)', color: 'white', borderColor: 'hsl(140,55%,30%)' }}>Save</button>
               </div>
             </form>
           </div>
         )}
 
-        <div className="win-panel-inset" style={{padding:'8px',fontSize:'10px',maxHeight:'400px',overflowY:'auto'}}>
-          <table style={{width:'100%',borderCollapse:'collapse'}}>
+        <div style={{ fontSize: '10px', color: 'hsl(220,10%,50%)' }}>Showing {filteredAssets.length} of {assets.length} records</div>
+
+        <div style={{ overflowX: 'auto', maxHeight: 400, border: '1px solid hsl(220,18%,82%)', borderRadius: '2px' }}>
+          <table style={{ width: '100%', fontSize: '10px', fontFamily: FF, borderCollapse: 'collapse' }}>
             <thead>
-              <tr style={{borderBottom:'1px solid hsl(220,15%,70%)'}}>
-                <th style={{textAlign:'left',padding:'4px',fontWeight:'bold'}}>OOS Date</th>
-                <th style={{textAlign:'left',padding:'4px',fontWeight:'bold'}}>Employee</th>
-                <th style={{textAlign:'left',padding:'4px',fontWeight:'bold'}}>Bus #</th>
-                <th style={{textAlign:'left',padding:'4px',fontWeight:'bold'}}>Make/Model</th>
-                <th style={{textAlign:'left',padding:'4px',fontWeight:'bold'}}>Serial #</th>
-                <th style={{textAlign:'left',padding:'4px',fontWeight:'bold'}}>Decom Status</th>
-                <th style={{textAlign:'center',padding:'4px',fontWeight:'bold'}}>Out of Inv.</th>
-                <th style={{textAlign:'center',padding:'4px',fontWeight:'bold'}}>Actions</th>
+              <tr style={{ background: 'hsl(0,55%,30%)', color: 'white', position: 'sticky', top: 0 }}>
+                {['OOS Date', 'Employee', 'Bus #', 'Make/Model', 'Serial #', 'Decom Status', 'Out of Inv.', 'Actions'].map(h => (
+                  <th key={h} style={{ padding: '5px 7px', textAlign: 'left', fontSize: '10px', fontWeight: '700', whiteSpace: 'nowrap' }}>{h}</th>
+                ))}
               </tr>
             </thead>
             <tbody>
-              {assets.map(asset => (
-                <tr key={asset.id} style={{borderBottom:'1px solid hsl(220,15%,85%)'}}>
-                  <td style={{padding:'4px'}}>{asset.out_of_service_date}</td>
-                  <td style={{padding:'4px'}}>{asset.employee}</td>
-                  <td style={{padding:'4px'}}>{asset.bus_number || '-'}</td>
-                  <td style={{padding:'4px'}}>{asset.make} {asset.model}</td>
-                  <td style={{padding:'4px'}}>{asset.serial_number || '-'}</td>
-                  <td style={{padding:'4px'}}>{asset.decom_status}</td>
-                  <td style={{padding:'4px',textAlign:'center'}}>
-                    {asset.out_of_inventory ? (
-                      <span style={{color:'hsl(0,72%,45%)',fontWeight:'bold',fontSize:'10px'}}>✓ OUT</span>
-                    ) : (
-                      <span style={{color:'hsl(220,15%,60%)',fontSize:'10px'}}>—</span>
-                    )}
+              {filteredAssets.map((asset, i) => (
+                <tr key={asset.id} style={{ background: i % 2 === 0 ? 'white' : 'hsl(220,18%,97%)', borderBottom: '1px solid hsl(220,18%,90%)' }}>
+                  <td style={{ padding: '4px 7px' }}>{asset.out_of_service_date}</td>
+                  <td style={{ padding: '4px 7px' }}>{asset.employee}</td>
+                  <td style={{ padding: '4px 7px' }}>{asset.bus_number || '—'}</td>
+                  <td style={{ padding: '4px 7px' }}>{asset.make} {asset.model}</td>
+                  <td style={{ padding: '4px 7px' }}>{asset.serial_number || '—'}</td>
+                  <td style={{ padding: '4px 7px' }}>{asset.decom_status}</td>
+                  <td style={{ padding: '4px 7px', textAlign: 'center' }}>
+                    {asset.out_of_inventory ? <span style={{ color: 'hsl(0,65%,40%)', fontWeight: '700' }}>✓ OUT</span> : <span style={{ color: 'hsl(220,10%,55%)' }}>—</span>}
                   </td>
-                  <td style={{padding:'4px',textAlign:'center',display:'flex',gap:'4px',justifyContent:'center'}}>
-                    <button onClick={() => handleEdit(asset)} style={{background:'none',border:'none',cursor:'pointer',color:'hsl(220,70%,35%)',fontSize:'10px'}}>
-                      <Edit2 style={{width:12,height:12}} />
-                    </button>
-                    <button onClick={() => setDeleteTarget(asset)} style={{background:'none',border:'none',cursor:'pointer',color:'hsl(0,72%,45%)',fontSize:'10px'}}>
-                      <Trash2 style={{width:12,height:12}} />
-                    </button>
+                  <td style={{ padding: '4px 7px' }}>
+                    <div style={{ display: 'flex', gap: '4px' }}>
+                      <button onClick={() => handleEdit(asset)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'hsl(220,60%,40%)', padding: 0 }}><Edit2 style={{ width: 13, height: 13 }} /></button>
+                      <button onClick={() => setDeleteTarget(asset)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'hsl(0,65%,45%)', padding: 0 }}><Trash2 style={{ width: 13, height: 13 }} /></button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -347,6 +153,6 @@ export default function DecommissionedAssetsSection() {
           </table>
         </div>
       </div>
-    </WinWindow>
+    </div>
   );
 }

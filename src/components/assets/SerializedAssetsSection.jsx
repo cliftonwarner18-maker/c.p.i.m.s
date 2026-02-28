@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import WinWindow from '../WinWindow';
-import { Plus, Edit2, Trash2, FileDown } from 'lucide-react';
 import DeleteConfirmModal from '../DeleteConfirmModal';
+import { Plus, Edit2, Trash2, FileDown } from 'lucide-react';
+
+const FF = "'Courier Prime', monospace";
+const inputStyle = { width: '100%', padding: '5px 8px', fontSize: '11px', fontFamily: FF, border: '1px solid hsl(220,18%,70%)', borderRadius: '2px', background: 'white', outline: 'none', boxSizing: 'border-box' };
+const labelStyle = { fontSize: '10px', fontWeight: '700', display: 'block', marginBottom: '3px' };
+const btnBase = { display: 'inline-flex', alignItems: 'center', gap: 4, padding: '4px 10px', fontSize: '10px', fontFamily: FF, fontWeight: '700', border: '1px solid', borderRadius: '2px', cursor: 'pointer' };
+const sectionHdr = { background: 'linear-gradient(to right, hsl(220,50%,30%), hsl(220,45%,40%))', color: 'white', padding: '7px 12px', fontSize: '11px', fontWeight: '700', letterSpacing: '0.08em', marginBottom: 0 };
 
 export default function SerializedAssetsSection() {
   const [showForm, setShowForm] = useState(false);
@@ -16,324 +21,139 @@ export default function SerializedAssetsSection() {
   const [isCleaningUp, setIsCleaningUp] = useState(false);
   const queryClient = useQueryClient();
 
-  const { data: assets = [], isLoading } = useQuery({
-    queryKey: ['serializedAssets'],
-    queryFn: () => base44.entities.SerializedAsset.list()
-  });
+  const { data: assets = [] } = useQuery({ queryKey: ['serializedAssets'], queryFn: () => base44.entities.SerializedAsset.list() });
+  const { data: buses = [] } = useQuery({ queryKey: ['buses'], queryFn: () => base44.entities.Bus.list() });
 
-  const { data: buses = [] } = useQuery({
-    queryKey: ['buses'],
-    queryFn: () => base44.entities.Bus.list()
-  });
+  const createMutation = useMutation({ mutationFn: (data) => base44.entities.SerializedAsset.create(data), onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['serializedAssets'] }); resetForm(); } });
+  const updateMutation = useMutation({ mutationFn: (data) => base44.entities.SerializedAsset.update(editingAsset.id, data), onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['serializedAssets'] }); resetForm(); } });
+  const deleteMutation = useMutation({ mutationFn: (id) => base44.entities.SerializedAsset.delete(id), onSuccess: () => queryClient.invalidateQueries({ queryKey: ['serializedAssets'] }) });
 
-  const createMutation = useMutation({
-    mutationFn: (data) => base44.entities.SerializedAsset.create(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['serializedAssets'] });
-      resetForm();
-    }
-  });
-
-  const updateMutation = useMutation({
-    mutationFn: (data) => base44.entities.SerializedAsset.update(editingAsset.id, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['serializedAssets'] });
-      resetForm();
-    }
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.SerializedAsset.delete(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['serializedAssets'] });
-    }
-  });
-
-  const resetForm = () => {
-    setFormData({});
-    setEditingAsset(null);
-    setShowForm(false);
-  };
-
-  const handleEdit = (asset) => {
-    setEditingAsset(asset);
-    setFormData(asset);
-    setShowForm(true);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (editingAsset) {
-      updateMutation.mutate(formData);
-    } else {
-      createMutation.mutate(formData);
-    }
-  };
+  const resetForm = () => { setFormData({}); setEditingAsset(null); setShowForm(false); };
+  const handleEdit = (asset) => { setEditingAsset(asset); setFormData(asset); setShowForm(true); };
+  const handleSubmit = (e) => { e.preventDefault(); editingAsset ? updateMutation.mutate(formData) : createMutation.mutate(formData); };
 
   const handleExportPDF = async () => {
     setIsExporting(true);
-    try {
-      const response = await base44.functions.invoke('exportSerializedAssets', {
-        statusFilter,
-        startDate: '',
-        endDate: ''
-      });
-      
-      const blob = new Blob([response.data], { type: 'application/pdf' });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'serialized-assets.pdf';
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      a.remove();
-    } catch (error) {
-      alert('Error exporting PDF: ' + error.message);
-    } finally {
-      setIsExporting(false);
-    }
+    const response = await base44.functions.invoke('exportSerializedAssets', { statusFilter, startDate: '', endDate: '' });
+    const blob = new Blob([response.data], { type: 'application/pdf' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = 'serialized-assets.pdf';
+    document.body.appendChild(a); a.click(); window.URL.revokeObjectURL(url); a.remove();
+    setIsExporting(false);
   };
 
   const handleCleanupDuplicates = async () => {
-    if (!window.confirm('Delete duplicate serialized assets (keeping most detailed records)?\n\nThis cannot be undone.')) return;
+    if (!window.confirm('Delete duplicate serialized assets?\n\nThis cannot be undone.')) return;
     setIsCleaningUp(true);
-    try {
-      const response = await base44.functions.invoke('cleanupDuplicates', { entityName: 'SerializedAsset' });
-      queryClient.invalidateQueries({ queryKey: ['serializedAssets'] });
-      alert(`Cleanup complete!\n${response.data.message}`);
-    } catch (error) {
-      alert(`Error during cleanup: ${error.message}`);
-    } finally {
-      setIsCleaningUp(false);
-    }
+    const response = await base44.functions.invoke('cleanupDuplicates', { entityName: 'SerializedAsset' });
+    queryClient.invalidateQueries({ queryKey: ['serializedAssets'] });
+    alert(`Cleanup complete!\n${response.data.message}`);
+    setIsCleaningUp(false);
   };
 
-  const serialCounts = assets.reduce((acc, a) => {
-    const key = a.serial_number?.trim().toLowerCase();
-    if (key) acc[key] = (acc[key] || 0) + 1;
-    return acc;
-  }, {});
-  const assetNumCounts = assets.reduce((acc, a) => {
-    const key = a.asset_number?.trim().toLowerCase();
-    if (key) acc[key] = (acc[key] || 0) + 1;
-    return acc;
-  }, {});
-  const isAssetDuplicate = (a) =>
-    (a.serial_number && serialCounts[a.serial_number.trim().toLowerCase()] > 1) ||
-    (a.asset_number && assetNumCounts[a.asset_number.trim().toLowerCase()] > 1);
+  const serialCounts = assets.reduce((acc, a) => { const key = a.serial_number?.trim().toLowerCase(); if (key) acc[key] = (acc[key] || 0) + 1; return acc; }, {});
+  const assetNumCounts = assets.reduce((acc, a) => { const key = a.asset_number?.trim().toLowerCase(); if (key) acc[key] = (acc[key] || 0) + 1; return acc; }, {});
+  const isAssetDuplicate = (a) => (a.serial_number && serialCounts[a.serial_number.trim().toLowerCase()] > 1) || (a.asset_number && assetNumCounts[a.asset_number.trim().toLowerCase()] > 1);
 
   const filteredAssets = assets.filter(asset => {
     const statusMatch = statusFilter === 'All' || asset.status === statusFilter;
-    const searchMatch = searchQuery === '' || 
-      asset.asset_number?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      asset.brand?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      asset.model?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      asset.serial_number?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      asset.current_location?.toLowerCase().includes(searchQuery.toLowerCase());
+    const searchMatch = !searchQuery || asset.asset_number?.toLowerCase().includes(searchQuery.toLowerCase()) || asset.brand?.toLowerCase().includes(searchQuery.toLowerCase()) || asset.model?.toLowerCase().includes(searchQuery.toLowerCase()) || asset.serial_number?.toLowerCase().includes(searchQuery.toLowerCase());
     return statusMatch && searchMatch;
   });
 
   return (
-    <WinWindow title="SERIALIZED ASSETS — DVR RECORDERS & HIGH VALUE EQUIPMENT" icon="🎥">
-      <DeleteConfirmModal
-        isOpen={!!deleteTarget}
-        label={deleteTarget ? `${deleteTarget.brand} ${deleteTarget.model} (S/N: ${deleteTarget.serial_number})` : ''}
-        onConfirm={() => { deleteMutation.mutate(deleteTarget.id); setDeleteTarget(null); }}
-        onCancel={() => setDeleteTarget(null)}
-      />
-      <div style={{display:'flex',flexDirection:'column',gap:'8px'}}>
-        <div style={{display:'flex',gap:'8px',flexWrap:'wrap',alignItems:'center'}}>
-          <button
-            onClick={() => {
-              setEditingAsset(null);
-              setFormData({});
-              setShowForm(!showForm);
-            }}
-            className="win-button"
-            style={{display:'flex',alignItems:'center',gap:'4px',fontSize:'11px'}}
-          >
-            <Plus style={{width:12,height:12}} /> Add Asset
-          </button>
+    <div style={{ border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', overflow: 'hidden', fontFamily: FF }}>
+      <DeleteConfirmModal isOpen={!!deleteTarget} label={deleteTarget ? `${deleteTarget.brand} ${deleteTarget.model} (S/N: ${deleteTarget.serial_number})` : ''} onConfirm={() => { deleteMutation.mutate(deleteTarget.id); setDeleteTarget(null); }} onCancel={() => setDeleteTarget(null)} />
 
-          <input
-            type="text"
-            placeholder="Search assets..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="win-input"
-            style={{fontSize:'11px',padding:'4px 8px',minWidth:'150px'}}
-          />
-          
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="win-input"
-            style={{fontSize:'11px',padding:'4px 8px'}}
-          >
-            <option>All</option>
-            <option>In-Service</option>
-            <option>Decommissioned</option>
-            <option>Awaiting Auction</option>
-            <option>Sold</option>
-            <option>In Repair</option>
+      <div style={sectionHdr}>🎥 SERIALIZED ASSETS — DVR RECORDERS & HIGH VALUE EQUIPMENT</div>
+
+      <div style={{ padding: '10px', background: 'hsl(220,10%,98%)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        {/* Controls */}
+        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
+          <button onClick={() => { setEditingAsset(null); setFormData({}); setShowForm(!showForm); }} style={{ ...btnBase, background: 'hsl(220,55%,38%)', color: 'white', borderColor: 'hsl(220,55%,30%)' }}><Plus style={{ width: 12, height: 12 }} /> Add Asset</button>
+          <input placeholder="Search assets..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} style={{ ...inputStyle, width: 160 }} />
+          <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} style={{ ...inputStyle, width: 140 }}>
+            {['All', 'In-Service', 'Decommissioned', 'Awaiting Auction', 'Sold', 'In Repair'].map(s => <option key={s}>{s}</option>)}
           </select>
-
-          <button
-            onClick={handleExportPDF}
-            disabled={isExporting}
-            className="win-button"
-            style={{display:'flex',alignItems:'center',gap:'4px',fontSize:'11px',background:isExporting ? 'hsl(220,15%,75%)' : 'hsl(220,70%,35%)',color:'white'}}
-          >
-            <FileDown style={{width:12,height:12}} /> Export PDF
-          </button>
-
-          <button
-            onClick={handleCleanupDuplicates}
-            disabled={isCleaningUp}
-            className="win-button"
-            style={{display:'flex',alignItems:'center',gap:'4px',fontSize:'11px',background:'hsl(0,65%,45%)',color:'white'}}
-          >
-            🧹 {isCleaningUp ? 'CLEANING...' : 'CLEAN UP DUPLICATES'}
-          </button>
+          <button onClick={handleExportPDF} disabled={isExporting} style={{ ...btnBase, background: 'hsl(140,55%,38%)', color: 'white', borderColor: 'hsl(140,55%,30%)' }}><FileDown style={{ width: 12, height: 12 }} /> Export PDF</button>
+          <button onClick={handleCleanupDuplicates} disabled={isCleaningUp} style={{ ...btnBase, background: 'hsl(0,65%,42%)', color: 'white', borderColor: 'hsl(0,65%,35%)' }}>🧹 {isCleaningUp ? 'CLEANING...' : 'CLEAN DUPLICATES'}</button>
         </div>
 
+        {/* Form */}
         {showForm && (
-          <div className="win-panel-inset" style={{padding:'12px',border:'2px solid hsl(220,15%,50%)'}}>
-            <form onSubmit={handleSubmit} style={{display:'flex',flexDirection:'column',gap:'8px',fontSize:'11px'}}>
+          <div style={{ background: 'hsl(220,18%,96%)', border: '1px solid hsl(220,18%,80%)', borderRadius: '2px', padding: '12px' }}>
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {[['Asset #', 'asset_number'], ['Brand', 'brand'], ['Model', 'model'], ['Serial #', 'serial_number']].map(([label, field]) => (
+                <div key={field}>
+                  <label style={labelStyle}>{label}:</label>
+                  <input style={inputStyle} value={formData[field] || ''} onChange={e => setFormData({ ...formData, [field]: e.target.value })} />
+                </div>
+              ))}
               <div>
-                <label style={{display:'block',marginBottom:'2px'}}>Asset #:</label>
-                <input
-                  type="text"
-                  className="win-input"
-                  value={formData.asset_number || ''}
-                  onChange={(e) => setFormData({...formData, asset_number: e.target.value})}
-                  style={{width:'100%',fontSize:'11px'}}
-                />
-              </div>
-              <div>
-                <label style={{display:'block',marginBottom:'2px'}}>Brand:</label>
-                <input
-                  type="text"
-                  className="win-input"
-                  value={formData.brand || ''}
-                  onChange={(e) => setFormData({...formData, brand: e.target.value})}
-                  style={{width:'100%',fontSize:'11px'}}
-                />
-              </div>
-              <div>
-                <label style={{display:'block',marginBottom:'2px'}}>Model:</label>
-                <input
-                  type="text"
-                  className="win-input"
-                  value={formData.model || ''}
-                  onChange={(e) => setFormData({...formData, model: e.target.value})}
-                  style={{width:'100%',fontSize:'11px'}}
-                />
-              </div>
-              <div>
-                <label style={{display:'block',marginBottom:'2px'}}>Serial #:</label>
-                <input
-                  type="text"
-                  className="win-input"
-                  value={formData.serial_number || ''}
-                  onChange={(e) => setFormData({...formData, serial_number: e.target.value})}
-                  style={{width:'100%',fontSize:'11px'}}
-                />
-              </div>
-              <div>
-                <label style={{display:'block',marginBottom:'2px'}}>Status:</label>
-                <select
-                  className="win-input"
-                  value={formData.status || 'In-Service'}
-                  onChange={(e) => setFormData({...formData, status: e.target.value})}
-                  style={{width:'100%',fontSize:'11px'}}
-                >
-                  <option>In-Service</option>
-                  <option>Decommissioned</option>
-                  <option>Awaiting Auction</option>
-                  <option>Sold</option>
-                  <option>In Repair</option>
+                <label style={labelStyle}>Status:</label>
+                <select style={inputStyle} value={formData.status || 'In-Service'} onChange={e => setFormData({ ...formData, status: e.target.value })}>
+                  {['In-Service', 'Decommissioned', 'Awaiting Auction', 'Sold', 'In Repair'].map(s => <option key={s}>{s}</option>)}
                 </select>
               </div>
               <div>
-                <label style={{display:'block',marginBottom:'2px'}}>Assigned Bus #:</label>
-                <select
-                  className="win-input"
-                  value={formData.assigned_bus_number || ''}
-                  onChange={(e) => setFormData({...formData, assigned_bus_number: e.target.value})}
-                  style={{width:'100%',fontSize:'11px'}}
-                >
+                <label style={labelStyle}>Assigned Bus #:</label>
+                <select style={inputStyle} value={formData.assigned_bus_number || ''} onChange={e => setFormData({ ...formData, assigned_bus_number: e.target.value })}>
                   <option value="">None</option>
-                  {buses.map(bus => (
-                    <option key={bus.id} value={bus.bus_number}>{bus.bus_number}</option>
-                  ))}
+                  {buses.map(b => <option key={b.id} value={b.bus_number}>{b.bus_number}</option>)}
                 </select>
               </div>
               <div>
-                <label style={{display:'block',marginBottom:'2px'}}>Current Location:</label>
-                <input
-                  type="text"
-                  className="win-input"
-                  placeholder="e.g., Upstairs Loft, Parts Room"
-                  value={formData.current_location || ''}
-                  onChange={(e) => setFormData({...formData, current_location: e.target.value})}
-                  style={{width:'100%',fontSize:'11px'}}
-                />
+                <label style={labelStyle}>Current Location:</label>
+                <input style={inputStyle} placeholder="e.g., Upstairs Loft, Parts Room" value={formData.current_location || ''} onChange={e => setFormData({ ...formData, current_location: e.target.value })} />
               </div>
-              <div style={{display:'flex',gap:'4px',justifyContent:'flex-end'}}>
-                <button type="button" className="win-button" onClick={resetForm} style={{fontSize:'11px'}}>Cancel</button>
-                <button type="submit" className="win-button" style={{background:'hsl(220,70%,35%)',color:'white',fontSize:'11px'}}>Save</button>
+              <div style={{ display: 'flex', gap: '6px', justifyContent: 'flex-end' }}>
+                <button type="button" onClick={resetForm} style={{ ...btnBase, background: 'hsl(220,18%,88%)', color: 'hsl(220,20%,20%)', borderColor: 'hsl(220,18%,70%)' }}>Cancel</button>
+                <button type="submit" style={{ ...btnBase, background: 'hsl(140,55%,38%)', color: 'white', borderColor: 'hsl(140,55%,30%)' }}>Save</button>
               </div>
             </form>
           </div>
         )}
 
-        <div style={{fontSize:'10px',marginBottom:'6px',color:'hsl(220,10%,50%)'}}>
-          Found {filteredAssets.length} of {assets.length} assets
-        </div>
-        <div className="win-panel-inset" style={{padding:'8px',fontSize:'10px',maxHeight:'400px',overflowY:'auto'}}>
-          <table style={{width:'100%',borderCollapse:'collapse'}}>
+        <div style={{ fontSize: '10px', color: 'hsl(220,10%,50%)' }}>Showing {filteredAssets.length} of {assets.length} assets</div>
+
+        {/* Table */}
+        <div style={{ overflowX: 'auto', maxHeight: 400, border: '1px solid hsl(220,18%,82%)', borderRadius: '2px' }}>
+          <table style={{ width: '100%', fontSize: '10px', fontFamily: FF, borderCollapse: 'collapse' }}>
             <thead>
-              <tr style={{borderBottom:'1px solid hsl(220,15%,70%)'}}>
-                <th style={{textAlign:'left',padding:'4px',fontWeight:'bold'}}>Asset #</th>
-                <th style={{textAlign:'left',padding:'4px',fontWeight:'bold'}}>Brand</th>
-                <th style={{textAlign:'left',padding:'4px',fontWeight:'bold'}}>Model</th>
-                <th style={{textAlign:'left',padding:'4px',fontWeight:'bold'}}>Serial #</th>
-                <th style={{textAlign:'left',padding:'4px',fontWeight:'bold'}}>Status</th>
-                <th style={{textAlign:'left',padding:'4px',fontWeight:'bold'}}>Bus #</th>
-                <th style={{textAlign:'left',padding:'4px',fontWeight:'bold'}}>Location</th>
-                <th style={{textAlign:'center',padding:'4px',fontWeight:'bold'}}>Actions</th>
+              <tr style={{ background: 'hsl(220,45%,28%)', color: 'white', position: 'sticky', top: 0 }}>
+                {['Asset #', 'Brand', 'Model', 'Serial #', 'Status', 'Bus #', 'Location', 'Actions'].map(h => (
+                  <th key={h} style={{ padding: '5px 7px', textAlign: 'left', fontSize: '10px', fontWeight: '700', whiteSpace: 'nowrap' }}>{h}</th>
+                ))}
               </tr>
             </thead>
             <tbody>
-              {filteredAssets.map(asset => {
+              {filteredAssets.map((asset, i) => {
                 const dup = isAssetDuplicate(asset);
-                return <tr key={asset.id} style={{borderBottom:'1px solid hsl(220,15%,85%)', backgroundColor: dup ? 'hsl(0,80%,92%)' : '', outline: dup ? '2px solid hsl(0,72%,45%)' : 'none'}}>
-                  <td style={{padding:'4px'}}>
-                    {dup && <span style={{background:'hsl(0,72%,45%)',color:'white',fontSize:'8px',padding:'0 3px',marginRight:'4px',fontWeight:'bold'}}>⚠ DUP</span>}
-                    {asset.asset_number}
-                  </td>
-                  <td style={{padding:'4px'}}>{asset.brand}</td>
-                  <td style={{padding:'4px'}}>{asset.model}</td>
-                  <td style={{padding:'4px'}}>{asset.serial_number}</td>
-                  <td style={{padding:'4px'}}>{asset.status}</td>
-                  <td style={{padding:'4px'}}>{asset.assigned_bus_number || '-'}</td>
-                  <td style={{padding:'4px'}}>{asset.current_location || '-'}</td>
-                  <td style={{padding:'4px',textAlign:'center',display:'flex',gap:'4px',justifyContent:'center'}}>
-                    <button onClick={() => handleEdit(asset)} style={{background:'none',border:'none',cursor:'pointer',color:'hsl(220,70%,35%)',fontSize:'10px'}}>
-                      <Edit2 style={{width:12,height:12}} />
-                    </button>
-                    <button onClick={() => setDeleteTarget(asset)} style={{background:'none',border:'none',cursor:'pointer',color:'hsl(0,72%,45%)',fontSize:'10px'}}>
-                      <Trash2 style={{width:12,height:12}} />
-                    </button>
-                  </td>
-                </tr>;
+                return (
+                  <tr key={asset.id} style={{ background: dup ? 'hsl(0,80%,93%)' : i % 2 === 0 ? 'white' : 'hsl(220,18%,97%)', borderBottom: '1px solid hsl(220,18%,90%)' }}>
+                    <td style={{ padding: '4px 7px', fontWeight: '700' }}>
+                      {dup && <span style={{ background: 'hsl(0,65%,45%)', color: 'white', fontSize: '8px', padding: '0 3px', marginRight: 3, fontWeight: '700' }}>DUP</span>}
+                      {asset.asset_number}
+                    </td>
+                    <td style={{ padding: '4px 7px' }}>{asset.brand}</td>
+                    <td style={{ padding: '4px 7px' }}>{asset.model}</td>
+                    <td style={{ padding: '4px 7px' }}>{asset.serial_number}</td>
+                    <td style={{ padding: '4px 7px' }}>{asset.status}</td>
+                    <td style={{ padding: '4px 7px' }}>{asset.assigned_bus_number || '—'}</td>
+                    <td style={{ padding: '4px 7px' }}>{asset.current_location || '—'}</td>
+                    <td style={{ padding: '4px 7px' }}>
+                      <div style={{ display: 'flex', gap: '4px' }}>
+                        <button onClick={() => handleEdit(asset)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'hsl(220,60%,40%)', padding: 0 }}><Edit2 style={{ width: 13, height: 13 }} /></button>
+                        <button onClick={() => setDeleteTarget(asset)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'hsl(0,65%,45%)', padding: 0 }}><Trash2 style={{ width: 13, height: 13 }} /></button>
+                      </div>
+                    </td>
+                  </tr>
+                );
               })}
             </tbody>
           </table>
         </div>
       </div>
-    </WinWindow>
+    </div>
   );
 }
