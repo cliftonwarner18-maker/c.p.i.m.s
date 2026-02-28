@@ -157,6 +157,9 @@ export default function Inspections() {
                         <Link to={`/InspectionDetail?id=${insp.id}`} style={{ ...btnBase, textDecoration: 'none', color: 'inherit' }} title="View">
                           <Eye style={{ width: 12, height: 12 }} />
                         </Link>
+                        <button style={{ ...btnBase }} onClick={() => setEditingInsp(insp)} title="Edit">
+                          <Pencil style={{ width: 12, height: 12 }} />
+                        </button>
                         <button style={{ ...btnBase }} onClick={() => setDeleteTarget(insp)} title="Delete">
                           <Trash2 style={{ width: 12, height: 12 }} />
                         </button>
