@@ -11,13 +11,16 @@ Deno.serve(async (req) => {
     }
 
     const body = await req.json();
-    const { statusFilter, startDate, endDate } = body;
+    const { statusFilter, assetTypeFilter, startDate, endDate } = body;
 
     const assets = await base44.entities.SerializedAsset.list();
     
     let filtered = assets;
     if (statusFilter && statusFilter !== 'All') {
-      filtered = assets.filter(a => a.status === statusFilter);
+      filtered = filtered.filter(a => a.status === statusFilter);
+    }
+    if (assetTypeFilter && assetTypeFilter !== 'All') {
+      filtered = filtered.filter(a => a.asset_type === assetTypeFilter);
     }
 
     const doc = new jsPDF();
@@ -41,13 +44,18 @@ Deno.serve(async (req) => {
       y += 6;
     }
 
+    if (assetTypeFilter && assetTypeFilter !== 'All') {
+      doc.text(`Asset Type Filter: ${assetTypeFilter}`, pageWidth / 2, y, { align: 'center' });
+      y += 6;
+    }
+
     y += 4;
 
     // Headers
     doc.setFontSize(9);
     doc.setFont(undefined, 'bold');
-    const headers = ['Asset #', 'Brand', 'Model', 'Serial #', 'Status', 'Bus #', 'Location'];
-    const colWidths = [20, 20, 20, 25, 20, 15, 30];
+    const headers = ['Asset #', 'Brand', 'Model', 'Serial #', 'Type', 'Status', 'Bus #', 'Location'];
+    const colWidths = [18, 18, 18, 22, 15, 18, 14, 28];
     let x = 8;
     headers.forEach((header, i) => {
       doc.text(header, x, y);
@@ -84,10 +92,12 @@ Deno.serve(async (req) => {
       x += colWidths[2];
       doc.text(sanitize(asset.serial_number) || '-', x, y);
       x += colWidths[3];
-      doc.text(sanitize(asset.status) || '-', x, y);
+      doc.text(sanitize(asset.asset_type) || '-', x, y);
       x += colWidths[4];
-      doc.text(sanitize(asset.assigned_bus_number) || '-', x, y);
+      doc.text(sanitize(asset.status) || '-', x, y);
       x += colWidths[5];
+      doc.text(sanitize(asset.assigned_bus_number) || '-', x, y);
+      x += colWidths[6];
       doc.text((sanitize(asset.current_location) || '-').substring(0, 20), x, y);
       y += 6;
     });
