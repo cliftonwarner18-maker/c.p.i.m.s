@@ -56,6 +56,9 @@ import HdriveManagement from './pages/HdriveManagement';
 import NewWorkOrder from './pages/NewWorkOrder';
 import WorkOrderDetail from './pages/WorkOrderDetail';
 import WorkOrders from './pages/WorkOrders';
+import Inspections from './pages/Inspections';
+import NewInspection from './pages/NewInspection';
+import InspectionDetail from './pages/InspectionDetail';
 import __Layout from './Layout.jsx';
 
 
@@ -69,6 +72,9 @@ export const PAGES = {
     "NewWorkOrder": NewWorkOrder,
     "WorkOrderDetail": WorkOrderDetail,
     "WorkOrders": WorkOrders,
+    "Inspections": Inspections,
+    "NewInspection": NewInspection,
+    "InspectionDetail": InspectionDetail,
 }
 
 export const pagesConfig = {
