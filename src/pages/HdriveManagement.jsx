@@ -102,7 +102,7 @@ export default function HdriveManagement() {
   const exportAuditPDF = () => {
     const allData = getExportDrives();
     const now = moment().format('MMMM D, YYYY');
-    const pageW = 216, pageH = 279, mL = 14, mR = 14;
+    const pageW = 279, pageH = 216, mL = 12, mR = 12;
     const contentW = pageW - mL - mR;
 
     // Group by user
