@@ -98,7 +98,8 @@ Deno.serve(async (req) => {
       doc.setFontSize(9);
       doc.text(label + ':', margin + 2, yPos);
       doc.setFont(undefined, 'normal');
-      const displayValue = value === null || value === undefined || value === '' ? '—' : String(value);
+      const sanitizedValue = sanitize(value);
+      const displayValue = sanitizedValue === null || sanitizedValue === undefined || sanitizedValue === '' ? '—' : String(sanitizedValue);
       const wrapped = doc.splitTextToSize(displayValue, pageWidth - 65);
       doc.text(wrapped, 55, yPos);
       // light separator line
