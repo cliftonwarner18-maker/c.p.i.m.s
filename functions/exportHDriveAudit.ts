@@ -1,16 +1,6 @@
 import { jsPDF } from 'npm:jspdf@4.0.0';
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
-
-const formatDateTime24h = (date = new Date()) => {
-  const offset = -5 * 60 * 60 * 1000;
-  const localDate = new Date(date.getTime() + offset);
-  const month = String(localDate.getUTCMonth() + 1).padStart(2, '0');
-  const day = String(localDate.getUTCDate()).padStart(2, '0');
-  const year = localDate.getUTCFullYear();
-  const hours = String(localDate.getUTCHours()).padStart(2, '0');
-  const minutes = String(localDate.getUTCMinutes()).padStart(2, '0');
-  return `${month}/${day}/${year} ${hours}:${minutes}`;
-};
+import moment from 'npm:moment-timezone@0.5.45';
 
 Deno.serve(async (req) => {
   try {
@@ -74,7 +64,7 @@ Deno.serve(async (req) => {
       if (locationFilter) filterParts.push(`Location: ${locationFilter}`);
       if (seizedOnly) filterParts.push('SEIZED ONLY');
       if (search) filterParts.push(`Search: "${search}"`);
-      const meta = `Generated: ${formatDateTime24h()}   |   Records: ${drives.length}${filterParts.length ? '   |   Filters: ' + filterParts.join(', ') : ''}   |   Page ${pg}`;
+      const meta = `Generated: ${moment().tz('America/New_York').format('MM/DD/YYYY HH:mm')}   |   Records: ${drives.length}${filterParts.length ? '   |   Filters: ' + filterParts.join(', ') : ''}   |   Page ${pg}`;
       doc.text(meta, pageWidth / 2, 23, { align: 'center' });
     };
 
@@ -254,16 +244,7 @@ Deno.serve(async (req) => {
         doc.text((d.seizing_person || '-').substring(0, 20), margin + 72, textY);
         doc.text((d.seizure_case_number || '-').substring(0, 14), margin + 110, textY);
         const sd = d.seizure_date ? new Date(d.seizure_date) : null;
-        const seizureTime = sd ? (() => {
-          const offset = -5 * 60 * 60 * 1000;
-          const local = new Date(sd.getTime() + offset);
-          const m = String(local.getUTCMonth() + 1).padStart(2, '0');
-          const dy = String(local.getUTCDate()).padStart(2, '0');
-          const h = String(local.getUTCHours()).padStart(2, '0');
-          const mi = String(local.getUTCMinutes()).padStart(2, '0');
-          return `${m}/${dy}/${local.getUTCFullYear()} ${h}:${mi}`;
-        })() : '-';
-        doc.text(seizureTime, margin + 138, textY);
+        doc.text(sd ? moment(sd).tz('America/New_York').format('MM/DD/YYYY HH:mm') : '-', margin + 138, textY);
         doc.text((d.seizure_reason || '-').substring(0, 20), margin + 178, textY);
         y += rowH;
         // Notes sub-row
@@ -373,16 +354,7 @@ Deno.serve(async (req) => {
       doc.text((c.new_location || '-').substring(0, 32), cCols.newLoc.x + 1, textY2);
       doc.text((c.reason || '-').substring(0, 26), cCols.reason.x + 1, textY2);
       const dt = c.transfer_date ? new Date(c.transfer_date) : null;
-      const transferTime = dt ? (() => {
-        const offset = -5 * 60 * 60 * 1000;
-        const local = new Date(dt.getTime() + offset);
-        const m = String(local.getUTCMonth() + 1).padStart(2, '0');
-        const dy = String(local.getUTCDate()).padStart(2, '0');
-        const h = String(local.getUTCHours()).padStart(2, '0');
-        const mi = String(local.getUTCMinutes()).padStart(2, '0');
-        return `${m}/${dy}/${local.getUTCFullYear()} ${h}:${mi}`;
-      })() : '-';
-      doc.text(transferTime, cCols.date.x + 1, textY2);
+      doc.text(dt ? moment(dt).tz('America/New_York').format('MM/DD/YYYY HH:mm') : '-', cCols.date.x + 1, textY2);
       y += rowH;
     });
 

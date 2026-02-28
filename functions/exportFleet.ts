@@ -1,16 +1,6 @@
 import { jsPDF } from 'npm:jspdf@4.0.0';
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
-
-const formatDateTime24h = (date = new Date()) => {
-  const offset = -5 * 60 * 60 * 1000; // EST/EDT offset
-  const localDate = new Date(date.getTime() + offset);
-  const month = String(localDate.getUTCMonth() + 1).padStart(2, '0');
-  const day = String(localDate.getUTCDate()).padStart(2, '0');
-  const year = localDate.getUTCFullYear();
-  const hours = String(localDate.getUTCHours()).padStart(2, '0');
-  const minutes = String(localDate.getUTCMinutes()).padStart(2, '0');
-  return `${month}/${day}/${year} ${hours}:${minutes}`;
-};
+import moment from 'npm:moment-timezone@0.5.45';
 
 Deno.serve(async (req) => {
   try {
@@ -63,7 +53,7 @@ Deno.serve(async (req) => {
 
     // Date
     doc.setFontSize(10);
-    const dateStr = `Report Generated: ${formatDateTime24h()}`;
+    const dateStr = `Report Generated: ${moment().tz('America/New_York').format('MM/DD/YYYY HH:mm')}`;
     doc.text(dateStr, pageWidth / 2, y, { align: 'center' });
     y += 6;
 
