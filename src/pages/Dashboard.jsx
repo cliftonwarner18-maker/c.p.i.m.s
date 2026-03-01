@@ -153,7 +153,16 @@ export default function Dashboard() {
       </Section>
 
       {/* Overdue Inspections */}
-      <Section title="🔴 OVERDUE INSPECTIONS">
+      <Section title={
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+          <span>🔴 OVERDUE INSPECTIONS</span>
+          {overdueInspections.length > 0 && (
+            <button onClick={handleExportOverduePDF} style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '3px 8px', fontSize: '10px', fontFamily: FF, background: 'rgba(255,255,255,0.15)', color: 'white', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '2px', cursor: 'pointer' }}>
+              <FileDown style={{ width: 11, height: 11 }} /> EXPORT PDF
+            </button>
+          )}
+        </div>
+      }>
         <div style={{ maxHeight: 360, overflowY: 'auto' }}>
           {overdueInspections.length === 0 ? (
             <div style={{ padding: '16px', textAlign: 'center', color: 'hsl(220,10%,50%)', fontSize: '12px' }}>NO OVERDUE INSPECTIONS</div>
