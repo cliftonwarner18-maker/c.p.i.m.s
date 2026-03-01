@@ -279,26 +279,6 @@ export default function WorkOrderDetail() {
       <div style={{ background: 'white', border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', padding: '14px' }}>
         <SectionHeader title="PART 2 — REPAIR INFORMATION (TECHNICIAN)" color="linear-gradient(to right, hsl(140,50%,28%), hsl(140,45%,38%))" />
 
-        {/* Timer */}
-        <div style={{ background: 'hsl(220,18%,96%)', border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', padding: '10px 12px', display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', marginBottom: '12px' }}>
-          <Clock style={{ width: 15, height: 15, color: 'hsl(220,50%,40%)', flexShrink: 0 }} />
-          <span style={{ fontSize: '11px', fontWeight: '700', letterSpacing: '0.06em' }}>REPAIR TIMER:</span>
-          <span style={{ fontFamily: "'VT323', monospace", fontSize: '22px', color: timerRunning ? 'hsl(140,55%,35%)' : 'hsl(220,20%,30%)', letterSpacing: '0.05em', minWidth: '80px' }}>
-            {elapsedDisplay(displayElapsedMinutes)}
-          </span>
-          <span style={{ fontSize: '10px', color: 'hsl(220,10%,50%)' }}>HH:MM</span>
-          {!timerRunning && !isCompleted && (
-            <button onClick={handleStartTimer} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 12px', background: 'hsl(220,55%,38%)', color: 'white', border: 'none', borderRadius: '2px', fontSize: '11px', fontFamily: FF, fontWeight: '700', cursor: 'pointer' }}>
-              <Play style={{ width: 11, height: 11 }} /> START TIMER
-            </button>
-          )}
-          {timerRunning && (
-            <button onClick={handleStopTimer} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 12px', background: 'hsl(0,65%,45%)', color: 'white', border: 'none', borderRadius: '2px', fontSize: '11px', fontFamily: FF, fontWeight: '700', cursor: 'pointer' }}>
-              <Square style={{ width: 11, height: 11 }} /> STOP TIMER
-            </button>
-          )}
-        </div>
-
         {/* Time fields */}
         <div style={rowStyle}>
           <div style={fieldStyle}>
