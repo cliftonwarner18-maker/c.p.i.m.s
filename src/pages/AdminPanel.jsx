@@ -163,7 +163,7 @@ function TechHoursReport({ users }) {
     doc.setFont('courier', 'bold'); doc.text('REPORTING PERIOD:', margin + 10, y + 44);
     doc.setFont('courier', 'normal'); doc.text(rangeLabel, margin + 145, y + 44);
     doc.setFont('courier', 'bold'); doc.text('DEPARTMENT:', margin + 10, y + 58);
-    doc.setFont('courier', 'normal'); doc.text('Transportation — Vehicle Surveillance Systems', margin + 145, y + 58);
+    doc.setFont('courier', 'normal'); doc.text('Transportation — Vehicle Surveillance Sys.', margin + 145, y + 58);
 
     // Right: Totals summary box
     const sumX = W - margin - 155;
