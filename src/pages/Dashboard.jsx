@@ -15,7 +15,7 @@ const FF = "'Courier Prime', monospace";
 function Section({ title, children }) {
   return (
     <div style={{ background: 'white', border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', overflow: 'hidden' }}>
-      <div style={{ background: 'linear-gradient(to right, hsl(220,50%,30%), hsl(220,45%,40%))', color: 'white', padding: '7px 12px', fontSize: '11px', fontWeight: '700', letterSpacing: '0.08em', fontFamily: FF }}>
+      <div style={{ background: 'linear-gradient(to right, hsl(220,50%,30%), hsl(220,45%,40%))', color: 'white', padding: '7px 12px', fontSize: '11px', fontWeight: '700', letterSpacing: '0.08em', fontFamily: FF, display: 'flex', alignItems: 'center' }}>
         {title}
       </div>
       <div style={{ padding: '8px', background: 'hsl(220,10%,98%)' }}>{children}</div>
