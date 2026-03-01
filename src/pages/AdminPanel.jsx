@@ -243,6 +243,9 @@ export default function AdminPanel() {
         </div>
       )}
 
+      {/* Hours Report */}
+      <TechHoursReport users={users} />
+
       {/* User Table */}
       <div style={{ background: 'white', border: '1px solid hsl(220,18%,75%)', borderRadius: '2px', overflow: 'hidden' }}>
         <table style={{ width: '100%', fontSize: '11px', fontFamily: FF, borderCollapse: 'collapse' }}>
