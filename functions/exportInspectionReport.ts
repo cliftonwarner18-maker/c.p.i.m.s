@@ -109,7 +109,7 @@ Deno.serve(async (req) => {
     // Inspection details grid
     const detailsGrid = [
       [`Inspection #: ${sanitize(inspection.inspection_number) || '-'}`, `Inspector: ${sanitize(inspection.inspector_name) || '-'}`],
-      [`Date/Time: ${moment(inspection.inspection_date || inspection.created_date).format('MM/DD/YYYY HH:mm')}`, `Bus #: ${sanitize(inspection.bus_number) || '-'}`],
+      [`Date/Time: ${moment(inspection.inspection_date || inspection.created_date).tz('America/New_York').format('MM/DD/YYYY HH:mm')}`, `Bus #: ${sanitize(inspection.bus_number) || '-'}`],
       [`Camera System: ${sanitize(bus?.camera_system_type) || '-'}`, `Serial #: ${sanitize(bus?.camera_serial_number) || '-'}`],
     ];
 
