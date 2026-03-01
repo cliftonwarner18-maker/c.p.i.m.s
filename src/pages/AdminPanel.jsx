@@ -45,73 +45,299 @@ function TechHoursReport({ users }) {
     const { jsPDF } = (await import('jspdf'));
     const doc = new jsPDF({ unit: 'pt', format: 'letter' });
     const W = doc.internal.pageSize.getWidth();
-    const margin = 40;
-    let y = 40;
+    const H = doc.internal.pageSize.getHeight();
+    const margin = 45;
+    let y = 0;
 
-    doc.setFillColor(31, 62, 120);
-    doc.rect(0, 0, W, 65, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFont('courier', 'bold');
-    doc.setFontSize(14);
-    doc.text('NEW HANOVER COUNTY SCHOOLS', margin, 22);
-    doc.setFontSize(10);
-    doc.text('Transportation — Vehicle Surveillance System', margin, 38);
-    doc.setFontSize(12);
-    doc.text('TECHNICIAN HOURS REPORT', W - margin, 30, { align: 'right' });
-    doc.setFontSize(9);
-    doc.text(`Generated: ${moment().format('MM/DD/YYYY HH:mm')}`, W - margin, 44, { align: 'right' });
-    y = 80;
+    const navy = [20, 44, 95];
+    const lightBlue = [235, 240, 252];
+    const gold = [180, 140, 40];
+    const white = [255, 255, 255];
+    const black = [10, 10, 10];
+    const midGray = [100, 100, 100];
+    const lightGray = [245, 246, 248];
+    const borderGray = [200, 205, 215];
 
-    doc.setFillColor(240, 244, 250);
-    doc.setDrawColor(180, 180, 210);
-    doc.rect(margin, y, W - margin * 2, 48, 'FD');
-    doc.setTextColor(30, 40, 80);
-    doc.setFont('courier', 'bold');
-    doc.setFontSize(10);
-    doc.text(`TECHNICIAN: ${selectedTech || 'ALL TECHNICIANS'}`, margin + 10, y + 16);
-    doc.text(`DATE RANGE: ${startDate || 'All'} — ${endDate || 'All'}`, margin + 10, y + 30);
-    doc.text(`TOTAL ORDERS: ${filtered.length}   |   TOTAL HOURS: ${totalHours} hrs (${totalMinutes} min)`, margin + 10, y + 44);
-    y += 58;
+    const drawPageBorder = () => {
+      doc.setDrawColor(...navy);
+      doc.setLineWidth(3);
+      doc.rect(12, 12, W - 24, H - 24);
+      doc.setDrawColor(...gold);
+      doc.setLineWidth(1);
+      doc.rect(17, 17, W - 34, H - 34);
+    };
 
-    doc.setFillColor(31, 62, 120);
-    doc.rect(margin, y, W - margin * 2, 18, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFont('courier', 'bold');
-    doc.setFontSize(9);
-    const cols = [margin + 5, margin + 70, margin + 140, margin + 220, margin + 310, margin + 390];
-    ['ORDER #', 'BUS #', 'DATE', 'TECHNICIAN', 'ELAPSED', 'STATUS'].forEach((h, i) => doc.text(h, cols[i], y + 12));
-    y += 22;
+    const addPageHeader = (pageNum, totalPages) => {
+      drawPageBorder();
 
-    filtered.sort((a, b) => new Date(b.completed_date) - new Date(a.completed_date)).forEach((wo, idx) => {
-      if (y > doc.internal.pageSize.getHeight() - 60) { doc.addPage(); y = 40; }
-      doc.setFillColor(idx % 2 === 0 ? 255 : 245, idx % 2 === 0 ? 255 : 247, idx % 2 === 0 ? 255 : 252);
-      doc.rect(margin, y - 10, W - margin * 2, 14, 'F');
-      doc.setTextColor(30, 30, 30);
+      // Top banner
+      doc.setFillColor(...navy);
+      doc.rect(0, 0, W, 85, 'F');
+
+      // Gold accent line
+      doc.setFillColor(...gold);
+      doc.rect(0, 85, W, 3, 'F');
+
+      // County seal placeholder area
+      doc.setFillColor(...white);
+      doc.circle(margin + 22, 43, 22, 'F');
+      doc.setDrawColor(...gold);
+      doc.setLineWidth(1.5);
+      doc.circle(margin + 22, 43, 22);
+      doc.circle(margin + 22, 43, 19);
+      doc.setTextColor(...gold);
+      doc.setFont('courier', 'bold');
+      doc.setFontSize(5.5);
+      doc.text('NEW HANOVER', margin + 22, 37, { align: 'center' });
+      doc.text('COUNTY', margin + 22, 44, { align: 'center' });
+      doc.text('SCHOOLS', margin + 22, 51, { align: 'center' });
+
+      // Title block
+      doc.setTextColor(...white);
+      doc.setFont('courier', 'bold');
+      doc.setFontSize(15);
+      doc.text('NEW HANOVER COUNTY SCHOOLS', margin + 55, 28);
+      doc.setFontSize(10);
       doc.setFont('courier', 'normal');
-      doc.setFontSize(9);
-      const elMin = wo.elapsed_time_minutes || 0;
-      const elStr = `${Math.floor(elMin / 60)}h ${elMin % 60}m`;
-      doc.text(wo.order_number || '—', cols[0], y);
-      doc.text(wo.bus_number || '—', cols[1], y);
-      doc.text(wo.completed_date ? moment(wo.completed_date).format('MM/DD/YY') : '—', cols[2], y);
-      doc.text((wo.technician_name || '—').substring(0, 18), cols[3], y);
-      doc.text(elStr, cols[4], y);
-      doc.text(wo.status || '—', cols[5], y);
-      y += 14;
+      doc.text('Transportation Department — Vehicle Surveillance Systems', margin + 55, 43);
+
+      doc.setFillColor(...gold);
+      doc.rect(margin + 55, 50, W - (margin + 55) - margin, 1, 'F');
+
+      doc.setFont('courier', 'bold');
+      doc.setFontSize(13);
+      doc.setTextColor(...gold);
+      doc.text('OFFICIAL TECHNICIAN LABOR HOURS RECORD', margin + 55, 65);
+
+      doc.setFont('courier', 'normal');
+      doc.setFontSize(8);
+      doc.setTextColor(200, 210, 230);
+      doc.text(`Document No: NHCS-VSS-HR-${moment().format('YYYYMMDD')}   |   Page ${pageNum} of ${totalPages}   |   Printed: ${moment().format('MM/DD/YYYY [at] HH:mm')}`, margin + 55, 78);
+
+      y = 102;
+    };
+
+    // Pre-count pages
+    const sorted = [...filtered].sort((a, b) => {
+      const da = a.completed_date || a.updated_date || a.created_date || '';
+      const db = b.completed_date || b.updated_date || b.created_date || '';
+      return new Date(da) - new Date(db);
     });
 
-    y += 10;
-    doc.setDrawColor(100, 100, 100);
-    doc.setFont('courier', 'bold');
-    doc.setFontSize(10);
-    doc.setTextColor(31, 62, 120);
-    doc.text(`TOTAL: ${totalHours} hours (${totalMinutes} minutes) across ${filtered.length} work orders`, margin, y);
+    // Estimate page count (each row ~16pt, header ~250pt, footer ~120pt)
+    const rowH = 16;
+    const usableH = H - 250 - 120;
+    const rowsPerPage = Math.floor(usableH / rowH);
+    const totalPages = Math.max(1, Math.ceil(sorted.length / rowsPerPage));
 
-    doc.setFontSize(8);
-    doc.setTextColor(140, 140, 140);
+    let currentPage = 1;
+    addPageHeader(currentPage, totalPages);
+
+    // ── Summary / Report Info Box ──────────────────────────────────────
+    doc.setFillColor(...lightBlue);
+    doc.setDrawColor(...navy);
+    doc.setLineWidth(0.5);
+    doc.rect(margin, y, W - margin * 2, 78, 'FD');
+
+    // Left: Report details
+    doc.setFont('courier', 'bold');
+    doc.setFontSize(8.5);
+    doc.setTextColor(...navy);
+    doc.text('REPORT DETAILS', margin + 10, y + 14);
+    doc.setLineWidth(0.3);
+    doc.setDrawColor(...navy);
+    doc.line(margin + 10, y + 17, margin + 100, y + 17);
+
     doc.setFont('courier', 'normal');
-    doc.text('NHCS Transportation — Vehicle Surveillance System | Powered by Base44', W / 2, doc.internal.pageSize.getHeight() - 20, { align: 'center' });
-    doc.save(`TechHours_${selectedTech || 'All'}_${moment().format('YYYYMMDD')}.pdf`);
+    doc.setFontSize(9);
+    doc.setTextColor(...black);
+
+    const rangeLabel = startDate && endDate
+      ? `${moment(startDate).format('MMMM D, YYYY')} — ${moment(endDate).format('MMMM D, YYYY')}`
+      : startDate ? `From ${moment(startDate).format('MMMM D, YYYY')}` : endDate ? `Through ${moment(endDate).format('MMMM D, YYYY')}` : 'All Dates on Record';
+
+    doc.setFont('courier', 'bold'); doc.text('EMPLOYEE / TECHNICIAN:', margin + 10, y + 30);
+    doc.setFont('courier', 'normal'); doc.text(selectedTech || 'ALL TECHNICIANS', margin + 145, y + 30);
+    doc.setFont('courier', 'bold'); doc.text('REPORTING PERIOD:', margin + 10, y + 44);
+    doc.setFont('courier', 'normal'); doc.text(rangeLabel, margin + 145, y + 44);
+    doc.setFont('courier', 'bold'); doc.text('DEPARTMENT:', margin + 10, y + 58);
+    doc.setFont('courier', 'normal'); doc.text('Transportation — Vehicle Surveillance Systems', margin + 145, y + 58);
+
+    // Right: Totals summary box
+    const sumX = W - margin - 155;
+    doc.setFillColor(...navy);
+    doc.rect(sumX, y + 4, 145, 70, 'F');
+    doc.setTextColor(...gold);
+    doc.setFont('courier', 'bold');
+    doc.setFontSize(8);
+    doc.text('SUMMARY TOTALS', sumX + 72, y + 16, { align: 'center' });
+    doc.setDrawColor(...gold);
+    doc.setLineWidth(0.5);
+    doc.line(sumX + 8, y + 19, sumX + 137, y + 19);
+    doc.setTextColor(...white);
+    doc.setFont('courier', 'normal');
+    doc.setFontSize(9);
+    doc.text(`Work Orders:`, sumX + 8, y + 32);
+    doc.setFont('courier', 'bold');
+    doc.text(`${filtered.length}`, sumX + 137, y + 32, { align: 'right' });
+    doc.setFont('courier', 'normal');
+    doc.text(`Total Minutes:`, sumX + 8, y + 46);
+    doc.setFont('courier', 'bold');
+    doc.text(`${totalMinutes}`, sumX + 137, y + 46, { align: 'right' });
+    doc.setFont('courier', 'normal');
+    doc.text(`Total Hours:`, sumX + 8, y + 60);
+    doc.setFont('courier', 'bold');
+    doc.setFontSize(12);
+    doc.setTextColor(...gold);
+    doc.text(`${totalHours}`, sumX + 137, y + 62, { align: 'right' });
+
+    y += 88;
+
+    // ── Column headers ─────────────────────────────────────────────────
+    const cols = {
+      num:   { x: margin + 4,   w: 30 },
+      order: { x: margin + 36,  w: 62 },
+      bus:   { x: margin + 100, w: 38 },
+      date:  { x: margin + 140, w: 74 },
+      start: { x: margin + 216, w: 74 },
+      end:   { x: margin + 292, w: 74 },
+      mins:  { x: margin + 368, w: 44 },
+      hrs:   { x: margin + 414, w: 40 },
+      tech:  { x: margin + 456, w: 0  }, // to right edge
+    };
+
+    doc.setFillColor(...navy);
+    doc.rect(margin, y, W - margin * 2, 20, 'F');
+    doc.setTextColor(...white);
+    doc.setFont('courier', 'bold');
+    doc.setFontSize(7.5);
+    const hY = y + 13;
+    doc.text('#',                  cols.num.x,   hY);
+    doc.text('ORDER #',            cols.order.x, hY);
+    doc.text('BUS #',              cols.bus.x,   hY);
+    doc.text('DATE COMPLETED',     cols.date.x,  hY);
+    doc.text('START TIME',         cols.start.x, hY);
+    doc.text('END TIME',           cols.end.x,   hY);
+    doc.text('MIN',                cols.mins.x,  hY);
+    doc.text('HRS',                cols.hrs.x,   hY);
+    doc.text('TECHNICIAN',         cols.tech.x,  hY);
+    y += 20;
+
+    // ── Rows ────────────────────────────────────────────────────────────
+    let grandMin = 0;
+    sorted.forEach((wo, idx) => {
+      if (y > H - 130) {
+        // Page footer for current page
+        drawPageFooter(doc, W, H, margin, navy, gold, midGray, currentPage, totalPages);
+        doc.addPage();
+        currentPage++;
+        addPageHeader(currentPage, totalPages);
+        // Reprint column headers
+        doc.setFillColor(...navy);
+        doc.rect(margin, y, W - margin * 2, 20, 'F');
+        doc.setTextColor(...white);
+        doc.setFont('courier', 'bold');
+        doc.setFontSize(7.5);
+        doc.text('#',              cols.num.x,   y + 13);
+        doc.text('ORDER #',        cols.order.x, y + 13);
+        doc.text('BUS #',          cols.bus.x,   y + 13);
+        doc.text('DATE COMPLETED', cols.date.x,  y + 13);
+        doc.text('START TIME',     cols.start.x, y + 13);
+        doc.text('END TIME',       cols.end.x,   y + 13);
+        doc.text('MIN',            cols.mins.x,  y + 13);
+        doc.text('HRS',            cols.hrs.x,   y + 13);
+        doc.text('TECHNICIAN',     cols.tech.x,  y + 13);
+        y += 20;
+      }
+
+      const isEven = idx % 2 === 0;
+      doc.setFillColor(isEven ? 255 : 248, isEven ? 255 : 249, isEven ? 255 : 253);
+      doc.rect(margin, y, W - margin * 2, rowH, 'F');
+      doc.setDrawColor(...borderGray);
+      doc.setLineWidth(0.2);
+      doc.rect(margin, y, W - margin * 2, rowH);
+
+      const elMin = wo.elapsed_time_minutes || 0;
+      const elHrs = (elMin / 60).toFixed(2);
+      grandMin += elMin;
+
+      const dateRef = wo.completed_date || wo.updated_date || wo.created_date;
+      const dateStr = dateRef ? moment(dateRef).format('MM/DD/YYYY') : '—';
+      const startStr = wo.repair_start_time ? moment(wo.repair_start_time).format('MM/DD/YY HH:mm') : '—';
+      const endStr   = wo.repair_end_time   ? moment(wo.repair_end_time).format('MM/DD/YY HH:mm')   : '—';
+
+      doc.setTextColor(...black);
+      doc.setFont('courier', 'normal');
+      doc.setFontSize(8);
+      const rY = y + 11;
+      doc.text(String(idx + 1),                          cols.num.x,   rY);
+      doc.text(wo.order_number || '—',                   cols.order.x, rY);
+      doc.text(wo.bus_number || '—',                     cols.bus.x,   rY);
+      doc.text(dateStr,                                  cols.date.x,  rY);
+      doc.text(startStr,                                 cols.start.x, rY);
+      doc.text(endStr,                                   cols.end.x,   rY);
+      doc.setFont('courier', 'bold');
+      doc.text(String(elMin),                            cols.mins.x,  rY);
+      doc.setTextColor(...navy);
+      doc.text(elHrs,                                    cols.hrs.x,   rY);
+      doc.setTextColor(...black);
+      doc.setFont('courier', 'normal');
+      doc.text((wo.technician_name || '—').substring(0, 22), cols.tech.x, rY);
+      y += rowH;
+    });
+
+    // ── Grand Total Row ─────────────────────────────────────────────────
+    y += 4;
+    doc.setFillColor(...navy);
+    doc.rect(margin, y, W - margin * 2, 20, 'F');
+    doc.setTextColor(...gold);
+    doc.setFont('courier', 'bold');
+    doc.setFontSize(9);
+    doc.text('TOTAL LABOR HOURS:', margin + 10, y + 13);
+    doc.text(`${grandMin} MINUTES`, cols.mins.x - 30, y + 13);
+    doc.text(`${(grandMin / 60).toFixed(2)} HOURS`, cols.hrs.x - 10, y + 13);
+    y += 30;
+
+    // ── Certification Block ─────────────────────────────────────────────
+    if (y > H - 160) { 
+      drawPageFooter(doc, W, H, margin, navy, gold, midGray, currentPage, totalPages);
+      doc.addPage(); currentPage++; y = 100; 
+    }
+    doc.setFillColor(...lightBlue);
+    doc.setDrawColor(...navy);
+    doc.setLineWidth(0.5);
+    doc.rect(margin, y, W - margin * 2, 90, 'FD');
+    doc.setFont('courier', 'bold');
+    doc.setFontSize(8.5);
+    doc.setTextColor(...navy);
+    doc.text('CERTIFICATION & APPROVAL', margin + 10, y + 14);
+    doc.setLineWidth(0.3);
+    doc.line(margin + 10, y + 17, margin + 175, y + 17);
+    doc.setFont('courier', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(40, 40, 40);
+    doc.text('I certify that the hours recorded above are accurate and represent actual labor performed on New Hanover County Schools', margin + 10, y + 28);
+    doc.text('Transportation Department vehicle surveillance systems during the reporting period indicated.', margin + 10, y + 39);
+
+    const sigY = y + 55;
+    const halfW = (W - margin * 2 - 20) / 2;
+    doc.setDrawColor(...midGray);
+    doc.setLineWidth(0.5);
+    // Sig line left
+    doc.line(margin + 10, sigY, margin + 10 + halfW - 10, sigY);
+    doc.setFont('courier', 'normal'); doc.setFontSize(7.5); doc.setTextColor(...midGray);
+    doc.text('Technician Signature / Date', margin + 10, sigY + 9);
+    doc.text((selectedTech || '______________________________'), margin + 10, sigY + 19);
+    // Sig line right
+    const rSig = margin + halfW + 20;
+    doc.line(rSig, sigY, rSig + halfW - 10, sigY);
+    doc.text('Supervisor Signature / Date', rSig, sigY + 9);
+    doc.text('Transportation Dept. Supervisor', rSig, sigY + 19);
+
+    drawPageFooter(doc, W, H, margin, navy, gold, midGray, currentPage, totalPages);
+
+    const safeTech = (selectedTech || 'AllTechs').replace(/\s+/g, '_');
+    doc.save(`NHCS_LaborHoursRecord_${safeTech}_${moment().format('YYYYMMDD')}.pdf`);
     setExporting(false);
   };
 
