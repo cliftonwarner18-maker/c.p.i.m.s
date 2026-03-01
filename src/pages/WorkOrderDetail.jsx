@@ -54,7 +54,7 @@ export default function WorkOrderDetail() {
   const params = new URLSearchParams(window.location.search);
   const id = params.get('id');
   const queryClient = useQueryClient();
-  const timerRef = useRef(null);
+  // no timer ref needed
 
   const { data: workOrder, isLoading } = useQuery({
     queryKey: ['workOrder', id],
