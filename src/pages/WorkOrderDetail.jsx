@@ -63,21 +63,9 @@ export default function WorkOrderDetail() {
   });
 
   const [form, setForm] = useState(null);
-  const [timerRunning, setTimerRunning] = useState(false);
-  const [liveSeconds, setLiveSeconds] = useState(0);
-
   useEffect(() => {
     if (workOrder && !form) setForm({ ...workOrder });
   }, [workOrder]);
-
-  useEffect(() => {
-    if (timerRunning) {
-      timerRef.current = setInterval(() => setLiveSeconds(s => s + 1), 1000);
-    } else {
-      clearInterval(timerRef.current);
-    }
-    return () => clearInterval(timerRef.current);
-  }, [timerRunning]);
 
   const updateMutation = useMutation({
     mutationFn: (data) => base44.entities.WorkOrder.update(id, data),
