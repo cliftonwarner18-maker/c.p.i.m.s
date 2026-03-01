@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Clock, Save, CheckCircle, FileDown, Play, Square } from 'lucide-react';
+import { ArrowLeft, Save, CheckCircle, FileDown } from 'lucide-react';
 import moment from 'moment';
 
 const FF = "'Courier Prime', monospace";
