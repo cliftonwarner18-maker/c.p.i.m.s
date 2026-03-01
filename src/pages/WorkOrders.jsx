@@ -62,6 +62,115 @@ export default function WorkOrders() {
 
   const btnBase = { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', padding: '3px 6px', fontSize: '11px', fontFamily: FF, border: '1px solid hsl(220,18%,70%)', borderRadius: '2px', cursor: 'pointer', background: 'hsl(220,18%,88%)', color: 'hsl(220,20%,15%)' };
 
+  const handleExportPDF = async () => {
+    const { jsPDF } = await import('jspdf');
+    const doc = new jsPDF({ unit: 'pt', format: 'letter' });
+    const W = doc.internal.pageSize.getWidth();
+    const H = doc.internal.pageSize.getHeight();
+    const margin = 40;
+
+    const navy = [20, 44, 95];
+    const gold = [180, 140, 40];
+    const white = [255, 255, 255];
+    const black = [10, 10, 10];
+
+    // Header
+    doc.setFillColor(...navy);
+    doc.rect(0, 0, W, 70, 'F');
+    doc.setFillColor(...gold);
+    doc.rect(0, 70, W, 2, 'F');
+    doc.setTextColor(...white);
+    doc.setFont('courier', 'bold');
+    doc.setFontSize(14);
+    doc.text('NEW HANOVER COUNTY SCHOOLS', margin, 22);
+    doc.setFontSize(9);
+    doc.setFont('courier', 'normal');
+    doc.text('Transportation Department — Vehicle Surveillance Systems', margin, 36);
+    doc.setFont('courier', 'bold');
+    doc.setFontSize(12);
+    doc.setTextColor(...gold);
+    doc.text('WORK ORDER REPORT', margin, 54);
+    doc.setFont('courier', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(200, 210, 230);
+    const filterLabel = statusFilter === 'All' ? 'ALL STATUSES' : statusFilter.toUpperCase();
+    doc.text(`Filter: ${filterLabel}  |  Records: ${filtered.length}  |  Generated: ${moment().format('MM/DD/YYYY [at] HH:mm')} ET`, margin, 65);
+
+    let y = 88;
+
+    // Column headers
+    const cols = [
+      { label: 'ORDER #', x: margin, w: 70 },
+      { label: 'DATE', x: margin + 70, w: 55 },
+      { label: 'BUS #', x: margin + 125, w: 40 },
+      { label: 'LOT', x: margin + 165, w: 38 },
+      { label: 'REPORTED BY', x: margin + 203, w: 90 },
+      { label: 'TECHNICIAN', x: margin + 293, w: 90 },
+      { label: 'STATUS', x: margin + 383, w: 65 },
+      { label: 'ELAPSED', x: margin + 448, w: 55 },
+    ];
+
+    doc.setFillColor(...navy);
+    doc.rect(margin, y, W - margin * 2, 18, 'F');
+    doc.setTextColor(...white);
+    doc.setFont('courier', 'bold');
+    doc.setFontSize(7.5);
+    cols.forEach(c => doc.text(c.label, c.x + 2, y + 12));
+    y += 18;
+
+    // Rows
+    filtered.forEach((wo, idx) => {
+      if (y > H - 60) {
+        doc.addPage();
+        y = 40;
+        doc.setFillColor(...navy);
+        doc.rect(margin, y, W - margin * 2, 18, 'F');
+        doc.setTextColor(...white);
+        doc.setFont('courier', 'bold');
+        doc.setFontSize(7.5);
+        cols.forEach(c => doc.text(c.label, c.x + 2, y + 12));
+        y += 18;
+      }
+
+      const isEven = idx % 2 === 0;
+      doc.setFillColor(isEven ? 255 : 248, isEven ? 255 : 249, isEven ? 255 : 253);
+      doc.rect(margin, y, W - margin * 2, 14, 'F');
+      doc.setDrawColor(210, 215, 225);
+      doc.setLineWidth(0.2);
+      doc.rect(margin, y, W - margin * 2, 14);
+
+      doc.setTextColor(...black);
+      doc.setFont('courier', 'normal');
+      doc.setFontSize(8);
+      const elapsed = wo.elapsed_time_minutes ? `${Math.floor(wo.elapsed_time_minutes / 60)}h ${wo.elapsed_time_minutes % 60}m` : '—';
+      const rowY = y + 9;
+      doc.text(wo.order_number || '—', cols[0].x + 2, rowY);
+      doc.text(moment(wo.created_date).format('MM/DD/YY'), cols[1].x + 2, rowY);
+      doc.text(wo.bus_number || '—', cols[2].x + 2, rowY);
+      doc.text(wo.lot || '—', cols[3].x + 2, rowY);
+      doc.text((wo.reported_by || '—').substring(0, 14), cols[4].x + 2, rowY);
+      doc.text((wo.technician_name || '—').substring(0, 14), cols[5].x + 2, rowY);
+      doc.setFont('courier', 'bold');
+      doc.text((wo.status || '—').toUpperCase(), cols[6].x + 2, rowY);
+      doc.setFont('courier', 'normal');
+      doc.text(elapsed, cols[7].x + 2, rowY);
+      y += 14;
+    });
+
+    // Footer
+    doc.setFillColor(...navy);
+    doc.rect(0, H - 32, W, 32, 'F');
+    doc.setFillColor(...gold);
+    doc.rect(0, H - 32, W, 1.5, 'F');
+    doc.setTextColor(200, 210, 230);
+    doc.setFont('courier', 'normal');
+    doc.setFontSize(7.5);
+    doc.text('NEW HANOVER COUNTY SCHOOLS — Transportation Department — Vehicle Surveillance Systems', W / 2, H - 15, { align: 'center' });
+
+    const safeStatus = statusFilter.replace(/\s+/g, '_');
+    doc.save(`NHCS_WorkOrders_${safeStatus}_${moment().format('YYYYMMDD')}.pdf`);
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontFamily: FF }}>
       <LoadingScreen isLoading={isLoading} message="LOADING WORK ORDERS..." />
