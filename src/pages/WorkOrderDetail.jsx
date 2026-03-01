@@ -13,6 +13,21 @@ const labelStyle = { fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,35
 const rowStyle = { display: 'flex', gap: '12px', flexWrap: 'wrap', marginBottom: '10px' };
 const fieldStyle = { flex: '1', minWidth: '160px' };
 
+function TechnicianSelect({ value, onChange }) {
+  const { data: users = [] } = useQuery({
+    queryKey: ['systemUsers'],
+    queryFn: () => base44.entities.SystemUser.list('name'),
+  });
+  const activeUsers = users.filter(u => u.active !== false);
+  return (
+    <select value={value} onChange={e => onChange(e.target.value)} style={{ padding: '5px 8px', fontSize: '11px', fontFamily: FF, border: '1px solid hsl(220,18%,70%)', borderRadius: '2px', background: 'white', outline: 'none', width: '100%', boxSizing: 'border-box' }}>
+      <option value="">— Select Technician —</option>
+      {activeUsers.map(u => <option key={u.id} value={u.name}>{u.name}{u.role ? ` (${u.role})` : ''}</option>)}
+      {value && !activeUsers.find(u => u.name === value) && <option value={value}>{value}</option>}
+    </select>
+  );
+}
+
 const STATUS_COLORS = {
   Pending:       { bg: '#fffbeb', color: '#92400e', border: '#fde68a' },
   'In Progress': { bg: '#eff6ff', color: '#1e40af', border: '#bfdbfe' },
