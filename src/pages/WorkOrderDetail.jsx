@@ -81,11 +81,9 @@ export default function WorkOrderDetail() {
 
   const handleComplete = () => {
     const now = new Date().toISOString();
-    let elapsed = form.elapsed_time_minutes || 0;
-    if (timerRunning) {
-      setTimerRunning(false);
-      elapsed = form.repair_start_time ? Math.round((new Date() - new Date(form.repair_start_time)) / 60000) : Math.round(liveSeconds / 60);
-    }
+    const start = form.repair_start_time ? new Date(form.repair_start_time) : null;
+    const end = form.repair_end_time ? new Date(form.repair_end_time) : new Date();
+    const elapsed = start && !isNaN(start) ? Math.max(0, Math.round((end - start) / 60000)) : (form.elapsed_time_minutes || 0);
     const updated = { ...form, status: 'Completed', repair_end_time: form.repair_end_time || now, elapsed_time_minutes: elapsed, completed_date: now };
     setForm(updated);
     updateMutation.mutate(updated);
