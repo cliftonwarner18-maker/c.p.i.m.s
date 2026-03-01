@@ -39,6 +39,22 @@ function TechHoursReport({ users }) {
   const totalMinutes = filtered.reduce((sum, wo) => sum + (wo.elapsed_time_minutes || 0), 0);
   const totalHours = (totalMinutes / 60).toFixed(2);
 
+  const drawPageFooter = (doc, W, H, margin, navy, gold, midGray, currentPage, totalPages) => {
+    doc.setFillColor(...navy);
+    doc.rect(0, H - 38, W, 38, 'F');
+    doc.setFillColor(...gold);
+    doc.rect(0, H - 38, W, 2, 'F');
+    doc.setTextColor(200, 210, 230);
+    doc.setFont('courier', 'normal');
+    doc.setFontSize(7.5);
+    doc.text('NEW HANOVER COUNTY SCHOOLS — Transportation Department — Vehicle Surveillance Systems', W / 2, H - 23, { align: 'center' });
+    doc.text('This is an official county labor hours record. Unauthorized modification is prohibited.', W / 2, H - 12, { align: 'center' });
+    doc.setTextColor(...gold);
+    doc.setFont('courier', 'bold');
+    doc.setFontSize(8);
+    doc.text(`Page ${currentPage} of ${totalPages}`, W - margin, H - 16, { align: 'right' });
+  };
+
   const handleExport = async () => {
     if (filtered.length === 0) return;
     setExporting(true);
