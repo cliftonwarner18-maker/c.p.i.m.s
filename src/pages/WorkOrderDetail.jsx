@@ -75,25 +75,6 @@ export default function WorkOrderDetail() {
     },
   });
 
-  const handleStartTimer = () => {
-    const now = new Date().toISOString();
-    setLiveSeconds(0);
-    setTimerRunning(true);
-    const updated = { ...form, status: 'In Progress', repair_start_time: now, repair_end_time: '' };
-    setForm(updated);
-    updateMutation.mutate(updated);
-  };
-
-  const handleStopTimer = () => {
-    setTimerRunning(false);
-    const now = new Date().toISOString();
-    const start = form.repair_start_time;
-    const elapsed = start ? Math.round((new Date() - new Date(start)) / 60000) : Math.round(liveSeconds / 60);
-    const updated = { ...form, repair_end_time: now, elapsed_time_minutes: elapsed };
-    setForm(updated);
-    updateMutation.mutate(updated);
-  };
-
   const handleSave = () => {
     updateMutation.mutate(form);
   };
