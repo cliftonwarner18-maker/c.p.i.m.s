@@ -213,10 +213,16 @@ export default function WorkOrderDetail() {
   );
 
   const sc = STATUS_COLORS[form.status] || { bg: '#f5f5f5', color: '#444', border: '#ddd' };
-  const displayElapsedMinutes = timerRunning
-    ? (form.elapsed_time_minutes || 0) + liveSeconds / 60
-    : (form.elapsed_time_minutes || 0);
   const isCompleted = form.status === 'Completed';
+
+  // Calculate elapsed from start/end times live in the UI
+  const calcElapsed = () => {
+    const s = form.repair_start_time ? new Date(form.repair_start_time) : null;
+    const e = form.repair_end_time ? new Date(form.repair_end_time) : null;
+    if (s && e && !isNaN(s) && !isNaN(e)) return Math.max(0, Math.round((e - s) / 60000));
+    return form.elapsed_time_minutes || 0;
+  };
+  const displayElapsedMinutes = calcElapsed();
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontFamily: FF }}>
