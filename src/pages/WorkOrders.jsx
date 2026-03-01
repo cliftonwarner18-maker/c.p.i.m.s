@@ -5,7 +5,7 @@ import LoadingScreen from '../components/LoadingScreen';
 import DeleteConfirmModal from '../components/DeleteConfirmModal';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { FileText, Plus, Search, Eye, Trash2, Filter } from 'lucide-react';
+import { FileText, Plus, Search, Eye, Trash2, Filter, FileDown } from 'lucide-react';
 import moment from 'moment';
 
 const FF = "'Courier Prime', monospace";
