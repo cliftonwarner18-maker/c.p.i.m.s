@@ -314,16 +314,15 @@ export default function WorkOrderDetail() {
         {/* Time fields */}
         <div style={rowStyle}>
           <div style={fieldStyle}>
-            <label style={labelStyle}>REPAIR START TIME (MM/DD/YYYY HH:MM)</label>
+            <label style={labelStyle}>REPAIR START TIME</label>
             <div style={{ display: 'flex', gap: '4px' }}>
               <input
-                type="text"
-                placeholder="MM/DD/YYYY HH:MM"
-                value={form.repair_start_time ? moment(form.repair_start_time).format('MM/DD/YYYY HH:mm') : ''}
+                type="datetime-local"
+                value={form.repair_start_time && moment(form.repair_start_time).isValid() ? moment(form.repair_start_time).format('YYYY-MM-DDTHH:mm') : ''}
                 onChange={e => {
-                  const parsed = moment(e.target.value, 'MM/DD/YYYY HH:mm', true);
-                  if (parsed.isValid()) setForm({ ...form, repair_start_time: parsed.toISOString() });
-                  else setForm({ ...form, repair_start_time: e.target.value });
+                  if (!e.target.value) { setForm({ ...form, repair_start_time: '' }); return; }
+                  const iso = new Date(e.target.value).toISOString();
+                  setForm({ ...form, repair_start_time: iso });
                 }}
                 style={{ ...inputStyle, flex: 1 }}
               />
@@ -331,25 +330,25 @@ export default function WorkOrderDetail() {
             </div>
           </div>
           <div style={fieldStyle}>
-            <label style={labelStyle}>REPAIR END TIME (MM/DD/YYYY HH:MM)</label>
+            <label style={labelStyle}>REPAIR END TIME</label>
             <div style={{ display: 'flex', gap: '4px' }}>
               <input
-                type="text"
-                placeholder="MM/DD/YYYY HH:MM"
-                value={form.repair_end_time ? moment(form.repair_end_time).format('MM/DD/YYYY HH:mm') : ''}
+                type="datetime-local"
+                value={form.repair_end_time && moment(form.repair_end_time).isValid() ? moment(form.repair_end_time).format('YYYY-MM-DDTHH:mm') : ''}
                 onChange={e => {
-                  const parsed = moment(e.target.value, 'MM/DD/YYYY HH:mm', true);
-                  if (parsed.isValid()) {
-                    const elapsed = form.repair_start_time ? Math.round((parsed.toDate() - new Date(form.repair_start_time)) / 60000) : form.elapsed_time_minutes || 0;
-                    setForm({ ...form, repair_end_time: parsed.toISOString(), elapsed_time_minutes: elapsed });
-                  } else setForm({ ...form, repair_end_time: e.target.value });
+                  if (!e.target.value) { setForm({ ...form, repair_end_time: '' }); return; }
+                  const endDate = new Date(e.target.value);
+                  const startDate = form.repair_start_time ? new Date(form.repair_start_time) : null;
+                  const elapsed = startDate && !isNaN(startDate) ? Math.max(0, Math.round((endDate - startDate) / 60000)) : form.elapsed_time_minutes || 0;
+                  setForm({ ...form, repair_end_time: endDate.toISOString(), elapsed_time_minutes: elapsed });
                 }}
                 style={{ ...inputStyle, flex: 1 }}
               />
               <button onClick={() => {
-                const now = new Date().toISOString();
-                const elapsed = form.repair_start_time ? Math.round((new Date() - new Date(form.repair_start_time)) / 60000) : form.elapsed_time_minutes || 0;
-                setForm({ ...form, repair_end_time: now, elapsed_time_minutes: elapsed });
+                const now = new Date();
+                const startDate = form.repair_start_time ? new Date(form.repair_start_time) : null;
+                const elapsed = startDate && !isNaN(startDate) ? Math.max(0, Math.round((now - startDate) / 60000)) : form.elapsed_time_minutes || 0;
+                setForm({ ...form, repair_end_time: now.toISOString(), elapsed_time_minutes: elapsed });
               }} style={{ padding: '4px 8px', fontSize: '10px', fontFamily: FF, background: 'hsl(220,55%,38%)', color: 'white', border: 'none', borderRadius: '2px', cursor: 'pointer', fontWeight: '700' }}>NOW</button>
             </div>
           </div>
