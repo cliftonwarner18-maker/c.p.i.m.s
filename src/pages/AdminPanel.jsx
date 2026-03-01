@@ -88,49 +88,35 @@ function TechHoursReport({ users }) {
 
       // Top banner
       doc.setFillColor(...navy);
-      doc.rect(0, 0, W, 85, 'F');
+      doc.rect(0, 0, W, 80, 'F');
 
       // Gold accent line
       doc.setFillColor(...gold);
-      doc.rect(0, 85, W, 3, 'F');
+      doc.rect(0, 80, W, 3, 'F');
 
-      // County seal placeholder area
-      doc.setFillColor(...white);
-      doc.circle(margin + 22, 43, 22, 'F');
-      doc.setDrawColor(...gold);
-      doc.setLineWidth(1.5);
-      doc.circle(margin + 22, 43, 22);
-      doc.circle(margin + 22, 43, 19);
-      doc.setTextColor(...gold);
-      doc.setFont('courier', 'bold');
-      doc.setFontSize(5.5);
-      doc.text('NEW HANOVER', margin + 22, 37, { align: 'center' });
-      doc.text('COUNTY', margin + 22, 44, { align: 'center' });
-      doc.text('SCHOOLS', margin + 22, 51, { align: 'center' });
-
-      // Title block
+      // Title block (no logo)
       doc.setTextColor(...white);
       doc.setFont('courier', 'bold');
       doc.setFontSize(15);
-      doc.text('NEW HANOVER COUNTY SCHOOLS', margin + 55, 28);
+      doc.text('NEW HANOVER COUNTY SCHOOLS', margin, 24);
       doc.setFontSize(10);
       doc.setFont('courier', 'normal');
-      doc.text('Transportation Department — Vehicle Surveillance Systems', margin + 55, 43);
+      doc.text('Transportation Department — Vehicle Surveillance Systems', margin, 39);
 
       doc.setFillColor(...gold);
-      doc.rect(margin + 55, 50, W - (margin + 55) - margin, 1, 'F');
+      doc.rect(margin, 45, W - margin * 2, 1, 'F');
 
       doc.setFont('courier', 'bold');
       doc.setFontSize(13);
       doc.setTextColor(...gold);
-      doc.text('OFFICIAL TECHNICIAN LABOR HOURS RECORD', margin + 55, 65);
+      doc.text('OFFICIAL TECHNICIAN LABOR HOURS RECORD', margin, 60);
 
       doc.setFont('courier', 'normal');
       doc.setFontSize(8);
       doc.setTextColor(200, 210, 230);
-      doc.text(`Document No: NHCS-VSS-HR-${moment().format('YYYYMMDD')}   |   Page ${pageNum} of ${totalPages}   |   Printed: ${moment().format('MM/DD/YYYY [at] HH:mm')}`, margin + 55, 78);
+      doc.text(`Document No: NHCS-VSS-HR-${moment().format('YYYYMMDD')}   |   Page ${pageNum} of ${totalPages}   |   Printed: ${moment().format('MM/DD/YYYY [at] HH:mm')}`, margin, 73);
 
-      y = 102;
+      y = 97;
     };
 
     // Pre-count pages
