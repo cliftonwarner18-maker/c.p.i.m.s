@@ -11,6 +11,142 @@ const labelStyle = { fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,35
 
 const BLANK = { name: '', role: '', active: true };
 
+function TechHoursReport({ users }) {
+  const [selectedTech, setSelectedTech] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [exporting, setExporting] = useState(false);
+
+  const { data: workOrders = [] } = useQuery({
+    queryKey: ['allWorkOrdersForReport'],
+    queryFn: () => base44.entities.WorkOrder.list(),
+  });
+
+  const filtered = workOrders.filter(wo => {
+    if (!wo.elapsed_time_minutes || wo.status !== 'Completed') return false;
+    if (selectedTech && wo.technician_name !== selectedTech) return false;
+    if (startDate && wo.completed_date && wo.completed_date < new Date(startDate).toISOString()) return false;
+    if (endDate && wo.completed_date && wo.completed_date > new Date(endDate + 'T23:59:59').toISOString()) return false;
+    return true;
+  });
+
+  const totalMinutes = filtered.reduce((sum, wo) => sum + (wo.elapsed_time_minutes || 0), 0);
+  const totalHours = (totalMinutes / 60).toFixed(2);
+
+  const handleExport = async () => {
+    setExporting(true);
+    const { jsPDF } = await import('jspdf');
+    const doc = new jsPDF({ unit: 'pt', format: 'letter' });
+    const W = doc.internal.pageSize.getWidth();
+    const margin = 40;
+    let y = 40;
+
+    doc.setFillColor(31, 62, 120);
+    doc.rect(0, 0, W, 65, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('courier', 'bold');
+    doc.setFontSize(14);
+    doc.text('NEW HANOVER COUNTY SCHOOLS', margin, 22);
+    doc.setFontSize(10);
+    doc.text('Transportation — Vehicle Surveillance System', margin, 38);
+    doc.setFontSize(12);
+    doc.text('TECHNICIAN HOURS REPORT', W - margin, 30, { align: 'right' });
+    doc.setFontSize(9);
+    doc.text(`Generated: ${moment().format('MM/DD/YYYY HH:mm')}`, W - margin, 44, { align: 'right' });
+    y = 80;
+
+    doc.setFillColor(240, 244, 250);
+    doc.setDrawColor(180, 180, 210);
+    doc.rect(margin, y, W - margin * 2, 48, 'FD');
+    doc.setTextColor(30, 40, 80);
+    doc.setFont('courier', 'bold');
+    doc.setFontSize(10);
+    doc.text(`TECHNICIAN: ${selectedTech || 'ALL TECHNICIANS'}`, margin + 10, y + 16);
+    doc.text(`DATE RANGE: ${startDate || 'All'} — ${endDate || 'All'}`, margin + 10, y + 30);
+    doc.text(`TOTAL ORDERS: ${filtered.length}   |   TOTAL HOURS: ${totalHours} hrs (${totalMinutes} min)`, margin + 10, y + 44);
+    y += 58;
+
+    doc.setFillColor(31, 62, 120);
+    doc.rect(margin, y, W - margin * 2, 18, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('courier', 'bold');
+    doc.setFontSize(9);
+    const cols = [margin + 5, margin + 70, margin + 140, margin + 220, margin + 310, margin + 390];
+    ['ORDER #', 'BUS #', 'DATE', 'TECHNICIAN', 'ELAPSED', 'STATUS'].forEach((h, i) => doc.text(h, cols[i], y + 12));
+    y += 22;
+
+    filtered.sort((a, b) => new Date(b.completed_date) - new Date(a.completed_date)).forEach((wo, idx) => {
+      if (y > doc.internal.pageSize.getHeight() - 60) { doc.addPage(); y = 40; }
+      doc.setFillColor(idx % 2 === 0 ? 255 : 245, idx % 2 === 0 ? 255 : 247, idx % 2 === 0 ? 255 : 252);
+      doc.rect(margin, y - 10, W - margin * 2, 14, 'F');
+      doc.setTextColor(30, 30, 30);
+      doc.setFont('courier', 'normal');
+      doc.setFontSize(9);
+      const elMin = wo.elapsed_time_minutes || 0;
+      const elStr = `${Math.floor(elMin / 60)}h ${elMin % 60}m`;
+      doc.text(wo.order_number || '—', cols[0], y);
+      doc.text(wo.bus_number || '—', cols[1], y);
+      doc.text(wo.completed_date ? moment(wo.completed_date).format('MM/DD/YY') : '—', cols[2], y);
+      doc.text((wo.technician_name || '—').substring(0, 18), cols[3], y);
+      doc.text(elStr, cols[4], y);
+      doc.text(wo.status || '—', cols[5], y);
+      y += 14;
+    });
+
+    y += 10;
+    doc.setDrawColor(100, 100, 100);
+    doc.setFont('courier', 'bold');
+    doc.setFontSize(10);
+    doc.setTextColor(31, 62, 120);
+    doc.text(`TOTAL: ${totalHours} hours (${totalMinutes} minutes) across ${filtered.length} work orders`, margin, y);
+
+    doc.setFontSize(8);
+    doc.setTextColor(140, 140, 140);
+    doc.setFont('courier', 'normal');
+    doc.text('NHCS Transportation — Vehicle Surveillance System | Powered by Base44', W / 2, doc.internal.pageSize.getHeight() - 20, { align: 'center' });
+    doc.save(`TechHours_${selectedTech || 'All'}_${moment().format('YYYYMMDD')}.pdf`);
+    setExporting(false);
+  };
+
+  const FF2 = "'Courier Prime', monospace";
+  const inp = { padding: '5px 8px', fontSize: '11px', fontFamily: FF2, border: '1px solid hsl(220,18%,70%)', borderRadius: '2px', background: 'white', outline: 'none', boxSizing: 'border-box' };
+
+  return (
+    <div style={{ background: 'white', border: '1px solid hsl(220,18%,75%)', borderRadius: '2px', overflow: 'hidden' }}>
+      <div style={{ background: 'linear-gradient(to right, hsl(30,60%,32%), hsl(30,55%,42%))', color: 'white', padding: '8px 12px', fontSize: '11px', fontWeight: '700', letterSpacing: '0.08em', display: 'flex', alignItems: 'center', gap: 8 }}>
+        <Clock style={{ width: 14, height: 14 }} /> TECHNICIAN HOURS REPORT
+      </div>
+      <div style={{ padding: '12px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'flex-end' }}>
+          <div>
+            <div style={{ fontSize: '10px', fontWeight: '700', marginBottom: 3 }}>TECHNICIAN</div>
+            <select value={selectedTech} onChange={e => setSelectedTech(e.target.value)} style={{ ...inp, minWidth: 180 }}>
+              <option value="">All Technicians</option>
+              {users.filter(u => u.active !== false).map(u => <option key={u.id} value={u.name}>{u.name}</option>)}
+            </select>
+          </div>
+          <div>
+            <div style={{ fontSize: '10px', fontWeight: '700', marginBottom: 3 }}>FROM DATE</div>
+            <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} style={inp} />
+          </div>
+          <div>
+            <div style={{ fontSize: '10px', fontWeight: '700', marginBottom: 3 }}>TO DATE</div>
+            <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} style={inp} />
+          </div>
+          <button onClick={handleExport} disabled={exporting || filtered.length === 0} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '6px 14px', background: 'hsl(140,55%,38%)', color: 'white', border: 'none', borderRadius: '2px', fontSize: '11px', fontFamily: FF2, fontWeight: '700', cursor: 'pointer' }}>
+            <FileDown style={{ width: 13, height: 13 }} /> {exporting ? 'EXPORTING...' : 'EXPORT PDF'}
+          </button>
+        </div>
+        <div style={{ background: 'hsl(220,18%,96%)', border: '1px solid hsl(220,18%,82%)', borderRadius: '2px', padding: '8px 12px', display: 'flex', gap: '24px', flexWrap: 'wrap', fontSize: '11px' }}>
+          <span><strong>{filtered.length}</strong> work orders</span>
+          <span><strong>{totalHours}</strong> total hours</span>
+          <span><strong>{totalMinutes}</strong> total minutes</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function AdminPanel() {
   const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
