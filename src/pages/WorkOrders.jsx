@@ -227,6 +227,9 @@ export default function WorkOrders() {
             onChange={e => setSearch(e.target.value)}
             style={{ padding: '4px 8px', fontSize: '11px', fontFamily: FF, border: '1px solid hsl(220,18%,72%)', borderRadius: '2px', background: 'white', width: '240px', outline: 'none' }}
           />
+          <button onClick={handleExportPDF} disabled={filtered.length === 0} style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '4px 10px', fontSize: '10px', fontFamily: FF, fontWeight: '700', background: 'hsl(140,55%,38%)', color: 'white', border: 'none', borderRadius: '2px', cursor: 'pointer' }}>
+            <FileDown style={{ width: 12, height: 12 }} /> EXPORT PDF
+          </button>
         </div>
       </div>
 
