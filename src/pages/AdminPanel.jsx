@@ -23,10 +23,16 @@ function TechHoursReport({ users }) {
   });
 
   const filtered = workOrders.filter(wo => {
-    if (!wo.elapsed_time_minutes || wo.status !== 'Completed') return false;
+    if (!wo.elapsed_time_minutes) return false;
     if (selectedTech && wo.technician_name !== selectedTech) return false;
-    if (startDate && wo.completed_date && wo.completed_date < new Date(startDate).toISOString()) return false;
-    if (endDate && wo.completed_date && wo.completed_date > new Date(endDate + 'T23:59:59').toISOString()) return false;
+    if (startDate) {
+      const ref = wo.completed_date || wo.updated_date || wo.created_date;
+      if (ref && new Date(ref) < new Date(startDate)) return false;
+    }
+    if (endDate) {
+      const ref = wo.completed_date || wo.updated_date || wo.created_date;
+      if (ref && new Date(ref) > new Date(endDate + 'T23:59:59')) return false;
+    }
     return true;
   });
 
