@@ -364,7 +364,7 @@ export default function WorkOrderDetail() {
         <div style={rowStyle}>
           <div style={fieldStyle}>
             <label style={labelStyle}>TECHNICIAN NAME</label>
-            <input value={form.technician_name || ''} onChange={e => setForm({ ...form, technician_name: e.target.value })} placeholder="Enter technician name" style={inputStyle} />
+            <TechnicianSelect value={form.technician_name || ''} onChange={v => setForm({ ...form, technician_name: v })} />
           </div>
         </div>
 
