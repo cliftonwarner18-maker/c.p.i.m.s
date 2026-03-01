@@ -319,8 +319,8 @@ function TechHoursReport({ users }) {
     doc.setFont('courier', 'normal');
     doc.setFontSize(8);
     doc.setTextColor(40, 40, 40);
-    doc.text('I certify that the hours recorded above are accurate and represent actual labor performed on New Hanover County Schools', margin + 10, y + 28);
-    doc.text('Transportation Department vehicle surveillance systems during the reporting period indicated.', margin + 10, y + 39);
+    const certText = doc.splitTextToSize('I certify that the hours recorded above are accurate and represent actual labor performed on New Hanover County Schools Transportation Department vehicle surveillance systems during the reporting period indicated.', W - margin * 2 - 20);
+    doc.text(certText, margin + 10, y + 28);
 
     const sigY = y + 55;
     const halfW = (W - margin * 2 - 20) / 2;
