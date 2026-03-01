@@ -320,10 +320,13 @@ export default function WorkOrderDetail() {
               }} style={{ padding: '4px 8px', fontSize: '10px', fontFamily: FF, background: 'hsl(220,55%,38%)', color: 'white', border: 'none', borderRadius: '2px', cursor: 'pointer', fontWeight: '700' }}>NOW</button>
             </div>
           </div>
-          <div style={{ minWidth: '140px' }}>
+          <div style={{ minWidth: '160px' }}>
             <label style={labelStyle}>ELAPSED TIME</label>
-            <div style={{ ...roStyle, fontFamily: "'VT323', monospace", fontSize: '18px', color: 'hsl(220,50%,35%)', textAlign: 'center' }}>
-              {elapsedDisplay(form.elapsed_time_minutes || 0)} HH:MM
+            <div style={{ background: '#000', border: '2px solid #1a1a1a', borderRadius: '2px', padding: '6px 10px', textAlign: 'center', boxShadow: 'inset 0 0 8px rgba(0,255,80,0.08)' }}>
+              <div style={{ fontFamily: "'VT323', monospace", fontSize: '30px', color: '#00ff44', letterSpacing: '0.1em', lineHeight: 1, textShadow: '0 0 8px #00ff44' }}>
+                {elapsedDisplay(displayElapsedMinutes)}
+              </div>
+              <div style={{ fontFamily: FF, fontSize: '9px', color: '#00aa33', letterSpacing: '0.12em', marginTop: '2px' }}>HH:MM</div>
             </div>
           </div>
         </div>
