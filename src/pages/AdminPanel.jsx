@@ -40,8 +40,9 @@ function TechHoursReport({ users }) {
   const totalHours = (totalMinutes / 60).toFixed(2);
 
   const handleExport = async () => {
+    if (filtered.length === 0) return;
     setExporting(true);
-    const { jsPDF } = await import('jspdf');
+    const { jsPDF } = (await import('jspdf'));
     const doc = new jsPDF({ unit: 'pt', format: 'letter' });
     const W = doc.internal.pageSize.getWidth();
     const margin = 40;
