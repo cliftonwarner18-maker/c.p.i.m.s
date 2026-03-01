@@ -25,7 +25,7 @@ Deno.serve(async (req) => {
 
     // Date
     doc.setFontSize(10);
-    const dateStr = `Report Generated: ${moment().tz('America/New_York').format('MM/DD/YYYY HH:mm')}`;
+    const dateStr = `Report Generated: ${momentTZ().tz('America/New_York').format('MM/DD/YYYY HH:mm')}`;
     doc.text(dateStr, pageWidth / 2, y, { align: 'center' });
     y += 10;
 
