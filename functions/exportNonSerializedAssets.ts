@@ -1,6 +1,6 @@
 import { jsPDF } from 'npm:jspdf@4.0.0';
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
-import moment from 'npm:moment-timezone@0.5.45';
+import momentTZ from 'npm:moment-timezone@0.5.45';
 
 Deno.serve(async (req) => {
   try {
