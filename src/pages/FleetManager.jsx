@@ -14,6 +14,7 @@ export default function FleetManager() {
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('All');
   const [locationFilter, setLocationFilter] = useState('All');
+  const [stopArmFilter, setStopArmFilter] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
 
@@ -48,7 +49,8 @@ export default function FleetManager() {
       b.make?.toLowerCase().includes(search.toLowerCase());
     const matchType = typeFilter === 'All' || b.bus_type === typeFilter;
     const matchLocation = locationFilter === 'All' || b.base_location === locationFilter;
-    return matchSearch && matchType && matchLocation;
+    const matchStopArm = !stopArmFilter || b.stop_arm_cameras === true;
+    return matchSearch && matchType && matchLocation && matchStopArm;
   });
 
   const activeCount = buses.filter(b => b.status === 'Active').length;
@@ -60,7 +62,7 @@ export default function FleetManager() {
   const handleExportPDF = async () => {
     setIsExporting(true);
     try {
-      const response = await base44.functions.invoke('exportFleet', { locationFilter, busTypeFilter: typeFilter });
+      const response = await base44.functions.invoke('exportFleet', { locationFilter, busTypeFilter: typeFilter, stopArmOnly: stopArmFilter });
       const blob = new Blob([response.data], { type: 'application/pdf' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');

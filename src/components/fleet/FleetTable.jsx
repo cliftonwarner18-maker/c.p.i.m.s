@@ -40,7 +40,7 @@ export default function FleetTable({ buses, busNumCounts, vinCounts = {}, onEdit
         <table style={{ width: '100%', fontSize: '11px', fontFamily: "'Courier Prime', monospace", borderCollapse: 'collapse' }}>
           <thead>
             <tr style={{ background: 'hsl(220,45%,28%)', color: 'white', position: 'sticky', top: 0, zIndex: 10 }}>
-              {['BUS #', 'TYPE', 'YR', 'MAKE / MODEL', 'LOCATION', 'VIN', 'CAMERA SYSTEM', 'ASSET #', 'STATUS', 'INSP. DUE', ''].map((h, i) => (
+              {['BUS #', 'TYPE', 'YR', 'MAKE / MODEL', 'LOCATION', 'VIN', 'CAMERA SYSTEM', 'ASSET #', 'STOP ARM', 'STATUS', 'INSP. DUE', ''].map((h, i) => (
                 <th key={i} style={{ padding: '7px 8px', textAlign: 'left', fontWeight: '700', fontSize: '10px', letterSpacing: '0.06em', whiteSpace: 'nowrap', borderRight: i < 10 ? '1px solid rgba(255,255,255,0.1)' : 'none' }}>
                   {h}
                 </th>
@@ -120,6 +120,13 @@ export default function FleetTable({ buses, busNumCounts, vinCounts = {}, onEdit
                   {/* Asset # */}
                   <td style={{ padding: '5px 8px', fontSize: '10px', color: 'hsl(220,10%,40%)', fontFamily: 'monospace' }}>
                     {b.asset_number || <span style={{ color: 'hsl(220,10%,65%)' }}>—</span>}
+                  </td>
+                  {/* Stop Arm */}
+                  <td style={{ padding: '5px 8px', textAlign: 'center', whiteSpace: 'nowrap' }}>
+                    {b.stop_arm_cameras
+                      ? <span style={{ fontSize: '9px', fontWeight: '700', color: 'hsl(140,55%,28%)', background: 'hsl(140,55%,92%)', border: '1px solid hsl(140,55%,72%)', padding: '1px 5px', borderRadius: '2px' }}>✓ YES</span>
+                      : <span style={{ fontSize: '9px', color: 'hsl(220,10%,55%)', background: 'hsl(220,10%,90%)', border: '1px solid hsl(220,10%,78%)', padding: '1px 5px', borderRadius: '2px' }}>NO</span>
+                    }
                   </td>
                   {/* Status */}
                   <td style={{ padding: '5px 8px', whiteSpace: 'nowrap' }}>
