@@ -54,6 +54,8 @@ Deno.serve(async (req) => {
     const users_csv = createCSV(users, ['full_name', 'email', 'role']);
     
     const custodyLogs_csv = createCSV(custodyLogs, ['hdrive_serial', 'transferred_from', 'transferred_to', 'previous_location', 'new_location', 'reason', 'transfer_date']);
+    
+    const busHistory_csv = createCSV(busHistory, ['bus_number', 'technician', 'description', 'start_time', 'end_time', 'elapsed_minutes']);
 
     // Combine all CSVs into a single text blob with separators
     const combinedContent = [
@@ -63,11 +65,14 @@ Deno.serve(async (req) => {
       '=== FLEET VEHICLES ===',
       buses_csv,
       '',
-      '=== WORK ORDERS ===',
+      '=== WORK ORDERS (ALL STATUSES) ===',
       workOrders_csv,
       '',
-      '=== INSPECTIONS ===',
+      '=== INSPECTIONS (COMPLETED & DUE) ===',
       inspections_csv,
+      '',
+      '=== SERVICE HISTORY & TIME RECORDS ===',
+      busHistory_csv,
       '',
       '=== SERIALIZED ASSETS ===',
       serializedAssets_csv,
