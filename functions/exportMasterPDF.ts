@@ -154,14 +154,18 @@ Deno.serve(async (req) => {
         yPos += issueWrapped.length * 2.5 + 2;
       }
       if (wo.repairs_rendered) {
-        const repairsWrapped = doc.splitTextToSize(sanitize(wo.repairs_rendered), pageWidth - 20);
+        const repairsWrapped = doc.splitTextToSize(sanitize(wo.repairs_rendered), pageWidth - 30);
         doc.setFont(undefined, 'bold');
         doc.text('Repairs: ', margin + 4, yPos);
         doc.setFont(undefined, 'normal');
         doc.text(repairsWrapped, margin + 6, yPos);
-        yPos += repairsWrapped.length * 2.5 + 2;
+        yPos += repairsWrapped.length * 3 + 3;
       }
-      yPos += 2;
+      yPos += 3;
+      if (yPos > pageHeight - 20) {
+        doc.addPage();
+        addPageHeader();
+      }
     });
 
     // Inspections Section
