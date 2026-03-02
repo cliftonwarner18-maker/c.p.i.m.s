@@ -48,10 +48,13 @@ Deno.serve(async (req) => {
     addSheet(users, ['full_name', 'email', 'role'], 'SystemUsers');
 
     const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-    const base64 = btoa(String.fromCharCode.apply(null, excelBuffer));
-    return Response.json({
-      file: base64,
-      filename: 'master-backup.xlsx'
+    return new Response(new Uint8Array(excelBuffer), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'Content-Disposition': 'attachment; filename=master-backup.xlsx',
+        'Content-Length': excelBuffer.length.toString(),
+      },
     });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
