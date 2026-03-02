@@ -9,8 +9,8 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Fetch all data
-    const [buses, workOrders, inspections, serializedAssets, nonSerializedAssets, hdrives, users, custodyLogs] = await Promise.all([
+    // Fetch all data (all statuses, no filters)
+    const [buses, workOrders, inspections, serializedAssets, nonSerializedAssets, hdrives, users, custodyLogs, busHistory] = await Promise.all([
       base44.entities.Bus.list(),
       base44.entities.WorkOrder.list(),
       base44.entities.Inspection.list(),
@@ -19,6 +19,7 @@ Deno.serve(async (req) => {
       base44.entities.HDrive.list(),
       base44.entities.User.list(),
       base44.entities.CustodyLog.list(),
+      base44.entities.BusHistory.list(),
     ]);
 
     const sanitize = (val) => {
