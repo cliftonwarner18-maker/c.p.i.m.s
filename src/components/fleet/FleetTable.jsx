@@ -90,8 +90,19 @@ export default function FleetTable({ buses, busNumCounts, vinCounts = {}, onEdit
                     ) : <span style={{ color: 'hsl(220,10%,60%)' }}>—</span>}
                   </td>
                   {/* VIN */}
-                  <td style={{ padding: '5px 8px', color: 'hsl(220,10%,40%)', fontSize: '10px', fontFamily: 'monospace' }}>
-                    {b.vin || <span style={{ color: 'hsl(220,10%,65%)' }}>—</span>}
+                  <td style={{ padding: '5px 8px', fontSize: '10px', fontFamily: 'monospace' }}>
+                    {b.vin ? (
+                      <div>
+                        <span style={{ color: isDupVin ? 'hsl(0,65%,35%)' : 'hsl(220,10%,40%)', fontWeight: isDupVin ? '700' : '400' }}>{b.vin}</span>
+                        {isDupVin && (
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 2, background: 'hsl(0,65%,48%)', color: 'white', fontSize: '8px', padding: '1px 4px', borderRadius: '2px', marginLeft: '4px', fontFamily: "'Courier Prime', monospace" }}>
+                            <AlertTriangle style={{ width: 7, height: 7 }} /> DUPLICATE VIN
+                          </span>
+                        )}
+                      </div>
+                    ) : (
+                      <span style={{ color: 'hsl(220,10%,65%)' }}>—</span>
+                    )}
                   </td>
                   {/* Camera */}
                   <td style={{ padding: '5px 8px', whiteSpace: 'nowrap' }}>
