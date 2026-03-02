@@ -160,10 +160,22 @@ export default function FleetManager() {
         </div>
       </div>
 
+      {/* Duplicate VIN Banner */}
+      {duplicateVinCount > 0 && (
+        <div style={{ background: 'hsl(0,80%,95%)', border: '2px solid hsl(0,65%,50%)', borderRadius: '2px', padding: '8px 12px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: "'Courier Prime', monospace" }}>
+          <AlertTriangle style={{ width: 16, height: 16, color: 'hsl(0,65%,45%)', flexShrink: 0 }} />
+          <div>
+            <span style={{ fontSize: '12px', fontWeight: '700', color: 'hsl(0,65%,35%)', letterSpacing: '0.06em' }}>⚠ DUPLICATE VIN DETECTED — </span>
+            <span style={{ fontSize: '11px', color: 'hsl(0,55%,40%)' }}>{duplicateVinCount} VIN number{duplicateVinCount !== 1 ? 's are' : ' is'} shared by multiple vehicles. Rows flagged below.</span>
+          </div>
+        </div>
+      )}
+
       {/* Table */}
       <FleetTable
         buses={filtered}
         busNumCounts={busNumCounts}
+        vinCounts={vinCounts}
         onEdit={(b) => { setEditingBus(b); setShowForm(true); }}
         onDelete={(b) => setDeleteTarget(b)}
       />
