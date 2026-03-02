@@ -155,9 +155,9 @@ export default function MasterBackup() {
             </div>
           </button>
 
-          {/* CSV Export */}
+          {/* Excel Spreadsheet Export */}
           <button
-            onClick={handleExportCSV}
+            onClick={handleExportXLSX}
             disabled={isExporting}
             style={{
               display: 'flex',
@@ -171,8 +171,8 @@ export default function MasterBackup() {
               fontFamily: "'Courier Prime', monospace",
               fontWeight: '600',
               color: 'hsl(45,90%,35%)',
-              cursor: isExporting && exportFormat === 'CSV' ? 'default' : 'pointer',
-              opacity: isExporting && exportFormat === 'CSV' ? 0.6 : 1,
+              cursor: isExporting && exportFormat === 'XLSX' ? 'default' : 'pointer',
+              opacity: isExporting && exportFormat === 'XLSX' ? 0.6 : 1,
               transition: 'all 0.15s',
             }}
             onMouseEnter={(e) => {
@@ -185,8 +185,8 @@ export default function MasterBackup() {
           >
             <Download style={{ width: 16, height: 16 }} />
             <div style={{ textAlign: 'left' }}>
-              <div style={{ fontSize: '12px', fontWeight: '700' }}>CSV ZIP</div>
-              <div style={{ fontSize: '9px', opacity: 0.8 }}>{isExporting && exportFormat === 'CSV' ? 'Exporting...' : 'Spreadsheet archive'}</div>
+              <div style={{ fontSize: '12px', fontWeight: '700' }}>EXCEL</div>
+              <div style={{ fontSize: '9px', opacity: 0.8 }}>{isExporting && exportFormat === 'XLSX' ? 'Exporting...' : 'Multi-sheet workbook'}</div>
             </div>
           </button>
         </div>
