@@ -87,7 +87,8 @@ Deno.serve(async (req) => {
     doc.setFontSize(10);
     doc.setFont(undefined, 'normal');
     const now = new Date();
-    const estTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+    const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);
+    const estTime = new Date(utcTime - (5 * 60 * 60 * 1000)); // EST is UTC-5
     const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     const month = monthNames[estTime.getMonth()];
     const day = estTime.getDate();
