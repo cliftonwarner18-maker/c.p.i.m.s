@@ -232,10 +232,10 @@ Deno.serve(async (req) => {
       doc.setFontSize(8);
       doc.setFont(undefined, 'bold');
       doc.text(`${sanitize(asset.part_name)}`, margin + 2, yPos);
-      yPos += 3;
+      yPos += 4;
       doc.setFont(undefined, 'normal');
       doc.text(`Qty: ${asset.quantity_on_hand} | Location: ${sanitize(asset.current_location)}`, margin + 4, yPos);
-      yPos += 3;
+      yPos += 4;
     });
 
     // H-Drives Section
