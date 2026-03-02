@@ -24,9 +24,10 @@ Deno.serve(async (req) => {
       base44.entities.BusHistory.list(),
     ]);
 
-    // Helper to create Excel workbook from data
-    const createExcel = (data, columns) => {
-      const workbook = XLSX.utils.book_new();
+    // Create single Excel workbook with multiple sheets
+    const workbook = XLSX.utils.book_new();
+    
+    const addSheet = (data, columns, sheetName) => {
       const worksheet = XLSX.utils.json_to_sheet(data.map(row => {
         const obj = {};
         columns.forEach(col => {
@@ -34,39 +35,25 @@ Deno.serve(async (req) => {
         });
         return obj;
       }));
-      XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
-      return XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+      XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
     };
 
-    // Create Excel files
-    const buses_xlsx = createExcel(buses, ['bus_number', 'bus_type', 'base_location', 'year', 'make', 'model', 'vin', 'passenger_capacity', 'status', 'camera_system_type', 'next_inspection_due']);
-    const workOrders_xlsx = createExcel(workOrders, ['order_number', 'bus_number', 'reported_by', 'issue_description', 'status', 'technician_name', 'repairs_rendered', 'completed_date']);
-    const inspections_xlsx = createExcel(inspections, ['inspection_number', 'bus_number', 'inspector_name', 'inspection_date', 'camera_system_functional', 'overall_status', 'next_inspection_due']);
-    const serializedAssets_xlsx = createExcel(serializedAssets, ['asset_number', 'brand', 'model', 'serial_number', 'asset_type', 'status', 'assigned_bus_number']);
-    const nonSerializedAssets_xlsx = createExcel(nonSerializedAssets, ['part_name', 'brand', 'model_number', 'use', 'quantity_on_hand', 'current_location']);
-    const hdrives_xlsx = createExcel(hdrives, ['serial_number', 'make', 'model', 'current_user', 'current_lot', 'current_location', 'seized', 'seizing_agency', 'seizure_date']);
-    const users_xlsx = createExcel(users, ['full_name', 'email', 'role']);
-    const custodyLogs_xlsx = createExcel(custodyLogs, ['hdrive_serial', 'transferred_from', 'transferred_to', 'previous_location', 'new_location', 'reason', 'transfer_date']);
-    const busHistory_xlsx = createExcel(busHistory, ['bus_number', 'technician', 'description', 'start_time', 'end_time', 'elapsed_minutes']);
+    addSheet(buses, ['bus_number', 'bus_type', 'base_location', 'year', 'make', 'model', 'vin', 'passenger_capacity', 'status', 'camera_system_type', 'next_inspection_due'], 'Buses');
+    addSheet(workOrders, ['order_number', 'bus_number', 'reported_by', 'issue_description', 'status', 'technician_name', 'repairs_rendered', 'completed_date'], 'WorkOrders');
+    addSheet(inspections, ['inspection_number', 'bus_number', 'inspector_name', 'inspection_date', 'camera_system_functional', 'overall_status', 'next_inspection_due'], 'Inspections');
+    addSheet(busHistory, ['bus_number', 'technician', 'description', 'start_time', 'end_time', 'elapsed_minutes'], 'BusHistory');
+    addSheet(serializedAssets, ['asset_number', 'brand', 'model', 'serial_number', 'asset_type', 'status', 'assigned_bus_number'], 'SerializedAssets');
+    addSheet(nonSerializedAssets, ['part_name', 'brand', 'model_number', 'use', 'quantity_on_hand', 'current_location'], 'NonSerializedAssets');
+    addSheet(hdrives, ['serial_number', 'make', 'model', 'current_user', 'current_lot', 'current_location', 'seized', 'seizing_agency', 'seizure_date'], 'HDrives');
+    addSheet(custodyLogs, ['hdrive_serial', 'transferred_from', 'transferred_to', 'previous_location', 'new_location', 'reason', 'transfer_date'], 'CustodyLogs');
+    addSheet(users, ['full_name', 'email', 'role'], 'SystemUsers');
 
-    // Create zip with Excel files
-    const zip = new JSZip();
-    zip.file('Buses.xlsx', new Uint8Array(buses_xlsx));
-    zip.file('WorkOrders.xlsx', new Uint8Array(workOrders_xlsx));
-    zip.file('Inspections.xlsx', new Uint8Array(inspections_xlsx));
-    zip.file('BusHistory.xlsx', new Uint8Array(busHistory_xlsx));
-    zip.file('SerializedAssets.xlsx', new Uint8Array(serializedAssets_xlsx));
-    zip.file('NonSerializedAssets.xlsx', new Uint8Array(nonSerializedAssets_xlsx));
-    zip.file('HDrives.xlsx', new Uint8Array(hdrives_xlsx));
-    zip.file('CustodyLogs.xlsx', new Uint8Array(custodyLogs_xlsx));
-    zip.file('SystemUsers.xlsx', new Uint8Array(users_xlsx));
-
-    const zipBuffer = await zip.generateAsync({ type: 'arraybuffer' });
-    return new Response(new Uint8Array(zipBuffer), {
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    return new Response(new Uint8Array(excelBuffer), {
       status: 200,
       headers: {
-        'Content-Type': 'application/zip',
-        'Content-Disposition': 'attachment; filename=master-backup.zip',
+        'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'Content-Disposition': 'attachment; filename=master-backup.xlsx',
       },
     });
   } catch (error) {
