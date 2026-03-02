@@ -104,21 +104,32 @@ Deno.serve(async (req) => {
     addRow('System Users', users.length);
 
     // Vehicles Section
-    addSectionHeader('FLEET VEHICLES');
+    addSectionHeader('FLEET VEHICLES - DETAILED SPECIFICATION');
     buses.forEach((bus) => {
-      if (yPos > pageHeight - 20) {
+      if (yPos > pageHeight - 45) {
         doc.addPage();
         addPageHeader();
       }
       doc.setFontSize(9);
       doc.setFont(undefined, 'bold');
-      doc.text(`Bus #${bus.bus_number}`, margin + 2, yPos);
+      doc.text(`Bus #${bus.bus_number}`, margin + 4, yPos);
       yPos += 4;
       doc.setFont(undefined, 'normal');
       doc.setFontSize(8);
-      const info = `${bus.year} ${bus.make} ${bus.model} | VIN: ${bus.vin} | Status: ${bus.status}`;
-      doc.text(sanitize(info), margin + 4, yPos);
-      yPos += 3;
+      addRow('Year/Make/Model', `${bus.year} ${bus.make} ${bus.model}`);
+      addRow('VIN', bus.vin);
+      addRow('Status', bus.status);
+      addRow('Base Location', bus.base_location);
+      addRow('Camera System', bus.camera_system_type || 'None');
+      addRow('Camera Serial Number', bus.camera_serial_number || 'N/A');
+      addRow('Camera Model Number', bus.camera_model_number || 'N/A');
+      addRow('Dash Cam SID', bus.dash_cam_sid || 'N/A');
+      addRow('Gateway SID', bus.gateway_sid || 'N/A');
+      addRow('Stop Arm Cameras', bus.stop_arm_cameras ? 'YES' : 'NO');
+      addRow('AI Cameras Installed', bus.ai_cameras_installed ? 'YES' : 'NO');
+      addRow('Samsara Enabled', bus.samsara_enabled ? 'YES' : 'NO');
+      addRow('Next Inspection Due', bus.next_inspection_due || 'Not Set');
+      yPos += 5;
     });
 
     // Work Orders Section
