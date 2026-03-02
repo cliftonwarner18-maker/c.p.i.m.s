@@ -66,10 +66,11 @@ Deno.serve(async (req) => {
       }
       doc.setFontSize(9);
       doc.setFont(undefined, 'bold');
-      doc.text(label + ':', margin + 2, yPos);
+      doc.text(label + ':', margin + 4, yPos);
       doc.setFont(undefined, 'normal');
-      doc.text(String(value || '-').substring(0, 50), margin + 40, yPos);
-      yPos += 4;
+      const wrapped = doc.splitTextToSize(String(value || '-'), pageWidth - 55);
+      doc.text(wrapped, margin + 50, yPos);
+      yPos += Math.max(4, wrapped.length * 3);
     };
 
     const sanitize = (str) => {
