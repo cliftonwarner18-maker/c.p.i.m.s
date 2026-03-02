@@ -619,16 +619,13 @@ export default function HdriveManagement() {
         </div>
       )}
 
-      {/* Delete confirm */}
-      {deleteTarget && (
-        <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '2px', padding: '12px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
-          <span style={{ fontSize: '11px', color: '#991b1b', fontWeight: '700' }}><AlertTriangle style={{ width: 13, height: 13, display: 'inline', marginRight: 5 }} />DELETE {deleteTarget.serial_number}? This is permanent.</span>
-          <div style={{ display: 'flex', gap: '6px' }}>
-            <Btn onClick={() => deleteMutation.mutate(deleteTarget.id)} color="hsl(0,65%,45%)">{deleteMutation.isPending ? 'DELETING...' : 'CONFIRM DELETE'}</Btn>
-            <button onClick={() => setDeleteTarget(null)} style={{ padding: '5px 12px', background: 'hsl(220,18%,88%)', border: '1px solid hsl(220,18%,70%)', borderRadius: '2px', fontSize: '11px', fontFamily: FF, cursor: 'pointer' }}>CANCEL</button>
-          </div>
-        </div>
-      )}
+      {/* Delete confirm modal */}
+      <DeleteConfirmModal
+        isOpen={!!deleteTarget}
+        label={`H-Drive ${deleteTarget?.serial_number}`}
+        onConfirm={() => deleteMutation.mutate(deleteTarget.id)}
+        onCancel={() => setDeleteTarget(null)}
+      />
 
       {/* Tabs */}
       <div style={{ display: 'flex', gap: '4px', background: 'hsl(220,18%,90%)', border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', padding: '4px' }}>
