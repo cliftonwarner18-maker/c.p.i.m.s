@@ -27,13 +27,20 @@ Deno.serve(async (req) => {
     const workbook = XLSX.utils.book_new();
     
     const addSheet = (data, columns, sheetName) => {
-      const worksheet = XLSX.utils.json_to_sheet(data.map(row => {
+      if (!Array.isArray(data) || data.length === 0) {
+        const worksheet = XLSX.utils.json_to_sheet([]);
+        XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+        return;
+      }
+      const sanitizedData = data.map(row => {
         const obj = {};
         columns.forEach(col => {
-          obj[col] = row[col] || '';
+          const val = row[col];
+          obj[col] = val === null || val === undefined ? '' : String(val);
         });
         return obj;
-      }));
+      });
+      const worksheet = XLSX.utils.json_to_sheet(sanitizedData, { header: columns });
       XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
     };
 
