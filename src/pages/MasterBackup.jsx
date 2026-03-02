@@ -44,7 +44,7 @@ export default function MasterBackup() {
     setIsExporting(true);
     setExportFormat('XLSX');
     try {
-      const response = await base44.functions.invoke('exportMasterCSV');
+      const response = await base44.functions.invoke('exportMasterCSV', {}, { responseType: 'arraybuffer' });
       const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
