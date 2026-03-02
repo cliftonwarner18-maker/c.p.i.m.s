@@ -46,6 +46,9 @@ export default function BusForm({ bus, onClose, onSaved }) {
         camera_system_type: bus.camera_system_type || 'None',
         camera_serial_number: bus.camera_serial_number || '',
         camera_model_number: bus.camera_model_number || '',
+        cameras_inside: bus.cameras_inside ?? '',
+        cameras_outside: bus.cameras_outside ?? '',
+        stop_arm_cameras: bus.stop_arm_cameras || false,
         samsara_enabled: bus.samsara_enabled || false,
         samsara_av_enabled: bus.samsara_av_enabled || false,
         samsara_inputs_enabled: bus.samsara_inputs_enabled || false,
@@ -71,7 +74,12 @@ export default function BusForm({ bus, onClose, onSaved }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const data = { ...form, passenger_capacity: form.passenger_capacity ? Number(form.passenger_capacity) : null };
+    const data = {
+      ...form,
+      passenger_capacity: form.passenger_capacity ? Number(form.passenger_capacity) : null,
+      cameras_inside: form.cameras_inside !== '' ? Number(form.cameras_inside) : null,
+      cameras_outside: form.cameras_outside !== '' ? Number(form.cameras_outside) : null,
+    };
     if (bus) {
       updateMutation.mutate(data);
     } else {
