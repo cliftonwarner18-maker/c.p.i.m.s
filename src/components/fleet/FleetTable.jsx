@@ -51,7 +51,8 @@ export default function FleetTable({ buses, busNumCounts, vinCounts = {}, onEdit
             {buses.map((b, i) => {
               const overdue = b.next_inspection_due && new Date(b.next_inspection_due) < new Date();
               const isDup = busNumCounts[b.bus_number?.trim().toLowerCase()] > 1;
-              const rowBg = isDup ? 'hsl(0,80%,96%)' : i % 2 === 0 ? 'white' : 'hsl(220,20%,97%)';
+              const isDupVin = b.vin && vinCounts[b.vin?.trim().toUpperCase()] > 1;
+              const rowBg = (isDup || isDupVin) ? 'hsl(0,80%,96%)' : i % 2 === 0 ? 'white' : 'hsl(220,20%,97%)';
               const camStyle = CAMERA_STYLES[b.camera_system_type] || CAMERA_STYLES['None'];
               const statusStyle = STATUS_STYLES[b.status] || STATUS_STYLES['Active'];
 
