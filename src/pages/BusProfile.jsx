@@ -189,6 +189,16 @@ export default function BusProfile() {
               <Field label="Primary Camera Type" value={bus.camera_system_type} />
               <Field label="Camera Serial Number" value={bus.camera_serial_number} />
               <Field label="Camera Model Number" value={bus.camera_model_number} />
+              <Field label="Inside Cameras" value={bus.cameras_inside != null ? String(bus.cameras_inside) : '—'} />
+              <Field label="Outside Cameras" value={bus.cameras_outside != null ? String(bus.cameras_outside) : '—'} />
+              <Field label="Total Cameras" value={
+                (bus.cameras_inside != null || bus.cameras_outside != null)
+                  ? <span style={{fontWeight:'700',color:'hsl(220,70%,35%)'}}>{(bus.cameras_inside||0)+(bus.cameras_outside||0)} <span style={{fontSize:'10px',color:'hsl(220,10%,50%)',fontWeight:'400'}}>({bus.cameras_inside||0} in / {bus.cameras_outside||0} out)</span></span>
+                  : null
+              } />
+              <Field label="Stop Arm Violation Cameras" value={
+                <span style={{fontWeight:'700',color: bus.stop_arm_cameras ? 'hsl(140,55%,30%)' : 'hsl(0,60%,40%)'}}>{bus.stop_arm_cameras ? '✓ INSTALLED' : '✗ NOT INSTALLED'}</span>
+              } />
               <Field label="Dash Cam SID" value={bus.dash_cam_sid} />
               <Field label="Gateway SID" value={bus.gateway_sid} />
               <Field label="Samsara Enabled" value={bus.samsara_enabled ? 'YES' : 'NO'} />
