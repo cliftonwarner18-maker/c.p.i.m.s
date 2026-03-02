@@ -276,12 +276,37 @@ Deno.serve(async (req) => {
         addPageHeader();
       }
       doc.setFontSize(8);
-      doc.text(`${log.hdrive_serial} | ${log.transferred_from} → ${log.transferred_to}`, margin + 2, yPos);
+      doc.text(`${log.hdrive_serial} | ${log.transferred_from} → ${log.transferred_to}`, margin + 4, yPos);
       yPos += 3;
       doc.setFont(undefined, 'normal');
-      doc.text(`${sanitize(log.reason)} | ${log.new_location}`, margin + 4, yPos);
+      doc.text(`${sanitize(log.reason)} | ${log.new_location}`, margin + 6, yPos);
       yPos += 3;
     });
+
+    // Technician Hours Report
+    const technicianHours = {};
+    workOrders.forEach((wo) => {
+      if (wo.technician_name && wo.elapsed_time_minutes) {
+        if (!technicianHours[wo.technician_name]) {
+          technicianHours[wo.technician_name] = 0;
+        }
+        technicianHours[wo.technician_name] += wo.elapsed_time_minutes;
+      }
+    });
+
+    if (Object.keys(technicianHours).length > 0) {
+      addSectionHeader('TECHNICIAN HOURS & TIME RECORDS');
+      Object.entries(technicianHours).forEach(([tech, minutes]) => {
+        if (yPos > pageHeight - 12) {
+          doc.addPage();
+          addPageHeader();
+        }
+        const hours = (minutes / 60).toFixed(1);
+        doc.setFontSize(8);
+        doc.text(`${sanitize(tech)}: ${minutes} minutes (${hours} hours)`, margin + 4, yPos);
+        yPos += 4;
+      });
+    }
 
     // Footer on last page
     doc.setFontSize(7);
