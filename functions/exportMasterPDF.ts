@@ -315,7 +315,8 @@ Deno.serve(async (req) => {
     // Footer on last page
     doc.setFontSize(7);
     doc.setTextColor(100, 100, 100);
-    doc.text(`Master Backup | ${moment().format('MM/DD/YYYY HH:mm')}`, margin, pageHeight - 4);
+    const reportTime = moment.tz('America/New_York').format('M/D/YYYY-HH:mm');
+    doc.text(`Master Backup | ${reportTime}`, margin, pageHeight - 4);
 
     const pdfBytes = doc.output('arraybuffer');
     return new Response(pdfBytes, {
