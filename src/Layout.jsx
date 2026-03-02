@@ -15,6 +15,7 @@ const navItems = [
   { name: 'Inspections', icon: ClipboardCheck, page: 'Inspections' },
   { name: 'Assets', icon: Package2, page: 'Assets' },
   { name: 'H-Drive', icon: HardDrive, page: 'HdriveManagement' },
+  { name: 'Master Backup', icon: Download, page: 'MasterBackup', yellow: true },
   { name: 'Admin', icon: ShieldAlert, page: 'AdminPanel', red: true },
 ];
 
