@@ -315,7 +315,9 @@ Deno.serve(async (req) => {
     // Footer on last page
     doc.setFontSize(7);
     doc.setTextColor(100, 100, 100);
-    const reportTime = moment.tz('America/New_York').format('M/D/YYYY-HH:mm');
+    const now = new Date();
+    const estTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+    const reportTime = `${estTime.getMonth() + 1}/${estTime.getDate()}/${estTime.getFullYear()}-${String(estTime.getHours()).padStart(2, '0')}:${String(estTime.getMinutes()).padStart(2, '0')}`;
     doc.text(`Master Backup | ${reportTime} (EST)`, margin, pageHeight - 4);
 
     const pdfBytes = doc.output('arraybuffer');
