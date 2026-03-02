@@ -33,6 +33,14 @@ export default function FleetManager() {
     return acc;
   }, {});
 
+  const vinCounts = buses.reduce((acc, b) => {
+    const key = b.vin?.trim().toUpperCase();
+    if (key) acc[key] = (acc[key] || 0) + 1;
+    return acc;
+  }, {});
+
+  const duplicateVinCount = Object.values(vinCounts).filter(c => c > 1).length;
+
   const filtered = buses.filter(b => {
     const matchSearch = !search ||
       b.bus_number?.toLowerCase().includes(search.toLowerCase()) ||
