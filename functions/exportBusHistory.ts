@@ -303,8 +303,8 @@ Deno.serve(async (req) => {
 
     // Legacy Data Upload
     if (bus.legacy_upload) {
-      // Check if we need a new page for legacy section (need at least 50 units including footer)
-      if (yPos > pageHeight - 50) {
+      // Check if we need a new page for legacy section (need at least 60 units)
+      if (yPos > pageHeight - 60) {
         doc.addPage();
         drawPageBorder();
         yPos = margin + 4;
@@ -314,12 +314,26 @@ Deno.serve(async (req) => {
       const legacyWrapped = doc.splitTextToSize(legacyText, pageWidth - 20);
       doc.setFontSize(8);
       doc.setFont(undefined, 'normal');
-      legacyWrapped.forEach((line) => {
-        // Check if line fits with footer space reserved (35 units from bottom)
-        if (yPos > pageHeight - 35) {
+      legacyWrapped.forEach((line, index) => {
+        // Reserve 25 units for footer (very conservative to prevent any bleed)
+        if (yPos > pageHeight - 25) {
           doc.addPage();
           drawPageBorder();
           yPos = margin + 4;
+          // Add the footer to the previous page before starting new page
+          const prevPageNum = doc.internal.getNumberOfPages() - 1;
+          doc.setPage(prevPageNum);
+          doc.setDrawColor(30, 60, 120);
+          doc.setLineWidth(0.5);
+          doc.line(margin, pageHeight - 18, pageWidth - margin, pageHeight - 18);
+          doc.setFontSize(7);
+          doc.setFont(undefined, 'italic');
+          doc.setTextColor(80, 80, 80);
+          doc.text('New Hanover County Schools | Transportation Department | Vehicle Surveillance System', pageWidth / 2, pageHeight - 13, { align: 'center' });
+          doc.text(`Confidential Document | Bus #${busNumber} | ${moment().format('MM/DD/YYYY')}`, pageWidth / 2, pageHeight - 9, { align: 'center' });
+          doc.setTextColor(0, 0, 0);
+          // Return to new page
+          doc.setPage(doc.internal.getNumberOfPages());
         }
         doc.text(line, margin + 2, yPos);
         yPos += 4;
