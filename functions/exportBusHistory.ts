@@ -303,13 +303,20 @@ Deno.serve(async (req) => {
 
     // Legacy Data Upload
     if (bus.legacy_upload) {
+      // Check if we need a new page for legacy section (need at least 35 units)
+      if (yPos > pageHeight - 40) {
+        doc.addPage();
+        drawPageBorder();
+        yPos = margin + 4;
+      }
       addSection('LEGACY AUDIT / REPAIR LOG');
       const legacyText = sanitize(bus.legacy_upload);
       const legacyWrapped = doc.splitTextToSize(legacyText, pageWidth - 20);
       doc.setFontSize(8);
       doc.setFont(undefined, 'normal');
       legacyWrapped.forEach((line) => {
-        if (yPos > pageHeight - 20) {
+        // More aggressive page break check (need 12 units per line + margin)
+        if (yPos > pageHeight - 25) {
           doc.addPage();
           drawPageBorder();
           yPos = margin + 4;
