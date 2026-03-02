@@ -327,9 +327,15 @@ Deno.serve(async (req) => {
     // Footer on last page
     doc.setFontSize(7);
     doc.setTextColor(100, 100, 100);
-    const now = new Date();
-    const estTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
-    const reportTime = `${estTime.getMonth() + 1}/${estTime.getDate()}/${estTime.getFullYear()}-${String(estTime.getHours()).padStart(2, '0')}:${String(estTime.getMinutes()).padStart(2, '0')}`;
+    const nowFooter = new Date();
+    const utcFooter = nowFooter.getTime() + (nowFooter.getTimezoneOffset() * 60000);
+    const estFooter = new Date(utcFooter - (5 * 60 * 60 * 1000));
+    const footerMonth = estFooter.getMonth() + 1;
+    const footerDay = estFooter.getDate();
+    const footerYear = estFooter.getFullYear();
+    const footerHours = String(estFooter.getHours()).padStart(2, '0');
+    const footerMinutes = String(estFooter.getMinutes()).padStart(2, '0');
+    const reportTime = `${footerMonth}/${footerDay}/${footerYear}-${footerHours}:${footerMinutes}`;
     doc.text(`Master Backup | ${reportTime} (EST)`, margin, pageHeight - 4);
 
     const pdfBytes = doc.output('arraybuffer');
