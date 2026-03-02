@@ -45,11 +45,11 @@ export default function MasterBackup() {
     setExportFormat('XLSX');
     try {
       const response = await base44.functions.invoke('exportMasterCSV');
-      const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const blob = new Blob([response.data], { type: 'text/csv; charset=utf-8' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `master-backup-${new Date().toISOString().split('T')[0]}.xlsx`;
+      a.download = `master-backup-${new Date().toISOString().split('T')[0]}.csv`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
