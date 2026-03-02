@@ -154,26 +154,25 @@ Deno.serve(async (req) => {
       doc.setFontSize(9);
       doc.setFont(undefined, 'bold');
       doc.text(`${wo.order_number} | Bus #${wo.bus_number}`, margin + 2, yPos);
-      yPos += 4;
+      yPos += 5;
       doc.setFont(undefined, 'normal');
       doc.setFontSize(8);
-      doc.text(`Status: ${wo.status} | Reported by: ${sanitize(wo.reported_by)}`, margin + 4, yPos);
-      yPos += 3;
+      const statusLine = doc.splitTextToSize(`Status: ${wo.status} | Reported by: ${sanitize(wo.reported_by)}`, pageWidth - 8);
+      doc.text(statusLine, margin + 4, yPos);
+      yPos += statusLine.length * 3 + 2;
       if (wo.issue_description) {
-        const issueWrapped = doc.splitTextToSize(sanitize(wo.issue_description), pageWidth - 20);
-        doc.text('Issue: ', margin + 4, yPos);
-        doc.text(issueWrapped, margin + 6, yPos);
-        yPos += issueWrapped.length * 2.5 + 2;
+        const issueWrapped = doc.splitTextToSize(`Issue: ${sanitize(wo.issue_description)}`, pageWidth - 8);
+        doc.text(issueWrapped, margin + 4, yPos);
+        yPos += issueWrapped.length * 3 + 2;
       }
       if (wo.repairs_rendered) {
-        const repairsWrapped = doc.splitTextToSize(sanitize(wo.repairs_rendered), pageWidth - 30);
         doc.setFont(undefined, 'bold');
-        doc.text('Repairs: ', margin + 4, yPos);
+        const repairsWrapped = doc.splitTextToSize(`Repairs: ${sanitize(wo.repairs_rendered)}`, pageWidth - 8);
         doc.setFont(undefined, 'normal');
-        doc.text(repairsWrapped, margin + 6, yPos);
-        yPos += repairsWrapped.length * 3 + 3;
+        doc.text(repairsWrapped, margin + 4, yPos);
+        yPos += repairsWrapped.length * 3 + 2;
       }
-      yPos += 3;
+      yPos += 4;
       if (yPos > pageHeight - 20) {
         doc.addPage();
         addPageHeader();
