@@ -81,7 +81,7 @@ export default function MasterBackup() {
       <div style={{ background: 'hsl(220,18%,96%)', border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', padding: '10px 12px', display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
         <AlertCircle style={{ width: 16, height: 16, color: 'hsl(220,30%,45%)', flexShrink: 0, marginTop: '2px' }} />
         <div style={{ fontSize: '11px', color: 'hsl(220,20%,30%)', lineHeight: '1.5' }}>
-          This export includes all system data: Fleet vehicles, work orders, inspections, assets, H-drives, users, and service history. Choose PDF for a human-readable report or CSV for permanent archival in spreadsheet format.
+          This export includes all system data: Fleet vehicles, work orders, inspections, assets, H-drives, users, and service history. Choose PDF for a human-readable report or Excel for data in multi-sheet spreadsheet format.
         </div>
       </div>
 
