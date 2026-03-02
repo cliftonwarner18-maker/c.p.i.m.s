@@ -53,10 +53,10 @@ Deno.serve(async (req) => {
       doc.setFont(undefined, 'bold');
       doc.setFillColor(30, 60, 120);
       doc.setTextColor(255, 255, 255);
-      doc.rect(margin, yPos - 4, pageWidth - margin * 2, 6, 'F');
-      doc.text(title, margin + 2, yPos);
+      doc.rect(margin, yPos - 5, pageWidth - margin * 2, 7, 'F');
+      doc.text(title, margin + 4, yPos + 1);
       doc.setTextColor(0, 0, 0);
-      yPos += 8;
+      yPos += 10;
     };
 
     const addRow = (label, value) => {
