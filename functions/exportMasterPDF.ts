@@ -214,6 +214,37 @@ Deno.serve(async (req) => {
       yPos += 3;
     });
 
+    // Service History / Time Records
+    addSectionHeader('SERVICE HISTORY & TIME RECORDS');
+    busHistory.forEach((hist) => {
+      if (yPos > pageHeight - 12) {
+        doc.addPage();
+        addPageHeader();
+      }
+      doc.setFontSize(8);
+      doc.setFont(undefined, 'bold');
+      doc.text(`Bus #${hist.bus_number}`, margin + 2, yPos);
+      yPos += 3;
+      doc.setFont(undefined, 'normal');
+      doc.text(`${hist.technician} | ${sanitize(hist.description)} | ${hist.elapsed_minutes} min`, margin + 4, yPos);
+      yPos += 3;
+    });
+
+    // Custody Logs
+    addSectionHeader('H-DRIVE CUSTODY LOGS');
+    custodyLogs.forEach((log) => {
+      if (yPos > pageHeight - 12) {
+        doc.addPage();
+        addPageHeader();
+      }
+      doc.setFontSize(8);
+      doc.text(`${log.hdrive_serial} | ${log.transferred_from} → ${log.transferred_to}`, margin + 2, yPos);
+      yPos += 3;
+      doc.setFont(undefined, 'normal');
+      doc.text(`${sanitize(log.reason)} | ${log.new_location}`, margin + 4, yPos);
+      yPos += 3;
+    });
+
     // Footer on last page
     doc.setFontSize(7);
     doc.setTextColor(100, 100, 100);
