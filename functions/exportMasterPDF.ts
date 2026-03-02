@@ -123,7 +123,7 @@ Deno.serve(async (req) => {
     // Work Orders Section
     addSectionHeader('WORK ORDERS');
     workOrders.forEach((wo) => {
-      if (yPos > pageHeight - 16) {
+      if (yPos > pageHeight - 25) {
         doc.addPage();
         addPageHeader();
       }
@@ -135,6 +135,21 @@ Deno.serve(async (req) => {
       doc.setFontSize(8);
       doc.text(`Status: ${wo.status} | Reported by: ${sanitize(wo.reported_by)}`, margin + 4, yPos);
       yPos += 3;
+      if (wo.issue_description) {
+        const issueWrapped = doc.splitTextToSize(sanitize(wo.issue_description), pageWidth - 20);
+        doc.text('Issue: ', margin + 4, yPos);
+        doc.text(issueWrapped, margin + 6, yPos);
+        yPos += issueWrapped.length * 2.5 + 2;
+      }
+      if (wo.repairs_rendered) {
+        const repairsWrapped = doc.splitTextToSize(sanitize(wo.repairs_rendered), pageWidth - 20);
+        doc.setFont(undefined, 'bold');
+        doc.text('Repairs: ', margin + 4, yPos);
+        doc.setFont(undefined, 'normal');
+        doc.text(repairsWrapped, margin + 6, yPos);
+        yPos += repairsWrapped.length * 2.5 + 2;
+      }
+      yPos += 2;
     });
 
     // Inspections Section
