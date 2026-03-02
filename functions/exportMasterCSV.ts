@@ -1,5 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 import JSZip from 'npm:jszip@3.10.1';
+import XLSX from 'npm:xlsx@0.18.5';
 
 Deno.serve(async (req) => {
   try {
@@ -10,7 +11,7 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Fetch all data (all statuses, no filters)
+    // Fetch all data
     const [buses, workOrders, inspections, serializedAssets, nonSerializedAssets, hdrives, users, custodyLogs, busHistory] = await Promise.all([
       base44.entities.Bus.list(),
       base44.entities.WorkOrder.list(),
@@ -23,56 +24,42 @@ Deno.serve(async (req) => {
       base44.entities.BusHistory.list(),
     ]);
 
-    const sanitize = (val) => {
-      if (val === null || val === undefined) return '""';
-      const str = String(val).replace(/"/g, '""');
-      if (str.includes(',') || str.includes('"') || str.includes('\n')) {
-        return `"${str}"`;
-      }
-      return str;
+    // Helper to create Excel workbook from data
+    const createExcel = (data, columns) => {
+      const workbook = XLSX.utils.book_new();
+      const worksheet = XLSX.utils.json_to_sheet(data.map(row => {
+        const obj = {};
+        columns.forEach(col => {
+          obj[col] = row[col] || '';
+        });
+        return obj;
+      }));
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
+      return XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
     };
 
-    // Helper to create CSV from array of objects
-    const createCSV = (data, columns) => {
-      if (!data.length) return columns.join(',') + '\n';
-      const header = columns.join(',');
-      const rows = data.map((row) =>
-        columns.map((col) => sanitize(row[col])).join(',')
-      );
-      return [header, ...rows].join('\n');
-    };
+    // Create Excel files
+    const buses_xlsx = createExcel(buses, ['bus_number', 'bus_type', 'base_location', 'year', 'make', 'model', 'vin', 'passenger_capacity', 'status', 'camera_system_type', 'next_inspection_due']);
+    const workOrders_xlsx = createExcel(workOrders, ['order_number', 'bus_number', 'reported_by', 'issue_description', 'status', 'technician_name', 'repairs_rendered', 'completed_date']);
+    const inspections_xlsx = createExcel(inspections, ['inspection_number', 'bus_number', 'inspector_name', 'inspection_date', 'camera_system_functional', 'overall_status', 'next_inspection_due']);
+    const serializedAssets_xlsx = createExcel(serializedAssets, ['asset_number', 'brand', 'model', 'serial_number', 'asset_type', 'status', 'assigned_bus_number']);
+    const nonSerializedAssets_xlsx = createExcel(nonSerializedAssets, ['part_name', 'brand', 'model_number', 'use', 'quantity_on_hand', 'current_location']);
+    const hdrives_xlsx = createExcel(hdrives, ['serial_number', 'make', 'model', 'current_user', 'current_lot', 'current_location', 'seized', 'seizing_agency', 'seizure_date']);
+    const users_xlsx = createExcel(users, ['full_name', 'email', 'role']);
+    const custodyLogs_xlsx = createExcel(custodyLogs, ['hdrive_serial', 'transferred_from', 'transferred_to', 'previous_location', 'new_location', 'reason', 'transfer_date']);
+    const busHistory_xlsx = createExcel(busHistory, ['bus_number', 'technician', 'description', 'start_time', 'end_time', 'elapsed_minutes']);
 
-    // Create individual CSV files
-    const buses_csv = createCSV(buses, ['bus_number', 'bus_type', 'base_location', 'year', 'make', 'model', 'vin', 'passenger_capacity', 'status', 'camera_system_type', 'next_inspection_due']);
-    
-    const workOrders_csv = createCSV(workOrders, ['order_number', 'bus_number', 'reported_by', 'issue_description', 'status', 'technician_name', 'repairs_rendered', 'completed_date']);
-    
-    const inspections_csv = createCSV(inspections, ['inspection_number', 'bus_number', 'inspector_name', 'inspection_date', 'camera_system_functional', 'overall_status', 'next_inspection_due']);
-    
-    const serializedAssets_csv = createCSV(serializedAssets, ['asset_number', 'brand', 'model', 'serial_number', 'asset_type', 'status', 'assigned_bus_number']);
-    
-    const nonSerializedAssets_csv = createCSV(nonSerializedAssets, ['part_name', 'brand', 'model_number', 'use', 'quantity_on_hand', 'current_location']);
-    
-    const hdrives_csv = createCSV(hdrives, ['serial_number', 'make', 'model', 'current_user', 'current_lot', 'current_location', 'seized', 'seizing_agency', 'seizure_date']);
-    
-    const users_csv = createCSV(users, ['full_name', 'email', 'role']);
-    
-    const custodyLogs_csv = createCSV(custodyLogs, ['hdrive_serial', 'transferred_from', 'transferred_to', 'previous_location', 'new_location', 'reason', 'transfer_date']);
-    
-    const busHistory_csv = createCSV(busHistory, ['bus_number', 'technician', 'description', 'start_time', 'end_time', 'elapsed_minutes']);
-
-    // Create zip file with individual CSVs
+    // Create zip with Excel files
     const zip = new JSZip();
-    
-    zip.file('Buses.csv', buses_csv);
-    zip.file('WorkOrders.csv', workOrders_csv);
-    zip.file('Inspections.csv', inspections_csv);
-    zip.file('BusHistory.csv', busHistory_csv);
-    zip.file('SerializedAssets.csv', serializedAssets_csv);
-    zip.file('NonSerializedAssets.csv', nonSerializedAssets_csv);
-    zip.file('HDrives.csv', hdrives_csv);
-    zip.file('CustodyLogs.csv', custodyLogs_csv);
-    zip.file('SystemUsers.csv', users_csv);
+    zip.file('Buses.xlsx', new Uint8Array(buses_xlsx));
+    zip.file('WorkOrders.xlsx', new Uint8Array(workOrders_xlsx));
+    zip.file('Inspections.xlsx', new Uint8Array(inspections_xlsx));
+    zip.file('BusHistory.xlsx', new Uint8Array(busHistory_xlsx));
+    zip.file('SerializedAssets.xlsx', new Uint8Array(serializedAssets_xlsx));
+    zip.file('NonSerializedAssets.xlsx', new Uint8Array(nonSerializedAssets_xlsx));
+    zip.file('HDrives.xlsx', new Uint8Array(hdrives_xlsx));
+    zip.file('CustodyLogs.xlsx', new Uint8Array(custodyLogs_xlsx));
+    zip.file('SystemUsers.xlsx', new Uint8Array(users_xlsx));
 
     const zipBuffer = await zip.generateAsync({ type: 'arraybuffer' });
     return new Response(new Uint8Array(zipBuffer), {
