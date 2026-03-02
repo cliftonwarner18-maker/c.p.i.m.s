@@ -71,7 +71,7 @@ Deno.serve(async (req) => {
     zip.file('CustodyLogs.csv', custodyLogs_csv);
     zip.file('SystemUsers.csv', users_csv);
 
-    const zipBuffer = await zip.generateAsync({ type: 'arraybuffer' });
+    const zipBuffer = await zip.generateAsync({ type: 'uint8array' });
     return new Response(zipBuffer, {
       status: 200,
       headers: {
