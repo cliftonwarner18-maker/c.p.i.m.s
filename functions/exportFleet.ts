@@ -71,6 +71,11 @@ Deno.serve(async (req) => {
       y += 6;
     }
 
+    if (stopArmOnly) {
+      doc.text('Filter: Stop Arm Cameras Only', pageWidth / 2, y, { align: 'center' });
+      y += 6;
+    }
+
     y += 4;
 
     // Headers
