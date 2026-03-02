@@ -57,7 +57,7 @@ export default function FleetTable({ buses, busNumCounts, vinCounts = {}, onEdit
               const statusStyle = STATUS_STYLES[b.status] || STATUS_STYLES['Active'];
 
               return (
-                <tr key={b.id} style={{ background: rowBg, borderBottom: '1px solid hsl(220,18%,90%)', outline: isDup ? '2px solid hsl(0,65%,60%)' : 'none' }}>
+                <tr key={b.id} style={{ background: rowBg, borderBottom: '1px solid hsl(220,18%,90%)', outline: (isDup || isDupVin) ? '2px solid hsl(0,65%,60%)' : 'none' }}>
                   {/* Bus # */}
                   <td style={{ padding: '5px 8px', fontWeight: '700', whiteSpace: 'nowrap' }}>
                     {isDup && (
