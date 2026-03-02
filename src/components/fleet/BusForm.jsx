@@ -177,12 +177,21 @@ export default function BusForm({ bus, onClose, onSaved }) {
             <Field label="# OUTSIDE CAMERAS">
               <input type="number" min="0" className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.cameras_outside} onChange={e => setForm(prev => ({...prev, cameras_outside: e.target.value}))} placeholder="0" />
             </Field>
+            <Field label="# AI CAMERAS">
+              <input type="number" min="0" className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.cameras_ai} onChange={e => setForm(prev => ({...prev, cameras_ai: e.target.value}))} placeholder="0" />
+            </Field>
             <div style={{background:'hsl(220,18%,96%)',border:'1px solid hsl(220,18%,78%)',padding:'6px 8px',fontSize:'11px',marginBottom:'12px'}}>
-              <span style={{fontWeight:'700'}}>TOTAL CAMERAS: </span>
+              <span style={{fontWeight:'700'}}>TOTAL CAMERAS INSTALLED: </span>
               <span style={{color:'hsl(220,70%,35%)',fontWeight:'700'}}>
-                {(Number(form.cameras_inside)||0) + (Number(form.cameras_outside)||0)}
+                {(Number(form.cameras_inside)||0) + (Number(form.cameras_outside)||0) + (Number(form.cameras_ai)||0)}
               </span>
-              <span style={{fontSize:'10px',color:'hsl(220,10%,50%)',marginLeft:'6px'}}>({Number(form.cameras_inside)||0} inside + {Number(form.cameras_outside)||0} outside)</span>
+              <span style={{fontSize:'10px',color:'hsl(220,10%,50%)',marginLeft:'6px'}}>
+                ({Number(form.cameras_inside)||0} inside + {Number(form.cameras_outside)||0} outside + {Number(form.cameras_ai)||0} AI)
+              </span>
+            </div>
+            <div style={{display:'flex',alignItems:'center',gap:'4px',fontSize:'11px',cursor:'pointer',marginBottom:'8px'}}>
+              <input type="checkbox" checked={form.ai_cameras_installed} onChange={e => setForm(prev => ({...prev, ai_cameras_installed: e.target.checked}))} style={{accentColor:'hsl(220,70%,35%)'}} />
+              AI CAMERAS INSTALLED
             </div>
             <div style={{display:'flex',alignItems:'center',gap:'4px',fontSize:'11px',cursor:'pointer',marginBottom:'12px'}}>
               <input type="checkbox" checked={form.stop_arm_cameras} onChange={e => setForm(prev => ({...prev, stop_arm_cameras: e.target.checked}))} style={{accentColor:'hsl(220,70%,35%)'}} />
