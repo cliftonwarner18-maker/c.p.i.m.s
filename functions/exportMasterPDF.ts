@@ -335,8 +335,8 @@ Deno.serve(async (req) => {
     const footerYear = estFooter.getFullYear();
     const footerHours = String(estFooter.getHours()).padStart(2, '0');
     const footerMinutes = String(estFooter.getMinutes()).padStart(2, '0');
-    const reportTime = `${footerMonth}/${footerDay}/${footerYear}-${footerHours}:${footerMinutes}`;
-    doc.text(`Master Backup | ${reportTime} (EST)`, margin, pageHeight - 4);
+    const reportTimeFooter = `${footerMonth}/${footerDay}/${footerYear}-${footerHours}:${footerMinutes}`;
+    doc.text(`Master Backup | ${reportTimeFooter} (EST)`, margin, pageHeight - 4);
 
     const pdfBytes = doc.output('arraybuffer');
     return new Response(pdfBytes, {
