@@ -4,7 +4,7 @@ import { createPageUrl } from '@/utils';
 import { format } from 'date-fns';
 import { 
   LayoutDashboard, Bus, FileText, ClipboardCheck, 
-  PlusCircle, Database, Package2, HardDrive, ShieldAlert
+  PlusCircle, Database, Package2, HardDrive, ShieldAlert, Download
 } from 'lucide-react';
 
 const navItems = [
