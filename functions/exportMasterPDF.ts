@@ -93,11 +93,13 @@ Deno.serve(async (req) => {
     // Summary Stats
     addSectionHeader('BACKUP SUMMARY');
     addRow('Fleet Vehicles', buses.length);
-    addRow('Work Orders', workOrders.length);
-    addRow('Inspections', inspections.length);
+    addRow('Work Orders (All Statuses)', workOrders.length);
+    addRow('Inspections (Completed & Due)', inspections.length);
+    addRow('Service History Records', busHistory.length);
     addRow('Serialized Assets', serializedAssets.length);
     addRow('Spare Parts', nonSerializedAssets.length);
     addRow('H-Drives', hdrives.length);
+    addRow('Custody Logs', custodyLogs.length);
     addRow('System Users', users.length);
 
     // Vehicles Section
