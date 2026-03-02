@@ -25,7 +25,7 @@ const Badge = ({ label, style }) => (
   </span>
 );
 
-export default function FleetTable({ buses, busNumCounts, onEdit, onDelete }) {
+export default function FleetTable({ buses, busNumCounts, vinCounts = {}, onEdit, onDelete }) {
   if (buses.length === 0) {
     return (
       <div style={{ background: 'white', border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', padding: '40px', textAlign: 'center', color: 'hsl(220,10%,50%)', fontSize: '12px', letterSpacing: '0.06em' }}>
