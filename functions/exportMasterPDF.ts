@@ -105,15 +105,30 @@ Deno.serve(async (req) => {
 
     // Summary Stats
     addSectionHeader('BACKUP SUMMARY');
-    addRow('Fleet Vehicles', buses.length);
-    addRow('Work Orders (All Statuses)', workOrders.length);
-    addRow('Inspections (Completed & Due)', inspections.length);
-    addRow('Service History Records', busHistory.length);
-    addRow('Serialized Assets', serializedAssets.length);
-    addRow('Spare Parts', nonSerializedAssets.length);
-    addRow('H-Drives', hdrives.length);
-    addRow('Custody Logs', custodyLogs.length);
-    addRow('System Users', users.length);
+    doc.setFontSize(9);
+    const summaryItems = [
+      { label: 'Fleet Vehicles', value: buses.length },
+      { label: 'Work Orders (All Statuses)', value: workOrders.length },
+      { label: 'Inspections (Completed & Due)', value: inspections.length },
+      { label: 'Service History Records', value: busHistory.length },
+      { label: 'Serialized Assets', value: serializedAssets.length },
+      { label: 'Spare Parts', value: nonSerializedAssets.length },
+      { label: 'H-Drives', value: hdrives.length },
+      { label: 'Custody Logs', value: custodyLogs.length },
+      { label: 'System Users', value: users.length },
+    ];
+    summaryItems.forEach((item) => {
+      if (yPos > pageHeight - 8) {
+        doc.addPage();
+        addPageHeader();
+      }
+      doc.setFont(undefined, 'bold');
+      doc.text(item.label, margin + 4, yPos);
+      doc.setFont(undefined, 'normal');
+      doc.text(String(item.value), pageWidth - margin - 15, yPos, { align: 'right' });
+      yPos += 5;
+    });
+    yPos += 5;
 
     // Vehicles Section
     addSectionHeader('FLEET VEHICLES - DETAILED SPECIFICATION');
