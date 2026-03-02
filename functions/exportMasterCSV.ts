@@ -56,9 +56,8 @@ Deno.serve(async (req) => {
     addSheet(custodyLogs, ['hdrive_serial', 'transferred_from', 'transferred_to', 'previous_location', 'new_location', 'reason', 'transfer_date'], 'CustodyLogs');
     addSheet(users, ['full_name', 'email', 'role'], 'SystemUsers');
 
-    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-    const uint8Array = new Uint8Array(excelBuffer);
-    return new Response(uint8Array, {
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array', compression: 'DEFLATE' });
+    return new Response(new Uint8Array(excelBuffer), {
       status: 200,
       headers: {
         'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
