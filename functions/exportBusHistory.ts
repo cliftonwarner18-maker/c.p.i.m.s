@@ -304,10 +304,20 @@ Deno.serve(async (req) => {
     // Legacy Data Upload
     if (bus.legacy_upload) {
       addSection('LEGACY AUDIT / REPAIR LOG');
-      const legacyWrapped = doc.splitTextToSize(sanitize(bus.legacy_upload), pageWidth - 20);
-      doc.setFontSize(9);
-      doc.text(legacyWrapped, margin + 2, yPos);
-      yPos += legacyWrapped.length * 3.5 + 2;
+      const legacyText = sanitize(bus.legacy_upload);
+      const legacyWrapped = doc.splitTextToSize(legacyText, pageWidth - 20);
+      doc.setFontSize(8);
+      doc.setFont(undefined, 'normal');
+      legacyWrapped.forEach((line) => {
+        if (yPos > pageHeight - 20) {
+          doc.addPage();
+          drawPageBorder();
+          yPos = margin + 4;
+        }
+        doc.text(line, margin + 2, yPos);
+        yPos += 4;
+      });
+      yPos += 3;
     }
 
     // Footer line on last page
