@@ -191,10 +191,19 @@ export default function BusProfile() {
               <Field label="Camera Model Number" value={bus.camera_model_number} />
               <Field label="Inside Cameras" value={bus.cameras_inside != null ? String(bus.cameras_inside) : '—'} />
               <Field label="Outside Cameras" value={bus.cameras_outside != null ? String(bus.cameras_outside) : '—'} />
-              <Field label="Total Cameras" value={
-                (bus.cameras_inside != null || bus.cameras_outside != null)
-                  ? <span style={{fontWeight:'700',color:'hsl(220,70%,35%)'}}>{(bus.cameras_inside||0)+(bus.cameras_outside||0)} <span style={{fontSize:'10px',color:'hsl(220,10%,50%)',fontWeight:'400'}}>({bus.cameras_inside||0} in / {bus.cameras_outside||0} out)</span></span>
-                  : null
+              <Field label="AI Cameras" value={bus.cameras_ai != null ? String(bus.cameras_ai) : '—'} />
+              <Field label="Total Cameras Installed" value={
+                (() => {
+                  const total = (bus.cameras_inside||0)+(bus.cameras_outside||0)+(bus.cameras_ai||0);
+                  const parts = [];
+                  if (bus.cameras_inside != null) parts.push(`${bus.cameras_inside} inside`);
+                  if (bus.cameras_outside != null) parts.push(`${bus.cameras_outside} outside`);
+                  if (bus.cameras_ai != null) parts.push(`${bus.cameras_ai} AI`);
+                  return <span style={{fontWeight:'700',color:'hsl(220,70%,35%)'}}>{total} <span style={{fontSize:'10px',color:'hsl(220,10%,50%)',fontWeight:'400'}}>{parts.length ? `(${parts.join(' + ')})` : ''}</span></span>;
+                })()
+              } />
+              <Field label="AI Cameras Installed" value={
+                <span style={{fontWeight:'700',color: bus.ai_cameras_installed ? 'hsl(140,55%,30%)' : 'hsl(0,60%,40%)'}}>{bus.ai_cameras_installed ? '✓ YES' : '✗ NO'}</span>
               } />
               <Field label="Stop Arm Violation Cameras" value={
                 <span style={{fontWeight:'700',color: bus.stop_arm_cameras ? 'hsl(140,55%,30%)' : 'hsl(0,60%,40%)'}}>{bus.stop_arm_cameras ? '✓ INSTALLED' : '✗ NOT INSTALLED'}</span>

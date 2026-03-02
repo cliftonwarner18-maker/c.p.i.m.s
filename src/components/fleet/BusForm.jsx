@@ -23,7 +23,7 @@ export default function BusForm({ bus, onClose, onSaved }) {
     bus_number: '', bus_type: 'School Bus', base_location: 'Main', year: '', make: '', model: '',
     vin: '', engine: '', passenger_capacity: '', wheelchair_accessible: false,
     asset_number: '', camera_system_type: 'None', camera_serial_number: '',
-    camera_model_number: '', cameras_inside: '', cameras_outside: '', stop_arm_cameras: false,
+    camera_model_number: '', cameras_inside: '', cameras_outside: '', cameras_ai: '', ai_cameras_installed: false, stop_arm_cameras: false,
     samsara_enabled: false, samsara_av_enabled: false,
     samsara_inputs_enabled: false, dash_cam_sid: '', gateway_sid: '',
     next_inspection_due: '', status: 'Active', notes: '', legacy_upload: '',
