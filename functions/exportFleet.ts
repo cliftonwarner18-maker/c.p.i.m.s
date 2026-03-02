@@ -12,7 +12,7 @@ Deno.serve(async (req) => {
     }
 
     const body = await req.json();
-    const { locationFilter, busTypeFilter } = body;
+    const { locationFilter, busTypeFilter, stopArmOnly } = body;
 
     let buses = await base44.entities.Bus.list();
     
@@ -22,6 +22,10 @@ Deno.serve(async (req) => {
 
     if (busTypeFilter && busTypeFilter !== 'All') {
       buses = buses.filter(b => b.bus_type === busTypeFilter);
+    }
+
+    if (stopArmOnly) {
+      buses = buses.filter(b => b.stop_arm_cameras === true);
     }
 
     // Sanitize function
