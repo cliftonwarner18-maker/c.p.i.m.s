@@ -44,12 +44,12 @@ export default function MasterBackup() {
     setIsExporting(true);
     setExportFormat('XLSX');
     try {
-      const response = await base44.functions.invoke('exportMasterCSV');
-      const blob = new Blob([response.data], { type: 'text/csv; charset=utf-8' });
+      const response = await base44.functions.invoke('exportMasterDataZip');
+      const blob = new Blob([response.data], { type: 'application/zip' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `master-backup-${new Date().toISOString().split('T')[0]}.csv`;
+      a.download = `master-backup-${new Date().toISOString().split('T')[0]}.zip`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
