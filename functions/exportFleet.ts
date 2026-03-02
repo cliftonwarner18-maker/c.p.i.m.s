@@ -70,41 +70,49 @@ Deno.serve(async (req) => {
     y += 4;
 
     // Headers
-    doc.setFontSize(9);
+    doc.setFontSize(8);
     doc.setFont(undefined, 'bold');
-    const headers = ['Bus #', 'Type', 'Location', 'Year', 'Make', 'Model', 'Status'];
-    const colWidths = [18, 20, 20, 15, 20, 25, 22];
+    const headers = ['Bus #', 'Type', 'Location', 'Year', 'Make/Model', 'Status', 'Cam System', 'In', 'Out', 'Total', 'Stop Arm'];
+    const colWidths = [14, 18, 16, 12, 30, 18, 20, 8, 8, 10, 18];
     let x = 8;
     headers.forEach((header, i) => {
       doc.text(header, x, y);
       x += colWidths[i];
     });
-    y += 6;
+    y += 2;
+    doc.setDrawColor(100, 100, 100);
+    doc.line(8, y, pageWidth - 8, y);
+    y += 5;
 
     // Data rows
     doc.setFont(undefined, 'normal');
-    doc.setFontSize(8);
+    doc.setFontSize(7.5);
     buses.forEach(bus => {
       if (y > pageHeight - 15) {
         doc.addPage();
         y = 10;
       }
       
+      const inside = bus.cameras_inside != null ? String(bus.cameras_inside) : '-';
+      const outside = bus.cameras_outside != null ? String(bus.cameras_outside) : '-';
+      const total = (bus.cameras_inside != null || bus.cameras_outside != null)
+        ? String((bus.cameras_inside || 0) + (bus.cameras_outside || 0))
+        : '-';
+      const stopArm = bus.stop_arm_cameras ? 'YES' : 'NO';
+
       x = 8;
-      doc.text(sanitize(bus.bus_number) || '-', x, y);
-      x += colWidths[0];
-      doc.text((sanitize(bus.bus_type) || '-').substring(0, 15), x, y);
-      x += colWidths[1];
-      doc.text(sanitize(bus.base_location) || '-', x, y);
-      x += colWidths[2];
-      doc.text(sanitize(bus.year) || '-', x, y);
-      x += colWidths[3];
-      doc.text((sanitize(bus.make) || '-').substring(0, 15), x, y);
-      x += colWidths[4];
-      doc.text((sanitize(bus.model) || '-').substring(0, 20), x, y);
-      x += colWidths[5];
-      doc.text(sanitize(bus.status) || '-', x, y);
-      y += 6;
+      doc.text(sanitize(bus.bus_number) || '-', x, y); x += colWidths[0];
+      doc.text((sanitize(bus.bus_type) || '-').substring(0, 12), x, y); x += colWidths[1];
+      doc.text(sanitize(bus.base_location) || '-', x, y); x += colWidths[2];
+      doc.text(sanitize(bus.year) || '-', x, y); x += colWidths[3];
+      doc.text(`${(sanitize(bus.make)||'-')} ${(sanitize(bus.model)||'')}`.trim().substring(0, 22), x, y); x += colWidths[4];
+      doc.text(sanitize(bus.status) || '-', x, y); x += colWidths[5];
+      doc.text((sanitize(bus.camera_system_type) || '-').substring(0, 14), x, y); x += colWidths[6];
+      doc.text(inside, x, y); x += colWidths[7];
+      doc.text(outside, x, y); x += colWidths[8];
+      doc.text(total, x, y); x += colWidths[9];
+      doc.text(stopArm, x, y);
+      y += 5.5;
     });
 
     // Footer
