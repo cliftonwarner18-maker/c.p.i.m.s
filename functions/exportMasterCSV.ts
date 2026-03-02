@@ -24,9 +24,12 @@ Deno.serve(async (req) => {
     ]);
 
     const sanitize = (val) => {
-      if (val === null || val === undefined) return '';
+      if (val === null || val === undefined) return '""';
       const str = String(val).replace(/"/g, '""');
-      return `"${str}"`;
+      if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+        return `"${str}"`;
+      }
+      return str;
     };
 
     // Helper to create CSV from array of objects
