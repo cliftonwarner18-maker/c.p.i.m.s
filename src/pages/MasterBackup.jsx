@@ -40,22 +40,22 @@ export default function MasterBackup() {
     }
   };
 
-  const handleExportCSV = async () => {
+  const handleExportXLSX = async () => {
     setIsExporting(true);
-    setExportFormat('CSV');
+    setExportFormat('XLSX');
     try {
       const response = await base44.functions.invoke('exportMasterCSV');
-      const blob = new Blob([response.data], { type: 'application/zip' });
+      const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `master-backup-${new Date().toISOString().split('T')[0]}.zip`;
+      a.download = `master-backup-${new Date().toISOString().split('T')[0]}.xlsx`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
       a.remove();
     } catch (error) {
-      alert('Error exporting CSV: ' + error.message);
+      alert('Error exporting spreadsheet: ' + error.message);
     } finally {
       setIsExporting(false);
       setExportFormat(null);

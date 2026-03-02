@@ -55,11 +55,11 @@ import FleetManager from './pages/FleetManager';
 import HdriveManagement from './pages/HdriveManagement';
 import InspectionDetail from './pages/InspectionDetail';
 import Inspections from './pages/Inspections';
+import MasterBackup from './pages/MasterBackup';
 import NewInspection from './pages/NewInspection';
 import NewWorkOrder from './pages/NewWorkOrder';
 import WorkOrderDetail from './pages/WorkOrderDetail';
 import WorkOrders from './pages/WorkOrders';
-import MasterBackup from './pages/MasterBackup';
 import __Layout from './Layout.jsx';
 
 
@@ -72,11 +72,11 @@ export const PAGES = {
     "HdriveManagement": HdriveManagement,
     "InspectionDetail": InspectionDetail,
     "Inspections": Inspections,
+    "MasterBackup": MasterBackup,
     "NewInspection": NewInspection,
     "NewWorkOrder": NewWorkOrder,
     "WorkOrderDetail": WorkOrderDetail,
     "WorkOrders": WorkOrders,
-    "MasterBackup": MasterBackup,
 }
 
 export const pagesConfig = {
