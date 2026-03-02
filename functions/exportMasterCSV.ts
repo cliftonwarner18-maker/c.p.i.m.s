@@ -58,46 +58,25 @@ Deno.serve(async (req) => {
     
     const busHistory_csv = createCSV(busHistory, ['bus_number', 'technician', 'description', 'start_time', 'end_time', 'elapsed_minutes']);
 
-    // Combine all CSVs into a single text blob with separators
-    const combinedContent = [
-      '=== MASTER SYSTEM BACKUP - CSV ARCHIVE ===',
-      new Date().toISOString(),
-      '',
-      '=== FLEET VEHICLES ===',
-      buses_csv,
-      '',
-      '=== WORK ORDERS (ALL STATUSES) ===',
-      workOrders_csv,
-      '',
-      '=== INSPECTIONS (COMPLETED & DUE) ===',
-      inspections_csv,
-      '',
-      '=== SERVICE HISTORY & TIME RECORDS ===',
-      busHistory_csv,
-      '',
-      '=== SERIALIZED ASSETS ===',
-      serializedAssets_csv,
-      '',
-      '=== SPARE PARTS ===',
-      nonSerializedAssets_csv,
-      '',
-      '=== H-DRIVES ===',
-      hdrives_csv,
-      '',
-      '=== CUSTODY LOGS ===',
-      custodyLogs_csv,
-      '',
-      '=== SYSTEM USERS ===',
-      users_csv,
-    ].join('\n');
+    // Create zip file with individual CSVs
+    const zip = new JSZip();
+    
+    zip.file('Buses.csv', buses_csv);
+    zip.file('WorkOrders.csv', workOrders_csv);
+    zip.file('Inspections.csv', inspections_csv);
+    zip.file('BusHistory.csv', busHistory_csv);
+    zip.file('SerializedAssets.csv', serializedAssets_csv);
+    zip.file('NonSerializedAssets.csv', nonSerializedAssets_csv);
+    zip.file('HDrives.csv', hdrives_csv);
+    zip.file('CustodyLogs.csv', custodyLogs_csv);
+    zip.file('SystemUsers.csv', users_csv);
 
-    // Return as text file (client can save as .txt or .csv)
-    const buffer = new TextEncoder().encode(combinedContent);
-    return new Response(buffer, {
+    const zipBuffer = await zip.generateAsync({ type: 'arraybuffer' });
+    return new Response(zipBuffer, {
       status: 200,
       headers: {
-        'Content-Type': 'text/csv',
-        'Content-Disposition': 'attachment; filename=master-backup.csv',
+        'Content-Type': 'application/zip',
+        'Content-Disposition': 'attachment; filename=master-backup.zip',
       },
     });
   } catch (error) {
