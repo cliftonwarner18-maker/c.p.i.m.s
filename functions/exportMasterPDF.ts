@@ -189,22 +189,21 @@ Deno.serve(async (req) => {
       doc.setFontSize(9);
       doc.setFont(undefined, 'bold');
       doc.text(`Bus #${insp.bus_number} | ${insp.inspection_number}`, margin + 2, yPos);
-      yPos += 4;
+      yPos += 5;
       doc.setFont(undefined, 'normal');
       doc.setFontSize(8);
-      doc.text(`Inspector: ${sanitize(insp.inspector_name)} | Date: ${insp.inspection_date || 'N/A'}`, margin + 4, yPos);
-      yPos += 3;
-      doc.text(`Camera: ${insp.camera_system_functional ? 'OK' : 'FAIL'} | DVR: ${insp.dvr_functional ? 'OK' : 'FAIL'} | Status: ${insp.overall_status}`, margin + 4, yPos);
-      yPos += 3;
+      const inspectorLine = doc.splitTextToSize(`Inspector: ${sanitize(insp.inspector_name)} | Date: ${insp.inspection_date || 'N/A'}`, pageWidth - 8);
+      doc.text(inspectorLine, margin + 4, yPos);
+      yPos += inspectorLine.length * 3 + 1;
+      const statusLine = doc.splitTextToSize(`Camera: ${insp.camera_system_functional ? 'OK' : 'FAIL'} | DVR: ${insp.dvr_functional ? 'OK' : 'FAIL'} | Status: ${insp.overall_status}`, pageWidth - 8);
+      doc.text(statusLine, margin + 4, yPos);
+      yPos += statusLine.length * 3 + 1;
       if (insp.inspection_notes) {
-        const notesWrapped = doc.splitTextToSize(sanitize(insp.inspection_notes), pageWidth - 20);
-        doc.setFont(undefined, 'bold');
-        doc.text('Notes: ', margin + 4, yPos);
-        doc.setFont(undefined, 'normal');
-        doc.text(notesWrapped, margin + 6, yPos);
-        yPos += notesWrapped.length * 2.5 + 2;
+        const notesWrapped = doc.splitTextToSize(`Notes: ${sanitize(insp.inspection_notes)}`, pageWidth - 8);
+        doc.text(notesWrapped, margin + 4, yPos);
+        yPos += notesWrapped.length * 3 + 2;
       }
-      yPos += 2;
+      yPos += 4;
     });
 
     // Assets Section
