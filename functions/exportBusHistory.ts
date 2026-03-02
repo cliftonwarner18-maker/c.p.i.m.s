@@ -303,8 +303,8 @@ Deno.serve(async (req) => {
 
     // Legacy Data Upload
     if (bus.legacy_upload) {
-      // Check if we need a new page for legacy section (need at least 35 units)
-      if (yPos > pageHeight - 40) {
+      // Check if we need a new page for legacy section (need at least 50 units including footer)
+      if (yPos > pageHeight - 50) {
         doc.addPage();
         drawPageBorder();
         yPos = margin + 4;
@@ -315,8 +315,8 @@ Deno.serve(async (req) => {
       doc.setFontSize(8);
       doc.setFont(undefined, 'normal');
       legacyWrapped.forEach((line) => {
-        // More aggressive page break check (need 12 units per line + margin)
-        if (yPos > pageHeight - 25) {
+        // Check if line fits with footer space reserved (35 units from bottom)
+        if (yPos > pageHeight - 35) {
           doc.addPage();
           drawPageBorder();
           yPos = margin + 4;
