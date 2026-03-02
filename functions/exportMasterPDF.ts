@@ -316,7 +316,7 @@ Deno.serve(async (req) => {
     doc.setFontSize(7);
     doc.setTextColor(100, 100, 100);
     const reportTime = moment.tz('America/New_York').format('M/D/YYYY-HH:mm');
-    doc.text(`Master Backup | ${reportTime}`, margin, pageHeight - 4);
+    doc.text(`Master Backup | ${reportTime} (EST)`, margin, pageHeight - 4);
 
     const pdfBytes = doc.output('arraybuffer');
     return new Response(pdfBytes, {
