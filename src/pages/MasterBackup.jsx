@@ -185,8 +185,8 @@ export default function MasterBackup() {
           >
             <Download style={{ width: 16, height: 16 }} />
             <div style={{ textAlign: 'left' }}>
-              <div style={{ fontSize: '12px', fontWeight: '700' }}>EXCEL (ZIP)</div>
-              <div style={{ fontSize: '9px', opacity: 0.8 }}>{isExporting && exportFormat === 'XLSX' ? 'Exporting...' : '10 CSV files in ZIP'}</div>
+              <div style={{ fontSize: '12px', fontWeight: '700' }}>EXCEL (TAR)</div>
+              <div style={{ fontSize: '9px', opacity: 0.8 }}>{isExporting && exportFormat === 'XLSX' ? 'Exporting...' : '10 CSV files uncompressed'}</div>
             </div>
           </button>
         </div>
