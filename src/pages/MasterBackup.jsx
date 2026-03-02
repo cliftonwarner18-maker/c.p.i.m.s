@@ -45,11 +45,11 @@ export default function MasterBackup() {
     setExportFormat('XLSX');
     try {
       const response = await base44.functions.invoke('exportMasterDataZip');
-      const blob = new Blob([response.data], { type: 'application/zip' });
+      const blob = new Blob([response.data], { type: 'application/x-tar' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `master-backup-${new Date().toISOString().split('T')[0]}.zip`;
+      a.download = `master-backup-${new Date().toISOString().split('T')[0]}.tar`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
