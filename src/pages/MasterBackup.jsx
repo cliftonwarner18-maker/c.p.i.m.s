@@ -119,7 +119,7 @@ export default function MasterBackup() {
       <div style={{ background: 'hsl(220,18%,96%)', border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', padding: '12px' }}>
         <div style={{ fontSize: '11px', fontWeight: '700', color: 'hsl(220,20%,30%)', letterSpacing: '0.06em', marginBottom: '10px' }}>EXPORT FORMAT</div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '8px' }}>
           {/* PDF Export */}
           <button
             onClick={handleExportPDF}
