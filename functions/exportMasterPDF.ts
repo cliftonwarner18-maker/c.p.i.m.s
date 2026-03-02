@@ -155,7 +155,7 @@ Deno.serve(async (req) => {
     // Inspections Section
     addSectionHeader('INSPECTIONS');
     inspections.forEach((insp) => {
-      if (yPos > pageHeight - 16) {
+      if (yPos > pageHeight - 30) {
         doc.addPage();
         addPageHeader();
       }
@@ -165,8 +165,19 @@ Deno.serve(async (req) => {
       yPos += 4;
       doc.setFont(undefined, 'normal');
       doc.setFontSize(8);
-      doc.text(`Inspector: ${sanitize(insp.inspector_name)} | Status: ${insp.overall_status}`, margin + 4, yPos);
+      doc.text(`Inspector: ${sanitize(insp.inspector_name)} | Date: ${insp.inspection_date || 'N/A'}`, margin + 4, yPos);
       yPos += 3;
+      doc.text(`Camera: ${insp.camera_system_functional ? 'OK' : 'FAIL'} | DVR: ${insp.dvr_functional ? 'OK' : 'FAIL'} | Status: ${insp.overall_status}`, margin + 4, yPos);
+      yPos += 3;
+      if (insp.inspection_notes) {
+        const notesWrapped = doc.splitTextToSize(sanitize(insp.inspection_notes), pageWidth - 20);
+        doc.setFont(undefined, 'bold');
+        doc.text('Notes: ', margin + 4, yPos);
+        doc.setFont(undefined, 'normal');
+        doc.text(notesWrapped, margin + 6, yPos);
+        yPos += notesWrapped.length * 2.5 + 2;
+      }
+      yPos += 2;
     });
 
     // Assets Section
