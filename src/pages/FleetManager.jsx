@@ -279,6 +279,9 @@ export default function FleetManager() {
           <button onClick={handleExportFilteredPDF} disabled={isExportingFiltered} style={{ display: 'flex', alignItems: 'center', gap: '5px', padding: '6px 12px', background: 'hsl(45,85%,45%)', color: 'hsl(220,20%,10%)', border: '1px solid rgba(0,0,0,0.2)', borderRadius: '2px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", fontWeight: '700', cursor: isExportingFiltered ? 'default' : 'pointer', letterSpacing: '0.05em' }}>
             <FileDown style={{ width: 13, height: 13 }} /> {isExportingFiltered ? 'EXPORTING...' : `FILTERED PDF (${filtered.length})`}
           </button>
+          <button onClick={handleExportMakeSummaryPDF} disabled={isExportingMakeSummary} style={{ display: 'flex', alignItems: 'center', gap: '5px', padding: '6px 12px', background: 'hsl(200,75%,40%)', color: 'white', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '2px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", fontWeight: '600', cursor: isExportingMakeSummary ? 'default' : 'pointer', letterSpacing: '0.05em' }}>
+            <FileDown style={{ width: 13, height: 13 }} /> {isExportingMakeSummary ? 'EXPORTING...' : 'MAKE SUMMARY PDF'}
+          </button>
           <button onClick={handleExportPDF} disabled={isExporting} style={{ display: 'flex', alignItems: 'center', gap: '5px', padding: '6px 12px', background: 'rgba(255,255,255,0.18)', color: 'white', border: '1px solid rgba(255,255,255,0.25)', borderRadius: '2px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", fontWeight: '600', cursor: isExporting ? 'default' : 'pointer', letterSpacing: '0.05em' }}>
             <FileDown style={{ width: 13, height: 13 }} /> {isExporting ? 'EXPORTING...' : 'ENTIRE FLEET PDF'}
           </button>
