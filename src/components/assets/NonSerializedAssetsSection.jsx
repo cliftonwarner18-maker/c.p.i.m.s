@@ -82,23 +82,37 @@ export default function NonSerializedAssetsSection() {
           </div>
         )}
 
+        {/* Low stock banner */}
+        {assets.some(a => a.low_level_threshold > 0 && (a.quantity_on_hand || 0) <= a.low_level_threshold) && (
+          <div style={{ background: '#fef2f2', border: '1px solid #fca5a5', borderRadius: '2px', padding: '6px 10px', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', color: '#991b1b', fontWeight: '700' }}>
+            <AlertTriangle style={{ width: 14, height: 14, flexShrink: 0 }} />
+            LOW STOCK ALERT — {assets.filter(a => a.low_level_threshold > 0 && (a.quantity_on_hand || 0) <= a.low_level_threshold).length} item(s) at or below threshold
+          </div>
+        )}
+
         <div style={{ overflowX: 'auto', maxHeight: 400, border: '1px solid hsl(220,18%,82%)', borderRadius: '2px' }}>
           <table style={{ width: '100%', fontSize: '10px', fontFamily: FF, borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ background: 'hsl(30,60%,32%)', color: 'white', position: 'sticky', top: 0 }}>
-                {['Part Name', 'Brand', 'Model #', 'Use', 'Qty', 'Location', 'Actions'].map(h => (
+                {['Part Name', 'Brand', 'Model #', 'Use', 'Qty', 'Threshold', 'Location', 'Actions'].map(h => (
                   <th key={h} style={{ padding: '5px 7px', textAlign: 'left', fontSize: '10px', fontWeight: '700', whiteSpace: 'nowrap' }}>{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {assets.map((asset, i) => (
-                <tr key={asset.id} style={{ background: i % 2 === 0 ? 'white' : 'hsl(220,18%,97%)', borderBottom: '1px solid hsl(220,18%,90%)' }}>
-                  <td style={{ padding: '4px 7px' }}>{asset.part_name}</td>
+              {assets.map((asset, i) => {
+                const isLow = asset.low_level_threshold > 0 && (asset.quantity_on_hand || 0) <= asset.low_level_threshold;
+                return (
+                <tr key={asset.id} style={{ background: isLow ? '#fef2f2' : (i % 2 === 0 ? 'white' : 'hsl(220,18%,97%)'), borderBottom: '1px solid hsl(220,18%,90%)', outline: isLow ? '1px solid #fca5a5' : 'none' }}>
+                  <td style={{ padding: '4px 7px', fontWeight: isLow ? '700' : 'normal', color: isLow ? '#991b1b' : 'inherit', display: 'flex', alignItems: 'center', gap: 4 }}>
+                    {isLow && <AlertTriangle style={{ width: 11, height: 11, color: '#dc2626', flexShrink: 0 }} />}
+                    {asset.part_name}
+                  </td>
                   <td style={{ padding: '4px 7px' }}>{asset.brand}</td>
                   <td style={{ padding: '4px 7px' }}>{asset.model_number}</td>
                   <td style={{ padding: '4px 7px' }}>{asset.use}</td>
-                  <td style={{ padding: '4px 7px', fontWeight: '700', textAlign: 'center' }}>{asset.quantity_on_hand || 0}</td>
+                  <td style={{ padding: '4px 7px', fontWeight: '700', textAlign: 'center', color: isLow ? '#dc2626' : 'inherit' }}>{asset.quantity_on_hand || 0}</td>
+                  <td style={{ padding: '4px 7px', textAlign: 'center', color: asset.low_level_threshold > 0 ? 'hsl(220,10%,40%)' : 'hsl(220,10%,65%)', fontSize: '10px' }}>{asset.low_level_threshold > 0 ? asset.low_level_threshold : '—'}</td>
                   <td style={{ padding: '4px 7px' }}>{asset.current_location || '—'}</td>
                   <td style={{ padding: '4px 7px' }}>
                     <div style={{ display: 'flex', gap: '3px', alignItems: 'center' }}>
