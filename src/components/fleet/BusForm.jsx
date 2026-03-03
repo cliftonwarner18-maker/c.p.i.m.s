@@ -22,6 +22,27 @@ const Check = React.memo(({ label, checked, onChange }) => (
 ));
 
 export default function BusForm({ bus, onClose, onSaved }) {
+  const [makes, setMakes] = useState(() => {
+    try {
+      const stored = localStorage.getItem(MAKES_STORAGE_KEY);
+      return stored ? JSON.parse(stored) : DEFAULT_MAKES;
+    } catch { return DEFAULT_MAKES; }
+  });
+  const [addingMake, setAddingMake] = useState(false);
+  const [newMake, setNewMake] = useState('');
+
+  const handleAddMake = () => {
+    const trimmed = newMake.trim();
+    if (trimmed && !makes.includes(trimmed)) {
+      const updated = [...makes, trimmed].sort();
+      setMakes(updated);
+      localStorage.setItem(MAKES_STORAGE_KEY, JSON.stringify(updated));
+      setForm(prev => ({ ...prev, make: trimmed }));
+    }
+    setNewMake('');
+    setAddingMake(false);
+  };
+
   const [form, setForm] = useState({
     bus_number: '', bus_type: 'School Bus', base_location: 'Main', year: '', make: '', model: '',
     vin: '', engine: '', passenger_capacity: '', wheelchair_accessible: false,
