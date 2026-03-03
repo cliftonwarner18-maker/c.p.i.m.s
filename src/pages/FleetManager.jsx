@@ -67,7 +67,7 @@ export default function FleetManager() {
     setIsExporting(true);
     try {
       const busIds = filtered.map(b => b.id);
-      const response = await base44.functions.invoke('exportFleet', { busIds });
+      const response = await base44.functions.invoke('exportFleet', { busIds }, { responseType: 'arraybuffer' });
       const blob = new Blob([response.data], { type: 'application/pdf' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
