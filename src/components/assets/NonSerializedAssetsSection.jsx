@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import DeleteConfirmModal from '../DeleteConfirmModal';
-import { Plus, Edit2, Trash2, FileDown } from 'lucide-react';
+import { Plus, Edit2, Trash2, FileDown, AlertTriangle } from 'lucide-react';
 
 const FF = "'Courier Prime', monospace";
 const inputStyle = { width: '100%', padding: '5px 8px', fontSize: '11px', fontFamily: FF, border: '1px solid hsl(220,18%,70%)', borderRadius: '2px', background: 'white', outline: 'none', boxSizing: 'border-box' };
