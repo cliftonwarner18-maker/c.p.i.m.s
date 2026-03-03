@@ -129,6 +129,94 @@ export default function FleetManager() {
     doc.save(filename);
   };
 
+  const handleExportMakeSummaryPDF = () => {
+    setIsExportingMakeSummary(true);
+    try {
+      const { jsPDF: JsPDF } = { jsPDF };
+      const doc = new jsPDF();
+      const pageWidth = doc.internal.pageSize.width;
+      let y = 14;
+
+      doc.setFontSize(16);
+      doc.setFont(undefined, 'bold');
+      doc.text('FLEET MAKE / BRAND SUMMARY REPORT', pageWidth / 2, y, { align: 'center' });
+      y += 8;
+      doc.setFontSize(9);
+      doc.setFont(undefined, 'normal');
+      doc.text(`Generated: ${new Date().toLocaleString('en-US', { timeZone: 'America/New_York', month: '2-digit', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false })}`, pageWidth / 2, y, { align: 'center' });
+      y += 5;
+      doc.text(`Total Fleet Size: ${buses.length} vehicles`, pageWidth / 2, y, { align: 'center' });
+      y += 10;
+
+      // Build make counts grouped
+      const makeGroups = {};
+      buses.forEach(b => {
+        const make = b.make?.trim() || 'Unknown';
+        if (!makeGroups[make]) makeGroups[make] = { total: 0, active: 0, oos: 0, retired: 0, school: 0, activity: 0 };
+        makeGroups[make].total++;
+        if (b.status === 'Active') makeGroups[make].active++;
+        else if (b.status === 'Out of Service') makeGroups[make].oos++;
+        else if (b.status === 'Retired') makeGroups[make].retired++;
+        if (b.bus_type === 'School Bus') makeGroups[make].school++;
+        else if (b.bus_type === 'Activity Bus') makeGroups[make].activity++;
+      });
+
+      const sorted = Object.entries(makeGroups).sort((a, b) => b[1].total - a[1].total);
+
+      // Table header
+      doc.setFontSize(9);
+      doc.setFont(undefined, 'bold');
+      doc.setFillColor(34, 62, 115);
+      doc.setTextColor(255, 255, 255);
+      doc.rect(8, y, pageWidth - 16, 7, 'F');
+      const cols = [8, 55, 80, 105, 130, 155, 180];
+      ['MAKE / BRAND', 'TOTAL', 'ACTIVE', 'OUT OF SVC', 'RETIRED', 'SCHOOL', 'ACTIVITY'].forEach((h, i) => {
+        doc.text(h, cols[i] + 2, y + 5);
+      });
+      y += 9;
+      doc.setTextColor(0, 0, 0);
+
+      let rowIndex = 0;
+      sorted.forEach(([make, counts]) => {
+        if (y > 270) { doc.addPage(); y = 14; }
+        if (rowIndex % 2 === 0) {
+          doc.setFillColor(240, 243, 250);
+          doc.rect(8, y - 1, pageWidth - 16, 7, 'F');
+        }
+        doc.setFont(undefined, rowIndex === 0 ? 'bold' : 'normal');
+        doc.setFontSize(9);
+        doc.text(make, cols[0] + 2, y + 4);
+        doc.text(String(counts.total), cols[1] + 2, y + 4);
+        doc.text(String(counts.active), cols[2] + 2, y + 4);
+        doc.text(String(counts.oos), cols[3] + 2, y + 4);
+        doc.text(String(counts.retired), cols[4] + 2, y + 4);
+        doc.text(String(counts.school), cols[5] + 2, y + 4);
+        doc.text(String(counts.activity), cols[6] + 2, y + 4);
+        y += 8;
+        rowIndex++;
+      });
+
+      // Totals row
+      y += 2;
+      doc.setFillColor(34, 62, 115);
+      doc.setTextColor(255, 255, 255);
+      doc.rect(8, y - 1, pageWidth - 16, 8, 'F');
+      doc.setFont(undefined, 'bold');
+      doc.text('TOTAL', cols[0] + 2, y + 5);
+      doc.text(String(buses.length), cols[1] + 2, y + 5);
+      doc.text(String(buses.filter(b => b.status === 'Active').length), cols[2] + 2, y + 5);
+      doc.text(String(buses.filter(b => b.status === 'Out of Service').length), cols[3] + 2, y + 5);
+      doc.text(String(buses.filter(b => b.status === 'Retired').length), cols[4] + 2, y + 5);
+      doc.text(String(buses.filter(b => b.bus_type === 'School Bus').length), cols[5] + 2, y + 5);
+      doc.text(String(buses.filter(b => b.bus_type === 'Activity Bus').length), cols[6] + 2, y + 5);
+
+      doc.setTextColor(0, 0, 0);
+      doc.save('fleet-make-summary.pdf');
+    } finally {
+      setIsExportingMakeSummary(false);
+    }
+  };
+
   const handleExportPDF = async () => {
     setIsExporting(true);
     try {
