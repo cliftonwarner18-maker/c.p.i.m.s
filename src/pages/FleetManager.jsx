@@ -319,6 +319,12 @@ export default function FleetManager() {
           ))}
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+          <span style={{ fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,35%)', letterSpacing: '0.06em' }}>MAKE:</span>
+          <select value={makeFilter} onChange={e => setMakeFilter(e.target.value)} style={{ padding: '3px 6px', fontSize: '10px', fontFamily: "'Courier Prime', monospace", fontWeight: '500', background: makeFilter !== 'All' ? 'hsl(220,55%,38%)' : 'white', color: makeFilter !== 'All' ? 'white' : 'hsl(220,20%,30%)', border: `1px solid ${makeFilter !== 'All' ? 'hsl(220,55%,38%)' : 'hsl(220,18%,72%)'}`, borderRadius: '2px', cursor: 'pointer' }}>
+            {allMakes.map(m => <option key={m} value={m}>{m === 'All' ? 'ALL MAKES' : m.toUpperCase()}</option>)}
+          </select>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
           <span style={{ fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,35%)', letterSpacing: '0.06em' }}>DVR:</span>
           {['All', 'Seon', 'Safety Vision', 'REI', 'Fortress', 'None'].map(c => (
             <button key={c} onClick={() => setCameraFilter(c)} style={{ padding: '3px 8px', fontSize: '10px', fontFamily: "'Courier Prime', monospace", fontWeight: cameraFilter === c ? '700' : '500', background: cameraFilter === c ? 'hsl(220,55%,38%)' : 'white', color: cameraFilter === c ? 'white' : 'hsl(220,20%,30%)', border: `1px solid ${cameraFilter === c ? 'hsl(220,55%,38%)' : 'hsl(220,18%,72%)'}`, borderRadius: '2px', cursor: 'pointer' }}>
