@@ -121,10 +121,11 @@ export default function NonSerializedAssetsSection() {
                       <button onClick={() => handleEdit(asset)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'hsl(220,60%,40%)', padding: 0 }}><Edit2 style={{ width: 13, height: 13 }} /></button>
                       <button onClick={() => setDeleteTarget(asset)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'hsl(0,65%,45%)', padding: 0 }}><Trash2 style={{ width: 13, height: 13 }} /></button>
                     </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
+                    </td>
+                    </tr>
+                    );
+                    })}
+                    </tbody>
           </table>
         </div>
       </div>
