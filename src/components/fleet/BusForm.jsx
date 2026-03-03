@@ -136,7 +136,21 @@ export default function BusForm({ bus, onClose, onSaved }) {
               <input className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.year} onChange={e => setForm(prev => ({...prev, year: e.target.value}))} />
             </Field>
             <Field label="MAKE">
-              <input className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.make} onChange={e => setForm(prev => ({...prev, make: e.target.value}))} />
+              {addingMake ? (
+                <div style={{display:'flex',gap:'4px'}}>
+                  <input autoFocus className="win-input" style={{flex:1,fontSize:'11px'}} placeholder="New make..." value={newMake} onChange={e => setNewMake(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleAddMake(); } if (e.key === 'Escape') { setAddingMake(false); setNewMake(''); }}} />
+                  <button type="button" className="win-button" style={{fontSize:'10px',padding:'3px 8px',background:'hsl(220,70%,35%)',color:'white'}} onClick={handleAddMake}>ADD</button>
+                  <button type="button" className="win-button" style={{fontSize:'10px',padding:'3px 8px'}} onClick={() => { setAddingMake(false); setNewMake(''); }}>✕</button>
+                </div>
+              ) : (
+                <div style={{display:'flex',gap:'4px'}}>
+                  <select className="win-input" style={{flex:1,fontSize:'11px'}} value={form.make} onChange={e => setForm(prev => ({...prev, make: e.target.value}))}>
+                    <option value="">-- Select Make --</option>
+                    {makes.map(m => <option key={m} value={m}>{m}</option>)}
+                  </select>
+                  <button type="button" className="win-button" style={{fontSize:'10px',padding:'3px 8px',whiteSpace:'nowrap'}} onClick={() => setAddingMake(true)}>+ ADD</button>
+                </div>
+              )}
             </Field>
             <Field label="MODEL">
               <input className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.model} onChange={e => setForm(prev => ({...prev, model: e.target.value}))} />
