@@ -66,7 +66,8 @@ export default function FleetManager() {
   const handleExportPDF = async () => {
     setIsExporting(true);
     try {
-      const response = await base44.functions.invoke('exportFleet', { locationFilter, busTypeFilter: typeFilter, stopArmOnly: stopArmFilter, cameraFilter });
+      const busIds = filtered.map(b => b.id);
+      const response = await base44.functions.invoke('exportFleet', { busIds });
       const blob = new Blob([response.data], { type: 'application/pdf' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
