@@ -53,7 +53,8 @@ export default function FleetManager() {
     const matchLocation = locationFilter === 'All' || b.base_location === locationFilter;
     const matchStopArm = !stopArmFilter || b.stop_arm_cameras === true;
     const matchAiCam = !aiCamFilter || b.ai_cameras_installed === true;
-    return matchSearch && matchType && matchLocation && matchStopArm && matchAiCam;
+    const matchCamera = cameraFilter === 'All' || b.camera_system_type === cameraFilter;
+    return matchSearch && matchType && matchLocation && matchStopArm && matchAiCam && matchCamera;
   });
 
   const activeCount = buses.filter(b => b.status === 'Active').length;
@@ -153,9 +154,17 @@ export default function FleetManager() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
           <MapPin style={{ width: 12, height: 12, color: 'hsl(220,30%,45%)' }} />
           <span style={{ fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,35%)', letterSpacing: '0.06em' }}>LOCATION:</span>
-          {['All', 'Main', 'North', 'Central', 'Sold'].map(l => (
+          {['All', 'Main', 'North', 'Sold'].map(l => (
             <button key={l} onClick={() => setLocationFilter(l)} style={{ padding: '3px 8px', fontSize: '10px', fontFamily: "'Courier Prime', monospace", fontWeight: locationFilter === l ? '700' : '500', background: locationFilter === l ? 'hsl(220,55%,38%)' : 'white', color: locationFilter === l ? 'white' : 'hsl(220,20%,30%)', border: `1px solid ${locationFilter === l ? 'hsl(220,55%,38%)' : 'hsl(220,18%,72%)'}`, borderRadius: '2px', cursor: 'pointer' }}>
               {l.toUpperCase()}
+            </button>
+          ))}
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+          <span style={{ fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,35%)', letterSpacing: '0.06em' }}>DVR:</span>
+          {['All', 'Seon', 'Safety Vision', 'REI', 'Fortress', 'None'].map(c => (
+            <button key={c} onClick={() => setCameraFilter(c)} style={{ padding: '3px 8px', fontSize: '10px', fontFamily: "'Courier Prime', monospace", fontWeight: cameraFilter === c ? '700' : '500', background: cameraFilter === c ? 'hsl(220,55%,38%)' : 'white', color: cameraFilter === c ? 'white' : 'hsl(220,20%,30%)', border: `1px solid ${cameraFilter === c ? 'hsl(220,55%,38%)' : 'hsl(220,18%,72%)'}`, borderRadius: '2px', cursor: 'pointer' }}>
+              {c.toUpperCase()}
             </button>
           ))}
         </div>

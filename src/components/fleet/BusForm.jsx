@@ -130,7 +130,6 @@ export default function BusForm({ bus, onClose, onSaved }) {
               <select className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.base_location} onChange={e => setForm(prev => ({...prev, base_location: e.target.value}))}>
                 <option value="Main">Main</option>
                 <option value="North">North</option>
-                <option value="Central">Central</option>
                 <option value="Sold">Sold</option>
               </select>
             </Field>
