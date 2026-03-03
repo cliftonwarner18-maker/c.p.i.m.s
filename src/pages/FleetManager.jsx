@@ -51,7 +51,8 @@ export default function FleetManager() {
     const matchType = typeFilter === 'All' || b.bus_type === typeFilter;
     const matchLocation = locationFilter === 'All' || b.base_location === locationFilter;
     const matchStopArm = !stopArmFilter || b.stop_arm_cameras === true;
-    return matchSearch && matchType && matchLocation && matchStopArm;
+    const matchAiCam = !aiCamFilter || b.ai_cameras_installed === true;
+    return matchSearch && matchType && matchLocation && matchStopArm && matchAiCam;
   });
 
   const activeCount = buses.filter(b => b.status === 'Active').length;
