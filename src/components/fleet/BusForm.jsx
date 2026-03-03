@@ -4,6 +4,9 @@ import { useMutation } from '@tanstack/react-query';
 import WinWindow from '../WinWindow';
 import { Save, X } from 'lucide-react';
 
+const DEFAULT_MAKES = ['Thomas', 'IC', 'Ford', 'Chevy', 'International', 'Dodge', 'Blue Bird', 'Freightliner', 'GMC'];
+const MAKES_STORAGE_KEY = 'nhcs_bus_makes';
+
 const Field = ({ label, children }) => (
   <div style={{display:'flex',flexDirection:'column',width:'100%',marginBottom:'12px'}}>
     <label style={{fontSize:'10px',fontWeight:'bold',display:'block',marginBottom:'4px',width:'100%'}}>{label}</label>
