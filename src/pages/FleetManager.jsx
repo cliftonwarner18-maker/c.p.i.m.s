@@ -164,6 +164,12 @@ export default function FleetManager() {
             STOP ARM CAMS ONLY
           </label>
         </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer', fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,35%)', letterSpacing: '0.06em', userSelect: 'none' }}>
+            <input type="checkbox" checked={aiCamFilter} onChange={e => setAiCamFilter(e.target.checked)} style={{ accentColor: 'hsl(220,70%,35%)', cursor: 'pointer' }} />
+            AI CAMS ONLY
+          </label>
+        </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginLeft: 'auto' }}>
           <Search style={{ width: 12, height: 12, color: 'hsl(220,20%,45%)' }} />
           <input placeholder="Search bus #, make, VIN..." value={search} onChange={e => setSearch(e.target.value)} style={{ padding: '4px 8px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", border: '1px solid hsl(220,18%,72%)', borderRadius: '2px', background: 'white', width: '200px', outline: 'none' }} />
