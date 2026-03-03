@@ -54,25 +54,8 @@ Deno.serve(async (req) => {
     doc.text(dateStr, pageWidth / 2, y, { align: 'center' });
     y += 6;
 
-    if (locationFilter && locationFilter !== 'All') {
-      doc.text(`Location: ${locationFilter}`, pageWidth / 2, y, { align: 'center' });
-      y += 6;
-    }
-
-    if (busTypeFilter && busTypeFilter !== 'All') {
-      doc.text(`Type: ${busTypeFilter}`, pageWidth / 2, y, { align: 'center' });
-      y += 6;
-    }
-
-    if (stopArmOnly) {
-      doc.text('Filter: Stop Arm Cameras Only', pageWidth / 2, y, { align: 'center' });
-      y += 6;
-    }
-
-    if (cameraFilter && cameraFilter !== 'All') {
-      doc.text(`DVR System: ${cameraFilter}`, pageWidth / 2, y, { align: 'center' });
-      y += 6;
-    }
+    doc.text(`Vehicles in Report: ${buses.length}`, pageWidth / 2, y, { align: 'center' });
+    y += 6;
 
     y += 4;
 
