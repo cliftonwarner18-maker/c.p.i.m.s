@@ -19,6 +19,7 @@ export default function FleetManager() {
   const [aiCamFilter, setAiCamFilter] = useState(false);
   const [cameraFilter, setCameraFilter] = useState('All');
   const [isExporting, setIsExporting] = useState(false);
+  const [isExportingFiltered, setIsExportingFiltered] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
 
   const { data: buses = [], isLoading } = useQuery({
