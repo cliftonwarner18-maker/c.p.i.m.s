@@ -60,9 +60,15 @@ export default function NonSerializedAssetsSection() {
                   <input style={inputStyle} value={formData[field] || ''} onChange={e => setFormData({ ...formData, [field]: e.target.value })} />
                 </div>
               ))}
-              <div>
-                <label style={labelStyle}>Quantity:</label>
-                <input type="number" min="0" style={inputStyle} value={formData.quantity_on_hand || 0} onChange={e => setFormData({ ...formData, quantity_on_hand: parseInt(e.target.value) || 0 })} />
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <div style={{ flex: 1 }}>
+                  <label style={labelStyle}>Quantity:</label>
+                  <input type="number" min="0" style={inputStyle} value={formData.quantity_on_hand || 0} onChange={e => setFormData({ ...formData, quantity_on_hand: parseInt(e.target.value) || 0 })} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label style={labelStyle}>Low Level Threshold:</label>
+                  <input type="number" min="0" style={inputStyle} placeholder="e.g. 5" value={formData.low_level_threshold || ''} onChange={e => setFormData({ ...formData, low_level_threshold: parseInt(e.target.value) || 0 })} />
+                </div>
               </div>
               <div>
                 <label style={labelStyle}>Current Location:</label>
