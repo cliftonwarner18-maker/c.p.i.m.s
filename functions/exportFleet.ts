@@ -12,7 +12,7 @@ Deno.serve(async (req) => {
     }
 
     const body = await req.json();
-    const { locationFilter, busTypeFilter, stopArmOnly } = body;
+    const { locationFilter, busTypeFilter, stopArmOnly, cameraFilter } = body;
 
     let buses = await base44.entities.Bus.list();
     
@@ -26,6 +26,10 @@ Deno.serve(async (req) => {
 
     if (stopArmOnly) {
       buses = buses.filter(b => b.stop_arm_cameras === true);
+    }
+
+    if (cameraFilter && cameraFilter !== 'All') {
+      buses = buses.filter(b => b.camera_system_type === cameraFilter);
     }
 
     // Sanitize function
@@ -73,6 +77,11 @@ Deno.serve(async (req) => {
 
     if (stopArmOnly) {
       doc.text('Filter: Stop Arm Cameras Only', pageWidth / 2, y, { align: 'center' });
+      y += 6;
+    }
+
+    if (cameraFilter && cameraFilter !== 'All') {
+      doc.text(`DVR System: ${cameraFilter}`, pageWidth / 2, y, { align: 'center' });
       y += 6;
     }
 
