@@ -12,6 +12,8 @@ const STATUS_STYLES = {
 const CAMERA_STYLES = {
   'Seon': { background: 'hsl(220,70%,92%)', color: 'hsl(220,70%,30%)' },
   'Safety Vision': { background: 'hsl(200,70%,90%)', color: 'hsl(200,70%,28%)' },
+  'REI': { background: 'hsl(280,55%,92%)', color: 'hsl(280,55%,30%)' },
+  'Fortress': { background: 'hsl(30,80%,92%)', color: 'hsl(30,80%,30%)' },
   'None': { background: 'hsl(220,10%,90%)', color: 'hsl(220,10%,45%)' },
 };
 

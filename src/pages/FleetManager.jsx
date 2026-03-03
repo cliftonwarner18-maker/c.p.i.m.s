@@ -16,6 +16,7 @@ export default function FleetManager() {
   const [locationFilter, setLocationFilter] = useState('All');
   const [stopArmFilter, setStopArmFilter] = useState(false);
   const [aiCamFilter, setAiCamFilter] = useState(false);
+  const [cameraFilter, setCameraFilter] = useState('All');
   const [isExporting, setIsExporting] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
 

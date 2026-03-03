@@ -159,6 +159,8 @@ export default function BusForm({ bus, onClose, onSaved }) {
               <select className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.camera_system_type} onChange={e => setForm(prev => ({...prev, camera_system_type: e.target.value}))}>
                 <option value="Seon">Seon</option>
                 <option value="Safety Vision">Safety Vision</option>
+                <option value="REI">REI</option>
+                <option value="Fortress">Fortress</option>
                 <option value="None">None</option>
               </select>
             </Field>
