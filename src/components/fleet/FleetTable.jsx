@@ -128,6 +128,13 @@ export default function FleetTable({ buses, busNumCounts, vinCounts = {}, onEdit
                       : <span style={{ fontSize: '9px', color: 'hsl(220,10%,55%)', background: 'hsl(220,10%,90%)', border: '1px solid hsl(220,10%,78%)', padding: '1px 5px', borderRadius: '2px' }}>NO</span>
                     }
                   </td>
+                  {/* AI Cam */}
+                  <td style={{ padding: '5px 8px', textAlign: 'center', whiteSpace: 'nowrap' }}>
+                    {b.ai_cameras_installed
+                      ? <span style={{ fontSize: '9px', fontWeight: '700', color: 'hsl(200,70%,28%)', background: 'hsl(200,70%,90%)', border: '1px solid hsl(200,60%,72%)', padding: '1px 5px', borderRadius: '2px' }}>✓ YES</span>
+                      : <span style={{ fontSize: '9px', color: 'hsl(220,10%,55%)', background: 'hsl(220,10%,90%)', border: '1px solid hsl(220,10%,78%)', padding: '1px 5px', borderRadius: '2px' }}>NO</span>
+                    }
+                  </td>
                   {/* Status */}
                   <td style={{ padding: '5px 8px', whiteSpace: 'nowrap' }}>
                     <Badge label={b.status || 'Active'} style={statusStyle} />
