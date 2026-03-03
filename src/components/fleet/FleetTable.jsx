@@ -40,8 +40,8 @@ export default function FleetTable({ buses, busNumCounts, vinCounts = {}, onEdit
         <table style={{ width: '100%', fontSize: '11px', fontFamily: "'Courier Prime', monospace", borderCollapse: 'collapse' }}>
           <thead>
             <tr style={{ background: 'hsl(220,45%,28%)', color: 'white', position: 'sticky', top: 0, zIndex: 10 }}>
-              {['BUS #', 'TYPE', 'YR', 'MAKE / MODEL', 'LOCATION', 'VIN', 'CAMERA SYSTEM', 'ASSET #', 'STOP ARM', 'STATUS', 'INSP. DUE', ''].map((h, i) => (
-                <th key={i} style={{ padding: '7px 8px', textAlign: 'left', fontWeight: '700', fontSize: '10px', letterSpacing: '0.06em', whiteSpace: 'nowrap', borderRight: i < 10 ? '1px solid rgba(255,255,255,0.1)' : 'none' }}>
+              {['BUS #', 'TYPE', 'YR', 'MAKE / MODEL', 'LOCATION', 'VIN', 'CAMERA SYSTEM', 'ASSET #', 'STOP ARM', 'AI CAM', 'STATUS', 'INSP. DUE', ''].map((h, i) => (
+                <th key={i} style={{ padding: '7px 8px', textAlign: 'left', fontWeight: '700', fontSize: '10px', letterSpacing: '0.06em', whiteSpace: 'nowrap', borderRight: i < 11 ? '1px solid rgba(255,255,255,0.1)' : 'none' }}>
                   {h}
                 </th>
               ))}
