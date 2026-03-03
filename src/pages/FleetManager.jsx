@@ -48,6 +48,9 @@ export default function FleetManager() {
 
   const duplicateVinCount = Object.values(vinCounts).filter(c => c > 1).length;
 
+  // Derive unique makes from all buses
+  const allMakes = ['All', ...Array.from(new Set(buses.map(b => b.make).filter(Boolean))).sort()];
+
   const filtered = buses.filter(b => {
     const matchSearch = !search ||
       b.bus_number?.toLowerCase().includes(search.toLowerCase()) ||
@@ -58,7 +61,8 @@ export default function FleetManager() {
     const matchStopArm = !stopArmFilter || b.stop_arm_cameras === true;
     const matchAiCam = !aiCamFilter || b.ai_cameras_installed === true;
     const matchCamera = cameraFilter === 'All' || b.camera_system_type === cameraFilter;
-    return matchSearch && matchType && matchLocation && matchStopArm && matchAiCam && matchCamera;
+    const matchMake = makeFilter === 'All' || b.make === makeFilter;
+    return matchSearch && matchType && matchLocation && matchStopArm && matchAiCam && matchCamera && matchMake;
   });
 
   const activeCount = buses.filter(b => b.status === 'Active').length;
