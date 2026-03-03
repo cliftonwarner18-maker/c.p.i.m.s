@@ -103,9 +103,9 @@ export default function NonSerializedAssetsSection() {
               {assets.map((asset, i) => {
                 const isLow = asset.low_level_threshold > 0 && (asset.quantity_on_hand || 0) <= asset.low_level_threshold;
                 return (
-                <tr key={asset.id} style={{ background: isLow ? '#fef2f2' : (i % 2 === 0 ? 'white' : 'hsl(220,18%,97%)'), borderBottom: '1px solid hsl(220,18%,90%)', outline: isLow ? '1px solid #fca5a5' : 'none' }}>
-                  <td style={{ padding: '4px 7px', fontWeight: isLow ? '700' : 'normal', color: isLow ? '#991b1b' : 'inherit', display: 'flex', alignItems: 'center', gap: 4 }}>
-                    {isLow && <AlertTriangle style={{ width: 11, height: 11, color: '#dc2626', flexShrink: 0 }} />}
+                  <tr key={asset.id} style={{ background: isLow ? '#fef2f2' : (i % 2 === 0 ? 'white' : 'hsl(220,18%,97%)'), borderBottom: '1px solid hsl(220,18%,90%)', outline: isLow ? '1px solid #fca5a5' : 'none' }}>
+                  <td style={{ padding: '4px 7px', fontWeight: isLow ? '700' : 'normal', color: isLow ? '#991b1b' : 'inherit' }}>
+                    {isLow && <AlertTriangle style={{ width: 11, height: 11, color: '#dc2626', flexShrink: 0, marginRight: 3, verticalAlign: 'middle' }} />}
                     {asset.part_name}
                   </td>
                   <td style={{ padding: '4px 7px' }}>{asset.brand}</td>
