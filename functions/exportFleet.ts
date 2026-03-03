@@ -12,24 +12,13 @@ Deno.serve(async (req) => {
     }
 
     const body = await req.json();
-    const { locationFilter, busTypeFilter, stopArmOnly, cameraFilter } = body;
+    const { busIds } = body;
 
     let buses = await base44.entities.Bus.list();
-    
-    if (locationFilter && locationFilter !== 'All') {
-      buses = buses.filter(b => b.base_location === locationFilter);
-    }
 
-    if (busTypeFilter && busTypeFilter !== 'All') {
-      buses = buses.filter(b => b.bus_type === busTypeFilter);
-    }
-
-    if (stopArmOnly) {
-      buses = buses.filter(b => b.stop_arm_cameras === true);
-    }
-
-    if (cameraFilter && cameraFilter !== 'All') {
-      buses = buses.filter(b => b.camera_system_type === cameraFilter);
+    if (busIds && busIds.length > 0) {
+      const idSet = new Set(busIds);
+      buses = buses.filter(b => idSet.has(b.id));
     }
 
     // Sanitize function
