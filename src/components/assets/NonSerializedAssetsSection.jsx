@@ -31,7 +31,7 @@ export default function NonSerializedAssetsSection() {
 
   const handleExportPDF = async () => {
     setIsExporting(true);
-    const response = await base44.functions.invoke('exportNonSerializedAssets', {});
+    const response = await base44.functions.invoke('exportNonSerializedAssets', {}, { responseType: 'arraybuffer' });
     const blob = new Blob([response.data], { type: 'application/pdf' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a'); a.href = url; a.download = 'non-serialized-assets.pdf';

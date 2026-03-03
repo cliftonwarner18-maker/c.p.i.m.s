@@ -35,7 +35,7 @@ export default function DecommissionedAssetsSection() {
 
   const handleExportPDF = async () => {
     setIsExporting(true);
-    const response = await base44.functions.invoke('exportDecommissionedAssets', { statusFilter, startDate, endDate, filterOutOfInventory });
+    const response = await base44.functions.invoke('exportDecommissionedAssets', { statusFilter, startDate, endDate, filterOutOfInventory }, { responseType: 'arraybuffer' });
     const blob = new Blob([response.data], { type: 'application/pdf' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a'); a.href = url; a.download = 'decommissioned-assets.pdf';

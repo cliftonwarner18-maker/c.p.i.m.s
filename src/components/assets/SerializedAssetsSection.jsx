@@ -35,7 +35,7 @@ export default function SerializedAssetsSection() {
 
   const handleExportPDF = async () => {
     setIsExporting(true);
-    const response = await base44.functions.invoke('exportSerializedAssets', { statusFilter, assetTypeFilter, startDate: '', endDate: '' });
+    const response = await base44.functions.invoke('exportSerializedAssets', { statusFilter, assetTypeFilter, startDate: '', endDate: '' }, { responseType: 'arraybuffer' });
     const blob = new Blob([response.data], { type: 'application/pdf' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a'); a.href = url; a.download = 'serialized-assets.pdf';
