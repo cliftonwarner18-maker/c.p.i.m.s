@@ -158,14 +158,12 @@ export default function FleetManager() {
             </button>
           ))}
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer', fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,35%)', letterSpacing: '0.06em', userSelect: 'none' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer', fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,35%)', letterSpacing: '0.06em', userSelect: 'none', whiteSpace: 'nowrap' }}>
             <input type="checkbox" checked={stopArmFilter} onChange={e => setStopArmFilter(e.target.checked)} style={{ accentColor: 'hsl(220,70%,35%)', cursor: 'pointer' }} />
-            STOP ARM CAMS ONLY
+            STOP ARM ONLY
           </label>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer', fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,35%)', letterSpacing: '0.06em', userSelect: 'none' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer', fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,35%)', letterSpacing: '0.06em', userSelect: 'none', whiteSpace: 'nowrap' }}>
             <input type="checkbox" checked={aiCamFilter} onChange={e => setAiCamFilter(e.target.checked)} style={{ accentColor: 'hsl(220,70%,35%)', cursor: 'pointer' }} />
             AI CAMS ONLY
           </label>
