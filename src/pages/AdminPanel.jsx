@@ -479,9 +479,6 @@ export default function AdminPanel() {
         </div>
       )}
 
-      {/* Samsara Importer */}
-      <SamsaraImporter />
-
       {/* Hours Report */}
       <TechHoursReport users={users} />
 
