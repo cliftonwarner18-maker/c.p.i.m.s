@@ -65,24 +65,79 @@ export default function FleetManager() {
   const svCount = buses.filter(b => b.camera_system_type === 'Safety Vision').length;
   const overdueCount = buses.filter(b => b.next_inspection_due && new Date(b.next_inspection_due) < new Date()).length;
 
+  const buildPDF = (busList, filename) => {
+    const sanitize = (str) => {
+      if (!str) return '-';
+      return String(str).replace(/[^\x20-\x7E]/g, '').trim() || '-';
+    };
+    const doc = new jsPDF();
+    const pageHeight = doc.internal.pageSize.height;
+    const pageWidth = doc.internal.pageSize.width;
+    let y = 10;
+
+    doc.setFontSize(16);
+    doc.text('FLEET INVENTORY REPORT', pageWidth / 2, y, { align: 'center' });
+    y += 8;
+    doc.setFontSize(10);
+    doc.text(`Report Generated: ${new Date().toLocaleString('en-US', { timeZone: 'America/New_York', month: '2-digit', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false })}`, pageWidth / 2, y, { align: 'center' });
+    y += 6;
+    doc.text(`Vehicles in Report: ${busList.length}`, pageWidth / 2, y, { align: 'center' });
+    y += 10;
+
+    doc.setFontSize(8);
+    doc.setFont(undefined, 'bold');
+    const headers = ['Bus #', 'Type', 'Location', 'Year', 'Make/Model', 'Status', 'Cam System', 'In', 'Out', 'Total', 'Stop Arm'];
+    const colWidths = [14, 18, 16, 12, 30, 18, 20, 8, 8, 10, 18];
+    let x = 8;
+    headers.forEach((h, i) => { doc.text(h, x, y); x += colWidths[i]; });
+    y += 2;
+    doc.setDrawColor(100, 100, 100);
+    doc.line(8, y, pageWidth - 8, y);
+    y += 5;
+
+    doc.setFont(undefined, 'normal');
+    doc.setFontSize(7.5);
+    busList.forEach(bus => {
+      if (y > pageHeight - 15) { doc.addPage(); y = 10; }
+      const inside = bus.cameras_inside != null ? String(bus.cameras_inside) : '-';
+      const outside = bus.cameras_outside != null ? String(bus.cameras_outside) : '-';
+      const total = (bus.cameras_inside != null || bus.cameras_outside != null)
+        ? String((bus.cameras_inside || 0) + (bus.cameras_outside || 0)) : '-';
+      x = 8;
+      doc.text(sanitize(bus.bus_number), x, y); x += colWidths[0];
+      doc.text(sanitize(bus.bus_type).substring(0, 12), x, y); x += colWidths[1];
+      doc.text(sanitize(bus.base_location), x, y); x += colWidths[2];
+      doc.text(sanitize(bus.year), x, y); x += colWidths[3];
+      doc.text(`${sanitize(bus.make)} ${sanitize(bus.model) === '-' ? '' : sanitize(bus.model)}`.trim().substring(0, 22), x, y); x += colWidths[4];
+      doc.text(sanitize(bus.status), x, y); x += colWidths[5];
+      doc.text(sanitize(bus.camera_system_type).substring(0, 14), x, y); x += colWidths[6];
+      doc.text(inside, x, y); x += colWidths[7];
+      doc.text(outside, x, y); x += colWidths[8];
+      doc.text(total, x, y); x += colWidths[9];
+      doc.text(bus.stop_arm_cameras ? 'YES' : 'NO', x, y);
+      y += 5.5;
+    });
+    y += 8;
+    doc.setFontSize(8);
+    doc.text(`Total Vehicles: ${busList.length}`, 8, y);
+    doc.save(filename);
+  };
+
   const handleExportPDF = async () => {
     setIsExporting(true);
     try {
-      const busIds = filtered.map(b => b.id);
-      const response = await base44.functions.invoke('exportFleet', { busIds }, { responseType: 'arraybuffer' });
-      const blob = new Blob([response.data], { type: 'application/pdf' });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'fleet-inventory.pdf';
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      a.remove();
-    } catch (error) {
-      alert('Error exporting PDF: ' + error.message);
+      buildPDF(buses, 'fleet-entire.pdf');
     } finally {
       setIsExporting(false);
+    }
+  };
+
+  const handleExportFilteredPDF = () => {
+    setIsExportingFiltered(true);
+    try {
+      buildPDF(filtered, 'fleet-filtered.pdf');
+    } finally {
+      setIsExportingFiltered(false);
     }
   };
 
