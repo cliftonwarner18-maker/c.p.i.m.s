@@ -241,8 +241,15 @@ export default function WashBay() {
         </button>
       </div>
 
-      {/* Bulk Form */}
-      <BulkBusWashForm />
+      {/* Bulk Form & Seasonal Batch */}
+      <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+        <div style={{ flex: 1, minWidth: '300px' }}>
+          <BulkBusWashForm />
+        </div>
+        <div style={{ display: 'flex', alignItems: 'flex-end', height: '100%', paddingBottom: '4px' }}>
+          <SeasonalBatchWashAction onSuccess={() => refetch()} />
+        </div>
+      </div>
 
       {/* Filter */}
       <div style={{ background: 'white', border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', padding: '8px 12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
