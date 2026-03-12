@@ -54,6 +54,7 @@ export default function NewWorkOrder() {
     lot: 'Main',
     reported_by: '',
     bus_number: '',
+    work_order_type: 'Camera Repair',
     issue_description: '',
   });
 
