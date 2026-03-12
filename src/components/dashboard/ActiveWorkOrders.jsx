@@ -78,7 +78,7 @@ export default function ActiveWorkOrders({ workOrders }) {
       <table style={{ width: '100%', fontSize: '11px', fontFamily: FF, borderCollapse: 'collapse' }}>
         <thead>
           <tr style={{ background: 'hsl(220,45%,28%)', color: 'white', position: 'sticky', top: 0 }}>
-            {['ORDER#', 'DATE', 'BUS#', 'REPORTED BY', 'ISSUE', 'STATUS', 'ACTION'].map(h => (
+            {['ORDER#', 'TYPE', 'DATE', 'BUS#', 'REPORTED BY', 'ISSUE', 'STATUS', 'ACTION'].map(h => (
               <th key={h} style={{ padding: '6px 8px', textAlign: 'left', fontSize: '10px', fontWeight: '700', letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>{h}</th>
             ))}
           </tr>
