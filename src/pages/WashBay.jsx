@@ -382,6 +382,17 @@ export default function WashBay() {
         />
       )}
 
+      {/* Delete Modal */}
+      {deleteTarget && (
+        <DeleteConfirmModal
+          title={`DELETE BUS WASH ORDER #${deleteTarget.order_number}`}
+          message={`This will permanently delete the wash order for Bus ${deleteTarget.bus_number}. This action cannot be undone.`}
+          onConfirm={() => deleteMutation.mutate(deleteTarget.id)}
+          onCancel={() => setDeleteTarget(null)}
+          isLoading={deleteMutation.isPending}
+        />
+      )}
+
       {/* Footer */}
       <div style={{ background: 'hsl(220,18%,96%)', border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', padding: '8px 12px', fontSize: '10px', color: 'hsl(220,10%,40%)', fontFamily: FF, lineHeight: '1.6', no_print: true }}>
         <div>&gt; BUS WASH ORDER MANAGEMENT SYSTEM — TRACK STAFF HOURS</div>
