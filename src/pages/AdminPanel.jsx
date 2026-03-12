@@ -45,6 +45,7 @@ function TechHoursReport({ users }) {
       const ref = wo.completed_date || wo.updated_date || wo.created_date;
       if (ref && new Date(ref) > new Date(endDate + 'T23:59:59')) return false;
     }
+    // Include all work order types: Camera, Seat, Radio, Other
     return true;
   });
 
