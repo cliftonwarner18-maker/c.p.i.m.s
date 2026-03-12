@@ -331,7 +331,7 @@ function TechHoursReport({ users }) {
       doc.text(String(idx + 1), cols.num.x, rY);
       doc.text((item.order_number || '—').substring(0, 12), cols.order.x, rY);
       doc.text(item.bus_number || '—', cols.bus.x, rY);
-      doc.text((item.wo_type || '—').substring(0, 10), cols.type.x, rY);
+      doc.text((item.wo_type || '—').substring(0, 2), cols.type.x, rY);
       doc.text(dateStr, cols.date.x, rY);
       doc.text(startStr, cols.start.x, rY);
       doc.text(endStr, cols.end.x, rY);
