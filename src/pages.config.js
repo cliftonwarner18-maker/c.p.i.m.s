@@ -58,9 +58,9 @@ import Inspections from './pages/Inspections';
 import MasterBackup from './pages/MasterBackup';
 import NewInspection from './pages/NewInspection';
 import NewWorkOrder from './pages/NewWorkOrder';
+import WashBay from './pages/WashBay';
 import WorkOrderDetail from './pages/WorkOrderDetail';
 import WorkOrders from './pages/WorkOrders';
-import WashBay from './pages/WashBay';
 import __Layout from './Layout.jsx';
 
 
@@ -76,9 +76,9 @@ export const PAGES = {
     "MasterBackup": MasterBackup,
     "NewInspection": NewInspection,
     "NewWorkOrder": NewWorkOrder,
+    "WashBay": WashBay,
     "WorkOrderDetail": WorkOrderDetail,
     "WorkOrders": WorkOrders,
-    "WashBay": WashBay,
 }
 
 export const pagesConfig = {
