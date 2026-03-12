@@ -72,6 +72,15 @@ export default function BusWashOrderDetail({ order, onClose, onComplete }) {
   const checklistComplete = checklistItems.every(item => checklist[item.key]);
   const canComplete = washers.length > 0 && startTime && endTime && checklistComplete;
 
+  let elapsedMinutes = 0;
+  let elapsedHours = 0;
+  if (startTime && endTime) {
+    const start = new Date(`2000-01-01T${startTime}`);
+    const end = new Date(`2000-01-01T${endTime}`);
+    elapsedMinutes = Math.round((end - start) / 60000);
+    elapsedHours = (elapsedMinutes / 60).toFixed(2);
+  }
+
   return (
     <div style={{
       position: 'fixed',
