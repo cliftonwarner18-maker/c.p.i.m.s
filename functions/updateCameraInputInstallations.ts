@@ -13,22 +13,26 @@ Deno.serve(async (req) => {
     const allWOs = await base44.entities.WorkOrder.list('-created_date', 1000);
     
     // Find all work orders with "Install Inputs for amber, reds, stop sign" and ensure type is "Camera Repair"
-    const updates = [];
+    const targetWOs = allWOs.filter(wo => 
+      (wo.issue_description || '').trim() === 'Install Inputs for amber, reds, stop sign' &&
+      wo.work_order_type !== 'Camera Repair'
+    );
+
     let updated = 0;
 
-    for (const wo of allWOs) {
-      const description = (wo.issue_description || '').trim();
-      
-      if (description === 'Install Inputs for amber, reds, stop sign' && wo.work_order_type !== 'Camera Repair') {
-        updates.push(
+    // Batch updates in groups of 5 to avoid rate limiting
+    for (let i = 0; i < targetWOs.length; i += 5) {
+      const batch = targetWOs.slice(i, i + 5);
+      await Promise.all(
+        batch.map(wo => 
           base44.entities.WorkOrder.update(wo.id, { work_order_type: 'Camera Repair' })
-        );
-        updated++;
+        )
+      );
+      updated += batch.length;
+      // Small delay between batches
+      if (i + 5 < targetWOs.length) {
+        await new Promise(resolve => setTimeout(resolve, 100));
       }
-    }
-
-    if (updates.length > 0) {
-      await Promise.all(updates);
     }
 
     return Response.json({
