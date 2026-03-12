@@ -317,7 +317,10 @@ export default function BusProfile() {
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '10px', marginBottom: '10px' }}>
                   <div>
                     <div style={S.label}>TECHNICIAN *</div>
-                    <input value={historyForm.technician} onChange={e => setHistoryForm(f => ({ ...f, technician: e.target.value }))} placeholder="Tech name..." style={{ width: '100%', padding: '5px 8px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", border: '1px solid hsl(220,18%,72%)', borderRadius: '2px', background: 'white', outline: 'none', boxSizing: 'border-box' }} />
+                    <select value={historyForm.technician} onChange={e => setHistoryForm(f => ({ ...f, technician: e.target.value }))} style={{ width: '100%', padding: '5px 8px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", border: '1px solid hsl(220,18%,72%)', borderRadius: '2px', background: 'white', outline: 'none', boxSizing: 'border-box' }}>
+                      <option value="">-- SELECT TECHNICIAN --</option>
+                      {systemUsers.filter(u => u.active !== false).map(u => <option key={u.id} value={u.name}>{u.name}</option>)}
+                    </select>
                   </div>
                   <div>
                     <div style={S.label}>START TIME</div>
