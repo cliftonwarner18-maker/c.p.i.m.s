@@ -257,18 +257,18 @@ function TechHoursReport({ users }) {
     doc.rect(margin, y, W - margin * 2, 20, 'F');
     doc.setTextColor(...white);
     doc.setFont('courier', 'bold');
-    doc.setFontSize(7.5);
+    doc.setFontSize(7);
     const hY = y + 13;
-    doc.text('#',                  cols.num.x,   hY);
-    doc.text('ORDER #',            cols.order.x, hY);
-    doc.text('BUS #',              cols.bus.x,   hY);
-    doc.text('TYPE',               cols.type.x,  hY);
-    doc.text('DATE COMPLETED',     cols.date.x,  hY);
-    doc.text('START TIME',         cols.start.x, hY);
-    doc.text('END TIME',           cols.end.x,   hY);
-    doc.text('MIN',                cols.mins.x,  hY);
-    doc.text('HRS',                cols.hrs.x,   hY);
-    doc.text('TECHNICIAN',         cols.tech.x,  hY);
+    doc.text('#',              cols.num.x,   hY);
+    doc.text('ORDER #',        cols.order.x, hY);
+    doc.text('BUS #',          cols.bus.x,   hY);
+    doc.text('TYPE',           cols.type.x,  hY);
+    doc.text('DATE',           cols.date.x,  hY);
+    doc.text('START',          cols.start.x, hY);
+    doc.text('END',            cols.end.x,   hY);
+    doc.text('MIN',            cols.mins.x,  hY);
+    doc.text('HRS',            cols.hrs.x,   hY);
+    doc.text('TECHNICIAN',     cols.tech.x,  hY);
     y += 20;
 
     // ── Rows ────────────────────────────────────────────────────────────
