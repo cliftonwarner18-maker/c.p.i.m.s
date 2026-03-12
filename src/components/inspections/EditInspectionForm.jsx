@@ -89,7 +89,12 @@ export default function EditInspectionForm({ inspection, onClose, onSaved }) {
                 </div>
                 <div>
                   <label style={labelStyle}>INSPECTOR *</label>
-                  <input style={inputStyle} value={form.inspector_name} onChange={e => setForm({ ...form, inspector_name: e.target.value })} required />
+                  <select style={inputStyle} value={form.inspector_name} onChange={e => setForm({ ...form, inspector_name: e.target.value })} required>
+                    <option value="">-- SELECT INSPECTOR --</option>
+                    {systemUsers.filter(u => u.active !== false).map(u => (
+                      <option key={u.id} value={u.name}>{u.name}</option>
+                    ))}
+                  </select>
                 </div>
                 <div>
                   <label style={labelStyle}>START TIME</label>
