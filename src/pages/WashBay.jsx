@@ -363,22 +363,7 @@ export default function WashBay() {
         </div>
       </div>
 
-      {/* Hours Summary */}
-      {Object.keys(hoursByWasher).length > 0 && (
-        <div style={{ background: 'white', border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', overflow: 'hidden' }}>
-          <div style={{ background: 'linear-gradient(to right, hsl(280,55%,32%), hsl(280,50%,42%))', color: 'white', padding: '7px 12px', fontSize: '11px', fontWeight: '700', letterSpacing: '0.08em' }}>
-            COMPLETED HOURS BY WASHER
-          </div>
-          <div style={{ padding: '12px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '10px' }}>
-            {Object.entries(hoursByWasher).map(([washer, hours]) => (
-              <div key={washer} style={{ background: 'hsl(220,10%,97%)', border: '1px solid hsl(220,18%,85%)', borderRadius: '2px', padding: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ fontSize: '11px', fontWeight: '700', color: 'hsl(220,20%,30%)', fontFamily: FF }}>{washer}</div>
-                <div style={{ fontSize: '12px', fontWeight: '700', color: 'hsl(140,55%,40%)', background: 'hsl(140,70%,92%)', padding: '4px 10px', borderRadius: '2px', fontFamily: FF }}>{hours.toFixed(2)} hrs</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+
 
       {/* Detail Modal */}
       {selectedOrder && (
