@@ -126,13 +126,8 @@ export default function DecommissionedAssetsSection() {
                 </select>
               </div>
               <div>
-                <label style={labelStyle}>Location Status:</label>
-                <select style={inputStyle} value={formData.current_location || ''} onChange={e => setFormData({ ...formData, current_location: e.target.value })}>
-                  <option value="">-- SELECT LOCATION --</option>
-                  <option value="Loft">Loft</option>
-                  <option value="Auction Pallet">Auction Pallet</option>
-                  <option value="Other">Other</option>
-                </select>
+                <label style={labelStyle}>Current Location:</label>
+                <input style={inputStyle} placeholder="e.g., Box 47 Loft, Auction Pallet A, Storage Room 2" value={formData.current_location || ''} onChange={e => setFormData({ ...formData, current_location: e.target.value })} />
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px', background: 'hsl(45,90%,95%)', border: '1px solid hsl(45,90%,65%)', borderRadius: '2px' }}>
                 <input type="checkbox" id="out_of_inv_chk" checked={!!formData.out_of_inventory} onChange={e => setFormData({ ...formData, out_of_inventory: e.target.checked })} style={{ cursor: 'pointer' }} />
@@ -159,12 +154,7 @@ export default function DecommissionedAssetsSection() {
               </div>
               <div>
                 <label style={labelStyle}>Location:</label>
-                <select style={{ ...inputStyle, width: 150 }} value={bulkData.current_location} onChange={e => setBulkData({ ...bulkData, current_location: e.target.value })}>
-                  <option value="">Keep Current</option>
-                  <option value="Loft">Loft</option>
-                  <option value="Auction Pallet">Auction Pallet</option>
-                  <option value="Other">Other</option>
-                </select>
+                <input style={{ ...inputStyle, width: 200 }} placeholder="e.g., Box 47 Loft" value={bulkData.current_location} onChange={e => setBulkData({ ...bulkData, current_location: e.target.value })} />
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 8px', background: 'white', border: '1px solid hsl(220,18%,70%)', borderRadius: '2px' }}>
                 <input type="checkbox" id="bulk_oo_inv" checked={bulkData.out_of_inventory === true} onChange={e => setBulkData({ ...bulkData, out_of_inventory: e.target.checked ? true : null })} style={{ cursor: 'pointer' }} />
