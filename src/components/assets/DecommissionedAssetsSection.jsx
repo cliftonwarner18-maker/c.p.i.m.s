@@ -154,7 +154,7 @@ export default function DecommissionedAssetsSection() {
               </div>
               <div>
                 <label style={labelStyle}>Location:</label>
-                <input style={{ ...inputStyle, width: 200 }} placeholder="e.g., Box 47 Loft" value={bulkData.current_location} onChange={e => setBulkData({ ...bulkData, current_location: e.target.value })} />
+                <input style={{ ...inputStyle, width: 200 }} placeholder="e.g., Box 47 Loft" value={bulkData.current_location || ''} onChange={e => setBulkData({ ...bulkData, current_location: e.target.value })} />
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 8px', background: 'white', border: '1px solid hsl(220,18%,70%)', borderRadius: '2px' }}>
                 <input type="checkbox" id="bulk_oo_inv" checked={bulkData.out_of_inventory === true} onChange={e => setBulkData({ ...bulkData, out_of_inventory: e.target.checked ? true : null })} style={{ cursor: 'pointer' }} />
