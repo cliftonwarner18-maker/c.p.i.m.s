@@ -20,11 +20,11 @@ Deno.serve(async (req) => {
       techMap[su.name.toUpperCase()] = su.name;
     });
 
-    // Update work orders with matching technician names
+    // Update work orders with matching technician names (excluding Radio Repair)
     let updated = 0;
     const updates = [];
 
-    for (const wo of cameraRepairWOs) {
+    for (const wo of nonRadioWOs) {
       if (wo.technician_name) {
         const upperTech = wo.technician_name.toUpperCase();
         if (techMap[upperTech] && techMap[upperTech] !== wo.technician_name) {
@@ -42,8 +42,8 @@ Deno.serve(async (req) => {
     }
 
     return Response.json({
-      message: 'Standardized camera repair work order technician names',
-      totalCameraRepairWOs: cameraRepairWOs.length,
+      message: 'Standardized work order technician names (excluding Radio Repair)',
+      totalNonRadioWOs: nonRadioWOs.length,
       updated: updated,
       availableTechs: systemUsers.map(u => u.name)
     });
