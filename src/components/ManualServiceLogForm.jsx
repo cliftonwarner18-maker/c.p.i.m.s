@@ -134,7 +134,7 @@ export default function ManualServiceLogForm({ users: propUsers = [] }) {
                     <td style={{ padding: '4px 7px' }}>{log.description?.substring(0, 20)}</td>
                     <td style={{ padding: '4px 7px', whiteSpace: 'nowrap', fontSize: '9px' }}>{log.start_time ? moment(log.start_time).format('MM/DD HH:mm') : '—'}</td>
                     <td style={{ padding: '4px 7px', whiteSpace: 'nowrap', fontSize: '9px' }}>{log.end_time ? moment(log.end_time).format('MM/DD HH:mm') : '—'}</td>
-                    <td style={{ padding: '4px 7px', fontWeight: '700', color: 'hsl(220,60%,40%)' }}>{log.elapsed_minutes || 0}</td>
+                    <td style={{ padding: '4px 7px', fontWeight: '700', color: 'hsl(220,60%,40%)' }}>{log.elapsed_time_minutes || 0}</td>
                     <td style={{ padding: '4px 7px' }}>
                       <button onClick={() => deleteMutation.mutate(log.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'hsl(0,65%,45%)' }}>
                         <Trash2 style={{ width: 12, height: 12 }} />
