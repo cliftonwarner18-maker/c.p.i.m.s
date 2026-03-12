@@ -37,7 +37,7 @@ export default function DecommissionedAssetsSection() {
     const results = await Promise.all(Array.from(selectedIds).map(id => base44.entities.DecommissionedAsset.update(id, updates)));
     console.log('Bulk update results:', results);
     return results;
-  }, onSuccess: async () => { console.log('Bulk update success'); await queryClient.invalidateQueries({ queryKey: ['decommissionedAssets'] }); setSelectedIds(new Set()); setBulkModifyMode(false); setBulkData({ decom_status: '', out_of_inventory: null, current_location: '' }); }, onError: (err) => { console.log('Bulk update error:', err); } });
+  }, onSuccess: async () => { console.log('Bulk update success'); await queryClient.refetchQueries({ queryKey: ['decommissionedAssets'] }); setSelectedIds(new Set()); setBulkModifyMode(false); setBulkData({ decom_status: '', out_of_inventory: null, current_location: '' }); }, onError: (err) => { console.log('Bulk update error:', err); } });
 
   const resetForm = () => { setFormData({}); setEditingAsset(null); setShowForm(false); };
   const handleEdit = (asset) => { setEditingAsset(asset); setFormData(asset); setShowForm(true); };
