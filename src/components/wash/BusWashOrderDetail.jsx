@@ -200,6 +200,27 @@ export default function BusWashOrderDetail({ order, onClose, onComplete }) {
             </div>
           </div>
 
+          {/* Wash Date */}
+          <div>
+            <label style={{ fontSize: '11px', fontWeight: '700', color: 'hsl(220,20%,30%)', display: 'block', marginBottom: '4px' }}>
+              WASH DATE
+            </label>
+            <input
+              type="date"
+              value={washDate}
+              onChange={(e) => setWashDate(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '6px 8px',
+                fontSize: '11px',
+                fontFamily: FF,
+                border: '1px solid hsl(220,18%,70%)',
+                borderRadius: '2px',
+                boxSizing: 'border-box'
+              }}
+            />
+          </div>
+
           {/* Times */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
             <div>
