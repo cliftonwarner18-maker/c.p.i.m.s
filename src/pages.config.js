@@ -60,6 +60,7 @@ import NewInspection from './pages/NewInspection';
 import NewWorkOrder from './pages/NewWorkOrder';
 import WorkOrderDetail from './pages/WorkOrderDetail';
 import WorkOrders from './pages/WorkOrders';
+import WashBay from './pages/WashBay';
 import __Layout from './Layout.jsx';
 
 
@@ -77,6 +78,7 @@ export const PAGES = {
     "NewWorkOrder": NewWorkOrder,
     "WorkOrderDetail": WorkOrderDetail,
     "WorkOrders": WorkOrders,
+    "WashBay": WashBay,
 }
 
 export const pagesConfig = {
