@@ -114,14 +114,37 @@ export default function BusProfile() {
 
   const handleAddHistory = () => {
     const elapsed = calcElapsed(historyForm.start_time, historyForm.end_time);
-    addHistoryMutation.mutate({
+    const data = {
       bus_number: busNumber,
       technician: historyForm.technician,
       description: historyForm.description,
       start_time: historyForm.start_time,
       end_time: historyForm.end_time,
-      elapsed_minutes: elapsed,
+      elapsed_time_minutes: elapsed,
+    };
+
+    if (editingHistoryId) {
+      updateHistoryMutation.mutate({ id: editingHistoryId, data });
+    } else {
+      addHistoryMutation.mutate(data);
+    }
+  };
+
+  const handleEditHistory = (entry) => {
+    setEditingHistoryId(entry.id);
+    setHistoryForm({
+      technician: entry.technician,
+      description: entry.description,
+      start_time: entry.start_time,
+      end_time: entry.end_time,
     });
+    setShowHistoryForm(true);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingHistoryId(null);
+    setShowHistoryForm(false);
+    setHistoryForm({ technician: '', description: '', start_time: '', end_time: '' });
   };
 
   const handleExport = async () => {
