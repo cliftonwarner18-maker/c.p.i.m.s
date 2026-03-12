@@ -68,7 +68,8 @@ export default function DecommissionedAssetsSection() {
       a.serial_number?.toLowerCase().includes(searchText.toLowerCase()) ||
       a.asset_number?.toLowerCase().includes(searchText.toLowerCase()) ||
       a.bus_number?.toLowerCase().includes(searchText.toLowerCase()) ||
-      a.employee?.toLowerCase().includes(searchText.toLowerCase());
+      a.employee?.toLowerCase().includes(searchText.toLowerCase()) ||
+      a.current_location?.toLowerCase().includes(searchText.toLowerCase());
     return statusMatch && startMatch && endMatch && invMatch && searchMatch;
   });
 
