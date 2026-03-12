@@ -393,7 +393,7 @@ export default function BusProfile() {
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px', fontFamily: "'Courier Prime', monospace" }}>
                   <thead>
                     <tr>
-                      {['DATE', 'TECHNICIAN', 'START', 'END', 'ELAPSED', 'DESCRIPTION'].map((h, i) => (
+                      {['DATE', 'TECHNICIAN', 'START', 'END', 'ELAPSED', 'DESCRIPTION', 'ACTIONS'].map((h, i) => (
                         <th key={i} style={S.th}>{h}</th>
                       ))}
                     </tr>
