@@ -30,18 +30,6 @@ Deno.serve(async (req) => {
     doc.text(dateStr, pageWidth / 2, y, { align: 'center' });
     y += 10;
 
-    // Headers
-    doc.setFontSize(9);
-    doc.setFont(undefined, 'bold');
-    const headers = ['Part Name', 'Brand', 'Model #', 'Use', 'Qty', 'Location'];
-    const colWidths = [30, 20, 20, 25, 12, 33];
-    let x = 8;
-    headers.forEach((header, i) => {
-      doc.text(header, x, y);
-      x += colWidths[i];
-    });
-    y += 6;
-
     // Sanitize function
     const sanitize = (str) => {
       if (!str || str === null || str === undefined) return null;
@@ -53,34 +41,40 @@ Deno.serve(async (req) => {
       return cleaned === '' ? null : cleaned;
     };
 
-    // Data rows
-    doc.setFont(undefined, 'normal');
-    doc.setFontSize(8);
-    assets.forEach(asset => {
-      if (y > pageHeight - 15) {
-        doc.addPage();
-        y = 10;
+    // Prepare table data
+    const tableData = assets.map(asset => [
+      sanitize(asset.part_name) || '-',
+      sanitize(asset.brand) || '-',
+      sanitize(asset.model_number) || '-',
+      sanitize(asset.use) || '-',
+      String(asset.quantity_on_hand || 0),
+      sanitize(asset.current_location) || '-'
+    ]);
+
+    // Generate table
+    autoTable(doc, {
+      head: [['Part Name', 'Brand', 'Model #', 'Use', 'Qty', 'Location']],
+      body: tableData,
+      startY: y,
+      margin: { left: 8, right: 8 },
+      columnStyles: {
+        0: { cellWidth: 32 },
+        1: { cellWidth: 24 },
+        2: { cellWidth: 22 },
+        3: { cellWidth: 28 },
+        4: { cellWidth: 14 },
+        5: { cellWidth: 30 }
+      },
+      headStyles: { fontSize: 9, cellPadding: 3 },
+      bodyStyles: { fontSize: 8, cellPadding: 2 },
+      didDrawPage: (data) => {
+        y = data.cursor.y;
       }
-      
-      x = 8;
-      doc.text((sanitize(asset.part_name) || '-').substring(0, 25), x, y);
-      x += colWidths[0];
-      doc.text(sanitize(asset.brand) || '-', x, y);
-      x += colWidths[1];
-      doc.text(sanitize(asset.model_number) || '-', x, y);
-      x += colWidths[2];
-      doc.text((sanitize(asset.use) || '-').substring(0, 20), x, y);
-      x += colWidths[3];
-      doc.text(String(asset.quantity_on_hand || 0), x, y);
-      x += colWidths[4];
-      doc.text((sanitize(asset.current_location) || '-').substring(0, 25), x, y);
-      y += 6;
     });
 
     // Footer
-    y += 8;
     doc.setFontSize(8);
-    doc.text(`Total Part Types: ${assets.length}`, 8, y);
+    doc.text(`Total Part Types: ${assets.length}`, 8, y + 10);
 
     const pdf = doc.output('arraybuffer');
     return new Response(pdf, {
