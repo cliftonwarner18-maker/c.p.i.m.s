@@ -13,6 +13,7 @@ const navItems = [
   { name: 'New W/O', icon: PlusCircle, page: 'NewWorkOrder' },
   { name: 'Work Orders', icon: FileText, page: 'WorkOrders' },
   { name: 'Inspections', icon: ClipboardCheck, page: 'Inspections' },
+  { name: 'Wash Bay', icon: HardDrive, page: 'WashBay', green: true },
   { name: 'Assets', icon: Package2, page: 'Assets' },
   { name: 'H-Drive', icon: HardDrive, page: 'HdriveManagement' },
   { name: 'Master Backup', icon: Download, page: 'MasterBackup', yellow: true },
