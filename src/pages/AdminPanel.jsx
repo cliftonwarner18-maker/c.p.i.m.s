@@ -429,10 +429,8 @@ function TechHoursReport({ users }) {
           </button>
         </div>
         <div style={{ background: 'hsl(220,18%,96%)', border: '1px solid hsl(220,18%,82%)', borderRadius: '2px', padding: '8px 12px', display: 'flex', gap: '24px', flexWrap: 'wrap', fontSize: '11px' }}>
-          <span><strong>{filtered.length}</strong> work orders</span>
-          <span><strong>{filteredInspections.length}</strong> inspections</span>
-          <span><strong>{filteredBusHistory.length}</strong> manual logs</span>
-          <span><strong>{totalHours}</strong> total hours ({totalMinutes} min)</span>
+          <span><strong>{filtered.length}</strong> work orders + <strong>{filteredInspections.length}</strong> inspections + <strong>{filteredBusHistory.length}</strong> manual logs</span>
+          <span style={{ borderLeft: '1px solid hsl(220,18%,70%)', paddingLeft: '12px', fontWeight: '700' }}>TOTAL: <strong style={{ color: 'hsl(220,60%,40%)' }}>{totalHours} hours</strong> ({totalMinutes} min)</span>
         </div>
       </div>
     </div>
