@@ -104,9 +104,8 @@ Deno.serve(async (req) => {
     });
 
     // Footer
-    y += 8;
     doc.setFontSize(8);
-    doc.text(`Total Records: ${assets.length}`, 8, y);
+    doc.text(`Total Records: ${assets.length}`, 8, y + 10);
 
     const pdf = doc.output('arraybuffer');
     return new Response(pdf, {
