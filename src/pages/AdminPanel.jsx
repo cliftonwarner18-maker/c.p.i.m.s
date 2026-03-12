@@ -425,8 +425,9 @@ function TechHoursReport({ users }) {
         </div>
         <div style={{ background: 'hsl(220,18%,96%)', border: '1px solid hsl(220,18%,82%)', borderRadius: '2px', padding: '8px 12px', display: 'flex', gap: '24px', flexWrap: 'wrap', fontSize: '11px' }}>
           <span><strong>{filtered.length}</strong> work orders</span>
-          <span><strong>{totalHours}</strong> total hours</span>
-          <span><strong>{totalMinutes}</strong> total minutes</span>
+          <span><strong>{filteredInspections.length}</strong> inspections</span>
+          <span><strong>{filteredBusHistory.length}</strong> manual logs</span>
+          <span><strong>{totalHours}</strong> total hours ({totalMinutes} min)</span>
         </div>
       </div>
     </div>
@@ -531,6 +532,9 @@ export default function AdminPanel() {
 
       {/* Hours Report */}
       <TechHoursReport users={users} />
+
+      {/* Manual Service Log */}
+      <ManualServiceLogForm users={users} />
 
       {/* User Table */}
       <div style={{ background: 'white', border: '1px solid hsl(220,18%,75%)', borderRadius: '2px', overflow: 'hidden' }}>
