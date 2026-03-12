@@ -21,6 +21,28 @@ const navItems = [
 
 
 export default function Layout({ children, currentPageName }) {
+  const navigate = useNavigate();
+  const [adminModal, setAdminModal] = useState(false);
+  const [adminCode, setAdminCode] = useState('');
+  const [adminError, setAdminError] = useState('');
+
+  const handleAdminClick = (e) => {
+    e.preventDefault();
+    setAdminModal(true);
+    setAdminCode('');
+    setAdminError('');
+  };
+
+  const handleAdminSubmit = () => {
+    if (adminCode === '246877421') {
+      setAdminModal(false);
+      setAdminCode('');
+      navigate(createPageUrl('AdminPanel'));
+    } else {
+      setAdminError('INVALID CODE');
+    }
+  };
+
   return (
     <div className="w-full min-h-screen bg-background text-foreground flex flex-col font-mono" style={{ fontFamily: "'Courier Prime', monospace" }}>
       {/* Top Header Bar */}
