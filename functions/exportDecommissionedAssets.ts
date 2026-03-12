@@ -61,18 +61,6 @@ Deno.serve(async (req) => {
 
     y += 4;
 
-    // Headers
-    doc.setFontSize(9);
-    doc.setFont(undefined, 'bold');
-    const headers = ['OOS Date', 'Employee', 'Make/Model', 'Serial #', 'Reason', 'Status'];
-    const colWidths = [18, 22, 24, 22, 32, 28];
-    let x = 8;
-    headers.forEach((header, i) => {
-      doc.text(header, x, y);
-      x += colWidths[i];
-    });
-    y += 6;
-
     // Sanitize function
     const sanitize = (str) => {
       if (!str || str === null || str === undefined) return null;
@@ -84,28 +72,35 @@ Deno.serve(async (req) => {
       return cleaned === '' ? null : cleaned;
     };
 
-    // Data rows
-    doc.setFont(undefined, 'normal');
-    doc.setFontSize(8);
-    assets.forEach(asset => {
-      if (y > pageHeight - 15) {
-        doc.addPage();
-        y = 10;
+    // Prepare table data
+    const tableData = assets.map(asset => [
+      sanitize(asset.out_of_service_date) || '-',
+      sanitize(asset.employee) || '-',
+      sanitize(`${asset.make} ${asset.model}`) || '-',
+      sanitize(asset.serial_number) || '-',
+      sanitize(asset.oos_reason) || '-',
+      sanitize(asset.decom_status) || '-'
+    ]);
+
+    // Generate table
+    autoTable(doc, {
+      head: [['OOS Date', 'Employee', 'Make/Model', 'Serial #', 'Reason', 'Status']],
+      body: tableData,
+      startY: y,
+      margin: { left: 8, right: 8 },
+      columnStyles: {
+        0: { cellWidth: 18 },
+        1: { cellWidth: 20 },
+        2: { cellWidth: 28 },
+        3: { cellWidth: 30 },
+        4: { cellWidth: 35 },
+        5: { cellWidth: 25 }
+      },
+      headStyles: { fontSize: 9, cellPadding: 3 },
+      bodyStyles: { fontSize: 8, cellPadding: 2 },
+      didDrawPage: (data) => {
+        y = data.cursor.y;
       }
-      
-      x = 8;
-      doc.text(sanitize(asset.out_of_service_date) || '-', x, y);
-      x += colWidths[0];
-      doc.text(sanitize(asset.employee) || '-', x, y);
-      x += colWidths[1];
-      doc.text((sanitize(`${asset.make} ${asset.model}`) || '-').substring(0, 20), x, y);
-      x += colWidths[2];
-      doc.text(sanitize(asset.serial_number) || '-', x, y);
-      x += colWidths[3];
-      doc.text((sanitize(asset.oos_reason) || '-').substring(0, 18), x, y);
-      x += colWidths[4];
-      doc.text(sanitize(asset.decom_status) || '-', x, y);
-      y += 6;
     });
 
     // Footer
