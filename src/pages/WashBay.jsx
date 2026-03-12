@@ -242,13 +242,14 @@ export default function WashBay() {
         </button>
       </div>
 
-      {/* Bulk Form & Seasonal Batch */}
+      {/* Bulk Form & Actions */}
       <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
         <div style={{ flex: 1, minWidth: '300px' }}>
           <BulkBusWashForm />
         </div>
-        <div style={{ display: 'flex', alignItems: 'flex-end', height: '100%', paddingBottom: '4px' }}>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-end', height: '100%', paddingBottom: '4px' }}>
           <SeasonalBatchWashAction onSuccess={() => refetch()} />
+          <BulkDeletePendingWash onSuccess={() => refetch()} />
         </div>
       </div>
 
