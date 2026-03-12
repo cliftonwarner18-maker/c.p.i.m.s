@@ -265,6 +265,7 @@ export default function WorkOrders() {
                 return (
                   <tr key={wo.id} style={{ background: i % 2 === 0 ? 'white' : 'hsl(220,15%,97%)', borderBottom: '1px solid hsl(220,18%,88%)' }}>
                     <td style={{ padding: '5px 8px', fontWeight: '700', whiteSpace: 'nowrap' }}>{wo.order_number}</td>
+                    <td style={{ padding: '5px 8px', fontSize: '9px', fontWeight: '600', background: wo.work_order_type === 'Camera Repair' ? 'hsl(200,80%,92%)' : wo.work_order_type === 'Radio Repair' ? 'hsl(280,70%,92%)' : wo.work_order_type === 'Seat Repair' ? 'hsl(30,80%,92%)' : 'hsl(220,70%,92%)' }}>{wo.work_order_type || 'Camera Repair'}</td>
                     <td style={{ padding: '5px 8px', whiteSpace: 'nowrap' }}>{moment(wo.created_date).format('MM/DD/YY')}</td>
                     <td style={{ padding: '5px 8px', fontWeight: '700' }}>{wo.bus_number}</td>
                     <td style={{ padding: '5px 8px', whiteSpace: 'nowrap' }}>{wo.reported_by}</td>
