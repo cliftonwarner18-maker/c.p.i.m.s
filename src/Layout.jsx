@@ -51,7 +51,7 @@ export default function Layout({ children, currentPageName }) {
           <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/736f6667e_nhcs.png" style={{ width: 28, height: 28, objectFit: 'contain', flexShrink: 0 }} alt="NHCS Logo" />
           <div style={{ lineHeight: '1.2', borderLeft: '1px solid rgba(255,255,255,0.3)', paddingLeft: 10 }}>
             <div style={{ fontSize: 11, fontWeight: '600', letterSpacing: '0.08em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>New Hanover County Schools</div>
-            <div style={{ fontSize: 9, letterSpacing: '0.05em', textTransform: 'uppercase', opacity: 0.85, whiteSpace: 'nowrap' }}>Transportation — Vehicle Surveillance System</div>
+            <div style={{ fontSize: 9, letterSpacing: '0.05em', textTransform: 'uppercase', opacity: 0.85, whiteSpace: 'nowrap' }}>Transportation — Data-TraCs System</div>
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 10, opacity: 0.8, flexShrink: 0 }}>
@@ -183,7 +183,7 @@ export default function Layout({ children, currentPageName }) {
       {/* Bottom Status Bar */}
       <div style={{ background: 'hsl(220,18%,92%)', borderTop: '1px solid hsl(220,18%,75%)', display: 'flex', alignItems: 'center', fontSize: '10px', fontFamily: "'Courier Prime',monospace", padding: '4px 8px', gap: '8px', height: 'auto', minHeight: '28px', flexWrap: 'wrap' }}>
         <div style={{ flex: 1, paddingLeft: '4px', color: 'hsl(220,20%,25%)' }}>
-          NHCS Vehicle Surveillance System
+          NHCS Data-TraCs System
         </div>
         <div style={{ fontSize: '9px', color: 'hsl(220,10%,50%)', letterSpacing: '0.04em' }}>
           Powered by Base44 &nbsp;|&nbsp; Developed by: Clifton M. Warner

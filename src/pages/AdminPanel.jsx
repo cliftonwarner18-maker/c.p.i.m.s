@@ -144,7 +144,7 @@ function TechHoursReport({ users }) {
       doc.text('NEW HANOVER COUNTY SCHOOLS', margin, 24);
       doc.setFontSize(10);
       doc.setFont('courier', 'normal');
-      doc.text('Transportation Department — Vehicle Surveillance Systems', margin, 39);
+      doc.text('Transportation Department — Data-TraCs System', margin, 39);
 
       doc.setFillColor(...gold);
       doc.rect(margin, 45, W - margin * 2, 1, 'F');
