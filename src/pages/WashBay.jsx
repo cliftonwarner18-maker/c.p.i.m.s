@@ -110,13 +110,13 @@ export default function WashBay() {
     // Table Header
     const cols = [
       { label: 'ORDER#', x: margin, w: 50 },
-      { label: 'DATE', x: margin + 50, w: 45 },
-      { label: 'BUS#', x: margin + 95, w: 50 },
-      { label: 'STATUS', x: margin + 145, w: 50 },
-      { label: 'WASHERS', x: margin + 195, w: 120 },
-      { label: 'START', x: margin + 315, w: 55 },
-      { label: 'END', x: margin + 370, w: 55 },
-      { label: 'HOURS', x: margin + 425, w: 45 },
+      { label: 'DATE', x: margin + 50, w: 70 },
+      { label: 'BUS#', x: margin + 120, w: 50 },
+      { label: 'STATUS', x: margin + 170, w: 50 },
+      { label: 'WASHERS', x: margin + 220, w: 100 },
+      { label: 'START', x: margin + 320, w: 50 },
+      { label: 'END', x: margin + 370, w: 50 },
+      { label: 'HOURS', x: margin + 420, w: 45 },
     ];
 
     doc.setFillColor(...navy);
