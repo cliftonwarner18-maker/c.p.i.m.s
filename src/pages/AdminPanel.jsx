@@ -241,16 +241,16 @@ function TechHoursReport({ users }) {
     // ── Column headers ─────────────────────────────────────────────────
     // Total usable = W - margin*2 = ~522pt. Columns sum to 522.
     const cols = {
-      num:   { x: margin + 2,   w: 22  },  // #       22
-      order: { x: margin + 24,  w: 55  },  // ORDER#  55
-      bus:   { x: margin + 79,  w: 28  },  // BUS#    28
-      type:  { x: margin + 107, w: 26  },  // TYPE    26
-      date:  { x: margin + 133, w: 48  },  // DATE    48
-      start: { x: margin + 181, w: 45  },  // START   45
-      end:   { x: margin + 226, w: 45  },  // END     45
-      mins:  { x: margin + 271, w: 32  },  // MIN     32
-      hrs:   { x: margin + 303, w: 32  },  // HRS     32
-      tech:  { x: margin + 335, w: 187 },  // TECH   187  → total=522
+      num:   { x: margin + 2,   w: 20  },  // #       20
+      order: { x: margin + 22,  w: 48  },  // ORDER#  48
+      bus:   { x: margin + 70,  w: 24  },  // BUS#    24
+      type:  { x: margin + 94,  w: 22  },  // TYPE    22
+      date:  { x: margin + 116, w: 38  },  // DATE    38
+      start: { x: margin + 154, w: 38  },  // START   38
+      end:   { x: margin + 192, w: 38  },  // END     38
+      mins:  { x: margin + 230, w: 32  },  // MIN     32
+      hrs:   { x: margin + 262, w: 32  },  // HRS     32
+      tech:  { x: margin + 294, w: 228 },  // TECH   228  → total=522
     };
 
     doc.setFillColor(...navy);
@@ -319,7 +319,7 @@ function TechHoursReport({ users }) {
       const elHrs = (elMin / 60).toFixed(2);
       grandMin += elMin;
 
-      const dateStr = item.dateRef ? moment(item.dateRef).format('MM/DD/YYYY') : '—';
+      const dateStr = item.dateRef ? moment(item.dateRef).format('MM/DD') : '—';
       const startStr = item.start ? moment(item.start).format('HH:mm') : '—';
       const endStr = item.end ? moment(item.end).format('HH:mm') : '—';
 
