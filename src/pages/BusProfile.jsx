@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Bus, Wrench, ClipboardCheck, FileText, Plus, Download, Edit, AlertTriangle, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { ArrowLeft, Bus, Wrench, ClipboardCheck, FileText, Plus, Download, Edit, AlertTriangle, CheckCircle, XCircle, Clock, Pencil, Trash2 } from 'lucide-react';
 
 const S = {
   label: { fontSize: '9px', fontWeight: '700', letterSpacing: '0.07em', color: 'hsl(220,10%,50%)', textTransform: 'uppercase', marginBottom: '2px' },
