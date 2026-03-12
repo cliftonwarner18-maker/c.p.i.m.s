@@ -425,7 +425,7 @@ function TechHoursReport({ users }) {
             <div style={{ fontSize: '10px', fontWeight: '700', marginBottom: 3 }}>TO DATE</div>
             <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} style={inp} />
           </div>
-          <button onClick={handleExport} disabled={exporting || filtered.length === 0} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '6px 14px', background: 'hsl(140,55%,38%)', color: 'white', border: 'none', borderRadius: '2px', fontSize: '11px', fontFamily: FF2, fontWeight: '700', cursor: 'pointer' }}>
+          <button onClick={handleExport} disabled={exporting || (filtered.length + filteredInspections.length + filteredBusHistory.length === 0)} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '6px 14px', background: 'hsl(140,55%,38%)', color: 'white', border: 'none', borderRadius: '2px', fontSize: '11px', fontFamily: FF2, fontWeight: '700', cursor: 'pointer' }}>
             <FileDown style={{ width: 13, height: 13 }} /> {exporting ? 'EXPORTING...' : 'EXPORT PDF'}
           </button>
         </div>
