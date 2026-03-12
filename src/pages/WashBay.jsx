@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useQuery } from '@tanstack/react-query';
-import { HardDrive, FileDown, Printer } from 'lucide-react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { HardDrive, FileDown, Trash2 } from 'lucide-react';
 import moment from 'moment';
 import LoadingScreen from '../components/LoadingScreen';
 import BulkBusWashForm from '../components/wash/BulkBusWashForm';
 import BusWashOrderDetail from '../components/wash/BusWashOrderDetail';
+import DeleteConfirmModal from '../components/DeleteConfirmModal';
 
 const FF = "'Courier Prime', monospace";
 
