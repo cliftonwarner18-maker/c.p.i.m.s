@@ -34,6 +34,8 @@ export default function NewInspection() {
   const [form, setForm] = useState({
     bus_number: '',
     inspector_name: '',
+    inspection_start_time: '',
+    inspection_end_time: '',
     camera_system_functional: false,
     lenses_condition: 'Pass',
     mounting_secure: false,
@@ -60,10 +62,14 @@ export default function NewInspection() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const elapsed = form.inspection_start_time && form.inspection_end_time
+      ? Math.round((new Date(form.inspection_end_time) - new Date(form.inspection_start_time)) / 60000)
+      : 0;
     createMutation.mutate({
       ...form,
       inspection_number: generateInspNumber(),
       inspection_date: new Date().toISOString(),
+      elapsed_minutes: elapsed,
     });
   };
 
@@ -120,7 +126,12 @@ export default function NewInspection() {
             </div>
             <div>
               <label style={labelStyle}>INSPECTOR *</label>
-              <input style={inputStyle} value={form.inspector_name} onChange={e => setForm({ ...form, inspector_name: e.target.value })} placeholder="Inspector name..." required />
+              <select style={inputStyle} value={form.inspector_name} onChange={e => setForm({ ...form, inspector_name: e.target.value })} required>
+                <option value="">-- SELECT INSPECTOR --</option>
+                {buses.length > 0 && buses.map(b => b).filter((v, i, a) => a.findIndex(x => x.inspector_name === v.inspector_name) === i).map((b, idx) => (
+                  <option key={idx} value={b.inspector_name}>{b.inspector_name || 'Unknown'}</option>
+                ))}
+              </select>
             </div>
           </div>
         </div>
