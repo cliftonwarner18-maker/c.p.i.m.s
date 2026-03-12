@@ -307,7 +307,7 @@ export default function WashBay() {
                   <td style={{ padding: '5px 8px', fontWeight: '700' }}>
                     {order.elapsed_time_minutes ? ((order.elapsed_time_minutes / 60).toFixed(2) + ' hrs') : '—'}
                   </td>
-                  <td style={{ padding: '5px 8px' }}>
+                  <td style={{ padding: '5px 8px', display: 'flex', gap: '4px' }}>
                     {order.status === 'Pending' && (
                       <button
                         onClick={() => setSelectedOrder(order)}
@@ -326,6 +326,25 @@ export default function WashBay() {
                         START
                       </button>
                     )}
+                    <button
+                      onClick={() => setDeleteTarget(order)}
+                      style={{
+                        padding: '2px 6px',
+                        fontSize: '9px',
+                        fontFamily: FF,
+                        fontWeight: '700',
+                        background: 'hsl(0,65%,48%)',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '2px',
+                        cursor: 'pointer',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '2px'
+                      }}
+                    >
+                      <Trash2 size={12} />
+                    </button>
                   </td>
                 </tr>
               ))}
