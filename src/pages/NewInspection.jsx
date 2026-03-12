@@ -135,11 +135,17 @@ export default function NewInspection() {
             </div>
             <div>
               <label style={labelStyle}>START TIME *</label>
-              <input type="datetime-local" style={inputStyle} value={form.inspection_start_time} onChange={e => setForm({ ...form, inspection_start_time: e.target.value })} required />
+              <div style={{ display: 'flex', gap: '6px' }}>
+                <input type="datetime-local" style={{ ...inputStyle, flex: 1 }} value={form.inspection_start_time} onChange={e => setForm({ ...form, inspection_start_time: e.target.value })} required />
+                <button type="button" onClick={() => setForm({ ...form, inspection_start_time: new Date().toISOString().slice(0, 16) })} style={{ padding: '5px 12px', background: 'hsl(140,55%,38%)', color: 'white', border: '1px solid hsl(140,55%,30%)', borderRadius: '2px', fontSize: '11px', fontWeight: '700', cursor: 'pointer', whiteSpace: 'nowrap' }}>NOW</button>
+              </div>
             </div>
             <div>
               <label style={labelStyle}>END TIME *</label>
-              <input type="datetime-local" style={inputStyle} value={form.inspection_end_time} onChange={e => setForm({ ...form, inspection_end_time: e.target.value })} required />
+              <div style={{ display: 'flex', gap: '6px' }}>
+                <input type="datetime-local" style={{ ...inputStyle, flex: 1 }} value={form.inspection_end_time} onChange={e => setForm({ ...form, inspection_end_time: e.target.value })} required />
+                <button type="button" onClick={() => setForm({ ...form, inspection_end_time: new Date().toISOString().slice(0, 16) })} style={{ padding: '5px 12px', background: 'hsl(140,55%,38%)', color: 'white', border: '1px solid hsl(140,55%,30%)', borderRadius: '2px', fontSize: '11px', fontWeight: '700', cursor: 'pointer', whiteSpace: 'nowrap' }}>NOW</button>
+              </div>
             </div>
           </div>
         </div>
