@@ -33,8 +33,11 @@ export default function DecommissionedAssetsSection() {
   const updateMutation = useMutation({ mutationFn: (data) => base44.entities.DecommissionedAsset.update(editingAsset.id, data), onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['decommissionedAssets'] }); resetForm(); } });
   const deleteMutation = useMutation({ mutationFn: (id) => base44.entities.DecommissionedAsset.delete(id), onSuccess: () => queryClient.invalidateQueries({ queryKey: ['decommissionedAssets'] }) });
   const bulkUpdateMutation = useMutation({ mutationFn: async (updates) => {
-    return Promise.all(Array.from(selectedIds).map(id => base44.entities.DecommissionedAsset.update(id, updates)));
-  }, onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['decommissionedAssets'] }); setSelectedIds(new Set()); setBulkModifyMode(false); setBulkData({ decom_status: '', out_of_inventory: null, current_location: '' }); } });
+    console.log('Bulk update starting with:', updates, 'for IDs:', Array.from(selectedIds));
+    const results = await Promise.all(Array.from(selectedIds).map(id => base44.entities.DecommissionedAsset.update(id, updates)));
+    console.log('Bulk update results:', results);
+    return results;
+  }, onSuccess: () => { console.log('Bulk update success'); queryClient.invalidateQueries({ queryKey: ['decommissionedAssets'] }); setSelectedIds(new Set()); setBulkModifyMode(false); setBulkData({ decom_status: '', out_of_inventory: null, current_location: '' }); }, onError: (err) => { console.log('Bulk update error:', err); } });
 
   const resetForm = () => { setFormData({}); setEditingAsset(null); setShowForm(false); };
   const handleEdit = (asset) => { setEditingAsset(asset); setFormData(asset); setShowForm(true); };
