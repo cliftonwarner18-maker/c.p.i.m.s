@@ -20,11 +20,11 @@ Deno.serve(async (req) => {
 
     let updated = 0;
 
-    // Update one at a time with delays to avoid rate limiting
+    // Update one at a time with longer delays to avoid rate limiting
     for (const wo of targetWOs) {
       await base44.entities.WorkOrder.update(wo.id, { work_order_type: 'Camera Repair' });
       updated++;
-      await new Promise(resolve => setTimeout(resolve, 50));
+      await new Promise(resolve => setTimeout(resolve, 200));
     }
 
     return Response.json({
