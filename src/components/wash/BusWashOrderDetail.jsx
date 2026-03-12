@@ -17,6 +17,7 @@ const checklistItems = [
 export default function BusWashOrderDetail({ order, onClose, onComplete }) {
   const [washers, setWashers] = useState(order.washers || []);
   const [checklist, setChecklist] = useState(order.checklist || {});
+  const [washDate, setWashDate] = useState(order.assigned_date || new Date().toISOString().split('T')[0]);
   const [startTime, setStartTime] = useState(order.start_time || '');
   const [endTime, setEndTime] = useState(order.end_time || '');
   const [notes, setNotes] = useState(order.notes || '');
