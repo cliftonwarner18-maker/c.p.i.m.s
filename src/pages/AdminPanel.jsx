@@ -242,15 +242,15 @@ function TechHoursReport({ users }) {
     // Total usable = W - margin*2 = ~522pt. Columns sum to 522.
     const cols = {
       num:   { x: margin + 2,   w: 22  },  // #       22
-      order: { x: margin + 24,  w: 60  },  // ORDER#  60
-      bus:   { x: margin + 84,  w: 30  },  // BUS#    30
-      type:  { x: margin + 114, w: 60  },  // TYPE    60
-      date:  { x: margin + 174, w: 58  },  // DATE    58
-      start: { x: margin + 232, w: 58  },  // START   58
-      end:   { x: margin + 290, w: 58  },  // END     58
-      mins:  { x: margin + 348, w: 34  },  // MIN     34
-      hrs:   { x: margin + 382, w: 36  },  // HRS     36
-      tech:  { x: margin + 418, w: 104 },  // TECH   104  → total=522
+      order: { x: margin + 24,  w: 55  },  // ORDER#  55
+      bus:   { x: margin + 79,  w: 28  },  // BUS#    28
+      type:  { x: margin + 107, w: 26  },  // TYPE    26
+      date:  { x: margin + 133, w: 48  },  // DATE    48
+      start: { x: margin + 181, w: 45  },  // START   45
+      end:   { x: margin + 226, w: 45  },  // END     45
+      mins:  { x: margin + 271, w: 32  },  // MIN     32
+      hrs:   { x: margin + 303, w: 32  },  // HRS     32
+      tech:  { x: margin + 335, w: 187 },  // TECH   187  → total=522
     };
 
     doc.setFillColor(...navy);
