@@ -43,7 +43,8 @@ export default function WorkOrders() {
       wo.technician_name?.toLowerCase().includes(q) ||
       wo.issue_description?.toLowerCase().includes(q);
     const matchStatus = statusFilter === 'All' || wo.status === statusFilter;
-    return matchSearch && matchStatus;
+    const matchType = typeFilter === 'All' || wo.work_order_type === typeFilter;
+    return matchSearch && matchStatus && matchType;
   });
 
   const counts = {
