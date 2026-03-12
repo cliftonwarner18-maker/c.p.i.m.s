@@ -321,10 +321,26 @@ export default function BusWashOrderDetail({ order, onClose, onComplete }) {
             />
           </div>
 
+          {/* Validation Messages */}
+          {!canComplete && (
+            <div style={{
+              background: 'hsl(45,90%,94%)',
+              border: '1px solid hsl(45,90%,70%)',
+              borderRadius: '2px',
+              padding: '8px',
+              fontSize: '10px',
+              color: 'hsl(45,70%,30%)',
+              fontWeight: '700'
+            }}>
+              ⚠️ Required: {!washers.length && '• Assign at least one washer'}{!washers.length && startTime && ' • '}{!startTime && '• Set start time'}{!startTime && endTime && ' • '}{!endTime && '• Set end time'}{(!startTime || !endTime) && !checklistComplete && ' • '}{!checklistComplete && '• Complete all checklist items'}
+            </div>
+          )}
+
           {/* Actions */}
           <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
             <button
               onClick={onClose}
+              disabled={completeMutation.isPending}
               style={{
                 flex: 1,
                 padding: '8px 12px',
@@ -335,7 +351,8 @@ export default function BusWashOrderDetail({ order, onClose, onComplete }) {
                 color: 'hsl(220,20%,20%)',
                 border: '1px solid hsl(220,18%,70%)',
                 borderRadius: '2px',
-                cursor: 'pointer'
+                cursor: completeMutation.isPending ? 'not-allowed' : 'pointer',
+                opacity: completeMutation.isPending ? 0.6 : 1
               }}
             >
               CANCEL
