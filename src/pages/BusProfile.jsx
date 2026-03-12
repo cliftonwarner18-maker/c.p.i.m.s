@@ -59,6 +59,11 @@ export default function BusProfile() {
     queryFn: () => base44.entities.BusHistory.list('-created_date'),
   });
 
+  const { data: systemUsers = [] } = useQuery({
+    queryKey: ['systemUsers'],
+    queryFn: () => base44.entities.SystemUser.list('name'),
+  });
+
   const addHistoryMutation = useMutation({
     mutationFn: (data) => base44.entities.BusHistory.create(data),
     onSuccess: () => {
