@@ -17,8 +17,15 @@ export default function BulkDeletePendingWash({ onSuccess }) {
       const orders = await base44.entities.BusWashOrder.filter({ status: 'Pending' });
       if (orders.length === 0) return 0;
       
-      for (const order of orders) {
-        await base44.entities.BusWashOrder.delete(order.id);
+      // Delete in batches to avoid rate limiting
+      const batchSize = 5;
+      for (let i = 0; i < orders.length; i += batchSize) {
+        const batch = orders.slice(i, i + batchSize);
+        await Promise.all(batch.map(order => base44.entities.BusWashOrder.delete(order.id)));
+        // Small delay between batches
+        if (i + batchSize < orders.length) {
+          await new Promise(resolve => setTimeout(resolve, 100));
+        }
       }
       return orders.length;
     },
