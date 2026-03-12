@@ -250,7 +250,7 @@ export default function WorkOrders() {
           <table style={{ width: '100%', fontSize: '11px', fontFamily: FF, borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ background: 'linear-gradient(to right, hsl(220,50%,30%), hsl(220,45%,40%))', color: 'white' }}>
-                {['ORDER #', 'DATE', 'BUS #', 'REPORTED BY', 'ISSUE', 'TECHNICIAN', 'STATUS', 'ELAPSED', 'ACTIONS'].map(h => (
+                {['ORDER #', 'TYPE', 'DATE', 'BUS #', 'REPORTED BY', 'ISSUE', 'TECHNICIAN', 'STATUS', 'ELAPSED', 'ACTIONS'].map(h => (
                   <th key={h} style={{ padding: '6px 8px', textAlign: 'left', fontSize: '10px', fontWeight: '700', letterSpacing: '0.05em', whiteSpace: 'nowrap' }}>{h}</th>
                 ))}
               </tr>
