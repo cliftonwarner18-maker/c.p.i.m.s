@@ -38,17 +38,42 @@ export default function ActiveWorkOrders({ workOrders }) {
     setIsExporting(false);
   };
 
+  const repairTypes = ['All', 'Camera Repair', 'Radio Repair', 'Seat Repair', 'Other'];
+  
+  const cameraOrders = workOrders.filter(w => (w.status === 'Pending' || w.status === 'In Progress') && w.work_order_type === 'Camera Repair').length;
+  const radioOrders = workOrders.filter(w => (w.status === 'Pending' || w.status === 'In Progress') && w.work_order_type === 'Radio Repair').length;
+  const seatOrders = workOrders.filter(w => (w.status === 'Pending' || w.status === 'In Progress') && w.work_order_type === 'Seat Repair').length;
+  const otherOrders = workOrders.filter(w => (w.status === 'Pending' || w.status === 'In Progress') && w.work_order_type === 'Other').length;
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
-      <div style={{ display: 'flex', gap: '6px' }}>
-        <button
-          onClick={handleExportFieldPDF}
-          disabled={isExporting}
-          style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '5px 10px', fontSize: '10px', fontFamily: FF, fontWeight: '700', background: 'hsl(280,55%,45%)', color: 'white', border: '1px solid hsl(280,55%,35%)', borderRadius: '2px', cursor: isExporting ? 'not-allowed' : 'pointer', opacity: isExporting ? 0.6 : 1 }}
-        >
-          <FileDown style={{ width: 11, height: 11 }} /> {isExporting ? 'EXPORTING...' : 'PRINT TECH SHEET'}
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%', background: 'white', border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', overflow: 'hidden' }}>
+      <div style={{ background: 'linear-gradient(to right, hsl(45,90%,32%), hsl(45,85%,42%))', color: 'white', padding: '7px 12px', fontSize: '11px', fontWeight: '700', letterSpacing: '0.08em', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <span>⚠️ ACTIVE WORK ORDERS — PENDING REPAIRS</span>
+        <button onClick={handleExportFieldPDF} disabled={isExporting} style={{ display: 'inline-flex', alignItems: 'center', gap: 3, padding: '3px 8px', fontSize: '9px', fontFamily: FF, fontWeight: '700', background: 'rgba(255,255,255,0.2)', color: 'white', border: '1px solid rgba(255,255,255,0.35)', borderRadius: '2px', cursor: isExporting ? 'not-allowed' : 'pointer', opacity: isExporting ? 0.5 : 1 }}>
+          <FileDown style={{ width: 10, height: 10 }} /> {isExporting ? 'EXPORTING...' : 'EXPORT'}
         </button>
       </div>
+      
+      <div style={{ padding: '8px 12px', background: 'hsl(220,10%,98%)', display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
+        <div style={{ fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,30%)', marginRight: 'auto' }}>Filter by Type:</div>
+        {repairTypes.map(type => (
+          <button
+            key={type}
+            onClick={() => setFilterType(type)}
+            style={{
+              padding: '4px 10px', fontSize: '10px', fontFamily: FF, fontWeight: '700', borderRadius: '2px',
+              background: filterType === type ? 'hsl(220,55%,40%)' : 'hsl(220,18%,88%)',
+              color: filterType === type ? 'white' : 'hsl(220,20%,20%)',
+              border: `1px solid ${filterType === type ? 'hsl(220,55%,30%)' : 'hsl(220,18%,70%)'}`,
+              cursor: 'pointer'
+            }}
+          >
+            {type}{type !== 'All' && ` (${type === 'Camera Repair' ? cameraOrders : type === 'Radio Repair' ? radioOrders : type === 'Seat Repair' ? seatOrders : otherOrders})`}
+          </button>
+        ))}
+      </div>
+
+      <div style={{ padding: '8px 12px' }}>
       <div style={{ maxHeight: 480, overflowY: 'auto', width: '100%' }}>
       <table style={{ width: '100%', fontSize: '11px', fontFamily: FF, borderCollapse: 'collapse' }}>
         <thead>
