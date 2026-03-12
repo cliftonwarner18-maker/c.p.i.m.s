@@ -74,6 +74,22 @@ export default function BusProfile() {
     },
   });
 
+  const updateHistoryMutation = useMutation({
+    mutationFn: ({ id, data }) => base44.entities.BusHistory.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['busHistory'] });
+      setEditingHistoryId(null);
+      setHistoryForm({ technician: '', description: '', start_time: '', end_time: '' });
+    },
+  });
+
+  const deleteHistoryMutation = useMutation({
+    mutationFn: (id) => base44.entities.BusHistory.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['busHistory'] });
+    },
+  });
+
   const bus = buses.find(b => b.bus_number === busNumber);
   const busWOs = workOrders.filter(wo => wo.bus_number === busNumber);
   const busInspections = inspections.filter(i => i.bus_number === busNumber);
