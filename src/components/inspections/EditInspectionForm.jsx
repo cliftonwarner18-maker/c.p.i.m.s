@@ -26,6 +26,8 @@ export default function EditInspectionForm({ inspection, onClose, onSaved }) {
   const [form, setForm] = useState({
     bus_number: inspection.bus_number || '',
     inspector_name: inspection.inspector_name || '',
+    inspection_start_time: inspection.inspection_start_time || '',
+    inspection_end_time: inspection.inspection_end_time || '',
     camera_system_functional: inspection.camera_system_functional || false,
     lenses_condition: inspection.lenses_condition || 'Pass',
     mounting_secure: inspection.mounting_secure || false,
@@ -49,7 +51,10 @@ export default function EditInspectionForm({ inspection, onClose, onSaved }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    updateMutation.mutate(form);
+    const elapsed = form.inspection_start_time && form.inspection_end_time
+      ? Math.round((new Date(form.inspection_end_time) - new Date(form.inspection_start_time)) / 60000)
+      : 0;
+    updateMutation.mutate({ ...form, elapsed_minutes: elapsed });
     if (form.next_inspection_due && form.bus_number) {
       const bus = buses.find(b => b.bus_number === form.bus_number);
       if (bus) base44.entities.Bus.update(bus.id, { next_inspection_due: form.next_inspection_due });
@@ -80,6 +85,14 @@ export default function EditInspectionForm({ inspection, onClose, onSaved }) {
                 <div>
                   <label style={labelStyle}>INSPECTOR *</label>
                   <input style={inputStyle} value={form.inspector_name} onChange={e => setForm({ ...form, inspector_name: e.target.value })} required />
+                </div>
+                <div>
+                  <label style={labelStyle}>START TIME</label>
+                  <input type="datetime-local" style={inputStyle} value={form.inspection_start_time} onChange={e => setForm({ ...form, inspection_start_time: e.target.value })} />
+                </div>
+                <div>
+                  <label style={labelStyle}>END TIME</label>
+                  <input type="datetime-local" style={inputStyle} value={form.inspection_end_time} onChange={e => setForm({ ...form, inspection_end_time: e.target.value })} />
                 </div>
               </div>
             </div>
