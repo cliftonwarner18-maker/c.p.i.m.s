@@ -141,7 +141,19 @@ export default function NewWorkOrder() {
             </div>
           </div>
 
-          <SectionHeader title="INITIAL COMPLAINT" />
+          <SectionHeader title="REPAIR TYPE & COMPLAINT" />
+          <div style={rowStyle}>
+            <div style={fieldStyle}>
+              <label style={labelStyle}>REPAIR TYPE *</label>
+              <select value={form.work_order_type} onChange={e => setForm({ ...form, work_order_type: e.target.value })} required style={inputStyle}>
+                <option value="Camera Repair">Camera Repair</option>
+                <option value="Radio Repair">Radio Repair</option>
+                <option value="Seat Repair">Seat Repair</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+
           <div style={{ marginBottom: '10px' }}>
             <label style={labelStyle}>DESCRIBE ISSUES WITH SYSTEM *</label>
             <textarea
