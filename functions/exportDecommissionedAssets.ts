@@ -4,6 +4,9 @@ import moment from 'npm:moment-timezone@0.5.45';
 
 Deno.serve(async (req) => {
   try {
+    const { default: autoTable } = await import('npm:jspdf-autotable@3.8.3');
+    autoTable(jsPDF);
+
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
     
