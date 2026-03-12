@@ -62,24 +62,45 @@ export default function Layout({ children, currentPageName }) {
 
       {/* Menu Bar — horizontal, single line */}
       <div className="no-print" style={{ display: 'flex', alignItems: 'center', padding: '4px 6px', gap: '2px', overflowX: 'auto', width: '100%', flexWrap: 'nowrap', fontFamily: "'Courier Prime',monospace", background: 'hsl(220,20%,94%)', borderBottom: '1px solid hsl(220,18%,75%)' }}>
-        {navItems.map((item) =>
-        <Link
-          key={item.page}
-          to={createPageUrl(item.page)}
-          style={{
-            display: 'inline-flex', alignItems: 'center', gap: 5,
-            padding: '4px 10px', fontSize: 11, textDecoration: 'none',
-            background: item.red ? currentPageName === item.page ? 'hsl(0,65%,38%)' : 'hsl(0,65%,48%)' : item.yellow ? currentPageName === item.page ? 'hsl(45,90%,42%)' : 'hsl(45,90%,52%)' : item.teal ? currentPageName === item.page ? 'hsl(180,65%,35%)' : 'hsl(180,65%,45%)' : item.page === 'NewWorkOrder' ? 'hsl(140,60%,42%)' : currentPageName === item.page ? 'hsl(220,50%,38%)' : 'hsl(220,18%,88%)',
-            color: item.red || item.yellow || item.teal || item.page === 'NewWorkOrder' || currentPageName === item.page ? 'white' : 'hsl(220,20%,20%)',
-            border: '1px solid',
-            borderColor: item.red || item.yellow || item.teal || item.page === 'NewWorkOrder' || currentPageName === item.page ? 'rgba(0,0,0,0.2)' : 'hsl(220,18%,70%)',
-            fontFamily: "'Courier Prime',monospace", fontWeight: '500', whiteSpace: 'nowrap', flexShrink: 0, borderRadius: '2px', transition: 'all 0.15s', cursor: 'pointer'
-          }} className="bg-cyan-600 text-slate-950">
+        {navItems.map((item) => {
+          if (item.page === 'AdminPanel') {
+            return (
+              <button
+                key={item.page}
+                onClick={handleAdminClick}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 5,
+                  padding: '4px 10px', fontSize: 11, textDecoration: 'none', border: '1px solid',
+                  background: currentPageName === item.page ? 'hsl(0,65%,38%)' : 'hsl(0,65%,48%)',
+                  color: 'white',
+                  borderColor: 'rgba(0,0,0,0.2)',
+                  fontFamily: "'Courier Prime',monospace", fontWeight: '500', whiteSpace: 'nowrap', flexShrink: 0, borderRadius: '2px', transition: 'all 0.15s', cursor: 'pointer'
+                }} className="bg-red-600 text-white hover:opacity-90"
+              >
+                <item.icon style={{ width: 13, height: 13, flexShrink: 0 }} />
+                {item.name}
+              </button>
+            );
+          }
+          return (
+            <Link
+              key={item.page}
+              to={createPageUrl(item.page)}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 5,
+                padding: '4px 10px', fontSize: 11, textDecoration: 'none',
+                background: item.red ? currentPageName === item.page ? 'hsl(0,65%,38%)' : 'hsl(0,65%,48%)' : item.yellow ? currentPageName === item.page ? 'hsl(45,90%,42%)' : 'hsl(45,90%,52%)' : item.teal ? currentPageName === item.page ? 'hsl(180,65%,35%)' : 'hsl(180,65%,45%)' : item.page === 'NewWorkOrder' ? 'hsl(140,60%,42%)' : currentPageName === item.page ? 'hsl(220,50%,38%)' : 'hsl(220,18%,88%)',
+                color: item.red || item.yellow || item.teal || item.page === 'NewWorkOrder' || currentPageName === item.page ? 'white' : 'hsl(220,20%,20%)',
+                border: '1px solid',
+                borderColor: item.red || item.yellow || item.teal || item.page === 'NewWorkOrder' || currentPageName === item.page ? 'rgba(0,0,0,0.2)' : 'hsl(220,18%,70%)',
+                fontFamily: "'Courier Prime',monospace", fontWeight: '500', whiteSpace: 'nowrap', flexShrink: 0, borderRadius: '2px', transition: 'all 0.15s', cursor: 'pointer'
+              }} className="bg-cyan-600 text-slate-950">
 
-            <item.icon style={{ width: 13, height: 13, flexShrink: 0 }} />
-            {item.name}
-          </Link>
-        )}
+              <item.icon style={{ width: 13, height: 13, flexShrink: 0 }} />
+              {item.name}
+            </Link>
+          );
+        })}
       </div>
 
       {/* Content */}
