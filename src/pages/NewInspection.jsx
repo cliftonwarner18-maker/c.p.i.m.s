@@ -133,6 +133,14 @@ export default function NewInspection() {
                 ))}
               </select>
             </div>
+            <div>
+              <label style={labelStyle}>START TIME *</label>
+              <input type="datetime-local" style={inputStyle} value={form.inspection_start_time} onChange={e => setForm({ ...form, inspection_start_time: e.target.value })} required />
+            </div>
+            <div>
+              <label style={labelStyle}>END TIME *</label>
+              <input type="datetime-local" style={inputStyle} value={form.inspection_end_time} onChange={e => setForm({ ...form, inspection_end_time: e.target.value })} required />
+            </div>
           </div>
         </div>
 
