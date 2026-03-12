@@ -20,19 +20,11 @@ Deno.serve(async (req) => {
 
     let updated = 0;
 
-    // Batch updates in groups of 5 to avoid rate limiting
-    for (let i = 0; i < targetWOs.length; i += 5) {
-      const batch = targetWOs.slice(i, i + 5);
-      await Promise.all(
-        batch.map(wo => 
-          base44.entities.WorkOrder.update(wo.id, { work_order_type: 'Camera Repair' })
-        )
-      );
-      updated += batch.length;
-      // Small delay between batches
-      if (i + 5 < targetWOs.length) {
-        await new Promise(resolve => setTimeout(resolve, 100));
-      }
+    // Update one at a time with delays to avoid rate limiting
+    for (const wo of targetWOs) {
+      await base44.entities.WorkOrder.update(wo.id, { work_order_type: 'Camera Repair' });
+      updated++;
+      await new Promise(resolve => setTimeout(resolve, 50));
     }
 
     return Response.json({
