@@ -8,6 +8,7 @@ import BulkBusWashForm from '../components/wash/BulkBusWashForm';
 import BusWashOrderDetail from '../components/wash/BusWashOrderDetail';
 import DeleteConfirmModal from '../components/DeleteConfirmModal';
 import SeasonalBatchWashAction from '../components/wash/SeasonalBatchWashAction';
+import BulkDeletePendingWash from '../components/wash/BulkDeletePendingWash';
 
 const FF = "'Courier Prime', monospace";
 
