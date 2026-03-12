@@ -108,6 +108,78 @@ export default function Layout({ children, currentPageName }) {
         {children}
       </div>
 
+      {/* Admin Code Modal */}
+      {adminModal && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
+          background: 'rgba(0,0,0,0.6)', zIndex: 9999,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontFamily: "'Courier Prime', monospace"
+        }}>
+          <div style={{
+            border: '2px solid', borderColor: 'hsl(220,15%,96%) hsl(220,15%,50%) hsl(220,15%,50%) hsl(220,15%,96%)',
+            background: 'hsl(220,15%,90%)', width: '340px',
+            boxShadow: '4px 4px 0 rgba(0,0,0,0.4)'
+          }}>
+            {/* Title bar */}
+            <div style={{
+              background: 'linear-gradient(to right, hsl(0,65%,28%), hsl(0,65%,45%))',
+              color: 'white', fontWeight: 'bold', padding: '3px 8px', fontSize: '11px',
+              letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: '6px'
+            }}>
+              <ShieldAlert style={{ width: 12, height: 12 }} />
+              ADMIN ACCESS REQUIRED
+            </div>
+
+            {/* Body */}
+            <div style={{ padding: '14px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <div style={{
+                border: '2px solid', borderColor: 'hsl(0,65%,40%)', background: 'hsl(0,80%,97%)',
+                padding: '8px', fontSize: '11px', color: 'hsl(0,65%,30%)', fontWeight: 'bold'
+              }}>
+                ⚠️ ENTER AUTHORIZATION CODE
+              </div>
+
+              <div>
+                <label style={{ fontSize: '10px', fontWeight: 'bold', display: 'block', marginBottom: '3px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Access Code:
+                </label>
+                <input
+                  type="password"
+                  autoFocus
+                  style={{ width: '100%', fontSize: '13px', letterSpacing: '0.15em', fontFamily: "'Courier Prime', monospace", padding: '5px 8px', border: '1px solid hsl(220,18%,70%)', borderRadius: '2px', background: 'hsl(220,10%,99%)', outline: 'none', boxSizing: 'border-box' }}
+                  value={adminCode}
+                  onChange={(e) => { setAdminCode(e.target.value); setAdminError(''); }}
+                  onKeyDown={(e) => { if (e.key === 'Enter') handleAdminSubmit(); if (e.key === 'Escape') setAdminModal(false); }}
+                  placeholder="••••••••••"
+                />
+                {adminError && (
+                  <div style={{ fontSize: '10px', color: 'hsl(0,72%,45%)', fontWeight: 'bold', marginTop: '4px' }}>
+                    🚫 {adminError}
+                  </div>
+                )}
+              </div>
+
+              <div style={{ display: 'flex', gap: '6px' }}>
+                <button
+                  disabled={!adminCode}
+                  style={{ flex: 1, background: 'hsl(0,65%,35%)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontSize: '11px', fontWeight: 'bold', padding: '6px 12px', border: '1px solid hsl(0,65%,25%)', borderRadius: '2px', cursor: adminCode ? 'pointer' : 'not-allowed', opacity: adminCode ? 1 : 0.6 }}
+                  onClick={handleAdminSubmit}
+                >
+                  UNLOCK
+                </button>
+                <button
+                  style={{ flex: 1, fontSize: '11px', padding: '6px 12px', border: '1px solid hsl(220,18%,70%)', borderRadius: '2px', background: 'hsl(220,18%,88%)', cursor: 'pointer' }}
+                  onClick={() => setAdminModal(false)}
+                >
+                  CANCEL
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Bottom Status Bar */}
       <div style={{ background: 'hsl(220,18%,92%)', borderTop: '1px solid hsl(220,18%,75%)', display: 'flex', alignItems: 'center', fontSize: '10px', fontFamily: "'Courier Prime',monospace", padding: '4px 8px', gap: '8px', height: 'auto', minHeight: '28px', flexWrap: 'wrap' }}>
         <div style={{ flex: 1, paddingLeft: '4px', color: 'hsl(220,20%,25%)' }}>
