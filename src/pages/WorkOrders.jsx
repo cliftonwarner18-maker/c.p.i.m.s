@@ -211,13 +211,22 @@ export default function WorkOrders() {
       </div>
 
       {/* Filters */}
-      <div style={{ background: 'hsl(220,18%,96%)', border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', padding: '8px 10px', display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center' }}>
+      <div style={{ background: 'hsl(220,18%,96%)', border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', padding: '8px 10px', display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
           <Filter style={{ width: 12, height: 12, color: 'hsl(220,30%,45%)' }} />
           <span style={{ fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,35%)', letterSpacing: '0.06em' }}>STATUS:</span>
           {['All', 'Pending', 'In Progress', 'Completed', 'Cancelled'].map(s => (
             <button key={s} onClick={() => setStatusFilter(s)} style={{ padding: '3px 8px', fontSize: '10px', fontFamily: FF, fontWeight: statusFilter === s ? '700' : '500', background: statusFilter === s ? 'hsl(220,55%,38%)' : 'white', color: statusFilter === s ? 'white' : 'hsl(220,20%,30%)', border: `1px solid ${statusFilter === s ? 'hsl(220,55%,38%)' : 'hsl(220,18%,72%)'}`, borderRadius: '2px', cursor: 'pointer' }}>
               {s.toUpperCase()}
+            </button>
+          ))}
+        </div>
+        
+        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+          <span style={{ fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,35%)', letterSpacing: '0.06em' }}>TYPE:</span>
+          {['All', 'Camera Repair', 'Radio Repair', 'Seat Repair', 'Other'].map(t => (
+            <button key={t} onClick={() => setTypeFilter(t)} style={{ padding: '3px 8px', fontSize: '10px', fontFamily: FF, fontWeight: typeFilter === t ? '700' : '500', background: typeFilter === t ? 'hsl(200,70%,42%)' : 'white', color: typeFilter === t ? 'white' : 'hsl(220,20%,30%)', border: `1px solid ${typeFilter === t ? 'hsl(200,70%,42%)' : 'hsl(220,18%,72%)'}`, borderRadius: '2px', cursor: 'pointer' }}>
+              {t.toUpperCase()}
             </button>
           ))}
         </div>
