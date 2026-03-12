@@ -320,8 +320,8 @@ function TechHoursReport({ users }) {
       grandMin += elMin;
 
       const dateStr = item.dateRef ? moment(item.dateRef).format('MM/DD/YYYY') : '—';
-      const startStr = item.start ? moment(item.start).format('MM/DD/YY HH:mm') : '—';
-      const endStr = item.end ? moment(item.end).format('MM/DD/YY HH:mm') : '—';
+      const startStr = item.start ? moment(item.start).format('HH:mm') : '—';
+      const endStr = item.end ? moment(item.end).format('HH:mm') : '—';
 
       doc.setTextColor(...black);
       doc.setFont('courier', 'normal');
