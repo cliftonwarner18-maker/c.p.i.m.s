@@ -9,13 +9,10 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Fetch all SystemUsers and Camera Repair work orders
+    // Fetch all SystemUsers and all non-Radio work orders
     const systemUsers = await base44.entities.SystemUser.list('name', 1000);
-    const cameraRepairWOs = await base44.entities.WorkOrder.filter(
-      { work_order_type: 'Camera Repair' },
-      '-created_date',
-      1000
-    );
+    const allWOs = await base44.entities.WorkOrder.list('-created_date', 1000);
+    const nonRadioWOs = allWOs.filter(wo => wo.work_order_type !== 'Radio Repair');
 
     // Create a map of available tech names (case-insensitive for matching)
     const techMap = {};
