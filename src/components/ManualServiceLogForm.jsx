@@ -90,7 +90,7 @@ export default function ManualServiceLogForm({ users = [] }) {
               <textarea style={{ ...inputStyle, minHeight: '60px', resize: 'vertical' }} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="What work was performed..." required />
             </div>
             <div>
-              <label style={labelStyle}>SERVICE DATE * (transcription date)</label>
+              <label style={labelStyle}>SERVICE DATE * (official date of service — for records/hours)</label>
               <input type="date" style={inputStyle} value={form.service_date} onChange={e => setForm({ ...form, service_date: e.target.value })} required />
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
