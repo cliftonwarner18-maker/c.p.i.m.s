@@ -20,6 +20,7 @@ const STATUS_COLORS = {
 export default function WorkOrders() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
+  const [typeFilter, setTypeFilter] = useState('All');
   const [deleteTarget, setDeleteTarget] = useState(null);
   const queryClient = useQueryClient();
 
