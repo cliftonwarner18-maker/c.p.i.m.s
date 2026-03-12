@@ -25,11 +25,6 @@ export default function WashBay() {
     queryFn: () => base44.entities.BusWashOrder.list('-assigned_date'),
   });
 
-  const { data: systemUsers = [] } = useQuery({
-    queryKey: ['systemUsers'],
-    queryFn: () => base44.entities.SystemUser.list('name'),
-  });
-
   const deleteMutation = useMutation({
     mutationFn: async (orderId) => {
       await base44.entities.BusWashOrder.delete(orderId);
