@@ -23,6 +23,11 @@ export default function EditInspectionForm({ inspection, onClose, onSaved }) {
     queryFn: () => base44.entities.Bus.list('bus_number'),
   });
 
+  const { data: systemUsers = [] } = useQuery({
+    queryKey: ['systemUsers'],
+    queryFn: () => base44.entities.SystemUser.list('name'),
+  });
+
   const [form, setForm] = useState({
     bus_number: inspection.bus_number || '',
     inspector_name: inspection.inspector_name || '',
