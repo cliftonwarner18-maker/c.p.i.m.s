@@ -9,13 +9,17 @@ const inputStyle = { padding: '5px 8px', fontSize: '11px', fontFamily: FF, borde
 const labelStyle = { fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,35%)', letterSpacing: '0.06em', marginBottom: '3px', display: 'block' };
 const btnBase = { display: 'inline-flex', alignItems: 'center', gap: 5, padding: '6px 12px', background: 'hsl(220,55%,38%)', color: 'white', border: 'none', borderRadius: '2px', fontSize: '11px', fontFamily: FF, fontWeight: '700', cursor: 'pointer' };
 
-export default function ManualServiceLogForm({ users = [] }) {
+export default function ManualServiceLogForm({ users: propUsers = [] }) {
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ bus_number: '', technician: '', description: '', service_date: '', start_time: '', end_time: '' });
   const queryClient = useQueryClient();
 
   const { data: buses = [] } = useQuery({ queryKey: ['buses'], queryFn: () => base44.entities.Bus.list('bus_number') });
   const { data: logs = [] } = useQuery({ queryKey: ['busHistory'], queryFn: () => base44.entities.BusHistory.list('-created_date') });
+  const { data: systemUsers = [] } = useQuery({ queryKey: ['systemUsers'], queryFn: () => base44.entities.SystemUser.list('name') });
+
+  // Use system users from database, fall back to prop users
+  const users = systemUsers.length > 0 ? systemUsers : propUsers;
 
   const createMutation = useMutation({
     mutationFn: (data) => {
