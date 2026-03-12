@@ -7,6 +7,7 @@ import LoadingScreen from '../components/LoadingScreen';
 import BulkBusWashForm from '../components/wash/BulkBusWashForm';
 import BusWashOrderDetail from '../components/wash/BusWashOrderDetail';
 import DeleteConfirmModal from '../components/DeleteConfirmModal';
+import SeasonalBatchWashAction from '../components/wash/SeasonalBatchWashAction';
 
 const FF = "'Courier Prime', monospace";
 
