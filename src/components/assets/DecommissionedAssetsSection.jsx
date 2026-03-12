@@ -31,6 +31,9 @@ export default function DecommissionedAssetsSection() {
   const createMutation = useMutation({ mutationFn: (data) => base44.entities.DecommissionedAsset.create(data), onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['decommissionedAssets'] }); resetForm(); } });
   const updateMutation = useMutation({ mutationFn: (data) => base44.entities.DecommissionedAsset.update(editingAsset.id, data), onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['decommissionedAssets'] }); resetForm(); } });
   const deleteMutation = useMutation({ mutationFn: (id) => base44.entities.DecommissionedAsset.delete(id), onSuccess: () => queryClient.invalidateQueries({ queryKey: ['decommissionedAssets'] }) });
+  const bulkUpdateMutation = useMutation({ mutationFn: async (updates) => {
+    return Promise.all(Array.from(selectedIds).map(id => base44.entities.DecommissionedAsset.update(id, updates)));
+  }, onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['decommissionedAssets'] }); setSelectedIds(new Set()); setBulkModifyMode(false); setBulkData({ decom_status: '', out_of_inventory: null }); } });
 
   const resetForm = () => { setFormData({}); setEditingAsset(null); setShowForm(false); };
   const handleEdit = (asset) => { setEditingAsset(asset); setFormData(asset); setShowForm(true); };
