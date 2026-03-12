@@ -22,7 +22,8 @@ export default function DecommissionedAssetsSection() {
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [selectedIds, setSelectedIds] = useState(new Set());
   const [bulkModifyMode, setBulkModifyMode] = useState(false);
-  const [bulkData, setBulkData] = useState({ decom_status: '', out_of_inventory: null });
+  const [bulkData, setBulkData] = useState({ decom_status: '', out_of_inventory: null, current_location: '' });
+  const [searchText, setSearchText] = useState('');
   const queryClient = useQueryClient();
 
   const { data: assets = [] } = useQuery({ queryKey: ['decommissionedAssets'], queryFn: () => base44.entities.DecommissionedAsset.list() });
@@ -58,7 +59,14 @@ export default function DecommissionedAssetsSection() {
     const startMatch = !startDate || a.out_of_service_date >= startDate;
     const endMatch = !endDate || a.out_of_service_date <= endDate;
     const invMatch = !filterOutOfInventory || !!a.out_of_inventory;
-    return statusMatch && startMatch && endMatch && invMatch;
+    const searchMatch = !searchText || 
+      a.make?.toLowerCase().includes(searchText.toLowerCase()) || 
+      a.model?.toLowerCase().includes(searchText.toLowerCase()) || 
+      a.serial_number?.toLowerCase().includes(searchText.toLowerCase()) ||
+      a.asset_number?.toLowerCase().includes(searchText.toLowerCase()) ||
+      a.bus_number?.toLowerCase().includes(searchText.toLowerCase()) ||
+      a.employee?.toLowerCase().includes(searchText.toLowerCase());
+    return statusMatch && startMatch && endMatch && invMatch && searchMatch;
   });
 
   return (
@@ -70,6 +78,7 @@ export default function DecommissionedAssetsSection() {
       <div style={{ padding: '10px', background: 'hsl(220,10%,98%)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
         <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
           <button onClick={() => { setEditingAsset(null); setFormData({}); setShowForm(!showForm); }} style={{ ...btnBase, background: 'hsl(0,60%,42%)', color: 'white', borderColor: 'hsl(0,60%,35%)' }}><Plus style={{ width: 12, height: 12 }} /> Log Decommission</button>
+          <input type="text" placeholder="Search by make, model, serial, asset #, bus #, employee..." value={searchText} onChange={e => setSearchText(e.target.value)} style={{ ...inputStyle, flex: 1, minWidth: 200 }} />
           <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} style={{ ...inputStyle, width: 150 }}>
             {['All', 'In Bad Parts', 'Awaiting Auction', 'Took to Auction', 'Rebuilt', 'Salvaged'].map(s => <option key={s}>{s}</option>)}
           </select>
@@ -117,8 +126,13 @@ export default function DecommissionedAssetsSection() {
                 </select>
               </div>
               <div>
-                <label style={labelStyle}>Current Location:</label>
-                <input style={inputStyle} placeholder="e.g., Storage Room A, Building 2" value={formData.current_location || ''} onChange={e => setFormData({ ...formData, current_location: e.target.value })} />
+                <label style={labelStyle}>Location Status:</label>
+                <select style={inputStyle} value={formData.current_location || ''} onChange={e => setFormData({ ...formData, current_location: e.target.value })}>
+                  <option value="">-- SELECT LOCATION --</option>
+                  <option value="Loft">Loft</option>
+                  <option value="Auction Pallet">Auction Pallet</option>
+                  <option value="Other">Other</option>
+                </select>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px', background: 'hsl(45,90%,95%)', border: '1px solid hsl(45,90%,65%)', borderRadius: '2px' }}>
                 <input type="checkbox" id="out_of_inv_chk" checked={!!formData.out_of_inventory} onChange={e => setFormData({ ...formData, out_of_inventory: e.target.checked })} style={{ cursor: 'pointer' }} />
@@ -143,12 +157,21 @@ export default function DecommissionedAssetsSection() {
                   {['In Bad Parts', 'Awaiting Auction', 'Took to Auction', 'Rebuilt', 'Salvaged'].map(s => <option key={s} value={s}>{s}</option>)}
                 </select>
               </div>
+              <div>
+                <label style={labelStyle}>Location:</label>
+                <select style={{ ...inputStyle, width: 150 }} value={bulkData.current_location} onChange={e => setBulkData({ ...bulkData, current_location: e.target.value })}>
+                  <option value="">Keep Current</option>
+                  <option value="Loft">Loft</option>
+                  <option value="Auction Pallet">Auction Pallet</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 8px', background: 'white', border: '1px solid hsl(220,18%,70%)', borderRadius: '2px' }}>
                 <input type="checkbox" id="bulk_oo_inv" checked={bulkData.out_of_inventory === true} onChange={e => setBulkData({ ...bulkData, out_of_inventory: e.target.checked ? true : null })} style={{ cursor: 'pointer' }} />
                 <label htmlFor="bulk_oo_inv" style={{ cursor: 'pointer', fontWeight: '600', fontSize: '11px', whiteSpace: 'nowrap' }}>Mark Out of Inventory</label>
               </div>
-              <button onClick={() => { const updates = {}; if (bulkData.decom_status) updates.decom_status = bulkData.decom_status; if (bulkData.out_of_inventory) updates.out_of_inventory = true; bulkUpdateMutation.mutate(updates); }} disabled={(!bulkData.decom_status && !bulkData.out_of_inventory) || bulkUpdateMutation.isPending} style={{ ...btnBase, background: 'hsl(140,55%,38%)', color: 'white', borderColor: 'hsl(140,55%,30%)' }}>Apply</button>
-              <button onClick={() => { setBulkModifyMode(false); setSelectedIds(new Set()); setBulkData({ decom_status: '', out_of_inventory: null }); }} style={{ ...btnBase, background: 'hsl(220,18%,88%)', color: 'hsl(220,20%,20%)', borderColor: 'hsl(220,18%,70%)' }}>Cancel</button>
+              <button onClick={() => { const updates = {}; if (bulkData.decom_status) updates.decom_status = bulkData.decom_status; if (bulkData.current_location) updates.current_location = bulkData.current_location; if (bulkData.out_of_inventory) updates.out_of_inventory = true; bulkUpdateMutation.mutate(updates); }} disabled={(!bulkData.decom_status && !bulkData.current_location && !bulkData.out_of_inventory) || bulkUpdateMutation.isPending} style={{ ...btnBase, background: 'hsl(140,55%,38%)', color: 'white', borderColor: 'hsl(140,55%,30%)' }}>Apply</button>
+              <button onClick={() => { setBulkModifyMode(false); setSelectedIds(new Set()); setBulkData({ decom_status: '', out_of_inventory: null, current_location: '' }); }} style={{ ...btnBase, background: 'hsl(220,18%,88%)', color: 'hsl(220,20%,20%)', borderColor: 'hsl(220,18%,70%)' }}>Cancel</button>
             </div>
           </div>
         )}
