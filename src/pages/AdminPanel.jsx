@@ -63,7 +63,7 @@ function TechHoursReport({ users }) {
   });
 
   const filteredBusHistory = busHistory.filter(bh => {
-    if (!bh.elapsed_minutes) return false;
+    if (!bh.elapsed_time_minutes) return false;
     if (selectedTech && bh.technician !== selectedTech) return false;
     if (startDate) {
       const ref = bh.start_time || bh.created_date;
@@ -78,7 +78,7 @@ function TechHoursReport({ users }) {
 
   const totalWorkOrderMinutes = filtered.reduce((sum, wo) => sum + (wo.elapsed_time_minutes || 0), 0);
   const totalInspectionMinutes = filteredInspections.reduce((sum, insp) => sum + (insp.elapsed_minutes || 0), 0);
-  const totalBusHistoryMinutes = filteredBusHistory.reduce((sum, bh) => sum + (bh.elapsed_minutes || 0), 0);
+  const totalBusHistoryMinutes = filteredBusHistory.reduce((sum, bh) => sum + (bh.elapsed_time_minutes || 0), 0);
   const totalMinutes = totalWorkOrderMinutes + totalInspectionMinutes + totalBusHistoryMinutes;
   const totalHours = (totalMinutes / 60).toFixed(2);
 
