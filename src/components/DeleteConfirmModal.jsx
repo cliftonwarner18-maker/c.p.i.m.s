@@ -81,14 +81,16 @@ export default function DeleteConfirmModal({ title, message, onConfirm, onCancel
           <div style={{ display: 'flex', gap: '6px' }}>
             <button
               className="win-button"
-              style={{ flex: 1, background: 'hsl(0,65%,35%)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontSize: '11px', fontWeight: 'bold' }}
+              disabled={isLoading}
+              style={{ flex: 1, background: 'hsl(0,65%,35%)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontSize: '11px', fontWeight: 'bold', opacity: isLoading ? 0.6 : 1, cursor: isLoading ? 'not-allowed' : 'pointer' }}
               onClick={handleConfirm}
             >
-              <Trash2 style={{ width: 12, height: 12 }} /> CONFIRM DELETE
+              <Trash2 style={{ width: 12, height: 12 }} /> {isLoading ? 'DELETING...' : 'CONFIRM DELETE'}
             </button>
             <button
               className="win-button"
-              style={{ flex: 1, fontSize: '11px' }}
+              disabled={isLoading}
+              style={{ flex: 1, fontSize: '11px', opacity: isLoading ? 0.6 : 1, cursor: isLoading ? 'not-allowed' : 'pointer' }}
               onClick={handleCancel}
             >
               CANCEL
