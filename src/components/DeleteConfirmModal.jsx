@@ -45,7 +45,7 @@ export default function DeleteConfirmModal({ title, message, onConfirm, onCancel
           letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: '6px'
         }}>
           <ShieldAlert style={{ width: 12, height: 12 }} />
-          DELETE AUTHORIZATION REQUIRED
+          {title}
         </div>
 
         {/* Body */}
