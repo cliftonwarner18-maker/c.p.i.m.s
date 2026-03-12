@@ -20,6 +20,9 @@ export default function DecommissionedAssetsSection() {
   const [filterOutOfInventory, setFilterOutOfInventory] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [selectedIds, setSelectedIds] = useState(new Set());
+  const [bulkModifyMode, setBulkModifyMode] = useState(false);
+  const [bulkData, setBulkData] = useState({ decom_status: '', out_of_inventory: null });
   const queryClient = useQueryClient();
 
   const { data: assets = [] } = useQuery({ queryKey: ['decommissionedAssets'], queryFn: () => base44.entities.DecommissionedAsset.list() });
