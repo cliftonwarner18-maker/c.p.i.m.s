@@ -173,8 +173,14 @@ export default function DecommissionedAssetsSection() {
               {filteredAssets.map((asset, i) => {
                 const dup = isAssetDuplicate(asset);
                 const missing = isMissingAssetNum(asset);
+                const isSelected = selectedIds.has(asset.id);
                 return (
-                  <tr key={asset.id} style={{ background: missing ? 'hsl(45,90%,93%)' : dup ? 'hsl(0,80%,93%)' : i % 2 === 0 ? 'white' : 'hsl(220,18%,97%)', borderBottom: '1px solid hsl(220,18%,90%)' }}>
+                  <tr key={asset.id} style={{ background: isSelected ? 'hsl(200,80%,92%)' : missing ? 'hsl(45,90%,93%)' : dup ? 'hsl(0,80%,93%)' : i % 2 === 0 ? 'white' : 'hsl(220,18%,97%)', borderBottom: '1px solid hsl(220,18%,90%)' }}>
+                    {bulkModifyMode && (
+                      <td style={{ padding: '4px 7px', textAlign: 'center' }}>
+                        <input type="checkbox" checked={isSelected} onChange={e => { const newSet = new Set(selectedIds); if (e.target.checked) newSet.add(asset.id); else newSet.delete(asset.id); setSelectedIds(newSet); }} style={{ cursor: 'pointer' }} />
+                      </td>
+                    )}
                     <td style={{ padding: '4px 7px' }}>{asset.out_of_service_date}</td>
                     <td style={{ padding: '4px 7px' }}>{asset.employee}</td>
                     <td style={{ padding: '4px 7px' }}>{asset.bus_number || '—'}</td>
@@ -187,6 +193,7 @@ export default function DecommissionedAssetsSection() {
                       {asset.serial_number || '—'}
                     </td>
                     <td style={{ padding: '4px 7px' }}>{asset.decom_status}</td>
+                    <td style={{ padding: '4px 7px', fontSize: '9px', maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{asset.current_location || '—'}</td>
                     <td style={{ padding: '4px 7px', textAlign: 'center' }}>
                       {asset.out_of_inventory ? <span style={{ color: 'hsl(0,65%,40%)', fontWeight: '700' }}>✓ OUT</span> : <span style={{ color: 'hsl(220,10%,55%)' }}>—</span>}
                     </td>
