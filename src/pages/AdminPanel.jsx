@@ -319,7 +319,7 @@ function TechHoursReport({ users }) {
       const elHrs = (elMin / 60).toFixed(2);
       grandMin += elMin;
 
-      const dateStr = item.dateRef ? moment(item.dateRef).format('MM/DD') : '—';
+      const dateStr = item.dateRef ? moment(item.dateRef).format('MM/DD/YY') : '—';
       const startStr = item.start ? moment(item.start).format('HH:mm') : '—';
       const endStr = item.end ? moment(item.end).format('HH:mm') : '—';
 
