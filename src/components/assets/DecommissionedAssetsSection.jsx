@@ -116,6 +116,10 @@ export default function DecommissionedAssetsSection() {
                   {['In Bad Parts', 'Awaiting Auction', 'Took to Auction', 'Rebuilt', 'Salvaged'].map(s => <option key={s}>{s}</option>)}
                 </select>
               </div>
+              <div>
+                <label style={labelStyle}>Current Location:</label>
+                <input style={inputStyle} placeholder="e.g., Storage Room A, Building 2" value={formData.current_location || ''} onChange={e => setFormData({ ...formData, current_location: e.target.value })} />
+              </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px', background: 'hsl(45,90%,95%)', border: '1px solid hsl(45,90%,65%)', borderRadius: '2px' }}>
                 <input type="checkbox" id="out_of_inv_chk" checked={!!formData.out_of_inventory} onChange={e => setFormData({ ...formData, out_of_inventory: e.target.checked })} style={{ cursor: 'pointer' }} />
                 <label htmlFor="out_of_inv_chk" style={{ cursor: 'pointer', fontWeight: '700', color: 'hsl(30,80%,30%)', fontSize: '11px' }}>✓ Device Out of Inventory — Sold/Auctioned</label>
