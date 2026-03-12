@@ -4,21 +4,11 @@ import { Trash2, ShieldAlert } from 'lucide-react';
 // Secret delete code — change this to whatever you want
 const DELETE_CODE = '877421';
 
-/**
- * Usage:
- *   const [deleteTarget, setDeleteTarget] = useState(null);
- *   <DeleteConfirmModal
- *     isOpen={!!deleteTarget}
- *     label="this H-Drive"
- *     onConfirm={() => deleteMutation.mutate(deleteTarget.id)}
- *     onCancel={() => setDeleteTarget(null)}
- *   />
- */
-export default function DeleteConfirmModal({ isOpen, label = 'this record', onConfirm, onCancel }) {
+export default function DeleteConfirmModal({ title, message, onConfirm, onCancel, isLoading }) {
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
 
-  if (!isOpen) return null;
+  if (!title) return null;
 
   const handleConfirm = () => {
     if (code.trim() === DELETE_CODE) {
