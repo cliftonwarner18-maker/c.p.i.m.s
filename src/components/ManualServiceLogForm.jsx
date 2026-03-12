@@ -34,7 +34,7 @@ export default function ManualServiceLogForm({ users: propUsers = [] }) {
         description: data.description,
         start_time: startDateTime,
         end_time: endDateTime,
-        elapsed_minutes: elapsed 
+        elapsed_time_minutes: elapsed 
       });
     },
     onSuccess: () => {
