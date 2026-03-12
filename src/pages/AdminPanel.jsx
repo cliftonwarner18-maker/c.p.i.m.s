@@ -243,11 +243,12 @@ function TechHoursReport({ users }) {
     // Total usable = W - margin*2 = ~522pt. Columns sum to 522.
     const cols = {
       num:   { x: margin + 2,   w: 22  },  // #       22
-      order: { x: margin + 24,  w: 78  },  // ORDER#  78
-      bus:   { x: margin + 102, w: 34  },  // BUS#    34
-      date:  { x: margin + 136, w: 68  },  // DATE    68
-      start: { x: margin + 204, w: 72  },  // START   72
-      end:   { x: margin + 276, w: 72  },  // END     72
+      order: { x: margin + 24,  w: 60  },  // ORDER#  60
+      bus:   { x: margin + 84,  w: 30  },  // BUS#    30
+      type:  { x: margin + 114, w: 60  },  // TYPE    60
+      date:  { x: margin + 174, w: 58  },  // DATE    58
+      start: { x: margin + 232, w: 58  },  // START   58
+      end:   { x: margin + 290, w: 58  },  // END     58
       mins:  { x: margin + 348, w: 34  },  // MIN     34
       hrs:   { x: margin + 382, w: 36  },  // HRS     36
       tech:  { x: margin + 418, w: 104 },  // TECH   104  → total=522
@@ -262,6 +263,7 @@ function TechHoursReport({ users }) {
     doc.text('#',                  cols.num.x,   hY);
     doc.text('ORDER #',            cols.order.x, hY);
     doc.text('BUS #',              cols.bus.x,   hY);
+    doc.text('TYPE',               cols.type.x,  hY);
     doc.text('DATE COMPLETED',     cols.date.x,  hY);
     doc.text('START TIME',         cols.start.x, hY);
     doc.text('END TIME',           cols.end.x,   hY);
@@ -273,9 +275,9 @@ function TechHoursReport({ users }) {
     // ── Rows ────────────────────────────────────────────────────────────
     // Combine all items: work orders, inspections, manual service logs
     const allItems = [
-      ...sorted.map(wo => ({ type: 'WorkOrder', order_number: wo.order_number, bus_number: wo.bus_number, description: 'Work Order', tech: wo.technician_name, elapsed: wo.elapsed_time_minutes || 0, dateRef: wo.completed_date || wo.updated_date || wo.created_date, start: wo.repair_start_time, end: wo.repair_end_time })),
-      ...filteredInspections.sort((a, b) => new Date((a.inspection_date || a.created_date) || '') - new Date((b.inspection_date || b.created_date) || '')).map(insp => ({ type: 'Inspection', order_number: insp.inspection_number, bus_number: insp.bus_number, description: 'Inspection', tech: insp.inspector_name, elapsed: insp.elapsed_minutes || 0, dateRef: insp.inspection_date || insp.created_date, start: insp.inspection_start_time, end: insp.inspection_end_time })),
-      ...filteredBusHistory.sort((a, b) => new Date(a.start_time || '') - new Date(b.start_time || '')).map(bh => ({ type: 'ServiceLog', order_number: 'SVC-LOG', bus_number: bh.bus_number, description: bh.description?.substring(0, 15) || 'Service Log', tech: bh.technician, elapsed: bh.elapsed_minutes || 0, dateRef: bh.start_time || bh.created_date, start: bh.start_time, end: bh.end_time }))
+      ...sorted.map(wo => ({ type: 'WorkOrder', order_number: wo.order_number, bus_number: wo.bus_number, description: 'Work Order', wo_type: wo.work_order_type || '—', tech: wo.technician_name, elapsed: wo.elapsed_time_minutes || 0, dateRef: wo.completed_date || wo.updated_date || wo.created_date, start: wo.repair_start_time, end: wo.repair_end_time })),
+      ...filteredInspections.sort((a, b) => new Date((a.inspection_date || a.created_date) || '') - new Date((b.inspection_date || b.created_date) || '')).map(insp => ({ type: 'Inspection', order_number: insp.inspection_number, bus_number: insp.bus_number, description: 'Inspection', wo_type: '—', tech: insp.inspector_name, elapsed: insp.elapsed_minutes || 0, dateRef: insp.inspection_date || insp.created_date, start: insp.inspection_start_time, end: insp.inspection_end_time })),
+      ...filteredBusHistory.sort((a, b) => new Date(a.start_time || '') - new Date(b.start_time || '')).map(bh => ({ type: 'ServiceLog', order_number: 'SVC-LOG', bus_number: bh.bus_number, description: bh.description?.substring(0, 15) || 'Service Log', wo_type: '—', tech: bh.technician, elapsed: bh.elapsed_minutes || 0, dateRef: bh.start_time || bh.created_date, start: bh.start_time, end: bh.end_time }))
     ].sort((a, b) => new Date(a.dateRef || '') - new Date(b.dateRef || ''));
 
     // Re-estimate page count with combined items
@@ -297,6 +299,7 @@ function TechHoursReport({ users }) {
         doc.text('#',              cols.num.x,   y + 13);
         doc.text('ORDER #',        cols.order.x, y + 13);
         doc.text('BUS #',          cols.bus.x,   y + 13);
+        doc.text('TYPE',           cols.type.x,  y + 13);
         doc.text('DATE COMPLETED', cols.date.x,  y + 13);
         doc.text('START TIME',     cols.start.x, y + 13);
         doc.text('END TIME',       cols.end.x,   y + 13);
@@ -328,6 +331,7 @@ function TechHoursReport({ users }) {
       doc.text(String(idx + 1), cols.num.x, rY);
       doc.text((item.order_number || '—').substring(0, 12), cols.order.x, rY);
       doc.text(item.bus_number || '—', cols.bus.x, rY);
+      doc.text((item.wo_type || '—').substring(0, 10), cols.type.x, rY);
       doc.text(dateStr, cols.date.x, rY);
       doc.text(startStr, cols.start.x, rY);
       doc.text(endStr, cols.end.x, rY);
