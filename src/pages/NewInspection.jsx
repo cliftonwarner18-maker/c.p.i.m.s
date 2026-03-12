@@ -24,6 +24,11 @@ export default function NewInspection() {
     queryFn: () => base44.entities.Inspection.list(),
   });
 
+  const { data: systemUsers = [] } = useQuery({
+    queryKey: ['systemUsers'],
+    queryFn: () => base44.entities.SystemUser.list('name'),
+  });
+
   const generateInspNumber = () => {
     const prefix = 'INS';
     const date = moment().format('YYMMDD');
