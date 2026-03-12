@@ -14,10 +14,23 @@ export default function WashBay() {
   const [filterStatus, setFilterStatus] = useState('All');
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isExporting, setIsExporting] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+
+  const queryClient = useQueryClient();
 
   const { data: orders = [], isLoading, refetch } = useQuery({
     queryKey: ['busWashOrders'],
     queryFn: () => base44.entities.BusWashOrder.list('-assigned_date'),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (orderId) => {
+      await base44.entities.BusWashOrder.delete(orderId);
+      queryClient.invalidateQueries({ queryKey: ['busWashOrders'] });
+    },
+    onSuccess: () => {
+      setDeleteTarget(null);
+    }
   });
 
   const filteredOrders = filterStatus === 'All' 
