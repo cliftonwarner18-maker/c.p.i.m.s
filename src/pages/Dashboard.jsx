@@ -121,7 +121,7 @@ export default function Dashboard() {
         <div style={{ flex: 1, textAlign: 'center' }}>
           <div style={{ fontSize: '11px', fontWeight: '700', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'hsl(220,10%,40%)', marginBottom: 4 }}>New Hanover County Schools</div>
           <div style={{ fontSize: '17px', fontWeight: '700', letterSpacing: '0.08em', textTransform: 'uppercase', color: 'hsl(220,55%,35%)', fontFamily: FF }}>SCHOOL BUS SURVEILLANCE SYSTEM</div>
-          <div style={{ fontSize: '10px', letterSpacing: '0.08em', textTransform: 'uppercase', color: 'hsl(220,10%,45%)', marginTop: 3 }}>Camera Repair & Maintenance Management Database</div>
+          <div style={{ fontSize: '10px', letterSpacing: '0.08em', textTransform: 'uppercase', color: 'hsl(220,10%,45%)', marginTop: 3 }}>Multi-Type Repair & Technician Hours Tracking System</div>
         </div>
         <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/699faac8c5894219ce08210b/736f6667e_nhcs.png" style={{ width: 48, height: 48, objectFit: 'contain', flexShrink: 0 }} alt="NHCS" />
       </div>
