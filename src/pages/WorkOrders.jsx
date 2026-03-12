@@ -87,11 +87,11 @@ export default function WorkOrders() {
     doc.text('NEW HANOVER COUNTY SCHOOLS', margin, 22);
     doc.setFontSize(9);
     doc.setFont('courier', 'normal');
-    doc.text('Transportation Department — Vehicle Surveillance Systems', margin, 36);
+    doc.text('Transportation Department — Vehicle Maintenance & Repair', margin, 36);
     doc.setFont('courier', 'bold');
     doc.setFontSize(12);
     doc.setTextColor(...gold);
-    doc.text('WORK ORDER REPORT', margin, 54);
+    doc.text('VEHICLE MAINTENANCE WORK ORDER REPORT', margin, 54);
     doc.setFont('courier', 'normal');
     doc.setFontSize(8);
     doc.setTextColor(200, 210, 230);
@@ -167,7 +167,7 @@ export default function WorkOrders() {
     doc.setTextColor(200, 210, 230);
     doc.setFont('courier', 'normal');
     doc.setFontSize(7.5);
-    doc.text('NEW HANOVER COUNTY SCHOOLS — Transportation Department — Vehicle Surveillance Systems', W / 2, H - 15, { align: 'center' });
+    doc.text('NEW HANOVER COUNTY SCHOOLS — Transportation Department — Vehicle Maintenance Systems', W / 2, H - 15, { align: 'center' });
 
     const safeStatus = statusFilter.replace(/\s+/g, '_');
     doc.save(`NHCS_WorkOrders_${safeStatus}_${moment().format('YYYYMMDD')}.pdf`);
