@@ -147,9 +147,14 @@ export default function Dashboard() {
 
       {showTranscribe && <QuickTranscribe onClose={() => setShowTranscribe(false)} />}
 
-      {/* Active Work Orders */}
-      <Section title="⚠️ ACTIVE WORK ORDERS — PENDING REPAIRS">
-        <ActiveWorkOrders workOrders={workOrders} />
+      {/* Active Work Orders with Type Filter */}
+      <ActiveWorkOrders workOrders={workOrders} />
+      
+      {/* Wash Bay Section */}
+      <Section title="🚐 SUMMER WASH BAY HOURS">
+        <div style={{ fontSize: '11px', color: 'hsl(220,10%,50%)', padding: '8px 0' }}>
+          📌 Track technician and washer summer hours. View Wash Bay Management page for full hours log and reports.
+        </div>
       </Section>
 
       {/* Overdue Inspections */}
