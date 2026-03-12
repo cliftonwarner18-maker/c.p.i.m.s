@@ -36,6 +36,7 @@ export default function BusProfile() {
   const busNumber = params.get('bus');
   const queryClient = useQueryClient();
   const [showHistoryForm, setShowHistoryForm] = useState(false);
+  const [editingHistoryId, setEditingHistoryId] = useState(null);
   const [historyForm, setHistoryForm] = useState({ technician: '', description: '', start_time: '', end_time: '' });
   const [isExporting, setIsExporting] = useState(false);
 
