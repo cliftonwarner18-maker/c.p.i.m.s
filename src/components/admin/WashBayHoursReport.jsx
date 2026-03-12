@@ -253,9 +253,9 @@ export default function WashBayHoursReport() {
       const elHrs = (elMin / 60).toFixed(2);
       grandMin += elMin;
 
-      const dateStr = order.completed_date ? moment(order.completed_date).format('MM/DD/YYYY') : '—';
-      const startStr = order.start_time ? moment(order.start_time).format('HH:mm') : '—';
-      const endStr = order.end_time ? moment(order.end_time).format('HH:mm') : '—';
+      const dateStr = order.assigned_date || order.completed_date ? moment(order.assigned_date || order.completed_date).format('MM/DD/YYYY') : '—';
+      const startStr = order.start_time ? order.start_time.substring(0, 5) : '—';
+      const endStr = order.end_time ? order.end_time.substring(0, 5) : '—';
 
       doc.setTextColor(...black);
       doc.setFont('courier', 'normal');
