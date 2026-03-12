@@ -269,15 +269,24 @@ function TechHoursReport({ users }) {
     y += 20;
 
     // ── Rows ────────────────────────────────────────────────────────────
+    // Combine all items: work orders, inspections, manual service logs
+    const allItems = [
+      ...sorted.map(wo => ({ type: 'WorkOrder', order_number: wo.order_number, bus_number: wo.bus_number, description: 'Work Order', tech: wo.technician_name, elapsed: wo.elapsed_time_minutes || 0, dateRef: wo.completed_date || wo.updated_date || wo.created_date, start: wo.repair_start_time, end: wo.repair_end_time })),
+      ...filteredInspections.sort((a, b) => new Date((a.inspection_date || a.created_date) || '') - new Date((b.inspection_date || b.created_date) || '')).map(insp => ({ type: 'Inspection', order_number: insp.inspection_number, bus_number: insp.bus_number, description: 'Inspection', tech: insp.inspector_name, elapsed: insp.elapsed_minutes || 0, dateRef: insp.inspection_date || insp.created_date, start: insp.inspection_start_time, end: insp.inspection_end_time })),
+      ...filteredBusHistory.sort((a, b) => new Date(a.start_time || '') - new Date(b.start_time || '')).map(bh => ({ type: 'ServiceLog', order_number: 'SVC-LOG', bus_number: bh.bus_number, description: bh.description?.substring(0, 15) || 'Service Log', tech: bh.technician, elapsed: bh.elapsed_minutes || 0, dateRef: bh.start_time || bh.created_date, start: bh.start_time, end: bh.end_time }))
+    ].sort((a, b) => new Date(a.dateRef || '') - new Date(b.dateRef || ''));
+
+    // Re-estimate page count with combined items
+    const estRowsPerPage = Math.floor((H - 250 - 120) / rowH);
+    const estTotalPages = Math.max(1, Math.ceil(allItems.length / estRowsPerPage));
+    
     let grandMin = 0;
-    sorted.forEach((wo, idx) => {
+    allItems.forEach((item, idx) => {
       if (y > H - 130) {
-        // Page footer for current page
-        drawPageFooter(doc, W, H, margin, navy, gold, midGray, currentPage, totalPages);
+        drawPageFooter(doc, W, H, margin, navy, gold, midGray, currentPage, estTotalPages);
         doc.addPage();
         currentPage++;
-        addPageHeader(currentPage, totalPages);
-        // Reprint column headers
+        addPageHeader(currentPage, estTotalPages);
         doc.setFillColor(...navy);
         doc.rect(margin, y, W - margin * 2, 20, 'F');
         doc.setTextColor(...white);
@@ -302,32 +311,31 @@ function TechHoursReport({ users }) {
       doc.setLineWidth(0.2);
       doc.rect(margin, y, W - margin * 2, rowH);
 
-      const elMin = wo.elapsed_time_minutes || 0;
+      const elMin = item.elapsed || 0;
       const elHrs = (elMin / 60).toFixed(2);
       grandMin += elMin;
 
-      const dateRef = wo.completed_date || wo.updated_date || wo.created_date;
-      const dateStr = dateRef ? moment(dateRef).format('MM/DD/YYYY') : '—';
-      const startStr = wo.repair_start_time ? moment(wo.repair_start_time).format('MM/DD/YY HH:mm') : '—';
-      const endStr   = wo.repair_end_time   ? moment(wo.repair_end_time).format('MM/DD/YY HH:mm')   : '—';
+      const dateStr = item.dateRef ? moment(item.dateRef).format('MM/DD/YYYY') : '—';
+      const startStr = item.start ? moment(item.start).format('MM/DD/YY HH:mm') : '—';
+      const endStr = item.end ? moment(item.end).format('MM/DD/YY HH:mm') : '—';
 
       doc.setTextColor(...black);
       doc.setFont('courier', 'normal');
       doc.setFontSize(8);
       const rY = y + 11;
-      doc.text(String(idx + 1),                          cols.num.x,   rY);
-      doc.text(wo.order_number || '—',                   cols.order.x, rY);
-      doc.text(wo.bus_number || '—',                     cols.bus.x,   rY);
-      doc.text(dateStr,                                  cols.date.x,  rY);
-      doc.text(startStr,                                 cols.start.x, rY);
-      doc.text(endStr,                                   cols.end.x,   rY);
+      doc.text(String(idx + 1), cols.num.x, rY);
+      doc.text((item.order_number || '—').substring(0, 12), cols.order.x, rY);
+      doc.text(item.bus_number || '—', cols.bus.x, rY);
+      doc.text(dateStr, cols.date.x, rY);
+      doc.text(startStr, cols.start.x, rY);
+      doc.text(endStr, cols.end.x, rY);
       doc.setFont('courier', 'bold');
-      doc.text(String(elMin),                            cols.mins.x,  rY);
+      doc.text(String(elMin), cols.mins.x, rY);
       doc.setTextColor(...navy);
-      doc.text(elHrs,                                    cols.hrs.x,   rY);
+      doc.text(elHrs, cols.hrs.x, rY);
       doc.setTextColor(...black);
       doc.setFont('courier', 'normal');
-      doc.text((wo.technician_name || '—').substring(0, 22), cols.tech.x, rY);
+      doc.text((item.tech || '—').substring(0, 22), cols.tech.x, rY);
       y += rowH;
     });
 
