@@ -99,7 +99,8 @@ function TechHoursReport({ users }) {
   };
 
   const handleExport = async () => {
-    if (filtered.length === 0) return;
+    const allItems = filtered.length + filteredInspections.length + filteredBusHistory.length;
+    if (allItems === 0) return;
     setExporting(true);
     const { jsPDF } = (await import('jspdf'));
     const doc = new jsPDF({ unit: 'pt', format: 'letter' });
