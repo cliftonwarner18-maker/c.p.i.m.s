@@ -4,10 +4,6 @@ import moment from 'npm:moment-timezone@0.5.45';
 
 Deno.serve(async (req) => {
   try {
-    const jsPDFModule = await import('npm:jspdf@4.0.0');
-    const autoTableModule = await import('npm:jspdf-autotable@3.8.3');
-    autoTableModule.default(jsPDFModule.jsPDF);
-
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
     
@@ -75,40 +71,46 @@ Deno.serve(async (req) => {
       return cleaned === '' ? null : cleaned;
     };
 
-    // Prepare table data
-    const tableData = assets.map(asset => [
-      sanitize(asset.out_of_service_date) || '-',
-      sanitize(asset.employee) || '-',
-      sanitize(`${asset.make} ${asset.model}`) || '-',
-      sanitize(asset.serial_number) || '-',
-      sanitize(asset.oos_reason) || '-',
-      sanitize(asset.decom_status) || '-'
-    ]);
+    // Headers
+    doc.setFontSize(9);
+    doc.setFont(undefined, 'bold');
+    const headers = ['OOS Date', 'Employee', 'Make/Model', 'Serial #', 'Reason', 'Status'];
+    const colWidths = [18, 20, 28, 30, 35, 25];
+    let x = 8;
+    headers.forEach((header, i) => {
+      doc.text(header, x, y);
+      x += colWidths[i];
+    });
+    y += 6;
 
-    // Generate table
-    autoTable(doc, {
-      head: [['OOS Date', 'Employee', 'Make/Model', 'Serial #', 'Reason', 'Status']],
-      body: tableData,
-      startY: y,
-      margin: { left: 8, right: 8 },
-      columnStyles: {
-        0: { cellWidth: 18 },
-        1: { cellWidth: 20 },
-        2: { cellWidth: 28 },
-        3: { cellWidth: 30 },
-        4: { cellWidth: 35 },
-        5: { cellWidth: 25 }
-      },
-      headStyles: { fontSize: 9, cellPadding: 3 },
-      bodyStyles: { fontSize: 8, cellPadding: 2 },
-      didDrawPage: (data) => {
-        y = data.cursor.y;
+    // Data rows
+    doc.setFont(undefined, 'normal');
+    doc.setFontSize(8);
+    assets.forEach(asset => {
+      if (y > pageHeight - 15) {
+        doc.addPage();
+        y = 10;
       }
+      
+      x = 8;
+      doc.text(sanitize(asset.out_of_service_date) || '-', x, y);
+      x += colWidths[0];
+      doc.text((sanitize(asset.employee) || '-').substring(0, 15), x, y);
+      x += colWidths[1];
+      doc.text((sanitize(`${asset.make} ${asset.model}`) || '-').substring(0, 25), x, y);
+      x += colWidths[2];
+      doc.text((sanitize(asset.serial_number) || '-').substring(0, 20), x, y);
+      x += colWidths[3];
+      doc.text((sanitize(asset.oos_reason) || '-').substring(0, 25), x, y);
+      x += colWidths[4];
+      doc.text(sanitize(asset.decom_status) || '-', x, y);
+      y += 6;
     });
 
     // Footer
+    y += 8;
     doc.setFontSize(8);
-    doc.text(`Total Records: ${assets.length}`, 8, y + 10);
+    doc.text(`Total Records: ${assets.length}`, 8, y);
 
     const pdf = doc.output('arraybuffer');
     return new Response(pdf, {
