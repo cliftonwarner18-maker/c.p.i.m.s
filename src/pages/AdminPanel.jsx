@@ -4,7 +4,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ShieldAlert, Plus, Pencil, Trash2, UserCheck, UserX, Save, X, Clock, FileDown } from 'lucide-react';
 import moment from 'moment';
 import DeleteConfirmModal from '../components/DeleteConfirmModal';
-import ManualServiceLogForm from '../components/ManualServiceLogForm';
 import WashBayHoursReport from '../components/admin/WashBayHoursReport';
 
 const FF = "'Courier Prime', monospace";
@@ -541,9 +540,6 @@ export default function AdminPanel() {
       {/* Hours Reports */}
       <TechHoursReport users={users} />
       <WashBayHoursReport />
-
-      {/* Manual Service Log */}
-      <ManualServiceLogForm users={users} />
 
       {/* User Table */}
       <div style={{ background: 'white', border: '1px solid hsl(220,18%,75%)', borderRadius: '2px', overflow: 'hidden' }}>
