@@ -107,6 +107,7 @@ export default function ActiveWorkOrders({ workOrders }) {
         </tbody>
       </table>
       </div>
-    </div>
-  );
-}
+      </div>
+      </div>
+      );
+      }
