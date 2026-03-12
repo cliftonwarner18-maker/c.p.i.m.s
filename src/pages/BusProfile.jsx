@@ -405,8 +405,18 @@ export default function BusProfile() {
                         <td style={S.td}>{h.technician}</td>
                         <td style={S.td}>{h.start_time ? new Date(h.start_time).toLocaleString() : '—'}</td>
                         <td style={S.td}>{h.end_time ? new Date(h.end_time).toLocaleString() : '—'}</td>
-                        <td style={S.td}>{h.elapsed_minutes ? `${h.elapsed_minutes} min` : '—'}</td>
+                        <td style={S.td}>{h.elapsed_time_minutes ? `${h.elapsed_time_minutes} min` : '—'}</td>
                         <td style={{ ...S.td, maxWidth: '300px' }}>{h.description}</td>
+                        <td style={S.td}>
+                          <div style={{ display: 'flex', gap: '4px' }}>
+                            <button onClick={() => handleEditHistory(h)} title="Edit" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 24, height: 24, background: 'hsl(220,60%,40%)', color: 'white', border: 'none', borderRadius: '2px', cursor: 'pointer', fontSize: '10px', fontWeight: '700' }}>
+                              <Pencil style={{ width: 11, height: 11 }} />
+                            </button>
+                            <button onClick={() => deleteHistoryMutation.mutate(h.id)} title="Delete" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 24, height: 24, background: 'hsl(0,65%,45%)', color: 'white', border: 'none', borderRadius: '2px', cursor: 'pointer', fontSize: '10px', fontWeight: '700' }}>
+                              <Trash2 style={{ width: 11, height: 11 }} />
+                            </button>
+                          </div>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
