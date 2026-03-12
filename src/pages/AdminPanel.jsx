@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ShieldAlert, Plus, Pencil, Trash2, UserCheck, UserX, Save, X, Clock, FileDown } from 'lucide-react';
 import moment from 'moment';
 import DeleteConfirmModal from '../components/DeleteConfirmModal';
+import ManualServiceLogForm from '../components/ManualServiceLogForm';
 
 const FF = "'Courier Prime', monospace";
 const inputStyle = { padding: '5px 8px', fontSize: '11px', fontFamily: FF, border: '1px solid hsl(220,18%,70%)', borderRadius: '2px', background: 'white', outline: 'none', width: '100%', boxSizing: 'border-box' };
@@ -22,6 +23,16 @@ function TechHoursReport({ users }) {
     queryFn: () => base44.entities.WorkOrder.list(),
   });
 
+  const { data: inspections = [] } = useQuery({
+    queryKey: ['allInspectionsForReport'],
+    queryFn: () => base44.entities.Inspection.list(),
+  });
+
+  const { data: busHistory = [] } = useQuery({
+    queryKey: ['allBusHistoryForReport'],
+    queryFn: () => base44.entities.BusHistory.list(),
+  });
+
   const filtered = workOrders.filter(wo => {
     if (!wo.elapsed_time_minutes) return false;
     if (selectedTech && wo.technician_name !== selectedTech) return false;
@@ -36,7 +47,38 @@ function TechHoursReport({ users }) {
     return true;
   });
 
-  const totalMinutes = filtered.reduce((sum, wo) => sum + (wo.elapsed_time_minutes || 0), 0);
+  const filteredInspections = inspections.filter(insp => {
+    if (!insp.elapsed_minutes) return false;
+    if (selectedTech && insp.inspector_name !== selectedTech) return false;
+    if (startDate) {
+      const ref = insp.inspection_date || insp.created_date;
+      if (ref && new Date(ref) < new Date(startDate)) return false;
+    }
+    if (endDate) {
+      const ref = insp.inspection_date || insp.created_date;
+      if (ref && new Date(ref) > new Date(endDate + 'T23:59:59')) return false;
+    }
+    return true;
+  });
+
+  const filteredBusHistory = busHistory.filter(bh => {
+    if (!bh.elapsed_minutes) return false;
+    if (selectedTech && bh.technician !== selectedTech) return false;
+    if (startDate) {
+      const ref = bh.start_time || bh.created_date;
+      if (ref && new Date(ref) < new Date(startDate)) return false;
+    }
+    if (endDate) {
+      const ref = bh.start_time || bh.created_date;
+      if (ref && new Date(ref) > new Date(endDate + 'T23:59:59')) return false;
+    }
+    return true;
+  });
+
+  const totalWorkOrderMinutes = filtered.reduce((sum, wo) => sum + (wo.elapsed_time_minutes || 0), 0);
+  const totalInspectionMinutes = filteredInspections.reduce((sum, insp) => sum + (insp.elapsed_minutes || 0), 0);
+  const totalBusHistoryMinutes = filteredBusHistory.reduce((sum, bh) => sum + (bh.elapsed_minutes || 0), 0);
+  const totalMinutes = totalWorkOrderMinutes + totalInspectionMinutes + totalBusHistoryMinutes;
   const totalHours = (totalMinutes / 60).toFixed(2);
 
   const drawPageFooter = (doc, W, H, margin, navy, gold, midGray, currentPage, totalPages) => {
