@@ -240,6 +240,30 @@ export default function BusWashOrderDetail({ order, onClose, onComplete }) {
             </div>
           </div>
 
+          {/* Elapsed Time Display */}
+          {startTime && endTime && (
+            <div style={{
+              background: 'hsl(280,70%,94%)',
+              border: '1px solid hsl(280,55%,70%)',
+              borderRadius: '2px',
+              padding: '10px',
+              display: 'flex',
+              justifyContent: 'space-around',
+              fontSize: '11px',
+              fontWeight: '700',
+              color: 'hsl(280,55%,35%)'
+            }}>
+              <div>
+                <div style={{ fontSize: '10px', opacity: 0.8, marginBottom: '2px' }}>MINUTES</div>
+                {elapsedMinutes} min
+              </div>
+              <div style={{ borderLeft: '1px solid hsl(280,55%,70%)', paddingLeft: '10px' }}>
+                <div style={{ fontSize: '10px', opacity: 0.8, marginBottom: '2px' }}>HOURS</div>
+                {elapsedHours} hrs
+              </div>
+            </div>
+          )}
+
           {/* Checklist */}
           <div>
             <label style={{ fontSize: '11px', fontWeight: '700', color: 'hsl(220,20%,30%)', display: 'block', marginBottom: '8px' }}>
