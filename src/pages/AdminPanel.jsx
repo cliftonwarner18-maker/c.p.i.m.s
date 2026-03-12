@@ -246,11 +246,11 @@ function TechHoursReport({ users }) {
       bus:   { x: margin + 70,  w: 24  },  // BUS#    24
       type:  { x: margin + 94,  w: 22  },  // TYPE    22
       date:  { x: margin + 116, w: 38  },  // DATE    38
-      start: { x: margin + 154, w: 38  },  // START   38
-      end:   { x: margin + 192, w: 38  },  // END     38
-      mins:  { x: margin + 230, w: 32  },  // MIN     32
-      hrs:   { x: margin + 262, w: 32  },  // HRS     32
-      tech:  { x: margin + 294, w: 228 },  // TECH   228  → total=522
+      start: { x: margin + 170, w: 38  },  // START   38
+      end:   { x: margin + 208, w: 38  },  // END     38
+      mins:  { x: margin + 246, w: 32  },  // MIN     32
+      hrs:   { x: margin + 278, w: 32  },  // HRS     32
+      tech:  { x: margin + 310, w: 212 },  // TECH   212  → total=522
     };
 
     doc.setFillColor(...navy);
