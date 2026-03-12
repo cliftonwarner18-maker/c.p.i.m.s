@@ -803,6 +803,9 @@ export default function WashBay() {
         </div>
       )}
 
+      {/* Technician Hours Report */}
+      <TechHoursReport users={systemUsers} />
+
       {/* Detail Modal */}
       {selectedOrder && (
         <BusWashOrderDetail
