@@ -16,8 +16,11 @@ const statusColor = (s) => {
 
 export default function ActiveWorkOrders({ workOrders }) {
   const [isExporting, setIsExporting] = useState(false);
+  const [filterType, setFilterType] = useState('All');
+  
   const active = workOrders
     .filter(w => w.status === 'Pending' || w.status === 'In Progress')
+    .filter(w => filterType === 'All' || w.work_order_type === filterType)
     .sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
 
   const handleExportFieldPDF = async () => {
