@@ -5,6 +5,7 @@ import { ShieldAlert, Plus, Pencil, Trash2, UserCheck, UserX, Save, X, Clock, Fi
 import moment from 'moment';
 import DeleteConfirmModal from '../components/DeleteConfirmModal';
 import ManualServiceLogForm from '../components/ManualServiceLogForm';
+import WashBayHoursReport from '../components/admin/WashBayHoursReport';
 
 const FF = "'Courier Prime', monospace";
 const inputStyle = { padding: '5px 8px', fontSize: '11px', fontFamily: FF, border: '1px solid hsl(220,18%,70%)', borderRadius: '2px', background: 'white', outline: 'none', width: '100%', boxSizing: 'border-box' };
