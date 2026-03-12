@@ -132,14 +132,40 @@ export default function DecommissionedAssetsSection() {
           </div>
         )}
 
-        <div style={{ fontSize: '10px', color: 'hsl(220,10%,50%)' }}>Showing {filteredAssets.length} of {assets.length} records</div>
+        {bulkModifyMode && selectedIds.size > 0 && (
+          <div style={{ background: 'hsl(200,80%,92%)', border: '1px solid hsl(200,80%,70%)', borderRadius: '2px', padding: '10px', marginBottom: '8px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{ fontSize: '11px', fontWeight: '700', color: 'hsl(200,80%,25%)' }}>BULK MODIFY {selectedIds.size} SELECTED ITEMS</div>
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-end', flexWrap: 'wrap' }}>
+              <div>
+                <label style={labelStyle}>Decom Status:</label>
+                <select style={{ ...inputStyle, width: 180 }} value={bulkData.decom_status} onChange={e => setBulkData({ ...bulkData, decom_status: e.target.value })}>
+                  <option value="">Keep Current</option>
+                  {['In Bad Parts', 'Awaiting Auction', 'Took to Auction', 'Rebuilt', 'Salvaged'].map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 8px', background: 'white', border: '1px solid hsl(220,18%,70%)', borderRadius: '2px' }}>
+                <input type="checkbox" id="bulk_oo_inv" checked={bulkData.out_of_inventory === true} onChange={e => setBulkData({ ...bulkData, out_of_inventory: e.target.checked ? true : null })} style={{ cursor: 'pointer' }} />
+                <label htmlFor="bulk_oo_inv" style={{ cursor: 'pointer', fontWeight: '600', fontSize: '11px', whiteSpace: 'nowrap' }}>Mark Out of Inventory</label>
+              </div>
+              <button onClick={() => { const updates = {}; if (bulkData.decom_status) updates.decom_status = bulkData.decom_status; if (bulkData.out_of_inventory) updates.out_of_inventory = true; bulkUpdateMutation.mutate(updates); }} disabled={(!bulkData.decom_status && !bulkData.out_of_inventory) || bulkUpdateMutation.isPending} style={{ ...btnBase, background: 'hsl(140,55%,38%)', color: 'white', borderColor: 'hsl(140,55%,30%)' }}>Apply</button>
+              <button onClick={() => { setBulkModifyMode(false); setSelectedIds(new Set()); setBulkData({ decom_status: '', out_of_inventory: null }); }} style={{ ...btnBase, background: 'hsl(220,18%,88%)', color: 'hsl(220,20%,20%)', borderColor: 'hsl(220,18%,70%)' }}>Cancel</button>
+            </div>
+          </div>
+        )}
+
+        <div style={{ fontSize: '10px', color: 'hsl(220,10%,50%)', display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '8px' }}>
+          <span>Showing {filteredAssets.length} of {assets.length} records</span>
+          {!bulkModifyMode ? (
+            <button onClick={() => setBulkModifyMode(true)} style={{ ...btnBase, background: 'hsl(200,70%,42%)', color: 'white', borderColor: 'hsl(200,70%,35%)', fontSize: '10px' }}>BULK MODIFY</button>
+          ) : null}
+        </div>
 
         <div style={{ overflowX: 'auto', maxHeight: 400, border: '1px solid hsl(220,18%,82%)', borderRadius: '2px' }}>
           <table style={{ width: '100%', fontSize: '10px', fontFamily: FF, borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ background: 'hsl(0,55%,30%)', color: 'white', position: 'sticky', top: 0 }}>
-                {['OOS Date', 'Employee', 'Bus #', 'Make/Model', 'Serial #', 'Decom Status', 'Out of Inv.', 'Actions'].map(h => (
-                  <th key={h} style={{ padding: '5px 7px', textAlign: 'left', fontSize: '10px', fontWeight: '700', whiteSpace: 'nowrap' }}>{h}</th>
+                {(bulkModifyMode ? ['✓', 'OOS Date', 'Employee', 'Bus #', 'Make/Model', 'Serial #', 'Decom Status', 'Location', 'Out of Inv.', 'Actions'] : ['OOS Date', 'Employee', 'Bus #', 'Make/Model', 'Serial #', 'Decom Status', 'Location', 'Out of Inv.', 'Actions']).map(h => (
+                  <th key={h} style={{ padding: '5px 7px', textAlign: h === '✓' ? 'center' : 'left', fontSize: '10px', fontWeight: '700', whiteSpace: 'nowrap' }}>{h}</th>
                 ))}
               </tr>
             </thead>
