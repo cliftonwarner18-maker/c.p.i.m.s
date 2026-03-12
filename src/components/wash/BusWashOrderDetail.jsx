@@ -42,6 +42,7 @@ export default function BusWashOrderDetail({ order, onClose, onComplete }) {
       await base44.entities.BusWashOrder.update(order.id, {
         washers,
         checklist,
+        assigned_date: washDate,
         start_time: startTime,
         end_time: endTime,
         elapsed_time_minutes: elapsedMinutes,
