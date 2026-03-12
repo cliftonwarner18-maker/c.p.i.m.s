@@ -133,8 +133,8 @@ export default function NewInspection() {
               <label style={labelStyle}>INSPECTOR *</label>
               <select style={inputStyle} value={form.inspector_name} onChange={e => setForm({ ...form, inspector_name: e.target.value })} required>
                 <option value="">-- SELECT INSPECTOR --</option>
-                {buses.length > 0 && buses.map(b => b).filter((v, i, a) => a.findIndex(x => x.inspector_name === v.inspector_name) === i).map((b, idx) => (
-                  <option key={idx} value={b.inspector_name}>{b.inspector_name || 'Unknown'}</option>
+                {systemUsers.filter(u => u.active !== false).map(u => (
+                  <option key={u.id} value={u.name}>{u.name}</option>
                 ))}
               </select>
             </div>
