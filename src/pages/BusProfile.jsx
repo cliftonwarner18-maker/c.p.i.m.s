@@ -377,9 +377,9 @@ export default function BusProfile() {
                 </div>
                 <div style={{ display: 'flex', gap: '6px' }}>
                   <button onClick={handleAddHistory} disabled={!historyForm.technician || !historyForm.description} style={{ padding: '6px 14px', background: 'hsl(140,55%,38%)', color: 'white', border: '1px solid hsl(140,55%,30%)', borderRadius: '2px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", fontWeight: '600', cursor: 'pointer' }}>
-                    SAVE ENTRY
+                    {editingHistoryId ? 'UPDATE ENTRY' : 'SAVE ENTRY'}
                   </button>
-                  <button onClick={() => setShowHistoryForm(false)} style={{ padding: '6px 14px', background: 'hsl(220,18%,88%)', color: 'hsl(220,20%,25%)', border: '1px solid hsl(220,18%,72%)', borderRadius: '2px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", cursor: 'pointer' }}>
+                  <button onClick={handleCancelEdit} style={{ padding: '6px 14px', background: 'hsl(220,18%,88%)', color: 'hsl(220,20%,25%)', border: '1px solid hsl(220,18%,72%)', borderRadius: '2px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", cursor: 'pointer' }}>
                     CANCEL
                   </button>
                 </div>
