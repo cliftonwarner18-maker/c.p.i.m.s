@@ -11,7 +11,7 @@ const btnBase = { display: 'inline-flex', alignItems: 'center', gap: 5, padding:
 
 export default function ManualServiceLogForm({ users = [] }) {
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({ bus_number: '', technician: '', description: '', start_time: '', end_time: '' });
+  const [form, setForm] = useState({ bus_number: '', technician: '', description: '', service_date: '', start_time: '', end_time: '' });
   const queryClient = useQueryClient();
 
   const { data: buses = [] } = useQuery({ queryKey: ['buses'], queryFn: () => base44.entities.Bus.list('bus_number') });
@@ -19,14 +19,23 @@ export default function ManualServiceLogForm({ users = [] }) {
 
   const createMutation = useMutation({
     mutationFn: (data) => {
-      const elapsed = data.start_time && data.end_time
-        ? Math.round((new Date(data.end_time) - new Date(data.start_time)) / 60000)
+      const startDateTime = `${data.service_date}T${data.start_time}`;
+      const endDateTime = `${data.service_date}T${data.end_time}`;
+      const elapsed = startDateTime && endDateTime
+        ? Math.round((new Date(endDateTime) - new Date(startDateTime)) / 60000)
         : 0;
-      return base44.entities.BusHistory.create({ ...data, elapsed_minutes: elapsed });
+      return base44.entities.BusHistory.create({ 
+        bus_number: data.bus_number,
+        technician: data.technician,
+        description: data.description,
+        start_time: startDateTime,
+        end_time: endDateTime,
+        elapsed_minutes: elapsed 
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['busHistory'] });
-      setForm({ bus_number: '', technician: '', description: '', start_time: '', end_time: '' });
+      setForm({ bus_number: '', technician: '', description: '', service_date: '', start_time: '', end_time: '' });
       setShowForm(false);
     },
   });
@@ -43,7 +52,7 @@ export default function ManualServiceLogForm({ users = [] }) {
 
   const handleCancel = () => {
     setShowForm(false);
-    setForm({ bus_number: '', technician: '', description: '', start_time: '', end_time: '' });
+    setForm({ bus_number: '', technician: '', description: '', service_date: '', start_time: '', end_time: '' });
   };
 
   return (
@@ -80,14 +89,18 @@ export default function ManualServiceLogForm({ users = [] }) {
               <label style={labelStyle}>DESCRIPTION *</label>
               <textarea style={{ ...inputStyle, minHeight: '60px', resize: 'vertical' }} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="What work was performed..." required />
             </div>
+            <div>
+              <label style={labelStyle}>SERVICE DATE * (transcription date)</label>
+              <input type="date" style={inputStyle} value={form.service_date} onChange={e => setForm({ ...form, service_date: e.target.value })} required />
+            </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
               <div>
-                <label style={labelStyle}>START TIME *</label>
-                <input type="datetime-local" style={inputStyle} value={form.start_time} onChange={e => setForm({ ...form, start_time: e.target.value })} required />
+                <label style={labelStyle}>START TIME * (HH:MM)</label>
+                <input type="time" style={inputStyle} value={form.start_time} onChange={e => setForm({ ...form, start_time: e.target.value })} required />
               </div>
               <div>
-                <label style={labelStyle}>END TIME *</label>
-                <input type="datetime-local" style={inputStyle} value={form.end_time} onChange={e => setForm({ ...form, end_time: e.target.value })} required />
+                <label style={labelStyle}>END TIME * (HH:MM)</label>
+                <input type="time" style={inputStyle} value={form.end_time} onChange={e => setForm({ ...form, end_time: e.target.value })} required />
               </div>
             </div>
             <div style={{ display: 'flex', gap: '6px', justifyContent: 'flex-end' }}>
