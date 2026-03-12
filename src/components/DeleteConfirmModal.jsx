@@ -54,8 +54,7 @@ export default function DeleteConfirmModal({ title, message, onConfirm, onCancel
             border: '2px solid', borderColor: 'hsl(0,65%,40%)', background: 'hsl(0,80%,97%)',
             padding: '8px', fontSize: '11px', color: 'hsl(0,65%,30%)', fontWeight: 'bold'
           }}>
-            ⚠️ You are about to permanently delete {label}.<br />
-            <span style={{ fontSize: '10px', fontWeight: 'normal', color: 'hsl(0,40%,40%)' }}>This action cannot be undone.</span>
+            ⚠️ {message}
           </div>
 
           <div>
