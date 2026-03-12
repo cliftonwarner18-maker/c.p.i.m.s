@@ -257,7 +257,7 @@ export default function WorkOrders() {
             </thead>
             <tbody>
               {filtered.length === 0 && (
-                <tr><td colSpan={9} style={{ padding: '24px', textAlign: 'center', color: 'hsl(220,10%,50%)', fontSize: '12px' }}>NO WORK ORDERS FOUND</td></tr>
+               <tr><td colSpan={10} style={{ padding: '24px', textAlign: 'center', color: 'hsl(220,10%,50%)', fontSize: '12px' }}>NO WORK ORDERS FOUND</td></tr>
               )}
               {filtered.map((wo, i) => {
                 const sc = STATUS_COLORS[wo.status] || { bg: '#f5f5f5', color: '#444', border: '#ddd' };
