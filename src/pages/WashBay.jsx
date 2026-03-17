@@ -397,6 +397,19 @@ export default function WashBay() {
         />
       )}
 
+      {/* Edit Modal */}
+      {editOrder && (
+        <BusWashOrderDetail
+          order={editOrder}
+          editMode={true}
+          onClose={() => setEditOrder(null)}
+          onComplete={() => {
+            setEditOrder(null);
+            refetch();
+          }}
+        />
+      )}
+
       {/* Delete Modal */}
       {deleteTarget && (
         <DeleteConfirmModal
