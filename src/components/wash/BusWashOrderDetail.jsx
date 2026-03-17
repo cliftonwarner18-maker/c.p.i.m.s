@@ -122,7 +122,7 @@ export default function BusWashOrderDetail({ order, onClose, onComplete, editMod
         }}>
           <div>
             <div style={{ fontSize: '12px', fontWeight: '700', letterSpacing: '0.08em' }}>
-              COMPLETE WASH ORDER
+              {editMode ? 'EDIT WASH ORDER' : 'COMPLETE WASH ORDER'}
             </div>
             <div style={{ fontSize: '10px', opacity: 0.8 }}>Bus #{order.bus_number}</div>
           </div>
