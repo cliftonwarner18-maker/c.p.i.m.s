@@ -386,22 +386,24 @@ export default function BusWashOrderDetail({ order, onClose, onComplete, editMod
             </button>
             <button
               onClick={() => completeMutation.mutate()}
-              disabled={!canComplete || completeMutation.isPending}
+              disabled={(!editMode && !canComplete) || completeMutation.isPending}
               style={{
                 flex: 1,
                 padding: '8px 12px',
                 fontSize: '11px',
                 fontFamily: FF,
                 fontWeight: '700',
-                background: canComplete ? 'hsl(140,55%,40%)' : 'hsl(220,18%,80%)',
+                background: (editMode || canComplete) ? 'hsl(140,55%,40%)' : 'hsl(220,18%,80%)',
                 color: 'white',
                 border: 'none',
                 borderRadius: '2px',
-                cursor: canComplete ? 'pointer' : 'not-allowed',
-                opacity: canComplete ? 1 : 0.6
+                cursor: (editMode || canComplete) ? 'pointer' : 'not-allowed',
+                opacity: (editMode || canComplete) ? 1 : 0.6
               }}
             >
-              {completeMutation.isPending ? 'COMPLETING...' : '✓ COMPLETE WASH'}
+              {completeMutation.isPending
+                ? (editMode ? 'SAVING...' : 'COMPLETING...')
+                : (editMode ? '✓ SAVE CHANGES' : '✓ COMPLETE WASH')}
             </button>
           </div>
         </div>
