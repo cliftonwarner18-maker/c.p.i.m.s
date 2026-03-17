@@ -17,6 +17,7 @@ export default function WashBay() {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isExporting, setIsExporting] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [editOrder, setEditOrder] = useState(null);
 
   const queryClient = useQueryClient();
 
