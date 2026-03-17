@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { HardDrive, FileDown, Trash2 } from 'lucide-react';
+import { HardDrive, FileDown, Trash2, Pencil } from 'lucide-react';
 import moment from 'moment';
 import LoadingScreen from '../components/LoadingScreen';
 import BulkBusWashForm from '../components/wash/BulkBusWashForm';
