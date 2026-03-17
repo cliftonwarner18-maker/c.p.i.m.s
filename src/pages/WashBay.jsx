@@ -338,6 +338,25 @@ export default function WashBay() {
                       </button>
                     )}
                     <button
+                      onClick={() => setEditOrder(order)}
+                      style={{
+                        padding: '2px 6px',
+                        fontSize: '9px',
+                        fontFamily: FF,
+                        fontWeight: '700',
+                        background: 'hsl(220,55%,42%)',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '2px',
+                        cursor: 'pointer',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '2px'
+                      }}
+                    >
+                      <Pencil size={11} />
+                    </button>
+                    <button
                       onClick={() => setDeleteTarget(order)}
                       style={{
                         padding: '2px 6px',
