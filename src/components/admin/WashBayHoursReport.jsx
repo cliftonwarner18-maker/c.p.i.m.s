@@ -68,7 +68,24 @@ export default function WashBayHoursReport() {
     const black = [10, 10, 10];
     const lightBlue = [235, 240, 252];
     const borderGray = [200, 205, 215];
-    const midGray = [100, 100, 100];
+
+    // Expand: one row per washer per order, each gets full elapsed credit
+    const sorted = [...filtered].sort((a, b) => new Date(a.completed_date || a.assigned_date) - new Date(b.completed_date || b.assigned_date));
+    const expandedRows = [];
+    sorted.forEach(order => {
+      const washers = (order.washers && order.washers.length > 0) ? order.washers : ['—'];
+      washers.forEach(washer => {
+        expandedRows.push({ order, washer });
+      });
+    });
+
+    // Filter by selected washer if set
+    const rows = selectedWasher
+      ? expandedRows.filter(r => r.washer === selectedWasher)
+      : expandedRows;
+
+    // Grand total = sum of all individual rows (each washer gets full credit)
+    const grandTotalMin = rows.reduce((sum, r) => sum + (r.order.elapsed_time_minutes || 0), 0);
 
     const drawPageBorder = () => {
       doc.setDrawColor(...navy);
@@ -79,13 +96,18 @@ export default function WashBayHoursReport() {
       doc.rect(17, 17, W - 34, H - 34);
     };
 
-    const addPageHeader = (pageNum, totalPages) => {
+    const rowH = 16;
+    const usableH = H - 250 - 120;
+    const rowsPerPage = Math.floor(usableH / rowH);
+    const totalPages = Math.max(1, Math.ceil(rows.length / rowsPerPage));
+    let currentPage = 1;
+
+    const addPageHeader = (pageNum, tot) => {
       drawPageBorder();
       doc.setFillColor(...navy);
       doc.rect(0, 0, W, 80, 'F');
       doc.setFillColor(...gold);
       doc.rect(0, 80, W, 3, 'F');
-
       doc.setTextColor(...white);
       doc.setFont('courier', 'bold');
       doc.setFontSize(15);
@@ -93,38 +115,30 @@ export default function WashBayHoursReport() {
       doc.setFontSize(10);
       doc.setFont('courier', 'normal');
       doc.text('Transportation Department — Wash Bay Operations', margin, 39);
-
       doc.setFillColor(...gold);
       doc.rect(margin, 45, W - margin * 2, 1, 'F');
-
       doc.setFont('courier', 'bold');
       doc.setFontSize(13);
       doc.setTextColor(...gold);
-      doc.text('BUS WASH BAY HOURS RECORD', margin, 60);
-
+      doc.text('BUS WASH BAY HOURS RECORD — INDIVIDUAL TECHNICIAN CREDIT', margin, 60);
       doc.setFont('courier', 'normal');
       doc.setFontSize(8);
       doc.setTextColor(200, 210, 230);
-      doc.text(`Document No: NHCS-WSH-HR-${moment().format('YYYYMMDD')}   |   Page ${pageNum} of ${totalPages}   |   Printed: ${moment().format('MM/DD/YYYY [at] HH:mm')}`, margin, 73);
-
+      doc.text(`Document No: NHCS-WSH-HR-${moment().format('YYYYMMDD')}   |   Page ${pageNum} of ${tot}   |   Printed: ${moment().format('MM/DD/YYYY [at] HH:mm')}`, margin, 73);
       y = 97;
     };
 
-    const sorted = [...filtered].sort((a, b) => new Date(a.completed_date || a.assigned_date) - new Date(b.completed_date || b.assigned_date));
-    const rowH = 16;
-    const usableH = H - 250 - 120;
-    const rowsPerPage = Math.floor(usableH / rowH);
-    const totalPages = Math.max(1, Math.ceil(sorted.length / rowsPerPage));
-
-    let currentPage = 1;
     addPageHeader(currentPage, totalPages);
 
     // Summary Box
+    const rangeLabel = startDate && endDate
+      ? `${moment(startDate).format('MMMM D, YYYY')} — ${moment(endDate).format('MMMM D, YYYY')}`
+      : startDate ? `From ${moment(startDate).format('MMMM D, YYYY')}` : endDate ? `Through ${moment(endDate).format('MMMM D, YYYY')}` : 'All Dates on Record';
+
     doc.setFillColor(...lightBlue);
     doc.setDrawColor(...navy);
     doc.setLineWidth(0.5);
     doc.rect(margin, y, W - margin * 2, 78, 'FD');
-
     doc.setFont('courier', 'bold');
     doc.setFontSize(8.5);
     doc.setTextColor(...navy);
@@ -132,23 +146,16 @@ export default function WashBayHoursReport() {
     doc.setLineWidth(0.3);
     doc.setDrawColor(...navy);
     doc.line(margin + 10, y + 17, margin + 100, y + 17);
-
     doc.setFont('courier', 'normal');
     doc.setFontSize(9);
     doc.setTextColor(...black);
-
-    const rangeLabel = startDate && endDate
-      ? `${moment(startDate).format('MMMM D, YYYY')} — ${moment(endDate).format('MMMM D, YYYY')}`
-      : startDate ? `From ${moment(startDate).format('MMMM D, YYYY')}` : endDate ? `Through ${moment(endDate).format('MMMM D, YYYY')}` : 'All Dates on Record';
-
     doc.setFont('courier', 'bold'); doc.text('WASHER / TECHNICIAN:', margin + 10, y + 30);
-    doc.setFont('courier', 'normal'); doc.text(selectedWasher || 'ALL WASHERS', margin + 145, y + 30);
+    doc.setFont('courier', 'normal'); doc.text(selectedWasher || 'ALL WASHERS (INDIVIDUAL CREDIT)', margin + 145, y + 30);
     doc.setFont('courier', 'bold'); doc.text('REPORTING PERIOD:', margin + 10, y + 44);
     doc.setFont('courier', 'normal'); doc.text(rangeLabel, margin + 145, y + 44);
-    doc.setFont('courier', 'bold'); doc.text('DEPARTMENT:', margin + 10, y + 58);
-    doc.setFont('courier', 'normal'); doc.text('Transportation — Wash Bay Operations', margin + 145, y + 58);
+    doc.setFont('courier', 'bold'); doc.text('NOTE:', margin + 10, y + 58);
+    doc.setFont('courier', 'normal'); doc.text('Each technician receives full elapsed time credit per wash', margin + 145, y + 58);
 
-    // Totals box
     const sumX = W - margin - 155;
     doc.setFillColor(...navy);
     doc.rect(sumX, y + 4, 145, 70, 'F');
@@ -162,57 +169,60 @@ export default function WashBayHoursReport() {
     doc.setTextColor(...white);
     doc.setFont('courier', 'normal');
     doc.setFontSize(9);
-    doc.text('Wash Orders:', sumX + 8, y + 32);
+    doc.text('Line Items:', sumX + 8, y + 32);
     doc.setFont('courier', 'bold');
-    doc.text(String(filtered.length), sumX + 137, y + 32, { align: 'right' });
+    doc.text(String(rows.length), sumX + 137, y + 32, { align: 'right' });
     doc.setFont('courier', 'normal');
     doc.text('Total Minutes:', sumX + 8, y + 46);
     doc.setFont('courier', 'bold');
-    doc.text(String(totalMinutes), sumX + 137, y + 46, { align: 'right' });
+    doc.text(String(grandTotalMin), sumX + 137, y + 46, { align: 'right' });
     doc.setFont('courier', 'normal');
     doc.text('Total Hours:', sumX + 8, y + 60);
     doc.setFont('courier', 'bold');
     doc.setFontSize(12);
     doc.setTextColor(...gold);
-    doc.text(totalHours, sumX + 137, y + 62, { align: 'right' });
+    doc.text((grandTotalMin / 60).toFixed(2), sumX + 137, y + 62, { align: 'right' });
 
     y += 88;
 
-    // Column headers
+    // Column layout: # | TECHNICIAN | ORDER# | BUS# | DATE | START | END | MIN | HRS
     const cols = {
-      num: { x: margin + 2, w: 22 },
-      order: { x: margin + 24, w: 70 },
-      bus: { x: margin + 94, w: 40 },
-      date: { x: margin + 134, w: 65 },
-      washers: { x: margin + 199, w: 120 },
-      start: { x: margin + 319, w: 60 },
-      end: { x: margin + 379, w: 60 },
-      mins: { x: margin + 439, w: 34 },
-      hrs: { x: margin + 473, w: 40 },
+      num:   { x: margin + 2   },
+      tech:  { x: margin + 18  },
+      order: { x: margin + 148 },
+      bus:   { x: margin + 218 },
+      date:  { x: margin + 253 },
+      start: { x: margin + 323 },
+      end:   { x: margin + 373 },
+      mins:  { x: margin + 423 },
+      hrs:   { x: margin + 463 },
     };
 
-    doc.setFillColor(...navy);
-    doc.rect(margin, y, W - margin * 2, 20, 'F');
-    doc.setTextColor(...white);
-    doc.setFont('courier', 'bold');
-    doc.setFontSize(7.5);
-    const hY = y + 13;
-    doc.text('#', cols.num.x, hY);
-    doc.text('ORDER #', cols.order.x, hY);
-    doc.text('BUS #', cols.bus.x, hY);
-    doc.text('DATE COMPLETED', cols.date.x, hY);
-    doc.text('WASHERS', cols.washers.x, hY);
-    doc.text('START', cols.start.x, hY);
-    doc.text('END', cols.end.x, hY);
-    doc.text('MIN', cols.mins.x, hY);
-    doc.text('HRS', cols.hrs.x, hY);
-    y += 20;
+    const drawColHeaders = () => {
+      doc.setFillColor(...navy);
+      doc.rect(margin, y, W - margin * 2, 20, 'F');
+      doc.setTextColor(...white);
+      doc.setFont('courier', 'bold');
+      doc.setFontSize(7.5);
+      const hY = y + 13;
+      doc.text('#',           cols.num.x,   hY);
+      doc.text('TECHNICIAN',  cols.tech.x,  hY);
+      doc.text('ORDER #',     cols.order.x, hY);
+      doc.text('BUS #',       cols.bus.x,   hY);
+      doc.text('DATE',        cols.date.x,  hY);
+      doc.text('START',       cols.start.x, hY);
+      doc.text('END',         cols.end.x,   hY);
+      doc.text('MIN',         cols.mins.x,  hY);
+      doc.text('HRS',         cols.hrs.x,   hY);
+      y += 20;
+    };
 
-    // Data rows
+    drawColHeaders();
+
+    // Data rows — one per washer per order
     let grandMin = 0;
-    sorted.forEach((order, idx) => {
+    rows.forEach(({ order, washer }, idx) => {
       if (y > H - 130) {
-        // Footer
         doc.setFillColor(...navy);
         doc.rect(0, H - 32, W, 32, 'F');
         doc.setFillColor(...gold);
@@ -221,25 +231,10 @@ export default function WashBayHoursReport() {
         doc.setFont('courier', 'normal');
         doc.setFontSize(8);
         doc.text('NEW HANOVER COUNTY SCHOOLS — Transportation Department — Wash Bay Hours', W / 2, H - 15, { align: 'center' });
-
         doc.addPage();
         currentPage++;
         addPageHeader(currentPage, totalPages);
-        doc.setFillColor(...navy);
-        doc.rect(margin, y, W - margin * 2, 20, 'F');
-        doc.setTextColor(...white);
-        doc.setFont('courier', 'bold');
-        doc.setFontSize(7.5);
-        doc.text('#', cols.num.x, y + 13);
-        doc.text('ORDER #', cols.order.x, y + 13);
-        doc.text('BUS #', cols.bus.x, y + 13);
-        doc.text('DATE COMPLETED', cols.date.x, y + 13);
-        doc.text('WASHERS', cols.washers.x, y + 13);
-        doc.text('START', cols.start.x, y + 13);
-        doc.text('END', cols.end.x, y + 13);
-        doc.text('MIN', cols.mins.x, y + 13);
-        doc.text('HRS', cols.hrs.x, y + 13);
-        y += 20;
+        drawColHeaders();
       }
 
       const isEven = idx % 2 === 0;
@@ -253,39 +248,46 @@ export default function WashBayHoursReport() {
       const elHrs = (elMin / 60).toFixed(2);
       grandMin += elMin;
 
-      const dateStr = order.assigned_date || order.completed_date ? moment(order.assigned_date || order.completed_date).format('MM/DD/YYYY') : '—';
-      const startStr = order.start_time ? order.start_time.substring(0, 5) : '—';
-      const endStr = order.end_time ? order.end_time.substring(0, 5) : '—';
+      const dateStr = (order.assigned_date || order.completed_date)
+        ? moment(order.assigned_date || order.completed_date).format('MM/DD/YYYY') : '—';
+      // Format start/end as HH:MM
+      const fmtTime = (t) => {
+        if (!t) return '—';
+        if (t.includes('T')) return moment(t).format('HH:mm');
+        return t.substring(0, 5);
+      };
+      const startStr = fmtTime(order.start_time);
+      const endStr   = fmtTime(order.end_time);
 
       doc.setTextColor(...black);
       doc.setFont('courier', 'normal');
       doc.setFontSize(8);
       const rY = y + 11;
-      doc.text(String(idx + 1), cols.num.x, rY);
+      doc.text(String(idx + 1),                          cols.num.x,   rY);
+      doc.text(washer.substring(0, 22),                  cols.tech.x,  rY);
       doc.text((order.order_number || '—').substring(0, 10), cols.order.x, rY);
-      doc.text(order.bus_number || '—', cols.bus.x, rY);
-      doc.text(dateStr, cols.date.x, rY);
-      doc.text((order.washers || []).join(', ').substring(0, 25), cols.washers.x, rY);
-      doc.text(startStr, cols.start.x, rY);
-      doc.text(endStr, cols.end.x, rY);
+      doc.text((order.bus_number || '—').substring(0, 6), cols.bus.x,   rY);
+      doc.text(dateStr,                                  cols.date.x,  rY);
+      doc.text(startStr,                                 cols.start.x, rY);
+      doc.text(endStr,                                   cols.end.x,   rY);
       doc.setFont('courier', 'bold');
-      doc.text(String(elMin), cols.mins.x, rY);
+      doc.text(String(elMin),                            cols.mins.x,  rY);
       doc.setTextColor(...navy);
-      doc.text(elHrs, cols.hrs.x, rY);
+      doc.text(elHrs,                                    cols.hrs.x,   rY);
       doc.setTextColor(...black);
       y += rowH;
     });
 
-    // Grand total
+    // Grand total row
     y += 4;
     doc.setFillColor(...navy);
     doc.rect(margin, y, W - margin * 2, 20, 'F');
     doc.setTextColor(...gold);
     doc.setFont('courier', 'bold');
     doc.setFontSize(9);
-    doc.text('TOTAL WASH HOURS:', margin + 10, y + 13);
-    doc.text(`${grandMin} MINUTES`, cols.mins.x - 30, y + 13);
-    doc.text(`${(grandMin / 60).toFixed(2)} HOURS`, cols.hrs.x - 10, y + 13);
+    doc.text('TOTAL INDIVIDUAL WASH HOURS:', margin + 10, y + 13);
+    doc.text(`${grandMin} MIN`, cols.mins.x - 10, y + 13);
+    doc.text(`${(grandMin / 60).toFixed(2)} HRS`, cols.hrs.x - 5, y + 13);
 
     // Footer
     doc.setFillColor(...navy);
