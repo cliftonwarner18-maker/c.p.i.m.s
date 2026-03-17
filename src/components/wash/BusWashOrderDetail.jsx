@@ -39,7 +39,7 @@ export default function BusWashOrderDetail({ order, onClose, onComplete, editMod
         elapsedMinutes = Math.round((end - start) / 60000);
       }
 
-      await base44.entities.BusWashOrder.update(order.id, {
+      const updateData = {
         washers,
         checklist,
         assigned_date: washDate,
@@ -47,10 +47,14 @@ export default function BusWashOrderDetail({ order, onClose, onComplete, editMod
         end_time: endTime,
         elapsed_time_minutes: elapsedMinutes,
         notes,
-        status: 'Completed',
-        completed_date: new Date().toISOString()
-      });
+      };
 
+      if (!editMode) {
+        updateData.status = 'Completed';
+        updateData.completed_date = new Date().toISOString();
+      }
+
+      await base44.entities.BusWashOrder.update(order.id, updateData);
       queryClient.invalidateQueries({ queryKey: ['busWashOrders'] });
       onComplete();
     }
