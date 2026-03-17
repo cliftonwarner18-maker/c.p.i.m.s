@@ -349,7 +349,7 @@ export default function BusWashOrderDetail({ order, onClose, onComplete, editMod
           </div>
 
           {/* Validation Messages */}
-          {!canComplete && (
+          {!canComplete && !editMode && (
             <div style={{
               background: 'hsl(45,90%,94%)',
               border: '1px solid hsl(45,90%,70%)',
