@@ -31,11 +31,13 @@ export default function NonSerializedAssetsSection() {
 
   const handleExportPDF = async () => {
     setIsExporting(true);
-    const response = await base44.functions.invoke('exportNonSerializedAssets', {}, { responseType: 'arraybuffer' });
-    const blob = new Blob([response.data], { type: 'application/pdf' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href = url; a.download = 'non-serialized-assets.pdf';
-    document.body.appendChild(a); a.click(); window.URL.revokeObjectURL(url); a.remove();
+    const response = await base44.functions.invoke('exportNonSerializedAssets', {});
+    const html = response.data;
+    const win = window.open('', '_blank', 'width=900,height=700');
+    win.document.write(html);
+    win.document.close();
+    win.focus();
+    setTimeout(() => { win.print(); win.close(); }, 400);
     setIsExporting(false);
   };
 

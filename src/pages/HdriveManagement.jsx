@@ -3,7 +3,6 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { HardDrive, Plus, Search, Edit2, Trash2, ArrowRightLeft, AlertTriangle, FileText } from 'lucide-react';
 import moment from 'moment';
-import jsPDF from 'jspdf';
 import DeleteConfirmModal from '../components/DeleteConfirmModal';
 
 const FF = "'Courier Prime', monospace";
@@ -54,321 +53,24 @@ export default function HdriveManagement() {
     return result;
   };
 
-  const drawTable = (doc, headers, rows, startY, colWidths, pageH, marginL, marginR) => {
-    const rowH = 7;
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const tableWidth = pageWidth - marginL - marginR;
-    let y = startY;
-
-    const drawHeader = () => {
-      doc.setFillColor(30, 58, 120);
-      doc.rect(marginL, y, tableWidth, rowH, 'F');
-      doc.setTextColor(255, 255, 255);
-      doc.setFont('courier', 'bold');
-      doc.setFontSize(8);
-      let x = marginL;
-      headers.forEach((h, i) => { doc.text(h, x + 1.5, y + 5); x += colWidths[i]; });
-      y += rowH;
-    };
-
-    drawHeader();
-
-    rows.forEach((row, ri) => {
-      if (y + rowH > pageH - 15) {
-        doc.addPage();
-        y = 15;
-        drawHeader();
-      }
-      doc.setFillColor(ri % 2 === 0 ? 255 : 242, ri % 2 === 0 ? 255 : 246, ri % 2 === 0 ? 255 : 255);
-      doc.rect(marginL, y, tableWidth, rowH, 'F');
-      doc.setDrawColor(210, 218, 235);
-      doc.rect(marginL, y, tableWidth, rowH, 'S');
-      doc.setTextColor(30, 30, 30);
-      doc.setFont('courier', 'normal');
-      doc.setFontSize(8);
-      let x = marginL;
-      row.forEach((cell, i) => {
-        const text = String(cell ?? '—');
-        const maxW = colWidths[i] - 3;
-        const clipped = doc.getTextWidth(text) > maxW ? text.substring(0, Math.floor(maxW / (doc.getTextWidth(text) / text.length))) + '…' : text;
-        if (i === 0 || i === 1) { doc.setFont('courier', 'bold'); } else { doc.setFont('courier', 'normal'); }
-        doc.text(clipped, x + 1.5, y + 5);
-        x += colWidths[i];
-      });
-      y += rowH;
-    });
-    return y;
+  const exportAuditReport = async () => {
+    const response = await base44.functions.invoke('exportHDriveAudit', { search, userFilter: exportUser, locationFilter: exportLot, seizedOnly: false });
+    const html = response.data;
+    const win = window.open('', '_blank', 'width=900,height=700');
+    win.document.write(html);
+    win.document.close();
+    win.focus();
+    setTimeout(() => { win.print(); win.close(); }, 400);
   };
 
-  const exportAuditPDF = () => {
-    const allData = getExportDrives();
-    const now = moment().format('MMMM D, YYYY');
-    const pageW = 279, pageH = 216, mL = 12, mR = 12;
-    const contentW = pageW - mL - mR;
-
-    // Group by user
-    const userGroups = {};
-    allData.forEach(d => {
-      const u = d.current_user || '(Unassigned)';
-      if (!userGroups[u]) userGroups[u] = [];
-      userGroups[u].push(d);
-    });
-
-    const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'letter' });
-    let firstPage = true;
-
-    Object.entries(userGroups).forEach(([userName, drives]) => {
-      if (!firstPage) doc.addPage();
-      firstPage = false;
-
-      // --- HEADER ---
-      doc.setFillColor(30, 58, 120);
-      doc.rect(0, 0, pageW, 28, 'F');
-      doc.setTextColor(255, 255, 255);
-      doc.setFont('courier', 'bold');
-      doc.setFontSize(13);
-      doc.text('NEW HANOVER COUNTY SCHOOLS', mL, 10);
-      doc.setFontSize(9.5);
-      doc.text('TRANSPORTATION — H-DRIVE VERIFICATION & ACCOUNTABILITY FORM', mL, 17);
-      doc.setFont('courier', 'normal');
-      doc.setFontSize(7.5);
-      doc.text(`Generated: ${now}   |   CONFIDENTIAL — CHAIN OF CUSTODY`, mL, 24);
-
-      // --- ASSIGNED USER BLOCK ---
-      let y = 36;
-      doc.setTextColor(30, 58, 120);
-      doc.setFont('courier', 'bold');
-      doc.setFontSize(9);
-      doc.text('ASSIGNED TO:', mL, y);
-      doc.setFont('courier', 'normal');
-      doc.setFontSize(11);
-      doc.setTextColor(10, 10, 10);
-      doc.text(userName, mL + 32, y);
-      doc.setDrawColor(30, 58, 120);
-      doc.setLineWidth(0.4);
-      doc.line(mL + 32, y + 1, mL + 32 + 80, y + 1);
-
-      doc.setFont('courier', 'bold');
-      doc.setFontSize(9);
-      doc.setTextColor(30, 58, 120);
-      doc.text('LOT:', 148, y);
-      doc.setFont('courier', 'normal');
-      doc.setFontSize(10);
-      doc.setTextColor(10, 10, 10);
-      const lotLabel = exportLot || (drives[0]?.current_lot || '—');
-      doc.text(lotLabel, 159, y);
-
-      y += 8;
-      doc.setFont('courier', 'bold');
-      doc.setFontSize(8);
-      doc.setTextColor(80, 80, 80);
-      doc.text(`TOTAL DRIVES ISSUED TO THIS USER: ${drives.length}`, mL, y);
-      doc.text(`VERIFICATION DATE: _____ / _____ / __________`, 110, y);
-
-      // --- INSTRUCTIONS ---
-      y += 8;
-      const instrLines = [
-        'INSTRUCTIONS: Review each drive listed below. Place a checkmark in the [VER] box to confirm physical',
-        'possession. Enter the date verified and your initials in each row.',
-      ];
-      const instrH = instrLines.length * 5.5 + 4;
-      doc.setFillColor(240, 244, 252);
-      doc.rect(mL, y, contentW, instrH, 'F');
-      doc.setDrawColor(180, 195, 225);
-      doc.rect(mL, y, contentW, instrH, 'S');
-      doc.setFont('courier', 'normal');
-      doc.setFontSize(7.5);
-      doc.setTextColor(40, 60, 110);
-      instrLines.forEach((line, li) => {
-        doc.text(line, mL + 2, y + 4.5 + li * 5.5);
-      });
-      y += instrH;
-
-      // --- TABLE HEADER ---
-      y += 12;
-      const col = { brand: 32, serial: 52, location: 110, ver: 14, date: 28, init: 16 };
-      // Header
-      doc.setFillColor(30, 58, 120);
-      doc.rect(mL, y, contentW, 8, 'F');
-      doc.setTextColor(255, 255, 255);
-      doc.setFont('courier', 'bold');
-      doc.setFontSize(8);
-      let x = mL;
-      doc.text('BRAND', x + 1.5, y + 5.5); x += col.brand;
-      doc.text('SERIAL NUMBER', x + 1.5, y + 5.5); x += col.serial;
-      doc.text('CURRENT LOT / LOCATION', x + 1.5, y + 5.5); x += col.location;
-      doc.text('[VER]', x + 1.5, y + 5.5); x += col.ver;
-      doc.text('DATE __/__/____', x + 1.5, y + 5.5); x += col.date;
-      doc.text('INIT.', x + 1.5, y + 5.5);
-      y += 8;
-
-      // --- TABLE ROWS ---
-      const rowH = 9;
-      drives.forEach((d, ri) => {
-        if (y + rowH > pageH - 70) {
-          doc.addPage();
-          y = 15;
-          // Re-draw mini header on continuation
-          doc.setFillColor(30, 58, 120);
-          doc.rect(mL, y, contentW, 8, 'F');
-          doc.setTextColor(255, 255, 255);
-          doc.setFont('courier', 'bold');
-          doc.setFontSize(8);
-          x = mL;
-          doc.text('BRAND', x + 1.5, y + 5.5); x += col.brand;
-          doc.text('SERIAL NUMBER', x + 1.5, y + 5.5); x += col.serial;
-          doc.text('CURRENT LOT / LOCATION', x + 1.5, y + 5.5); x += col.location;
-          doc.text('[VER]', x + 1.5, y + 5.5); x += col.ver;
-          doc.text('DATE __/__/____', x + 1.5, y + 5.5); x += col.date;
-          doc.text('INIT.', x + 1.5, y + 5.5);
-          y += 8;
-        }
-
-        const bg = ri % 2 === 0 ? [255, 255, 255] : [245, 248, 255];
-        doc.setFillColor(...bg);
-        doc.rect(mL, y, contentW, rowH, 'F');
-        doc.setDrawColor(200, 210, 228);
-        doc.rect(mL, y, contentW, rowH, 'S');
-
-        doc.setTextColor(20, 20, 20);
-        doc.setFont('courier', 'bold');
-        doc.setFontSize(8.5);
-        x = mL;
-        doc.text(String(d.make || '—'), x + 1.5, y + 6); x += col.brand;
-
-        doc.setFont('courier', 'bold');
-        doc.setFontSize(8.5);
-        doc.text(String(d.serial_number || '—'), x + 1.5, y + 6); x += col.serial;
-
-        doc.setFont('courier', 'normal');
-        doc.setFontSize(7.5);
-        const loc = [d.current_lot, d.current_sublocation].filter(Boolean).join(' — ') || d.current_location || '—';
-        const maxLocW = col.location - 3;
-        const locText = doc.getStringUnitWidth(loc) * 7.5 / doc.internal.scaleFactor > maxLocW
-          ? loc.substring(0, 38) + '…' : loc;
-        doc.text(locText, x + 1.5, y + 6); x += col.location;
-
-        // Checkbox
-        doc.setDrawColor(60, 60, 60);
-        doc.setLineWidth(0.5);
-        doc.rect(x + 2, y + 1.5, 6, 6, 'S');
-        x += col.ver;
-
-        // Date line
-        doc.setLineWidth(0.3);
-        doc.line(x + 1, y + rowH - 1.5, x + col.date - 2, y + rowH - 1.5);
-        x += col.date;
-
-        // Initials line
-        doc.line(x + 1, y + rowH - 1.5, x + col.init - 2, y + rowH - 1.5);
-
-        y += rowH;
-      });
-
-      // --- DISCLOSURE / SIGNATURE BLOCK ---
-      y += 6;
-
-      const disclosureLines = [
-        'By signing below, I hereby acknowledge and certify the following:',
-        '',
-        '1. I have physically verified each H-Drive listed above and confirm that all listed drives are in my',
-        '   possession and/or secured at the location indicated.',
-        '',
-        '2. I understand that the H-Drives assigned to me contain recorded surveillance footage and are the',
-        '   property of New Hanover County Schools Transportation Department.',
-        '',
-        '3. I accept full personal responsibility for the safekeeping of each drive. Negligent damage, loss,',
-        '   or unauthorized transfer of any H-Drive is my sole responsibility and may result in disciplinary action.',
-        '',
-        '4. I understand that any discrepancy noted above must be reported immediately to a supervisor.',
-      ];
-      const lineH = 4.8;
-      const disclosureTextH = disclosureLines.length * lineH;
-      const sigH = 10;
-      const boxH = 9 + disclosureTextH + sigH + 4; // header + text + sig + padding
-
-      if (y + boxH > pageH - 10) { doc.addPage(); y = 20; }
-
-      const boxTop = y;
-      doc.setDrawColor(30, 58, 120);
-      doc.setLineWidth(0.6);
-      doc.rect(mL, boxTop, contentW, boxH, 'S');
-
-      doc.setFillColor(30, 58, 120);
-      doc.rect(mL, boxTop, contentW, 7, 'F');
-      doc.setTextColor(255, 255, 255);
-      doc.setFont('courier', 'bold');
-      doc.setFontSize(8.5);
-      doc.text('ACKNOWLEDGMENT & RESPONSIBILITY DISCLOSURE', mL + 3, boxTop + 5);
-      y = boxTop + 10;
-
-      doc.setTextColor(20, 20, 20);
-      doc.setFont('courier', 'normal');
-      doc.setFontSize(7.8);
-      disclosureLines.forEach(line => {
-        doc.text(line, mL + 3, y);
-        y += lineH;
-      });
-
-      y += 4;
-      doc.setLineWidth(0.4);
-      doc.setFont('courier', 'bold');
-      doc.setFontSize(8);
-      doc.setTextColor(30, 58, 120);
-      doc.text('SIGNATURE:', mL + 3, y);
-      doc.setDrawColor(40, 40, 40);
-      doc.line(mL + 26, y, mL + 110, y);
-      doc.text('DATE:', mL + 115, y);
-      doc.line(mL + 128, y, mL + 200, y);
-    });
-
-    // Page numbers
-    const totalPages = doc.internal.getNumberOfPages();
-    for (let i = 1; i <= totalPages; i++) {
-      doc.setPage(i);
-      doc.setFont('courier', 'normal');
-      doc.setFontSize(7);
-      doc.setTextColor(150, 150, 150);
-      doc.text(`NHCS Transportation — H-Drive Verification Form — Page ${i} of ${totalPages}`, mL, pageH - 5);
-      doc.text('CONFIDENTIAL', 248, pageH - 5);
-    }
-
-    doc.save(`NHCS_HDrive_Verification_${moment().format('YYYYMMDD_HHmm')}.pdf`);
-  };
-
-  const exportInventoryPDF = () => {
-    const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'letter' });
-    const data = getExportDrives();
-    const now = moment().format('MMMM D, YYYY');
-    const filterLabel = [exportLot || 'All Lots', exportUser ? `User: ${exportUser}` : 'All Users'].join(' — ');
-    const pageW = 279, pageH = 216, mL = 10, mR = 10;
-
-    doc.setFillColor(45, 80, 140);
-    doc.rect(0, 0, pageW, 20, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFont('courier', 'bold');
-    doc.setFontSize(12);
-    doc.text('NHCS H-DRIVE SIMPLE INVENTORY', mL, 9);
-    doc.setFont('courier', 'normal');
-    doc.setFontSize(8);
-    doc.text(`${now}   |   ${filterLabel}   |   ${data.length} Drives`, mL, 16);
-
-    const cols = [10, 32, 20, 28, 32, 20, 110]; // total ~252
-    drawTable(doc,
-      ['#', 'SERIAL NUMBER', 'MAKE', 'MODEL', 'CURRENT USER', 'LOT', 'SUB LOCATION'],
-      data.map((d, i) => [i + 1, d.serial_number, d.make, d.model, d.current_user || '—', d.current_lot || '—', d.current_sublocation || '—']),
-      24, cols, pageH, mL, mR
-    );
-
-    const pages = doc.internal.getNumberOfPages();
-    for (let i = 1; i <= pages; i++) {
-      doc.setPage(i);
-      doc.setFont('courier', 'normal');
-      doc.setFontSize(7);
-      doc.setTextColor(150, 150, 150);
-      doc.text(`NHCS VSS — H-Drive Inventory — Page ${i} of ${pages}`, mL, pageH - 5);
-    }
-    doc.save(`NHCS_HDrive_Inventory_${moment().format('YYYYMMDD_HHmm')}.pdf`);
+  const exportInventoryReport = async () => {
+    const response = await base44.functions.invoke('exportHDriveAudit', { search: '', userFilter: exportUser, locationFilter: exportLot, seizedOnly: false });
+    const html = response.data;
+    const win = window.open('', '_blank', 'width=900,height=700');
+    win.document.write(html);
+    win.document.close();
+    win.focus();
+    setTimeout(() => { win.print(); win.close(); }, 400);
   };
 
   const { data: drives = [], isLoading } = useQuery({
@@ -506,11 +208,11 @@ export default function HdriveManagement() {
             {activeUsers.map(u => <option key={u.id} value={u.name}>{u.name}</option>)}
           </select>
         </div>
-        <Btn onClick={exportAuditPDF} style={{ background: 'hsl(220,55%,38%)' }}>
-          <FileText style={{ width: 12, height: 12 }} /> AUDIT SHEET (PDF)
+        <Btn onClick={exportAuditReport} style={{ background: 'hsl(220,55%,38%)' }}>
+          <FileText style={{ width: 12, height: 12 }} /> AUDIT SHEET
         </Btn>
-        <Btn onClick={exportInventoryPDF} style={{ background: 'hsl(200,60%,38%)' }}>
-          <FileText style={{ width: 12, height: 12 }} /> SIMPLE INVENTORY (PDF)
+        <Btn onClick={exportInventoryReport} style={{ background: 'hsl(200,60%,38%)' }}>
+          <FileText style={{ width: 12, height: 12 }} /> SIMPLE INVENTORY
         </Btn>
       </div>
 
