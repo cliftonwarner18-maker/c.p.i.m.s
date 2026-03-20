@@ -43,7 +43,15 @@ export default function NonSerializedAssetsSection() {
 
   return (
     <div style={{ border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', overflow: 'hidden', fontFamily: FF }}>
-      <DeleteConfirmModal isOpen={!!deleteTarget} label={deleteTarget ? `${deleteTarget.part_name} (${deleteTarget.brand})` : ''} onConfirm={() => { deleteMutation.mutate(deleteTarget.id); setDeleteTarget(null); }} onCancel={() => setDeleteTarget(null)} />
+      {deleteTarget && (
+        <DeleteConfirmModal
+          title={`DELETE SPARE PART`}
+          message={`This will permanently delete ${deleteTarget.part_name}. This action cannot be undone.`}
+          onConfirm={() => { deleteMutation.mutate(deleteTarget.id); setDeleteTarget(null); }}
+          onCancel={() => setDeleteTarget(null)}
+          isLoading={deleteMutation.isPending}
+        />
+      )}
 
       <div style={sectionHdr}>🔧 NON-SERIALIZED ASSETS — SPARE PARTS INVENTORY</div>
 

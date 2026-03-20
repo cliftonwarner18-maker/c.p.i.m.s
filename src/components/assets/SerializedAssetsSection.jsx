@@ -67,7 +67,15 @@ export default function SerializedAssetsSection() {
 
   return (
     <div style={{ border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', overflow: 'hidden', fontFamily: FF }}>
-      <DeleteConfirmModal isOpen={!!deleteTarget} label={deleteTarget ? `${deleteTarget.brand} ${deleteTarget.model} (S/N: ${deleteTarget.serial_number})` : ''} onConfirm={() => { deleteMutation.mutate(deleteTarget.id); setDeleteTarget(null); }} onCancel={() => setDeleteTarget(null)} />
+      {deleteTarget && (
+        <DeleteConfirmModal
+          title={`DELETE SERIALIZED ASSET`}
+          message={`This will permanently delete ${deleteTarget.brand} ${deleteTarget.model} (S/N: ${deleteTarget.serial_number}). This action cannot be undone.`}
+          onConfirm={() => { deleteMutation.mutate(deleteTarget.id); setDeleteTarget(null); }}
+          onCancel={() => setDeleteTarget(null)}
+          isLoading={deleteMutation.isPending}
+        />
+      )}
 
       <div style={sectionHdr}>🎥 SERIALIZED ASSETS — DVR RECORDERS & HIGH VALUE EQUIPMENT</div>
 

@@ -75,7 +75,15 @@ export default function DecommissionedAssetsSection() {
 
   return (
     <div style={{ border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', overflow: 'hidden', fontFamily: FF }}>
-      <DeleteConfirmModal isOpen={!!deleteTarget} label={deleteTarget ? `${deleteTarget.make} ${deleteTarget.model}` : ''} onConfirm={() => { deleteMutation.mutate(deleteTarget.id); setDeleteTarget(null); }} onCancel={() => setDeleteTarget(null)} />
+      {deleteTarget && (
+        <DeleteConfirmModal
+          title={`DELETE DECOMMISSIONED ASSET`}
+          message={`This will permanently delete ${deleteTarget.make} ${deleteTarget.model}. This action cannot be undone.`}
+          onConfirm={() => { deleteMutation.mutate(deleteTarget.id); setDeleteTarget(null); }}
+          onCancel={() => setDeleteTarget(null)}
+          isLoading={deleteMutation.isPending}
+        />
+      )}
 
       <div style={sectionHdr}>🗑️ DECOMMISSIONED ASSETS — SALVAGE & DISPOSAL LOG</div>
 
