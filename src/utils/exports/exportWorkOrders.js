@@ -84,35 +84,52 @@ export function exportWorkOrdersPDF({ orders, statusFilter = 'All', typeFilter =
 
   const html = `<!DOCTYPE html><html><head><meta charset="utf-8">
   <title>NHCS Work Orders Report</title>
-  <style>${PRINT_BASE_CSS}</style>
+  <style>
+    ${PRINT_BASE_CSS}
+    .form-field { margin-bottom:8px; }
+    .form-field label { font-weight:700; font-size:10px; display:block; margin-bottom:2px; color:#1e3c78; }
+    .form-field input, .form-field textarea { width:100%; padding:6px 8px; border:1px solid #dde2ee; font-family:monospace; font-size:10px; box-sizing:border-box; }
+  </style>
   </head><body>
+  
   <div class="page-header">
     <div class="org">NEW HANOVER COUNTY SCHOOLS</div>
     <div class="dept">Transportation Department — Data-TraCs System</div>
-    <div class="title">VEHICLE MAINTENANCE WORK ORDER REPORT</div>
+    <div class="title">WORK ORDER FIELD FORMS — TECHNICIAN DOCUMENTATION</div>
   </div>
   <div class="gold-bar"></div>
   <div class="meta-box">
     <div class="meta-item"><strong>STATUS FILTER:</strong> ${filterLabel}</div>
     <div class="meta-item"><strong>TYPE FILTER:</strong> ${typeLabel}</div>
-    <div class="meta-item"><strong>RECORDS:</strong> ${orders.length}</div>
+    <div class="meta-item"><strong>TOTAL ORDERS:</strong> ${orders.length}</div>
     <div class="meta-item"><strong>GENERATED:</strong> ${moment().format('MM/DD/YYYY [at] HH:mm')} ET</div>
   </div>
-  <table>
-    <thead>
-      <tr>
-        <th>ORDER #</th><th>TYPE</th><th>DATE</th><th>BUS #</th><th>LOT</th>
-        <th>REPORTED BY</th><th>ISSUE</th><th>TECHNICIAN</th><th>STATUS</th><th>ELAPSED</th>
-      </tr>
-    </thead>
-    <tbody>${rows}</tbody>
-    <tfoot>
-      <tr class="totals-row">
-        <td colspan="9">TOTAL RECORDS</td>
-        <td>${orders.length}</td>
-      </tr>
-    </tfoot>
-  </table>
+
+  <div style="margin-bottom:20px;padding:12px;background:#e8ecf5;border-left:3px solid #1e3c78;font-size:9px;">
+    <strong>INSTRUCTIONS:</strong> Technicians must complete all work order forms legibly. Sign and date upon completion. Submit to supervisor for approval.
+  </div>
+
+  ${workOrderForms}
+
+  <div style="page-break-before:always;margin-top:40px;">
+    <div class="section-header">WORK ORDER SUMMARY TABLE</div>
+    <table style="margin-top:12px;">
+      <thead>
+        <tr>
+          <th>ORDER #</th><th>TYPE</th><th>DATE</th><th>BUS #</th><th>LOT</th>
+          <th>REPORTED BY</th><th>ISSUE</th><th>TECHNICIAN</th><th>STATUS</th><th>ELAPSED</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+      <tfoot>
+        <tr class="totals-row">
+          <td colspan="9">TOTAL RECORDS</td>
+          <td>${orders.length}</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
   <div class="page-footer">NEW HANOVER COUNTY SCHOOLS — Transportation Department — Data-TraCs System</div>
   </body></html>`;
 
