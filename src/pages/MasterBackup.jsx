@@ -23,11 +23,15 @@ export default function MasterBackup() {
     setExportFormat('PDF');
     try {
       const response = await base44.functions.invoke('exportMasterPDF');
-      const win = window.open('', '_blank', 'width=1000,height=800');
-      win.document.write(response.data);
-      win.document.close();
-      win.focus();
-      setTimeout(() => { win.print(); win.close(); }, 400);
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `master-backup-${new Date().toISOString().split('T')[0]}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      a.remove();
     } catch (error) {
       alert('Error exporting PDF: ' + error.message);
     } finally {
