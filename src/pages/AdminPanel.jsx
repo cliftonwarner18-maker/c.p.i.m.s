@@ -3,6 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ShieldAlert, Plus, Pencil, Trash2, UserCheck, UserX, Save, X, Clock, FileDown } from 'lucide-react';
 import moment from 'moment';
+import { exportTechHoursPDF } from '../utils/exports/exportTechHours';
 import DeleteConfirmModal from '../components/DeleteConfirmModal';
 import WashBayHoursReport from '../components/admin/WashBayHoursReport';
 
