@@ -1,129 +1,61 @@
-import { jsPDF } from 'npm:jspdf@4.0.0';
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.21';
 import moment from 'npm:moment-timezone@0.5.45';
 
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    // Fetch pending work orders
     const workOrders = await base44.entities.WorkOrder.list();
-    const pending = workOrders.filter(wo => wo.status === 'Pending').sort((a, b) => new Date(a.created_date) - new Date(b.created_date));
+    const pending = workOrders
+      .filter(wo => wo.status === 'Pending')
+      .sort((a, b) => new Date(a.created_date) - new Date(b.created_date));
 
-    const doc = new jsPDF();
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const pageHeight = doc.internal.pageSize.getHeight();
-    const margin = 12;
-    let yPos = margin;
+    const cards = pending.map(wo => `
+      <div style="border:1px solid #ccc;padding:10px 12px;margin-bottom:14px;page-break-inside:avoid;">
+        <div style="display:flex;justify-content:space-between;border-bottom:1px solid #ddd;padding-bottom:6px;margin-bottom:6px;">
+          <strong style="font-size:12px;">ORDER #${wo.order_number} &nbsp;|&nbsp; BUS #${wo.bus_number}</strong>
+          <span style="font-size:8px;color:#555;">Reported by: ${wo.reported_by || '—'} | ${moment(wo.created_date).tz('America/New_York').format('MM/DD/YYYY HH:mm')}</span>
+        </div>
+        <div style="font-size:9px;margin-bottom:7px;"><strong>ISSUE:</strong><br/><span style="padding-left:8px;">${wo.issue_description || '—'}</span></div>
+        <div style="font-size:9px;margin-bottom:5px;"><strong>[ ] REPAIR COMPLETE</strong></div>
+        <div style="font-size:9px;margin-bottom:4px;">Start Time: ____________________&nbsp;&nbsp;&nbsp;End Time: ____________________</div>
+        <div style="font-size:9px;margin-bottom:6px;">Technician Name: ______________________________________________</div>
+        <div style="font-size:9px;font-weight:bold;margin-bottom:3px;">REPAIRS PERFORMED:</div>
+        <div style="border:1px solid #ccc;height:52px;"></div>
+      </div>`).join('');
 
-    // Header
-    doc.setFillColor(30, 60, 120);
-    doc.rect(margin, yPos, pageWidth - margin * 2, 20, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(14);
-    doc.setFont(undefined, 'bold');
-    doc.text('FIELD WORK ORDERS - CLIPBOARD', pageWidth / 2, yPos + 8, { align: 'center' });
-    doc.setFontSize(9);
-    doc.setFont(undefined, 'normal');
-    doc.text(`Technician Name: ________________________   Date: ${moment().tz('America/New_York').format('MM/DD/YYYY')}`, margin + 2, yPos + 16);
-    doc.setTextColor(0, 0, 0);
-    yPos += 26;
+    const html = `<!DOCTYPE html><html><head><meta charset="utf-8">
+    <title>Field Work Orders</title>
+    <style>
+      body { font-family: 'Courier New', monospace; font-size: 10px; color: #111; }
+      @page { size: letter; margin: 0.55in 0.5in; }
+      @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+      .hdr { background: #142c5f; color: white; padding: 12px 16px; margin-bottom: 0; }
+      .hdr h1 { font-size: 13px; margin: 0 0 2px; }
+      .gold { background: #b88c28; height: 3px; margin-bottom: 12px; }
+      .meta { display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 10px; }
+      .note { font-size: 8px; font-style: italic; color: #555; margin-bottom: 10px; padding: 5px 8px; background: #f9f9f9; border: 1px solid #dde2ee; }
+      .ft { background: #142c5f; color: #c8d4ee; font-size: 8px; text-align: center; padding: 6px; margin-top: 16px; }
+    </style>
+    </head><body>
+    <div class="hdr">
+      <h1>NEW HANOVER COUNTY SCHOOLS — Field Work Orders Clipboard</h1>
+    </div>
+    <div class="gold"></div>
+    <div class="meta">
+      <span>Technician Name: ________________________________</span>
+      <span>Date: ${moment().tz('America/New_York').format('MM/DD/YYYY')}</span>
+    </div>
+    <div class="note">INSTRUCTIONS: Complete each work order in the field. Check box when complete. Record time, technician name, and repairs performed.</div>
+    ${cards || '<p style="text-align:center;color:#888;padding:20px;">No pending work orders found.</p>'}
+    <div class="ft">New Hanover County Schools | Transportation Department | Field Work Order Assignment</div>
+    </body></html>`;
 
-    // Instructions
-    doc.setFontSize(8);
-    doc.setFont(undefined, 'italic');
-    doc.setTextColor(80, 80, 80);
-    doc.text('INSTRUCTIONS: Complete each work order in the field. Check box when complete. Record time, technician name, and repairs performed.', margin + 2, yPos);
-    doc.setTextColor(0, 0, 0);
-    yPos += 8;
-
-    // Work orders
-    doc.setFont(undefined, 'normal');
-    doc.setFontSize(9);
-
-    pending.forEach((wo, idx) => {
-      if (yPos > pageHeight - 80) {
-        doc.addPage();
-        yPos = margin;
-      }
-
-      // Order number and bus
-      doc.setFont(undefined, 'bold');
-      doc.setFontSize(10);
-      doc.text(`ORDER #${wo.order_number}  |  BUS #${wo.bus_number}`, margin, yPos);
-      yPos += 6;
-
-      // Report info
-      doc.setFont(undefined, 'normal');
-      doc.setFontSize(8);
-      doc.text(`Reported By: ${wo.reported_by || '—'}   |   Date: ${moment(wo.created_date).tz('America/New_York').format('MM/DD/YYYY HH:mm')}`, margin, yPos);
-      yPos += 5;
-
-      // Issue description
-      doc.setFont(undefined, 'bold');
-      doc.setFontSize(8);
-      doc.text('ISSUE:', margin, yPos);
-      yPos += 4;
-      doc.setFont(undefined, 'normal');
-      const issueLines = doc.splitTextToSize(wo.issue_description || '—', pageWidth - margin * 2 - 10);
-      doc.setFontSize(8);
-      doc.text(issueLines, margin + 5, yPos);
-      yPos += issueLines.length * 4 + 2;
-
-      // Field sections
-      const fieldX = margin;
-      const fieldW = pageWidth - margin * 2;
-      const boxHeight = 6;
-
-      // Checkbox
-      doc.setFont(undefined, 'bold');
-      doc.setFontSize(8);
-      doc.text('[ ] REPAIR COMPLETE', fieldX, yPos);
-      yPos += 6;
-
-      // Time
-      doc.text('Start Time: ____________   End Time: ____________', fieldX, yPos);
-      yPos += 6;
-
-      // Technician
-      doc.text('Technician Name: ____________________________________', fieldX, yPos);
-      yPos += 6;
-
-      // Repairs performed
-      doc.text('REPAIRS PERFORMED:', fieldX, yPos);
-      yPos += 4;
-      doc.setDrawColor(180, 180, 200);
-      doc.setLineWidth(0.2);
-      doc.rect(fieldX + 2, yPos, fieldW - 4, 20);
-      yPos += 22;
-
-      // Separator
-      doc.setDrawColor(150, 150, 180);
-      doc.setLineWidth(0.5);
-      doc.line(fieldX, yPos, fieldX + fieldW, yPos);
-      yPos += 6;
-    });
-
-    // Footer
-    if (yPos < pageHeight - 20) {
-      yPos = pageHeight - 15;
-    }
-    doc.setFontSize(7);
-    doc.setFont(undefined, 'italic');
-    doc.setTextColor(100, 100, 100);
-    doc.text('New Hanover County Schools | Transportation Department | Field Work Order Assignment', pageWidth / 2, yPos, { align: 'center' });
-
-    const pdfBytes = doc.output('arraybuffer');
-    return new Response(pdfBytes, {
+    return new Response(html, {
       status: 200,
-      headers: {
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': 'attachment; filename="field-work-orders.pdf"'
-      }
+      headers: { 'Content-Type': 'text/html; charset=utf-8' }
     });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
