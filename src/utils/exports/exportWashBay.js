@@ -8,13 +8,16 @@ export function exportWashBayPDF({ orders, totalHours, hoursByWasher }) {
 
   const rows = orders.map(o => {
     const hrs = ((o.elapsed_time_minutes || 0) / 60).toFixed(2);
+    const washersList = (o.washers || []).length > 0
+      ? (o.washers || []).map(w => `<div style="margin-bottom:3px;">${w}</div>`).join('')
+      : '—';
     return `
       <tr>
         <td><strong>${o.order_number || '—'}</strong></td>
         <td>${o.assigned_date || '—'}</td>
         <td><strong>${o.bus_number || '—'}</strong></td>
         <td><span class="badge badge-${(o.status||'').toLowerCase().replace(' ','-')}">${o.status || '—'}</span></td>
-        <td>${(o.washers || []).join(', ') || '—'}</td>
+        <td style="word-break:break-word;white-space:normal;">${washersList}</td>
         <td>${o.start_time || '—'}</td>
         <td>${o.end_time || '—'}</td>
         <td><strong>${hrs} hrs</strong></td>
