@@ -1,93 +1,76 @@
-import { jsPDF } from 'npm:jspdf@4.0.0';
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.21';
 import momentTZ from 'npm:moment-timezone@0.5.45';
 
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
-    
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
     const assets = await base44.entities.NonSerializedAsset.list();
 
-    const doc = new jsPDF();
-    const pageHeight = doc.internal.pageSize.height;
-    const pageWidth = doc.internal.pageSize.width;
-    let y = 10;
+    const assetRows = assets.map((asset, idx) => `
+      <tr style="${idx % 2 === 0 ? 'background-color: #f0f4fc;' : 'background-color: white;'}">
+        <td style="padding: 6px 8px; font-size: 11px; border-bottom: 1px solid #ddd;">${(asset.part_name || '-').substring(0, 30)}</td>
+        <td style="padding: 6px 8px; font-size: 11px; border-bottom: 1px solid #ddd;">${(asset.brand || '-').substring(0, 20)}</td>
+        <td style="padding: 6px 8px; font-size: 11px; border-bottom: 1px solid #ddd;">${(asset.model_number || '-').substring(0, 18)}</td>
+        <td style="padding: 6px 8px; font-size: 11px; border-bottom: 1px solid #ddd;">${(asset.use || '-').substring(0, 22)}</td>
+        <td style="padding: 6px 8px; font-size: 11px; border-bottom: 1px solid #ddd; text-align: center;">${asset.quantity_on_hand || 0}</td>
+        <td style="padding: 6px 8px; font-size: 11px; border-bottom: 1px solid #ddd;">${(asset.current_location || '-').substring(0, 25)}</td>
+      </tr>
+    `).join('');
 
-    // Title
-    doc.setFontSize(16);
-    doc.text('NON-SERIALIZED ASSETS INVENTORY REPORT', pageWidth / 2, y, { align: 'center' });
-    y += 8;
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <title>Non-Serialized Assets Inventory Report</title>
+        <style>
+          body { font-family: 'Courier Prime', monospace; margin: 0; padding: 16px; background: white; }
+          .header { text-align: center; margin-bottom: 16px; }
+          .header h1 { margin: 0 0 8px 0; font-size: 16px; color: #1e3c78; }
+          .header p { margin: 4px 0; font-size: 11px; color: #666; }
+          table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+          thead tr { background: #1e3c78; color: white; }
+          th { padding: 8px; text-align: left; font-size: 11px; font-weight: bold; }
+          td { padding: 6px 8px; font-size: 11px; }
+          .footer { margin-top: 16px; font-size: 10px; color: #666; }
+          @media print { body { margin: 0; padding: 10px; } }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <h1>NON-SERIALIZED ASSETS INVENTORY REPORT</h1>
+          <p>Report Generated: ${momentTZ().tz('America/New_York').format('MM/DD/YYYY HH:mm')}</p>
+        </div>
 
-    // Date
-    doc.setFontSize(10);
-    const dateStr = `Report Generated: ${momentTZ().tz('America/New_York').format('MM/DD/YYYY HH:mm')}`;
-    doc.text(dateStr, pageWidth / 2, y, { align: 'center' });
-    y += 10;
+        <table>
+          <thead>
+            <tr>
+              <th>Part Name</th>
+              <th>Brand</th>
+              <th>Model #</th>
+              <th>Use</th>
+              <th>Qty</th>
+              <th>Location</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${assetRows}
+          </tbody>
+        </table>
 
-    // Sanitize function
-    const sanitize = (str) => {
-      if (!str || str === null || str === undefined) return null;
-      let cleaned = String(str)
-        .replace(/[\uFFFD]/g, '')
-        .replace(/[ï¿½]/g, '')
-        .replace(/[^\x20-\x7E]/g, '')
-        .trim();
-      return cleaned === '' ? null : cleaned;
-    };
+        <div class="footer">
+          <strong>Total Part Types: ${assets.length}</strong>
+        </div>
+      </body>
+      </html>
+    `;
 
-    // Headers
-    doc.setFontSize(9);
-    doc.setFont(undefined, 'bold');
-    const headers = ['Part Name', 'Brand', 'Model #', 'Use', 'Qty', 'Location'];
-    const colWidths = [32, 24, 22, 28, 14, 30];
-    let x = 8;
-    headers.forEach((header, i) => {
-      doc.text(header, x, y);
-      x += colWidths[i];
-    });
-    y += 6;
-
-    // Data rows
-    doc.setFont(undefined, 'normal');
-    doc.setFontSize(8);
-    assets.forEach(asset => {
-      if (y > pageHeight - 15) {
-        doc.addPage();
-        y = 10;
-      }
-      
-      x = 8;
-      doc.text((sanitize(asset.part_name) || '-').substring(0, 28), x, y);
-      x += colWidths[0];
-      doc.text((sanitize(asset.brand) || '-').substring(0, 20), x, y);
-      x += colWidths[1];
-      doc.text((sanitize(asset.model_number) || '-').substring(0, 18), x, y);
-      x += colWidths[2];
-      doc.text((sanitize(asset.use) || '-').substring(0, 22), x, y);
-      x += colWidths[3];
-      doc.text(String(asset.quantity_on_hand || 0), x, y);
-      x += colWidths[4];
-      doc.text((sanitize(asset.current_location) || '-').substring(0, 25), x, y);
-      y += 6;
-    });
-
-    // Footer
-    y += 8;
-    doc.setFontSize(8);
-    doc.text(`Total Part Types: ${assets.length}`, 8, y);
-
-    const pdf = doc.output('arraybuffer');
-    return new Response(pdf, {
+    return new Response(html, {
       status: 200,
-      headers: {
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': 'attachment; filename="non-serialized-assets.pdf"'
-      }
+      headers: { 'Content-Type': 'text/html; charset=UTF-8' }
     });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });

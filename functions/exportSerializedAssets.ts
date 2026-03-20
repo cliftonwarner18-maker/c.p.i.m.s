@@ -1,18 +1,14 @@
-import { jsPDF } from 'npm:jspdf@4.0.0';
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.21';
 import moment from 'npm:moment-timezone@0.5.45';
 
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
-    
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
     const body = await req.json();
-    const { statusFilter, assetTypeFilter, startDate, endDate } = body;
+    const { statusFilter, assetTypeFilter } = body;
 
     const assets = await base44.entities.SerializedAsset.list();
     
@@ -24,97 +20,74 @@ Deno.serve(async (req) => {
       filtered = filtered.filter(a => a.asset_type === assetTypeFilter);
     }
 
-    const doc = new jsPDF();
-    const pageHeight = doc.internal.pageSize.height;
-    const pageWidth = doc.internal.pageSize.width;
-    let y = 10;
+    const assetRows = filtered.map((asset, idx) => `
+      <tr style="${idx % 2 === 0 ? 'background-color: #f0f4fc;' : 'background-color: white;'}">
+        <td style="padding: 6px 8px; font-size: 11px; border-bottom: 1px solid #ddd;">${asset.asset_number || '-'}</td>
+        <td style="padding: 6px 8px; font-size: 11px; border-bottom: 1px solid #ddd;">${asset.brand || '-'}</td>
+        <td style="padding: 6px 8px; font-size: 11px; border-bottom: 1px solid #ddd;">${asset.model || '-'}</td>
+        <td style="padding: 6px 8px; font-size: 11px; border-bottom: 1px solid #ddd;">${asset.serial_number || '-'}</td>
+        <td style="padding: 6px 8px; font-size: 11px; border-bottom: 1px solid #ddd;">${asset.asset_type || '-'}</td>
+        <td style="padding: 6px 8px; font-size: 11px; border-bottom: 1px solid #ddd;">${asset.status || '-'}</td>
+        <td style="padding: 6px 8px; font-size: 11px; border-bottom: 1px solid #ddd;">${asset.assigned_bus_number || '-'}</td>
+        <td style="padding: 6px 8px; font-size: 11px; border-bottom: 1px solid #ddd;">${(asset.current_location || '-').substring(0, 25)}</td>
+      </tr>
+    `).join('');
 
-    // Title
-    doc.setFontSize(16);
-    doc.text('SERIALIZED ASSETS INVENTORY REPORT', pageWidth / 2, y, { align: 'center' });
-    y += 8;
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <title>Serialized Assets Inventory Report</title>
+        <style>
+          body { font-family: 'Courier Prime', monospace; margin: 0; padding: 16px; background: white; }
+          .header { text-align: center; margin-bottom: 16px; }
+          .header h1 { margin: 0 0 8px 0; font-size: 16px; color: #1e3c78; }
+          .header p { margin: 4px 0; font-size: 11px; color: #666; }
+          table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+          thead tr { background: #1e3c78; color: white; }
+          th { padding: 8px; text-align: left; font-size: 11px; font-weight: bold; }
+          td { padding: 6px 8px; font-size: 11px; }
+          .footer { margin-top: 16px; font-size: 10px; color: #666; }
+          @media print { body { margin: 0; padding: 10px; } }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <h1>SERIALIZED ASSETS INVENTORY REPORT</h1>
+          <p>Report Generated: ${moment().tz('America/New_York').format('MM/DD/YYYY HH:mm')}</p>
+          ${statusFilter && statusFilter !== 'All' ? `<p>Status Filter: ${statusFilter}</p>` : ''}
+          ${assetTypeFilter && assetTypeFilter !== 'All' ? `<p>Asset Type Filter: ${assetTypeFilter}</p>` : ''}
+        </div>
 
-    // Date range
-    doc.setFontSize(10);
-    const dateStr = `Report Generated: ${moment().tz('America/New_York').format('MM/DD/YYYY HH:mm')}`;
-    doc.text(dateStr, pageWidth / 2, y, { align: 'center' });
-    y += 6;
+        <table>
+          <thead>
+            <tr>
+              <th>Asset #</th>
+              <th>Brand</th>
+              <th>Model</th>
+              <th>Serial #</th>
+              <th>Type</th>
+              <th>Status</th>
+              <th>Bus #</th>
+              <th>Location</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${assetRows}
+          </tbody>
+        </table>
 
-    if (statusFilter && statusFilter !== 'All') {
-      doc.text(`Status Filter: ${statusFilter}`, pageWidth / 2, y, { align: 'center' });
-      y += 6;
-    }
+        <div class="footer">
+          <strong>Total Assets: ${filtered.length}</strong>
+        </div>
+      </body>
+      </html>
+    `;
 
-    if (assetTypeFilter && assetTypeFilter !== 'All') {
-      doc.text(`Asset Type Filter: ${assetTypeFilter}`, pageWidth / 2, y, { align: 'center' });
-      y += 6;
-    }
-
-    y += 4;
-
-    // Headers
-    doc.setFontSize(9);
-    doc.setFont(undefined, 'bold');
-    const headers = ['Asset #', 'Brand', 'Model', 'Serial #', 'Type', 'Status', 'Bus #', 'Location'];
-    const colWidths = [18, 18, 18, 22, 15, 18, 14, 28];
-    let x = 8;
-    headers.forEach((header, i) => {
-      doc.text(header, x, y);
-      x += colWidths[i];
-    });
-    y += 6;
-
-    // Sanitize function
-    const sanitize = (str) => {
-      if (!str || str === null || str === undefined) return null;
-      let cleaned = String(str)
-        .replace(/[\uFFFD]/g, '')
-        .replace(/[ï¿½]/g, '')
-        .replace(/[^\x20-\x7E]/g, '')
-        .trim();
-      return cleaned === '' ? null : cleaned;
-    };
-
-    // Data rows
-    doc.setFont(undefined, 'normal');
-    doc.setFontSize(8);
-    filtered.forEach(asset => {
-      if (y > pageHeight - 15) {
-        doc.addPage();
-        y = 10;
-      }
-      
-      x = 8;
-      doc.text(sanitize(asset.asset_number) || '-', x, y);
-      x += colWidths[0];
-      doc.text(sanitize(asset.brand) || '-', x, y);
-      x += colWidths[1];
-      doc.text(sanitize(asset.model) || '-', x, y);
-      x += colWidths[2];
-      doc.text(sanitize(asset.serial_number) || '-', x, y);
-      x += colWidths[3];
-      doc.text(sanitize(asset.asset_type) || '-', x, y);
-      x += colWidths[4];
-      doc.text(sanitize(asset.status) || '-', x, y);
-      x += colWidths[5];
-      doc.text(sanitize(asset.assigned_bus_number) || '-', x, y);
-      x += colWidths[6];
-      doc.text((sanitize(asset.current_location) || '-').substring(0, 20), x, y);
-      y += 6;
-    });
-
-    // Footer
-    y += 8;
-    doc.setFontSize(8);
-    doc.text(`Total Assets: ${filtered.length}`, 8, y);
-
-    const pdf = doc.output('arraybuffer');
-    return new Response(pdf, {
+    return new Response(html, {
       status: 200,
-      headers: {
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': 'attachment; filename="serialized-assets.pdf"'
-      }
+      headers: { 'Content-Type': 'text/html; charset=UTF-8' }
     });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
