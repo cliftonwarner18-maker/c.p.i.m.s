@@ -72,12 +72,15 @@ export default function WorkOrders() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontFamily: FF }}>
       <LoadingScreen isLoading={isLoading} message="LOADING WORK ORDERS..." />
-      <DeleteConfirmModal
-        isOpen={!!deleteTarget}
-        label={deleteTarget ? `Work Order ${deleteTarget.order_number} (Bus #${deleteTarget.bus_number})` : ''}
-        onConfirm={() => { deleteMutation.mutate(deleteTarget.id); setDeleteTarget(null); }}
-        onCancel={() => setDeleteTarget(null)}
-      />
+      {deleteTarget && (
+        <DeleteConfirmModal
+          title={`DELETE WORK ORDER #${deleteTarget.order_number}`}
+          message={`This will permanently delete the work order for Bus ${deleteTarget.bus_number}. This action cannot be undone.`}
+          onConfirm={() => { deleteMutation.mutate(deleteTarget.id); setDeleteTarget(null); }}
+          onCancel={() => setDeleteTarget(null)}
+          isLoading={deleteMutation.isPending}
+        />
+      )}
 
       {/* Header */}
       <div style={{ background: 'linear-gradient(to right, hsl(220,50%,30%), hsl(220,45%,40%))', color: 'white', padding: '10px 14px', borderRadius: '2px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
