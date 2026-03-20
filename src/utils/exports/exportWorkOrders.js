@@ -12,6 +12,57 @@ export function exportWorkOrdersPDF({ orders, statusFilter = 'All', typeFilter =
   const filterLabel = statusFilter === 'All' ? 'ALL STATUSES' : statusFilter.toUpperCase();
   const typeLabel = typeFilter === 'All' ? 'ALL TYPES' : typeFilter.toUpperCase();
 
+  // Generate individual work order forms
+  const workOrderForms = orders.map((wo) => {
+    const elapsed = wo.elapsed_time_minutes
+      ? `${Math.floor(wo.elapsed_time_minutes / 60)}h ${wo.elapsed_time_minutes % 60}m` : '—';
+    const statusColor = wo.status === 'Pending' ? '#d4a574' : wo.status === 'In Progress' ? '#1e3c78' : wo.status === 'Completed' ? '#166534' : '#991b1b';
+    const createdDate = moment(wo.created_date).format('MM/DD/YYYY');
+    const completedDate = wo.completed_date ? moment(wo.completed_date).format('MM/DD/YYYY') : '—';
+    
+    return `
+      <div style="page-break-after:always;border:2px solid #1e3c78;padding:16px;margin-bottom:20px;background:#fafbff;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+          <div><strong style="font-size:12px;">ORDER #:</strong><br/><span style="font-size:14px;font-weight:700;color:#1e3c78;">${wo.order_number || '—'}</span></div>
+          <div style="text-align:right;"><strong style="font-size:12px;">STATUS:</strong><br/><span style="font-size:13px;font-weight:700;color:${statusColor};">${(wo.status || 'PENDING').toUpperCase()}</span></div>
+        </div>
+        
+        <div style="border-bottom:2px solid #1e3c78;padding-bottom:12px;margin-bottom:12px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:8px;">
+            <div><strong>VEHICLE #:</strong> ${wo.bus_number || '—'}</div>
+            <div><strong>LOT:</strong> ${wo.lot || '—'}</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div><strong>WORK TYPE:</strong> ${wo.work_order_type || '—'}</div>
+            <div><strong>REPORTED BY:</strong> ${wo.reported_by || '—'}</div>
+          </div>
+        </div>
+
+        <div style="background:white;border:1px solid #dde2ee;padding:10px;margin-bottom:12px;font-size:10px;">
+          <strong style="display:block;margin-bottom:4px;">ISSUE DESCRIPTION:</strong>
+          <div style="white-space:pre-wrap;line-height:1.5;">${wo.issue_description || '—'}</div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+          <div><strong>CREATED:</strong> ${createdDate}</div>
+          <div><strong>COMPLETED:</strong> ${completedDate}</div>
+        </div>
+
+        ${wo.technician_name ? `
+        <div style="background:#e8ecf5;border-left:3px solid #1e3c78;padding:10px;margin-bottom:12px;">
+          <strong>REPAIR TECHNICIAN:</strong> ${wo.technician_name}<br/>
+          <strong>ELAPSED TIME:</strong> ${elapsed}
+          ${wo.repairs_rendered ? `<br/><strong style="display:block;margin-top:6px;">REPAIRS RENDERED:</strong><div style="white-space:pre-wrap;margin-top:2px;">${wo.repairs_rendered}</div>` : ''}
+        </div>` : ''}
+
+        <div style="display:flex;gap:20px;margin-top:16px;font-size:9px;">
+          <div style="flex:1;border-top:1px solid #999;padding-top:4px;">Technician Signature / Date</div>
+          <div style="flex:1;border-top:1px solid #999;padding-top:4px;">Supervisor Approval / Date</div>
+        </div>
+      </div>`;
+  }).join('');
+
+  // Generate summary table
   const rows = orders.map((wo, i) => {
     const elapsed = wo.elapsed_time_minutes
       ? `${Math.floor(wo.elapsed_time_minutes / 60)}h ${wo.elapsed_time_minutes % 60}m` : '—';
