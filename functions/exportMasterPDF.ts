@@ -1,17 +1,12 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
-import { jsPDF } from 'npm:jspdf@4.0.0';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.21';
 import moment from 'npm:moment@2.30.1';
 
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
+    if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    // Fetch all data (all statuses, no filters)
     const [buses, workOrders, inspections, serializedAssets, nonSerializedAssets, hdrives, users, custodyLogs, busHistory] = await Promise.all([
       base44.entities.Bus.list(),
       base44.entities.WorkOrder.list(),
@@ -24,340 +19,124 @@ Deno.serve(async (req) => {
       base44.entities.BusHistory.list(),
     ]);
 
-    const doc = new jsPDF();
-    const pageHeight = doc.internal.pageSize.height;
-    const pageWidth = doc.internal.pageSize.width;
-    const margin = 10;
-    let yPos = margin;
+    const esc = (s) => String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
-    const addPageHeader = () => {
-      doc.setFontSize(10);
-      doc.setFont(undefined, 'bold');
-      doc.setTextColor(30, 60, 120);
-      doc.text('NEW HANOVER COUNTY SCHOOLS', pageWidth / 2, 8, { align: 'center' });
-      doc.setFontSize(9);
-      doc.text('Transportation Department | Master System Backup', pageWidth / 2, 12, { align: 'center' });
-      doc.setLineWidth(0.5);
-      doc.setDrawColor(30, 60, 120);
-      doc.line(margin, 14, pageWidth - margin, 14);
-      yPos = 18;
-      doc.setTextColor(0, 0, 0);
-    };
+    const busRows = buses.map((b, i) => `
+      <tr style="background:${i%2===0?'#fff':'#f5f7fd'}">
+        <td><b>${esc(b.bus_number)}</b></td>
+        <td>${esc(b.bus_type)}</td>
+        <td>${esc([b.year,b.make,b.model].filter(Boolean).join(' '))}</td>
+        <td>${esc(b.vin)}</td>
+        <td>${esc(b.base_location)}</td>
+        <td>${esc(b.status)}</td>
+        <td>${esc(b.camera_system_type || 'None')}</td>
+        <td>${b.next_inspection_due ? moment(b.next_inspection_due).format('MM/DD/YYYY') : '—'}</td>
+      </tr>`).join('');
 
-    const addSectionHeader = (title) => {
-      if (yPos > pageHeight - 30) {
-        doc.addPage();
-        addPageHeader();
-      }
-      doc.setFontSize(11);
-      doc.setFont(undefined, 'bold');
-      doc.setFillColor(30, 60, 120);
-      doc.setTextColor(255, 255, 255);
-      doc.rect(margin, yPos - 5, pageWidth - margin * 2, 7, 'F');
-      doc.text(title, margin + 4, yPos + 1);
-      doc.setTextColor(0, 0, 0);
-      yPos += 10;
-    };
+    const woRows = workOrders.map((wo, i) => `
+      <tr style="background:${i%2===0?'#fff':'#f5f7fd'}">
+        <td><b>${esc(wo.order_number)}</b></td>
+        <td>${esc(wo.bus_number)}</td>
+        <td>${esc(wo.status)}</td>
+        <td>${esc(wo.technician_name)}</td>
+        <td>${wo.created_date ? moment(wo.created_date).format('MM/DD/YY') : '—'}</td>
+        <td style="max-width:200px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${esc(wo.issue_description)}</td>
+      </tr>`).join('');
 
-    const addRow = (label, value) => {
-      if (yPos > pageHeight - 8) {
-        doc.addPage();
-        addPageHeader();
-      }
-      doc.setFontSize(9);
-      doc.setFont(undefined, 'bold');
-      doc.text(label + ':', margin + 4, yPos);
-      doc.setFont(undefined, 'normal');
-      const wrapped = doc.splitTextToSize(String(value || '-'), pageWidth - 55);
-      doc.text(wrapped, margin + 50, yPos);
-      yPos += Math.max(4, wrapped.length * 3);
-    };
+    const inspRows = inspections.map((insp, i) => `
+      <tr style="background:${i%2===0?'#fff':'#f5f7fd'}">
+        <td><b>${esc(insp.inspection_number)}</b></td>
+        <td>${esc(insp.bus_number)}</td>
+        <td>${esc(insp.inspector_name)}</td>
+        <td style="color:${insp.overall_status==='Pass'?'#166534':'#991b1b'};font-weight:bold;">${esc(insp.overall_status)}</td>
+        <td>${insp.inspection_date ? moment(insp.inspection_date).format('MM/DD/YY') : '—'}</td>
+      </tr>`).join('');
 
-    const sanitize = (str) => {
-      if (!str) return '';
-      return String(str).replace(/[^\w\s\-.,]/g, '').substring(0, 100);
-    };
+    const assetRows = serializedAssets.map((a, i) => `
+      <tr style="background:${i%2===0?'#fff':'#f5f7fd'}">
+        <td><b>${esc(a.asset_number)}</b></td>
+        <td>${esc(a.brand)}</td>
+        <td>${esc(a.model)}</td>
+        <td>${esc(a.serial_number)}</td>
+        <td>${esc(a.status)}</td>
+        <td>${esc(a.assigned_bus_number)}</td>
+      </tr>`).join('');
 
-    // Title Page
-    addPageHeader();
-    doc.setFontSize(16);
-    doc.setFont(undefined, 'bold');
-    doc.text('MASTER SYSTEM BACKUP', pageWidth / 2, yPos + 10, { align: 'center' });
-    yPos += 20;
-    doc.setFontSize(10);
-    doc.setFont(undefined, 'normal');
-    const now = new Date();
-    const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);
-    const estTime = new Date(utcTime - (5 * 60 * 60 * 1000)); // EST is UTC-5
-    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-    const month = monthNames[estTime.getMonth()];
-    const day = estTime.getDate();
-    const year = estTime.getFullYear();
-    const hours = estTime.getHours();
-    const minutes = String(estTime.getMinutes()).padStart(2, '0');
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    const displayHours = hours % 12 || 12;
-    const formattedTime = `${month} ${day}, ${year} at ${displayHours}:${minutes} ${ampm}`;
-    doc.text(`Generated: ${formattedTime}`, pageWidth / 2, yPos, { align: 'center' });
-    yPos += 8;
-    doc.text(`Exported by: ${user.full_name || user.email}`, pageWidth / 2, yPos, { align: 'center' });
-    yPos += 15;
-
-    // Summary Stats
-    addSectionHeader('BACKUP SUMMARY');
-    doc.setFontSize(9);
-    const summaryItems = [
-      { label: 'Fleet Vehicles', value: buses.length },
-      { label: 'Work Orders (All Statuses)', value: workOrders.length },
-      { label: 'Inspections (Completed & Due)', value: inspections.length },
-      { label: 'Service History Records', value: busHistory.length },
-      { label: 'Serialized Assets', value: serializedAssets.length },
-      { label: 'Spare Parts', value: nonSerializedAssets.length },
-      { label: 'H-Drives', value: hdrives.length },
-      { label: 'Custody Logs', value: custodyLogs.length },
-      { label: 'System Users', value: users.length },
-    ];
-    summaryItems.forEach((item) => {
-      if (yPos > pageHeight - 8) {
-        doc.addPage();
-        addPageHeader();
-      }
-      doc.setFont(undefined, 'bold');
-      doc.text(item.label, margin + 4, yPos);
-      doc.setFont(undefined, 'normal');
-      doc.text(String(item.value), pageWidth - margin - 15, yPos, { align: 'right' });
-      yPos += 5;
-    });
-    yPos += 5;
-
-    // Vehicles Section
-    addSectionHeader('FLEET VEHICLES - DETAILED SPECIFICATION');
-    buses.forEach((bus) => {
-      if (yPos > pageHeight - 45) {
-        doc.addPage();
-        addPageHeader();
-      }
-      doc.setFontSize(9);
-      doc.setFont(undefined, 'bold');
-      doc.text(`Bus #${bus.bus_number}`, margin + 4, yPos);
-      yPos += 4;
-      doc.setFont(undefined, 'normal');
-      doc.setFontSize(8);
-      addRow('Year/Make/Model', `${bus.year} ${bus.make} ${bus.model}`);
-      addRow('VIN', bus.vin);
-      addRow('Status', bus.status);
-      addRow('Base Location', bus.base_location);
-      addRow('Camera System', bus.camera_system_type || 'None');
-      addRow('Camera Serial Number', bus.camera_serial_number || 'N/A');
-      addRow('Camera Model Number', bus.camera_model_number || 'N/A');
-      addRow('Dash Cam SID', bus.dash_cam_sid || 'N/A');
-      addRow('Gateway SID', bus.gateway_sid || 'N/A');
-      addRow('Stop Arm Cameras', bus.stop_arm_cameras ? 'YES' : 'NO');
-      addRow('AI Cameras Installed', bus.ai_cameras_installed ? 'YES' : 'NO');
-      addRow('Samsara Enabled', bus.samsara_enabled ? 'YES' : 'NO');
-      addRow('Next Inspection Due', bus.next_inspection_due || 'Not Set');
-      yPos += 5;
-    });
-
-    // Work Orders Section
-    addSectionHeader('WORK ORDERS');
-    workOrders.forEach((wo) => {
-      if (yPos > pageHeight - 25) {
-        doc.addPage();
-        addPageHeader();
-      }
-      doc.setFontSize(9);
-      doc.setFont(undefined, 'bold');
-      doc.text(`${wo.order_number} | Bus #${wo.bus_number}`, margin + 2, yPos);
-      yPos += 5;
-      doc.setFont(undefined, 'normal');
-      doc.setFontSize(8);
-      const statusLine = doc.splitTextToSize(`Status: ${wo.status} | Reported by: ${sanitize(wo.reported_by)}`, pageWidth - 8);
-      doc.text(statusLine, margin + 4, yPos);
-      yPos += statusLine.length * 3 + 2;
-      if (wo.issue_description) {
-        const issueWrapped = doc.splitTextToSize(`Issue: ${sanitize(wo.issue_description)}`, pageWidth - 8);
-        doc.text(issueWrapped, margin + 4, yPos);
-        yPos += issueWrapped.length * 3 + 2;
-      }
-      if (wo.repairs_rendered) {
-        doc.setFont(undefined, 'bold');
-        const repairsWrapped = doc.splitTextToSize(`Repairs: ${sanitize(wo.repairs_rendered)}`, pageWidth - 8);
-        doc.setFont(undefined, 'normal');
-        doc.text(repairsWrapped, margin + 4, yPos);
-        yPos += repairsWrapped.length * 3 + 2;
-      }
-      yPos += 4;
-      if (yPos > pageHeight - 20) {
-        doc.addPage();
-        addPageHeader();
-      }
-    });
-
-    // Inspections Section
-    addSectionHeader('INSPECTIONS');
-    inspections.forEach((insp) => {
-      if (yPos > pageHeight - 30) {
-        doc.addPage();
-        addPageHeader();
-      }
-      doc.setFontSize(9);
-      doc.setFont(undefined, 'bold');
-      doc.text(`Bus #${insp.bus_number} | ${insp.inspection_number}`, margin + 2, yPos);
-      yPos += 5;
-      doc.setFont(undefined, 'normal');
-      doc.setFontSize(8);
-      const inspectorLine = doc.splitTextToSize(`Inspector: ${sanitize(insp.inspector_name)} | Date: ${insp.inspection_date || 'N/A'}`, pageWidth - 8);
-      doc.text(inspectorLine, margin + 4, yPos);
-      yPos += inspectorLine.length * 3 + 1;
-      const statusLine = doc.splitTextToSize(`Camera: ${insp.camera_system_functional ? 'OK' : 'FAIL'} | DVR: ${insp.dvr_functional ? 'OK' : 'FAIL'} | Status: ${insp.overall_status}`, pageWidth - 8);
-      doc.text(statusLine, margin + 4, yPos);
-      yPos += statusLine.length * 3 + 1;
-      if (insp.inspection_notes) {
-        const notesWrapped = doc.splitTextToSize(`Notes: ${sanitize(insp.inspection_notes)}`, pageWidth - 8);
-        doc.text(notesWrapped, margin + 4, yPos);
-        yPos += notesWrapped.length * 3 + 2;
-      }
-      yPos += 4;
-    });
-
-    // Assets Section
-    addSectionHeader('SERIALIZED ASSETS');
-    serializedAssets.forEach((asset) => {
-      if (yPos > pageHeight - 12) {
-        doc.addPage();
-        addPageHeader();
-      }
-      doc.setFontSize(8);
-      doc.setFont(undefined, 'bold');
-      doc.text(`${asset.asset_number}`, margin + 2, yPos);
-      yPos += 3;
-      doc.setFont(undefined, 'normal');
-      doc.text(`${asset.brand} ${asset.model} | SN: ${asset.serial_number} | Status: ${asset.status}`, margin + 4, yPos);
-      yPos += 3;
-    });
-
-    // Non-Serialized Assets
-    addSectionHeader('SPARE PARTS & NON-SERIALIZED ASSETS');
-    nonSerializedAssets.forEach((asset) => {
-      if (yPos > pageHeight - 12) {
-        doc.addPage();
-        addPageHeader();
-      }
-      doc.setFontSize(8);
-      doc.setFont(undefined, 'bold');
-      doc.text(`${sanitize(asset.part_name)}`, margin + 2, yPos);
-      yPos += 4;
-      doc.setFont(undefined, 'normal');
-      doc.text(`Qty: ${asset.quantity_on_hand} | Location: ${sanitize(asset.current_location)}`, margin + 4, yPos);
-      yPos += 4;
-    });
-
-    // H-Drives Section
-    addSectionHeader('H-DRIVE STORAGE');
-    hdrives.forEach((drive) => {
-      if (yPos > pageHeight - 12) {
-        doc.addPage();
-        addPageHeader();
-      }
-      doc.setFontSize(8);
-      doc.setFont(undefined, 'bold');
-      doc.text(`${drive.serial_number}`, margin + 2, yPos);
-      yPos += 3;
-      doc.setFont(undefined, 'normal');
-      doc.text(`${drive.make} ${drive.model} | Location: ${sanitize(drive.current_location)} | User: ${sanitize(drive.current_user)}`, margin + 4, yPos);
-      yPos += 3;
-    });
-
-    // Users Section
-    addSectionHeader('SYSTEM USERS');
-    users.forEach((u) => {
-      if (yPos > pageHeight - 12) {
-        doc.addPage();
-        addPageHeader();
-      }
-      doc.setFontSize(8);
-      doc.text(`${u.full_name} (${u.email}) | Role: ${u.role}`, margin + 2, yPos);
-      yPos += 3;
-    });
-
-    // Service History / Time Records
-    addSectionHeader('SERVICE HISTORY & TIME RECORDS');
-    busHistory.forEach((hist) => {
-      if (yPos > pageHeight - 12) {
-        doc.addPage();
-        addPageHeader();
-      }
-      doc.setFontSize(8);
-      doc.setFont(undefined, 'bold');
-      doc.text(`Bus #${hist.bus_number}`, margin + 2, yPos);
-      yPos += 3;
-      doc.setFont(undefined, 'normal');
-      doc.text(`${hist.technician} | ${sanitize(hist.description)} | ${hist.elapsed_minutes} min`, margin + 4, yPos);
-      yPos += 3;
-    });
-
-    // Custody Logs
-    addSectionHeader('H-DRIVE CUSTODY LOGS');
-    custodyLogs.forEach((log) => {
-      if (yPos > pageHeight - 12) {
-        doc.addPage();
-        addPageHeader();
-      }
-      doc.setFontSize(8);
-      doc.text(`${log.hdrive_serial} | ${log.transferred_from} → ${log.transferred_to}`, margin + 4, yPos);
-      yPos += 3;
-      doc.setFont(undefined, 'normal');
-      doc.text(`${sanitize(log.reason)} | ${log.new_location}`, margin + 6, yPos);
-      yPos += 3;
-    });
-
-    // Technician Hours Report
-    const technicianHours = {};
-    workOrders.forEach((wo) => {
+    const techHours = {};
+    workOrders.forEach(wo => {
       if (wo.technician_name && wo.elapsed_time_minutes) {
-        if (!technicianHours[wo.technician_name]) {
-          technicianHours[wo.technician_name] = 0;
-        }
-        technicianHours[wo.technician_name] += wo.elapsed_time_minutes;
+        if (!techHours[wo.technician_name]) techHours[wo.technician_name] = 0;
+        techHours[wo.technician_name] += wo.elapsed_time_minutes;
       }
     });
+    const techRows = Object.entries(techHours).map(([tech, min]) => `
+      <tr><td>${esc(tech)}</td><td>${min} min</td><td>${(min/60).toFixed(1)} hrs</td></tr>`).join('');
 
-    if (Object.keys(technicianHours).length > 0) {
-      addSectionHeader('TECHNICIAN HOURS & TIME RECORDS');
-      Object.entries(technicianHours).forEach(([tech, minutes]) => {
-        if (yPos > pageHeight - 12) {
-          doc.addPage();
-          addPageHeader();
-        }
-        const hours = (minutes / 60).toFixed(1);
-        doc.setFontSize(8);
-        doc.text(`${sanitize(tech)}: ${minutes} minutes (${hours} hours)`, margin + 4, yPos);
-        yPos += 4;
-      });
-    }
+    const css = `body{font-family:'Courier New',monospace;font-size:10px;color:#111;}
+    @page{size:letter;margin:0.5in;}
+    @media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}
+    .hdr{background:#142c5f;color:white;padding:14px 18px;}
+    .hdr h1{font-size:15px;margin:0 0 2px;}
+    .hdr .sub{font-size:9px;opacity:.85;}
+    .gold{background:#b88c28;height:3px;margin-bottom:14px;}
+    .summary{background:#edf1fc;border:1px solid #142c5f;padding:10px 14px;margin-bottom:14px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;font-size:9px;}
+    .summary b{color:#142c5f;}
+    .sh{background:#142c5f;color:white;padding:5px 10px;font-weight:bold;font-size:10px;margin:14px 0 4px;letter-spacing:.05em;}
+    table{width:100%;border-collapse:collapse;font-size:9px;margin-bottom:8px;}
+    thead tr{background:#142c5f;color:white;}
+    th{padding:5px 7px;text-align:left;font-size:8px;}
+    td{padding:4px 7px;border-bottom:1px solid #dde2ee;}
+    .ft{background:#142c5f;color:#c8d4ee;font-size:8px;text-align:center;padding:7px;margin-top:20px;}`;
 
-    // Footer on last page
-    doc.setFontSize(7);
-    doc.setTextColor(100, 100, 100);
-    const nowFooter = new Date();
-    const utcFooter = nowFooter.getTime() + (nowFooter.getTimezoneOffset() * 60000);
-    const estFooter = new Date(utcFooter - (5 * 60 * 60 * 1000));
-    const footerMonth = estFooter.getMonth() + 1;
-    const footerDay = estFooter.getDate();
-    const footerYear = estFooter.getFullYear();
-    const footerHours = String(estFooter.getHours()).padStart(2, '0');
-    const footerMinutes = String(estFooter.getMinutes()).padStart(2, '0');
-    const reportTimeFooter = `${footerMonth}/${footerDay}/${footerYear}-${footerHours}:${footerMinutes}`;
-    doc.text(`Master Backup | ${reportTimeFooter} (EST)`, margin, pageHeight - 4);
+    const now = moment().format('MMMM D, YYYY [at] h:mm A');
 
-    const pdfBytes = doc.output('arraybuffer');
-    return new Response(pdfBytes, {
+    const html = `<!DOCTYPE html><html><head><meta charset="utf-8">
+    <title>NHCS Master System Backup</title>
+    <style>${css}</style>
+    </head><body>
+    <div class="hdr">
+      <h1>NEW HANOVER COUNTY SCHOOLS</h1>
+      <div class="sub">Transportation Department | Master System Backup</div>
+    </div>
+    <div class="gold"></div>
+    <div class="summary">
+      <span><b>Fleet Vehicles:</b> ${buses.length}</span>
+      <span><b>Work Orders:</b> ${workOrders.length}</span>
+      <span><b>Inspections:</b> ${inspections.length}</span>
+      <span><b>Service History:</b> ${busHistory.length}</span>
+      <span><b>Serialized Assets:</b> ${serializedAssets.length}</span>
+      <span><b>Spare Parts:</b> ${nonSerializedAssets.length}</span>
+      <span><b>H-Drives:</b> ${hdrives.length}</span>
+      <span><b>Custody Logs:</b> ${custodyLogs.length}</span>
+      <span><b>Generated:</b> ${now} EST</span>
+    </div>
+
+    <div class="sh">FLEET VEHICLES</div>
+    <table><thead><tr><th>BUS #</th><th>TYPE</th><th>YEAR/MAKE/MODEL</th><th>VIN</th><th>BASE</th><th>STATUS</th><th>CAMERA SYS</th><th>NEXT INSP</th></tr></thead>
+    <tbody>${busRows}</tbody></table>
+
+    <div class="sh">WORK ORDERS</div>
+    <table><thead><tr><th>ORDER #</th><th>BUS #</th><th>STATUS</th><th>TECHNICIAN</th><th>DATE</th><th>ISSUE</th></tr></thead>
+    <tbody>${woRows}</tbody></table>
+
+    <div class="sh">INSPECTIONS</div>
+    <table><thead><tr><th>INSP #</th><th>BUS #</th><th>INSPECTOR</th><th>RESULT</th><th>DATE</th></tr></thead>
+    <tbody>${inspRows}</tbody></table>
+
+    <div class="sh">SERIALIZED ASSETS</div>
+    <table><thead><tr><th>ASSET #</th><th>BRAND</th><th>MODEL</th><th>SERIAL #</th><th>STATUS</th><th>BUS</th></tr></thead>
+    <tbody>${assetRows}</tbody></table>
+
+    ${techRows ? `<div class="sh">TECHNICIAN HOURS SUMMARY</div>
+    <table><thead><tr><th>TECHNICIAN</th><th>MINUTES</th><th>HOURS</th></tr></thead>
+    <tbody>${techRows}</tbody></table>` : ''}
+
+    <div class="ft">Master Backup | ${moment().format('MM/DD/YYYY HH:mm')} EST | Exported by: ${esc(user.full_name || user.email)} | Powered by Base44</div>
+    </body></html>`;
+
+    return new Response(html, {
       status: 200,
-      headers: {
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': 'attachment; filename=master-backup.pdf',
-      },
+      headers: { 'Content-Type': 'text/html; charset=utf-8' }
     });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
