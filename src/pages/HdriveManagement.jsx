@@ -3,6 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { HardDrive, Plus, Search, Edit2, Trash2, ArrowRightLeft, AlertTriangle, FileText } from 'lucide-react';
 import moment from 'moment';
+import jsPDF from 'jspdf';
 import DeleteConfirmModal from '../components/DeleteConfirmModal';
 
 const FF = "'Courier Prime', monospace";
@@ -53,24 +54,30 @@ export default function HdriveManagement() {
     return result;
   };
 
-  const exportAuditReport = async () => {
-    const response = await base44.functions.invoke('exportHDriveAudit', { search, userFilter: exportUser, locationFilter: exportLot, seizedOnly: false });
-    const html = response.data;
-    const win = window.open('', '_blank', 'width=900,height=700');
-    win.document.write(html);
-    win.document.close();
-    win.focus();
-    setTimeout(() => { win.print(); win.close(); }, 400);
+  const exportAuditPDF = async () => {
+    const response = await base44.functions.invoke('exportHDriveAudit', { search, userFilter: exportUser, locationFilter: exportLot, seizedOnly: false }, { responseType: 'arraybuffer' });
+    const blob = new Blob([response.data], { type: 'application/pdf' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'hdrive-audit-report.pdf';
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    a.remove();
   };
 
-  const exportInventoryReport = async () => {
-    const response = await base44.functions.invoke('exportHDriveAudit', { search: '', userFilter: exportUser, locationFilter: exportLot, seizedOnly: false });
-    const html = response.data;
-    const win = window.open('', '_blank', 'width=900,height=700');
-    win.document.write(html);
-    win.document.close();
-    win.focus();
-    setTimeout(() => { win.print(); win.close(); }, 400);
+  const exportInventoryPDF = async () => {
+    const response = await base44.functions.invoke('exportHDriveAudit', { search: '', userFilter: exportUser, locationFilter: exportLot, seizedOnly: false }, { responseType: 'arraybuffer' });
+    const blob = new Blob([response.data], { type: 'application/pdf' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'hdrive-inventory.pdf';
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    a.remove();
   };
 
   const { data: drives = [], isLoading } = useQuery({
@@ -208,11 +215,11 @@ export default function HdriveManagement() {
             {activeUsers.map(u => <option key={u.id} value={u.name}>{u.name}</option>)}
           </select>
         </div>
-        <Btn onClick={exportAuditReport} style={{ background: 'hsl(220,55%,38%)' }}>
-          <FileText style={{ width: 12, height: 12 }} /> AUDIT SHEET
+        <Btn onClick={exportAuditPDF} style={{ background: 'hsl(220,55%,38%)' }}>
+          <FileText style={{ width: 12, height: 12 }} /> AUDIT SHEET (PDF)
         </Btn>
-        <Btn onClick={exportInventoryReport} style={{ background: 'hsl(200,60%,38%)' }}>
-          <FileText style={{ width: 12, height: 12 }} /> SIMPLE INVENTORY
+        <Btn onClick={exportInventoryPDF} style={{ background: 'hsl(200,60%,38%)' }}>
+          <FileText style={{ width: 12, height: 12 }} /> SIMPLE INVENTORY (PDF)
         </Btn>
       </div>
 
