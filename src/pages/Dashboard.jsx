@@ -35,74 +35,8 @@ export default function Dashboard() {
   const recentCompleted = workOrders.filter(w => w.status === 'Completed').slice(0, 5);
   const overdueInspections = buses.filter(b => b.next_inspection_due && new Date(b.next_inspection_due) < new Date());
 
-  const handleExportOverduePDF = async () => {
-    const { jsPDF } = await import('jspdf');
-    const doc = new jsPDF({ unit: 'pt', format: 'letter' });
-    const W = doc.internal.pageSize.getWidth();
-    const margin = 40;
-    let y = 40;
-
-    // Header
-    doc.setFillColor(31, 62, 120);
-    doc.rect(0, 0, W, 60, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFont('courier', 'bold');
-    doc.setFontSize(13);
-    doc.text('NEW HANOVER COUNTY SCHOOLS', margin, 22);
-    doc.setFontSize(10);
-    doc.text('Transportation — Vehicle Surveillance System', margin, 37);
-    doc.setFontSize(12);
-    doc.text('OVERDUE INSPECTIONS REPORT', W - margin, 22, { align: 'right' });
-    doc.setFontSize(9);
-    doc.text(`Generated: ${moment().format('MM/DD/YYYY HH:mm')}`, W - margin, 37, { align: 'right' });
-    y = 80;
-
-    // Summary line
-    doc.setTextColor(150, 20, 20);
-    doc.setFont('courier', 'bold');
-    doc.setFontSize(10);
-    doc.text(`TOTAL OVERDUE: ${overdueInspections.length} VEHICLE(S)`, margin, y);
-    y += 18;
-
-    // Table header
-    doc.setFillColor(31, 62, 120);
-    doc.rect(margin, y, W - margin * 2, 16, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFont('courier', 'bold');
-    doc.setFontSize(9);
-    doc.text('BUS #', margin + 6, y + 11);
-    doc.text('TYPE', margin + 70, y + 11);
-    doc.text('YEAR / MAKE / MODEL', margin + 150, y + 11);
-    doc.text('BASE', margin + 340, y + 11);
-    doc.text('DUE DATE', margin + 420, y + 11);
-    y += 20;
-
-    // Rows
-    doc.setFont('courier', 'normal');
-    doc.setFontSize(9);
-    overdueInspections.forEach((b, i) => {
-      if (y > doc.internal.pageSize.getHeight() - 50) { doc.addPage(); y = 40; }
-      doc.setFillColor(i % 2 === 0 ? 245 : 255, i % 2 === 0 ? 247 : 255, i % 2 === 0 ? 252 : 255);
-      doc.rect(margin, y - 10, W - margin * 2, 16, 'F');
-      doc.setTextColor(30, 30, 30);
-      doc.text(String(b.bus_number || '—'), margin + 6, y);
-      doc.text(String(b.bus_type || '—').substring(0, 12), margin + 70, y);
-      doc.text(`${b.year || ''} ${b.make || ''} ${b.model || ''}`.trim().substring(0, 28), margin + 150, y);
-      doc.text(String(b.base_location || '—'), margin + 340, y);
-      doc.setTextColor(180, 20, 20);
-      doc.setFont('courier', 'bold');
-      doc.text(moment(b.next_inspection_due).format('MM/DD/YYYY'), margin + 420, y);
-      doc.setFont('courier', 'normal');
-      doc.setTextColor(30, 30, 30);
-      y += 18;
-    });
-
-    // Footer
-    doc.setFontSize(8);
-    doc.setTextColor(140, 140, 140);
-    doc.text('NHCS Transportation — Vehicle Surveillance System | Powered by Base44', W / 2, doc.internal.pageSize.getHeight() - 20, { align: 'center' });
-
-    doc.save(`Overdue_Inspections_${moment().format('YYYYMMDD')}.pdf`);
+  const handleExportOverduePDF = () => {
+    exportOverdueInspectionsPDF({ buses: overdueInspections });
   };
 
   const btnStyle = (bg, borderC) => ({
