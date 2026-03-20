@@ -3,6 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { FileDown } from 'lucide-react';
 import moment from 'moment';
+import { exportWashBayHoursPDF } from '../../utils/exports/exportWashBayHours';
 
 const FF = "'Courier Prime', monospace";
 
