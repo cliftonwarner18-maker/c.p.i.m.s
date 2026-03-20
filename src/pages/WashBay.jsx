@@ -3,6 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { HardDrive, FileDown, Trash2, Pencil } from 'lucide-react';
 import moment from 'moment';
+import { exportWashBayPDF } from '../utils/exports/exportWashBay';
 import LoadingScreen from '../components/LoadingScreen';
 import BulkBusWashForm from '../components/wash/BulkBusWashForm';
 import BusWashOrderDetail from '../components/wash/BusWashOrderDetail';
