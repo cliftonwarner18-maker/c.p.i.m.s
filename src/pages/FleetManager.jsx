@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { jsPDF } from 'jspdf';
 import LoadingScreen from '../components/LoadingScreen';
+import { exportFleetPDF, exportFleetMakeSummaryPDF } from '../utils/exports/exportFleet';
 import BusForm from '../components/fleet/BusForm';
 import FleetTable from '../components/fleet/FleetTable.jsx';
 import DeleteConfirmModal from '../components/DeleteConfirmModal';
