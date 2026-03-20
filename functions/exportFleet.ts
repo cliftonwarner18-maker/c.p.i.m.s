@@ -1,125 +1,66 @@
-import { jsPDF } from 'npm:jspdf@4.0.0';
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.21';
 import moment from 'npm:moment-timezone@0.5.45';
 
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
-    
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
     const body = await req.json();
     const { busIds } = body;
 
     let buses = await base44.entities.Bus.list();
-
     if (busIds && busIds.length > 0) {
       const idSet = new Set(busIds);
       buses = buses.filter(b => idSet.has(b.id));
     }
 
-    // Sanitize function
-    const sanitize = (str) => {
-      if (!str || str === null || str === undefined) return null;
-      let cleaned = String(str)
-        .replace(/[\uFFFD]/g, '')
-        .replace(/[ï¿½]/g, '')
-        .replace(/[½¼¾⅓⅔⅛⅜⅝⅞]/g, '')
-        .replace(/[«»„""‟‚''‹›]/g, '"')
-        .replace(/[−–—]/g, '-')
-        .replace(/[…]/g, '...')
-        .replace(/[©®™]/g, '')
-        .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
-        .replace(/[^\x20-\x7E]/g, '')
-        .trim();
-      return cleaned === '' ? null : cleaned;
-    };
+    const rows = buses.map((b, i) => {
+      const total = ((b.cameras_inside || 0) + (b.cameras_outside || 0)) || '—';
+      const bg = i % 2 === 0 ? '#fff' : '#f5f7fd';
+      return `<tr style="background:${bg}">
+        <td><b>${b.bus_number || '—'}</b></td>
+        <td>${b.bus_type || '—'}</td>
+        <td>${b.base_location || '—'}</td>
+        <td>${b.year || '—'}</td>
+        <td>${[b.make, b.model].filter(Boolean).join(' ') || '—'}</td>
+        <td>${b.status || '—'}</td>
+        <td>${b.camera_system_type || '—'}</td>
+        <td>${b.cameras_inside ?? '—'}</td>
+        <td>${b.cameras_outside ?? '—'}</td>
+        <td><b>${total}</b></td>
+        <td>${b.stop_arm_cameras ? 'YES' : 'NO'}</td>
+      </tr>`;
+    }).join('');
 
-    const doc = new jsPDF();
-    const pageHeight = doc.internal.pageSize.height;
-    const pageWidth = doc.internal.pageSize.width;
-    let y = 10;
+    const html = `<!DOCTYPE html><html><head><meta charset="utf-8">
+    <title>Fleet Inventory</title>
+    <style>
+      body { font-family: 'Courier New', monospace; font-size: 10px; }
+      @page { size: letter landscape; margin: 0.5in; }
+      @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+      h1 { font-size: 15px; margin-bottom: 4px; }
+      table { width: 100%; border-collapse: collapse; }
+      thead tr { background: #142c5f; color: white; }
+      th, td { padding: 4px 7px; border-bottom: 1px solid #dde2ee; text-align: left; font-size: 9px; }
+      tfoot td { background: #142c5f; color: #c8a830; font-weight: bold; padding: 5px 7px; }
+    </style>
+    </head><body>
+    <h1>NEW HANOVER COUNTY SCHOOLS — FLEET INVENTORY REPORT</h1>
+    <p style="margin:0 0 10px; font-size:9px;">Generated: ${moment().tz('America/New_York').format('MM/DD/YYYY HH:mm')} ET &nbsp;|&nbsp; Vehicles: ${buses.length}</p>
+    <table>
+      <thead><tr><th>BUS #</th><th>TYPE</th><th>LOCATION</th><th>YEAR</th><th>MAKE/MODEL</th><th>STATUS</th><th>CAM SYS</th><th>IN</th><th>OUT</th><th>TOTAL</th><th>STOP ARM</th></tr></thead>
+      <tbody>${rows}</tbody>
+      <tfoot><tr><td colspan="10">TOTAL VEHICLES</td><td>${buses.length}</td></tr></tfoot>
+    </table>
+    </body></html>`;
 
-    // Title
-    doc.setFontSize(16);
-    doc.text('FLEET INVENTORY REPORT', pageWidth / 2, y, { align: 'center' });
-    y += 8;
-
-    // Date
-    doc.setFontSize(10);
-    const dateStr = `Report Generated: ${moment().tz('America/New_York').format('MM/DD/YYYY HH:mm')}`;
-    doc.text(dateStr, pageWidth / 2, y, { align: 'center' });
-    y += 6;
-
-    doc.text(`Vehicles in Report: ${buses.length}`, pageWidth / 2, y, { align: 'center' });
-    y += 6;
-
-    y += 4;
-
-    // Headers
-    doc.setFontSize(8);
-    doc.setFont(undefined, 'bold');
-    const headers = ['Bus #', 'Type', 'Location', 'Year', 'Make/Model', 'Status', 'Cam System', 'In', 'Out', 'Total', 'Stop Arm'];
-    const colWidths = [14, 18, 16, 12, 30, 18, 20, 8, 8, 10, 18];
-    let x = 8;
-    headers.forEach((header, i) => {
-      doc.text(header, x, y);
-      x += colWidths[i];
-    });
-    y += 2;
-    doc.setDrawColor(100, 100, 100);
-    doc.line(8, y, pageWidth - 8, y);
-    y += 5;
-
-    // Data rows
-    doc.setFont(undefined, 'normal');
-    doc.setFontSize(7.5);
-    buses.forEach(bus => {
-      if (y > pageHeight - 15) {
-        doc.addPage();
-        y = 10;
-      }
-      
-      const inside = bus.cameras_inside != null ? String(bus.cameras_inside) : '-';
-      const outside = bus.cameras_outside != null ? String(bus.cameras_outside) : '-';
-      const total = (bus.cameras_inside != null || bus.cameras_outside != null)
-        ? String((bus.cameras_inside || 0) + (bus.cameras_outside || 0))
-        : '-';
-      const stopArm = bus.stop_arm_cameras ? 'YES' : 'NO';
-
-      x = 8;
-      doc.text(sanitize(bus.bus_number) || '-', x, y); x += colWidths[0];
-      doc.text((sanitize(bus.bus_type) || '-').substring(0, 12), x, y); x += colWidths[1];
-      doc.text(sanitize(bus.base_location) || '-', x, y); x += colWidths[2];
-      doc.text(sanitize(bus.year) || '-', x, y); x += colWidths[3];
-      doc.text(`${(sanitize(bus.make)||'-')} ${(sanitize(bus.model)||'')}`.trim().substring(0, 22), x, y); x += colWidths[4];
-      doc.text(sanitize(bus.status) || '-', x, y); x += colWidths[5];
-      doc.text((sanitize(bus.camera_system_type) || '-').substring(0, 14), x, y); x += colWidths[6];
-      doc.text(inside, x, y); x += colWidths[7];
-      doc.text(outside, x, y); x += colWidths[8];
-      doc.text(total, x, y); x += colWidths[9];
-      doc.text(stopArm, x, y);
-      y += 5.5;
-    });
-
-    // Footer
-    y += 8;
-    doc.setFontSize(8);
-    doc.text(`Total Vehicles: ${buses.length}`, 8, y);
-
-    const pdf = doc.output('arraybuffer');
-    return new Response(pdf, {
+    return new Response(html, {
       status: 200,
-      headers: {
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': 'attachment; filename="fleet-inventory.pdf"'
-      }
+      headers: { 'Content-Type': 'text/html; charset=utf-8' }
     });
   } catch (error) {
-    console.error('Error in exportFleet:', error);
     return Response.json({ error: error.message }, { status: 500 });
   }
 });
