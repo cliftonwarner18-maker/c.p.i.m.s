@@ -45,7 +45,6 @@ function TechHoursReport({ users }) {
       const ref = wo.completed_date || wo.updated_date || wo.created_date;
       if (ref && new Date(ref) > new Date(endDate + 'T23:59:59')) return false;
     }
-    // Include all work order types: Camera, Seat, Radio, Other
     return true;
   });
 
@@ -147,8 +146,6 @@ export default function AdminPanel() {
     queryKey: ['systemUsers'],
     queryFn: () => base44.entities.SystemUser.list('name'),
   });
-
-
 
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.SystemUser.create(data),
