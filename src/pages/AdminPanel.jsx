@@ -99,10 +99,10 @@ function TechHoursReport({ users }) {
     doc.text(`Page ${currentPage} of ${totalPages}`, W - margin, H - 16, { align: 'right' });
   };
 
-  const handleExport = async () => {
+  const handleExport = () => {
     if (filtered.length + filteredInspections.length + filteredBusHistory.length === 0) return;
     setExporting(true);
-    const { jsPDF } = (await import('jspdf'));
+    try {
     const doc = new jsPDF({ unit: 'pt', format: 'letter' });
     const W = doc.internal.pageSize.getWidth();
     const H = doc.internal.pageSize.getHeight();
