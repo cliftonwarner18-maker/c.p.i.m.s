@@ -94,12 +94,15 @@ export default function FleetManager() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontFamily: "'Courier Prime', monospace" }}>
       <LoadingScreen isLoading={isLoading} message="LOADING FLEET..." />
-      <DeleteConfirmModal
-        isOpen={!!deleteTarget}
-        label={deleteTarget ? `Bus #${deleteTarget.bus_number}` : ''}
-        onConfirm={() => { deleteMutation.mutate(deleteTarget.id); setDeleteTarget(null); }}
-        onCancel={() => setDeleteTarget(null)}
-      />
+      {deleteTarget && (
+        <DeleteConfirmModal
+          title={`DELETE BUS #${deleteTarget.bus_number}`}
+          message={`This will permanently delete this vehicle record. This action cannot be undone.`}
+          onConfirm={() => { deleteMutation.mutate(deleteTarget.id); setDeleteTarget(null); }}
+          onCancel={() => setDeleteTarget(null)}
+          isLoading={deleteMutation.isPending}
+        />
+      )}
 
       {showForm && (
         <BusForm

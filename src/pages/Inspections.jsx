@@ -64,12 +64,15 @@ export default function Inspections() {
           onSaved={() => { setEditingInsp(null); queryClient.invalidateQueries({ queryKey: ['inspections'] }); }}
         />
       )}
-      <DeleteConfirmModal
-        isOpen={!!deleteTarget}
-        label={deleteTarget ? `Inspection ${deleteTarget.inspection_number} (Bus #${deleteTarget.bus_number})` : ''}
-        onConfirm={() => { deleteMutation.mutate(deleteTarget.id); setDeleteTarget(null); }}
-        onCancel={() => setDeleteTarget(null)}
-      />
+      {deleteTarget && (
+        <DeleteConfirmModal
+          title={`DELETE INSPECTION #${deleteTarget.inspection_number}`}
+          message={`This will permanently delete the inspection for Bus ${deleteTarget.bus_number}. This action cannot be undone.`}
+          onConfirm={() => { deleteMutation.mutate(deleteTarget.id); setDeleteTarget(null); }}
+          onCancel={() => setDeleteTarget(null)}
+          isLoading={deleteMutation.isPending}
+        />
+      )}
 
       {/* Header */}
       <div style={{ background: 'linear-gradient(to right, hsl(220,50%,30%), hsl(220,45%,40%))', color: 'white', padding: '10px 14px', borderRadius: '2px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>

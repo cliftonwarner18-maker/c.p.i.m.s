@@ -329,12 +329,15 @@ export default function HdriveManagement() {
       )}
 
       {/* Delete confirm modal */}
-      <DeleteConfirmModal
-        isOpen={!!deleteTarget}
-        label={`H-Drive ${deleteTarget?.serial_number}`}
-        onConfirm={() => deleteMutation.mutate(deleteTarget.id)}
-        onCancel={() => setDeleteTarget(null)}
-      />
+      {deleteTarget && (
+        <DeleteConfirmModal
+          title={`DELETE H-DRIVE #${deleteTarget.serial_number}`}
+          message={`This will permanently delete this hard drive record. This action cannot be undone.`}
+          onConfirm={() => { deleteMutation.mutate(deleteTarget.id); setDeleteTarget(null); }}
+          onCancel={() => setDeleteTarget(null)}
+          isLoading={deleteMutation.isPending}
+        />
+      )}
 
       {/* Tabs */}
       <div style={{ display: 'flex', gap: '4px', background: 'hsl(220,18%,90%)', border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', padding: '4px' }}>
