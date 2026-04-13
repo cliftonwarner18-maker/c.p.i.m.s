@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { Trash2, ShieldAlert } from 'lucide-react';
 
-// Secret delete code — change this to whatever you want
 const DELETE_CODE = '877421';
 
-export default function DeleteConfirmModal({ title, message, onConfirm, onCancel, isLoading }) {
+export default function DeleteConfirmModal({ title, message, label, isOpen, onConfirm, onCancel, isLoading }) {
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
 
-  if (!title) return null;
+  // Support both old (title/message) and new (isOpen/label) prop interfaces
+  const displayTitle = title || (isOpen ? 'CONFIRM DELETE' : '');
+  const displayMessage = message || (label ? `This will permanently delete: ${label}` : '');
+
+  if (!displayTitle) return null;
 
   const handleConfirm = () => {
     if (code.trim() === DELETE_CODE) {
@@ -38,23 +41,21 @@ export default function DeleteConfirmModal({ title, message, onConfirm, onCancel
         background: 'hsl(220,15%,90%)', width: '360px',
         boxShadow: '4px 4px 0 rgba(0,0,0,0.4)'
       }}>
-        {/* Title bar */}
         <div style={{
           background: 'linear-gradient(to right, hsl(0,65%,28%), hsl(0,65%,45%))',
           color: 'white', fontWeight: 'bold', padding: '3px 8px', fontSize: '11px',
           letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: '6px'
         }}>
           <ShieldAlert style={{ width: 12, height: 12 }} />
-          {title}
+          {displayTitle}
         </div>
 
-        {/* Body */}
         <div style={{ padding: '14px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
           <div style={{
             border: '2px solid', borderColor: 'hsl(0,65%,40%)', background: 'hsl(0,80%,97%)',
             padding: '8px', fontSize: '11px', color: 'hsl(0,65%,30%)', fontWeight: 'bold'
           }}>
-            ⚠️ {message}
+            ⚠️ {displayMessage}
           </div>
 
           <div>

@@ -82,7 +82,7 @@ export default function SerializedAssetsSection() {
       <div style={{ padding: '10px', background: 'hsl(220,10%,98%)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
         {/* Controls */}
         <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
-          <button onClick={() => { setEditingAsset(null); setFormData({}); setShowForm(!showForm); }} style={{ ...btnBase, background: 'hsl(220,55%,38%)', color: 'white', borderColor: 'hsl(220,55%,30%)' }}><Plus style={{ width: 12, height: 12 }} /> Add Asset</button>
+          <button onClick={() => { setEditingAsset(null); setFormData({}); setShowForm(true); }} style={{ ...btnBase, background: 'hsl(220,55%,38%)', color: 'white', borderColor: 'hsl(220,55%,30%)' }}><Plus style={{ width: 12, height: 12 }} /> Add Asset</button>
           <input placeholder="Search assets..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} style={{ ...inputStyle, width: 160 }} />
           <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} style={{ ...inputStyle, width: 140 }}>
             {['All', 'In-Service', 'Decommissioned', 'Awaiting Auction', 'Sold', 'In Repair', 'Spares'].map(s => <option key={s}>{s}</option>)}

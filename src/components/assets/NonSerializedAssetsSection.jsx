@@ -57,7 +57,7 @@ export default function NonSerializedAssetsSection() {
 
       <div style={{ padding: '10px', background: 'hsl(220,10%,98%)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
         <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-          <button onClick={() => { setEditingAsset(null); setFormData({}); setShowForm(!showForm); }} style={{ ...btnBase, background: 'hsl(30,65%,38%)', color: 'white', borderColor: 'hsl(30,65%,30%)' }}><Plus style={{ width: 12, height: 12 }} /> Add Part</button>
+          <button onClick={() => { setEditingAsset(null); setFormData({}); setShowForm(true); }} style={{ ...btnBase, background: 'hsl(30,65%,38%)', color: 'white', borderColor: 'hsl(30,65%,30%)' }}><Plus style={{ width: 12, height: 12 }} /> Add Part</button>
           <button onClick={handleExportPDF} disabled={isExporting} style={{ ...btnBase, background: 'hsl(140,55%,38%)', color: 'white', borderColor: 'hsl(140,55%,30%)' }}><FileDown style={{ width: 12, height: 12 }} /> Export PDF</button>
         </div>
 
