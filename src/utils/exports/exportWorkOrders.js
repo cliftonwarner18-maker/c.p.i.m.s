@@ -1,32 +1,33 @@
 import { printHtml, PRINT_BASE_CSS } from '../printHtml';
 import moment from 'moment';
 
-const STATUS_BADGE = {
-  Pending: 'badge-pending',
-  'In Progress': 'badge-progress',
-  Completed: 'badge-completed',
-  Cancelled: 'badge-cancelled',
-};
 
 export function exportWorkOrdersPDF({ orders, statusFilter = 'All', typeFilter = 'All' }) {
   const filterLabel = statusFilter === 'All' ? 'ALL STATUSES' : statusFilter.toUpperCase();
   const typeLabel = typeFilter === 'All' ? 'ALL TYPES' : typeFilter.toUpperCase();
 
-  // Generate compact work order cards — 3 per page
+  // Generate compact work order cards — 3-4 per page
   const cards = orders.map((wo) => {
     const statusColor = wo.status === 'Pending' ? '#b45309' : wo.status === 'In Progress' ? '#1e3c78' : wo.status === 'Completed' ? '#166534' : '#991b1b';
     const createdDate = moment(wo.created_date).format('MM/DD/YY');
+    const startTime = wo.repair_start_time ? moment(wo.repair_start_time).format('MM/DD/YY HH:mm') : '_______________';
+    const endTime = wo.repair_end_time ? moment(wo.repair_end_time).format('MM/DD/YY HH:mm') : '_______________';
     return `
       <div class="wo-card">
         <div class="wo-card-header">
           <span>ORDER #: <strong>${wo.order_number || '—'}</strong> &nbsp;|&nbsp; BUS #: <strong>${wo.bus_number || '—'}</strong> &nbsp;|&nbsp; LOT: ${wo.lot || '—'} &nbsp;|&nbsp; DATE: ${createdDate}</span>
-          <span style="font-weight:700;color:${statusColor};">[${(wo.status || 'PENDING').toUpperCase()}]</span>
+          <span style="font-weight:700;">[${(wo.status || 'PENDING').toUpperCase()}]</span>
         </div>
         <div class="wo-card-body">
           <div class="wo-row">
             <div class="wo-field"><span class="wo-label">TYPE</span><span class="wo-val">${wo.work_order_type || '—'}</span></div>
             <div class="wo-field"><span class="wo-label">REPORTED BY</span><span class="wo-val">${wo.reported_by || '—'}</span></div>
             <div class="wo-field"><span class="wo-label">TECHNICIAN</span><span class="wo-val">${wo.technician_name || '___________________'}</span></div>
+          </div>
+          <div class="wo-row">
+            <div class="wo-field"><span class="wo-label">START TIME</span><span class="wo-val">${startTime}</span></div>
+            <div class="wo-field"><span class="wo-label">END TIME</span><span class="wo-val">${endTime}</span></div>
+            <div class="wo-field"><span class="wo-label">ELAPSED</span><span class="wo-val">${wo.elapsed_time_minutes ? `${Math.floor(wo.elapsed_time_minutes/60)}h ${wo.elapsed_time_minutes%60}m` : '_______________'}</span></div>
           </div>
           <div class="wo-issue"><span class="wo-label">ISSUE:</span> ${wo.issue_description || '—'}</div>
           ${wo.repairs_rendered ? `<div class="wo-issue"><span class="wo-label">REPAIRS RENDERED:</span> ${wo.repairs_rendered}</div>` : '<div class="wo-issue wo-blank"><span class="wo-label">REPAIRS RENDERED:</span> &nbsp;</div>'}
@@ -38,25 +39,7 @@ export function exportWorkOrdersPDF({ orders, statusFilter = 'All', typeFilter =
       </div>`;
   }).join('');
 
-  // Generate summary table
-  const rows = orders.map((wo, i) => {
-    const elapsed = wo.elapsed_time_minutes
-      ? `${Math.floor(wo.elapsed_time_minutes / 60)}h ${wo.elapsed_time_minutes % 60}m` : '—';
-    const badge = STATUS_BADGE[wo.status] || '';
-    return `
-      <tr>
-        <td><strong>${wo.order_number || '—'}</strong></td>
-        <td>${wo.work_order_type || '—'}</td>
-        <td>${moment(wo.created_date).format('MM/DD/YY')}</td>
-        <td><strong>${wo.bus_number || '—'}</strong></td>
-        <td>${wo.lot || '—'}</td>
-        <td>${wo.reported_by || '—'}</td>
-        <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${(wo.issue_description||'').replace(/"/g,'&quot;')}">${wo.issue_description || '—'}</td>
-        <td>${wo.technician_name || '—'}</td>
-        <td><span class="badge ${badge}">${(wo.status||'').toUpperCase()}</span></td>
-        <td>${elapsed}</td>
-      </tr>`;
-  }).join('');
+
 
   const html = `<!DOCTYPE html><html><head><meta charset="utf-8">
   <title>NHCS Work Order Work Book</title>
@@ -93,25 +76,6 @@ export function exportWorkOrdersPDF({ orders, statusFilter = 'All', typeFilter =
   </div>
 
   ${cards}
-
-  <div style="page-break-before:always;">
-    <div class="section-header">WORK ORDER SUMMARY TABLE</div>
-    <table style="margin-top:8px;font-size:8px;">
-      <thead>
-        <tr>
-          <th>ORDER #</th><th>TYPE</th><th>DATE</th><th>BUS #</th><th>LOT</th>
-          <th>REPORTED BY</th><th>ISSUE</th><th>TECHNICIAN</th><th>STATUS</th><th>ELAPSED</th>
-        </tr>
-      </thead>
-      <tbody>${rows}</tbody>
-      <tfoot>
-        <tr class="totals-row">
-          <td colspan="9">TOTAL RECORDS</td>
-          <td>${orders.length}</td>
-        </tr>
-      </tfoot>
-    </table>
-  </div>
 
   <div class="page-footer">NEW HANOVER COUNTY SCHOOLS — Transportation Department — Data-TraCs System</div>
   </body></html>`;
