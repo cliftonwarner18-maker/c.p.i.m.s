@@ -81,7 +81,7 @@ export function exportMasterHTMLReport({ buses, workOrders, inspections, seriali
     </tr>`).join('');
 
   const section = (title) => `
-    <div style="background:#142c5f;color:white;padding:6px 10px;font-weight:700;font-size:11px;letter-spacing:0.06em;margin:20px 0 6px;">
+    <div style="background:#142c5f;color:white;padding:3px 8px;font-weight:700;font-size:9px;letter-spacing:0.06em;margin:10px 0 3px;">
       ${title}
     </div>`;
 
@@ -89,7 +89,16 @@ export function exportMasterHTMLReport({ buses, workOrders, inspections, seriali
   <title>NHCS Master Backup Report</title>
   <style>
     ${PRINT_BASE_CSS}
-    table { font-size: 9px; margin-bottom: 8px; }
+    body { font-size: 8px; }
+    table { font-size: 7.5px; margin-bottom: 6px; border-collapse: collapse; width: 100%; }
+    th, td { padding: 2px 4px !important; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
+    th { font-size: 7px; letter-spacing: 0.04em; }
+    tr { border-bottom: 1px solid #ddd; }
+    .meta-box { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 8px; padding: 4px 0; }
+    .meta-item { font-size: 8px; }
+    .page-header .title { font-size: 12px; }
+    .page-header .dept { font-size: 9px; }
+    .page-header .org { font-size: 13px; }
   </style>
   </head><body>
   <div class="page-header">
