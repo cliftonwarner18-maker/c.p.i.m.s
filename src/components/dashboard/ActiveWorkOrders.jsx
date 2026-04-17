@@ -38,7 +38,7 @@ export default function ActiveWorkOrders({ workOrders }) {
       <div style={{ background: 'linear-gradient(to right, hsl(45,90%,32%), hsl(45,85%,42%))', color: 'white', padding: '7px 12px', fontSize: '11px', fontWeight: '700', letterSpacing: '0.08em', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <span>⚠️ ACTIVE WORK ORDERS — PENDING REPAIRS</span>
         <button onClick={handleExportFieldPDF} style={{ display: 'inline-flex', alignItems: 'center', gap: 3, padding: '3px 8px', fontSize: '9px', fontFamily: FF, fontWeight: '700', background: 'rgba(255,255,255,0.2)', color: 'white', border: '1px solid rgba(255,255,255,0.35)', borderRadius: '2px', cursor: 'pointer' }}>
-          <FileDown style={{ width: 10, height: 10 }} /> EXPORT
+          <FileDown style={{ width: 10, height: 10 }} /> PRINT WORK BOOK
         </button>
       </div>
       

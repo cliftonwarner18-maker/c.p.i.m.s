@@ -12,52 +12,28 @@ export function exportWorkOrdersPDF({ orders, statusFilter = 'All', typeFilter =
   const filterLabel = statusFilter === 'All' ? 'ALL STATUSES' : statusFilter.toUpperCase();
   const typeLabel = typeFilter === 'All' ? 'ALL TYPES' : typeFilter.toUpperCase();
 
-  // Generate individual work order forms
-  const workOrderForms = orders.map((wo) => {
-    const elapsed = wo.elapsed_time_minutes
-      ? `${Math.floor(wo.elapsed_time_minutes / 60)}h ${wo.elapsed_time_minutes % 60}m` : '—';
-    const statusColor = wo.status === 'Pending' ? '#d4a574' : wo.status === 'In Progress' ? '#1e3c78' : wo.status === 'Completed' ? '#166534' : '#991b1b';
-    const createdDate = moment(wo.created_date).format('MM/DD/YYYY');
-    const completedDate = wo.completed_date ? moment(wo.completed_date).format('MM/DD/YYYY') : '—';
-    
+  // Generate compact work order cards — 3 per page
+  const cards = orders.map((wo) => {
+    const statusColor = wo.status === 'Pending' ? '#b45309' : wo.status === 'In Progress' ? '#1e3c78' : wo.status === 'Completed' ? '#166534' : '#991b1b';
+    const createdDate = moment(wo.created_date).format('MM/DD/YY');
     return `
-      <div style="page-break-after:always;border:2px solid #1e3c78;padding:16px;margin-bottom:20px;background:#fafbff;">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
-          <div><strong style="font-size:12px;">ORDER #:</strong><br/><span style="font-size:14px;font-weight:700;color:#1e3c78;">${wo.order_number || '—'}</span></div>
-          <div style="text-align:right;"><strong style="font-size:12px;">STATUS:</strong><br/><span style="font-size:13px;font-weight:700;color:${statusColor};">${(wo.status || 'PENDING').toUpperCase()}</span></div>
+      <div class="wo-card">
+        <div class="wo-card-header">
+          <span>ORDER #: <strong>${wo.order_number || '—'}</strong> &nbsp;|&nbsp; BUS #: <strong>${wo.bus_number || '—'}</strong> &nbsp;|&nbsp; LOT: ${wo.lot || '—'} &nbsp;|&nbsp; DATE: ${createdDate}</span>
+          <span style="font-weight:700;color:${statusColor};">[${(wo.status || 'PENDING').toUpperCase()}]</span>
         </div>
-        
-        <div style="border-bottom:2px solid #1e3c78;padding-bottom:12px;margin-bottom:12px;">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:8px;">
-            <div><strong>VEHICLE #:</strong> ${wo.bus_number || '—'}</div>
-            <div><strong>LOT:</strong> ${wo.lot || '—'}</div>
+        <div class="wo-card-body">
+          <div class="wo-row">
+            <div class="wo-field"><span class="wo-label">TYPE</span><span class="wo-val">${wo.work_order_type || '—'}</span></div>
+            <div class="wo-field"><span class="wo-label">REPORTED BY</span><span class="wo-val">${wo.reported_by || '—'}</span></div>
+            <div class="wo-field"><span class="wo-label">TECHNICIAN</span><span class="wo-val">${wo.technician_name || '___________________'}</span></div>
           </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-            <div><strong>WORK TYPE:</strong> ${wo.work_order_type || '—'}</div>
-            <div><strong>REPORTED BY:</strong> ${wo.reported_by || '—'}</div>
+          <div class="wo-issue"><span class="wo-label">ISSUE:</span> ${wo.issue_description || '—'}</div>
+          ${wo.repairs_rendered ? `<div class="wo-issue"><span class="wo-label">REPAIRS RENDERED:</span> ${wo.repairs_rendered}</div>` : '<div class="wo-issue wo-blank"><span class="wo-label">REPAIRS RENDERED:</span> &nbsp;</div>'}
+          <div class="wo-sigs">
+            <div class="wo-sig-line">Technician Signature &amp; Date</div>
+            <div class="wo-sig-line">Supervisor Approval &amp; Date</div>
           </div>
-        </div>
-
-        <div style="background:white;border:1px solid #dde2ee;padding:10px;margin-bottom:12px;font-size:10px;">
-          <strong style="display:block;margin-bottom:4px;">ISSUE DESCRIPTION:</strong>
-          <div style="white-space:pre-wrap;line-height:1.5;">${wo.issue_description || '—'}</div>
-        </div>
-
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
-          <div><strong>CREATED:</strong> ${createdDate}</div>
-          <div><strong>COMPLETED:</strong> ${completedDate}</div>
-        </div>
-
-        ${wo.technician_name ? `
-        <div style="background:#e8ecf5;border-left:3px solid #1e3c78;padding:10px;margin-bottom:12px;">
-          <strong>REPAIR TECHNICIAN:</strong> ${wo.technician_name}<br/>
-          <strong>ELAPSED TIME:</strong> ${elapsed}
-          ${wo.repairs_rendered ? `<br/><strong style="display:block;margin-top:6px;">REPAIRS RENDERED:</strong><div style="white-space:pre-wrap;margin-top:2px;">${wo.repairs_rendered}</div>` : ''}
-        </div>` : ''}
-
-        <div style="display:flex;gap:20px;margin-top:16px;font-size:9px;">
-          <div style="flex:1;border-top:1px solid #999;padding-top:4px;">Technician Signature / Date</div>
-          <div style="flex:1;border-top:1px solid #999;padding-top:4px;">Supervisor Approval / Date</div>
         </div>
       </div>`;
   }).join('');
@@ -83,37 +59,44 @@ export function exportWorkOrdersPDF({ orders, statusFilter = 'All', typeFilter =
   }).join('');
 
   const html = `<!DOCTYPE html><html><head><meta charset="utf-8">
-  <title>NHCS Work Orders Report</title>
+  <title>NHCS Work Order Work Book</title>
   <style>
     ${PRINT_BASE_CSS}
-    .form-field { margin-bottom:8px; }
-    .form-field label { font-weight:700; font-size:10px; display:block; margin-bottom:2px; color:#1e3c78; }
-    .form-field input, .form-field textarea { width:100%; padding:6px 8px; border:1px solid #dde2ee; font-family:monospace; font-size:10px; box-sizing:border-box; }
+    body { font-size: 9px; }
+    .wo-card { border: 1.5px solid #1e3c78; margin-bottom: 8px; page-break-inside: avoid; background: #fafbff; }
+    .wo-card-header { background: #1e3c78; color: white; padding: 4px 8px; font-size: 9px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+    .wo-card-body { padding: 6px 8px; }
+    .wo-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 4px; }
+    .wo-field { display: flex; flex-direction: column; }
+    .wo-label { font-size: 7.5px; font-weight: 700; color: #1e3c78; text-transform: uppercase; letter-spacing: 0.04em; }
+    .wo-val { font-size: 9px; border-bottom: 1px solid #bbb; padding-bottom: 1px; }
+    .wo-issue { font-size: 8.5px; margin-bottom: 4px; line-height: 1.3; border-left: 2px solid #1e3c78; padding-left: 5px; }
+    .wo-blank { min-height: 22px; border: 1px dashed #ccc; border-left: 2px solid #1e3c78; padding: 2px 5px; }
+    .wo-sigs { display: flex; gap: 16px; margin-top: 6px; padding-top: 4px; border-top: 1px dashed #bbb; }
+    .wo-sig-line { flex: 1; border-top: 1px solid #666; padding-top: 2px; font-size: 7.5px; color: #444; }
+    @media print {
+      .wo-card { page-break-inside: avoid; }
+    }
   </style>
   </head><body>
   
   <div class="page-header">
     <div class="org">NEW HANOVER COUNTY SCHOOLS</div>
     <div class="dept">Transportation Department — Data-TraCs System</div>
-    <div class="title">WORK ORDER FIELD FORMS — TECHNICIAN DOCUMENTATION</div>
+    <div class="title">WORK ORDER WORK BOOK — ACTIVE / PENDING</div>
   </div>
   <div class="gold-bar"></div>
   <div class="meta-box">
-    <div class="meta-item"><strong>STATUS FILTER:</strong> ${filterLabel}</div>
     <div class="meta-item"><strong>TYPE FILTER:</strong> ${typeLabel}</div>
     <div class="meta-item"><strong>TOTAL ORDERS:</strong> ${orders.length}</div>
     <div class="meta-item"><strong>GENERATED:</strong> ${moment().format('MM/DD/YYYY [at] HH:mm')} ET</div>
   </div>
 
-  <div style="margin-bottom:20px;padding:12px;background:#e8ecf5;border-left:3px solid #1e3c78;font-size:9px;">
-    <strong>INSTRUCTIONS:</strong> Technicians must complete all work order forms legibly. Sign and date upon completion. Submit to supervisor for approval.
-  </div>
+  ${cards}
 
-  ${workOrderForms}
-
-  <div style="page-break-before:always;margin-top:40px;">
+  <div style="page-break-before:always;">
     <div class="section-header">WORK ORDER SUMMARY TABLE</div>
-    <table style="margin-top:12px;">
+    <table style="margin-top:8px;font-size:8px;">
       <thead>
         <tr>
           <th>ORDER #</th><th>TYPE</th><th>DATE</th><th>BUS #</th><th>LOT</th>
