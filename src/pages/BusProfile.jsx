@@ -175,8 +175,8 @@ export default function BusProfile() {
           )}
         </div>
         <div style={{ display: 'flex', gap: '6px' }}>
-          <button onClick={handleExport} disabled={isExporting} style={{ display: 'flex', alignItems: 'center', gap: '5px', padding: '6px 12px', background: 'rgba(255,255,255,0.18)', color: 'white', border: '1px solid rgba(255,255,255,0.25)', borderRadius: '2px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", fontWeight: '600', cursor: 'pointer', letterSpacing: '0.05em' }}>
-            <Download style={{ width: 13, height: 13 }} /> {isExporting ? 'EXPORTING...' : 'EXPORT PDF'}
+          <button onClick={handleExport} style={{ display: 'flex', alignItems: 'center', gap: '5px', padding: '6px 12px', background: 'rgba(255,255,255,0.18)', color: 'white', border: '1px solid rgba(255,255,255,0.25)', borderRadius: '2px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", fontWeight: '600', cursor: 'pointer', letterSpacing: '0.05em' }}>
+            <Download style={{ width: 13, height: 13 }} /> EXPORT PDF
           </button>
         </div>
       </div>
@@ -423,7 +423,7 @@ export default function BusProfile() {
                   <div>
                     <div style={S.label}>LEGACY UPLOAD DATA</div>
                     <div style={{ fontSize: '10px', color: 'hsl(220,10%,35%)', whiteSpace: 'pre-wrap', background: 'hsl(50,20%,97%)', padding: '8px', border: '1px solid hsl(220,18%,82%)', borderRadius: '2px', maxHeight: '200px', overflowY: 'auto', fontFamily: 'monospace' }}>{bus.legacy_upload}</div>
-                    <button onClick={handleExport} disabled={isExporting} style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '5px', padding: '6px 12px', background: 'hsl(30,70%,45%)', color: 'white', border: 'none', borderRadius: '2px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", fontWeight: '600', cursor: 'pointer' }}>
+                    <button onClick={handleExport} style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '5px', padding: '6px 12px', background: 'hsl(30,70%,45%)', color: 'white', border: 'none', borderRadius: '2px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", fontWeight: '600', cursor: 'pointer' }}>
                       <Download style={{ width: 13, height: 13 }} /> EXPORT LEGACY DATA TO PDF
                     </button>
                   </div>

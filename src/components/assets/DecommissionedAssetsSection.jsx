@@ -94,7 +94,7 @@ export default function DecommissionedAssetsSection() {
             <input type="checkbox" id="filter_oo_inv" checked={filterOutOfInventory} onChange={e => setFilterOutOfInventory(e.target.checked)} style={{ cursor: 'pointer' }} />
             <label htmlFor="filter_oo_inv" style={{ fontSize: '11px', cursor: 'pointer', whiteSpace: 'nowrap' }}>Out of Inv. Only</label>
           </div>
-          <button onClick={handleExportPDF} disabled={isExporting} style={{ ...btnBase, background: 'hsl(140,55%,38%)', color: 'white', borderColor: 'hsl(140,55%,30%)' }}><FileDown style={{ width: 12, height: 12 }} /> Export PDF</button>
+          <button onClick={handleExportPDF} style={{ ...btnBase, background: 'hsl(140,55%,38%)', color: 'white', borderColor: 'hsl(140,55%,30%)' }}><FileDown style={{ width: 12, height: 12 }} /> Export PDF</button>
         </div>
 
         {showForm && (
