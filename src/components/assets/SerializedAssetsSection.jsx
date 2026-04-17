@@ -70,7 +70,7 @@ export default function SerializedAssetsSection() {
             {['All', 'In-Service', 'Decommissioned', 'Awaiting Auction', 'Sold', 'In Repair', 'Spares'].map(s => <option key={s}>{s}</option>)}
           </select>
           <select value={assetTypeFilter} onChange={e => setAssetTypeFilter(e.target.value)} style={{ ...inputStyle, width: 130 }}>
-            {['All', 'DVR', 'GPS', 'HD Camera', 'Other'].map(t => <option key={t}>{t}</option>)}
+            {['All', 'DVR', 'GPS', 'HD Camera', 'Radio', 'Other'].map(t => <option key={t}>{t}</option>)}
           </select>
           <button onClick={handleExportPDF} style={{ ...btnBase, background: 'hsl(140,55%,38%)', color: 'white', borderColor: 'hsl(140,55%,30%)' }}><FileDown style={{ width: 12, height: 12 }} /> Export PDF</button>
 
@@ -89,7 +89,7 @@ export default function SerializedAssetsSection() {
               <div>
                 <label style={labelStyle}>Asset Type:</label>
                 <select style={inputStyle} value={formData.asset_type || 'DVR'} onChange={e => setFormData({ ...formData, asset_type: e.target.value })}>
-                  {['DVR', 'GPS', 'HD Camera', 'Other'].map(t => <option key={t}>{t}</option>)}
+                  {['DVR', 'GPS', 'HD Camera', 'Radio', 'Other'].map(t => <option key={t}>{t}</option>)}
                 </select>
               </div>
               <div>
