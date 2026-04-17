@@ -3,6 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import DeleteConfirmModal from '../DeleteConfirmModal';
 import { Plus, Edit2, Trash2, FileDown } from 'lucide-react';
+import { exportDecommissionedPDF } from '../../utils/exports/exportDecommissioned';
 
 const FF = "'Courier Prime', monospace";
 const inputStyle = { width: '100%', padding: '5px 8px', fontSize: '11px', fontFamily: FF, border: '1px solid hsl(220,18%,70%)', borderRadius: '2px', background: 'white', outline: 'none', boxSizing: 'border-box' };
@@ -18,7 +19,6 @@ export default function DecommissionedAssetsSection() {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [filterOutOfInventory, setFilterOutOfInventory] = useState(false);
-  const [isExporting, setIsExporting] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [selectedIds, setSelectedIds] = useState(new Set());
   const [bulkModifyMode, setBulkModifyMode] = useState(false);
@@ -43,14 +43,8 @@ export default function DecommissionedAssetsSection() {
   const handleEdit = (asset) => { setEditingAsset(asset); setFormData(asset); setShowForm(true); };
   const handleSubmit = (e) => { e.preventDefault(); editingAsset ? updateMutation.mutate(formData) : createMutation.mutate(formData); };
 
-  const handleExportPDF = async () => {
-    setIsExporting(true);
-    const response = await base44.functions.invoke('exportDecommissionedAssets', { statusFilter, startDate, endDate, filterOutOfInventory }, { responseType: 'arraybuffer' });
-    const blob = new Blob([response.data], { type: 'application/pdf' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href = url; a.download = 'decommissioned-assets.pdf';
-    document.body.appendChild(a); a.click(); window.URL.revokeObjectURL(url); a.remove();
-    setIsExporting(false);
+  const handleExportPDF = () => {
+    exportDecommissionedPDF({ assets: filteredAssets, statusFilter, startDate, endDate });
   };
 
   const serialCounts = assets.reduce((acc, a) => { const key = a.serial_number?.trim().toLowerCase(); if (key) acc[key] = (acc[key] || 0) + 1; return acc; }, {});

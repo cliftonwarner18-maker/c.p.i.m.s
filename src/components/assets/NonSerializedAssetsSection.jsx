@@ -3,6 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import DeleteConfirmModal from '../DeleteConfirmModal';
 import { Plus, Edit2, Trash2, FileDown, AlertTriangle } from 'lucide-react';
+import { exportNonSerializedPDF } from '../../utils/exports/exportNonSerializedLocal';
 
 const FF = "'Courier Prime', monospace";
 const inputStyle = { width: '100%', padding: '5px 8px', fontSize: '11px', fontFamily: FF, border: '1px solid hsl(220,18%,70%)', borderRadius: '2px', background: 'white', outline: 'none', boxSizing: 'border-box' };
@@ -14,7 +15,6 @@ export default function NonSerializedAssetsSection() {
   const [showForm, setShowForm] = useState(false);
   const [editingAsset, setEditingAsset] = useState(null);
   const [formData, setFormData] = useState({});
-  const [isExporting, setIsExporting] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const queryClient = useQueryClient();
 
@@ -29,16 +29,8 @@ export default function NonSerializedAssetsSection() {
   const handleEdit = (asset) => { setEditingAsset(asset); setFormData(asset); setShowForm(true); };
   const handleSubmit = (e) => { e.preventDefault(); editingAsset ? updateMutation.mutate(formData) : createMutation.mutate(formData); };
 
-  const handleExportPDF = async () => {
-    setIsExporting(true);
-    const response = await base44.functions.invoke('exportNonSerializedAssets', {});
-    const html = response.data;
-    const win = window.open('', '_blank', 'width=900,height=700');
-    win.document.write(html);
-    win.document.close();
-    win.focus();
-    setTimeout(() => { win.print(); win.close(); }, 400);
-    setIsExporting(false);
+  const handleExportPDF = () => {
+    exportNonSerializedPDF({ assets });
   };
 
   return (
@@ -58,7 +50,7 @@ export default function NonSerializedAssetsSection() {
       <div style={{ padding: '10px', background: 'hsl(220,10%,98%)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
         <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
           <button onClick={() => { setEditingAsset(null); setFormData({}); setShowForm(true); }} style={{ ...btnBase, background: 'hsl(30,65%,38%)', color: 'white', borderColor: 'hsl(30,65%,30%)' }}><Plus style={{ width: 12, height: 12 }} /> Add Part</button>
-          <button onClick={handleExportPDF} disabled={isExporting} style={{ ...btnBase, background: 'hsl(140,55%,38%)', color: 'white', borderColor: 'hsl(140,55%,30%)' }}><FileDown style={{ width: 12, height: 12 }} /> Export PDF</button>
+          <button onClick={handleExportPDF} style={{ ...btnBase, background: 'hsl(140,55%,38%)', color: 'white', borderColor: 'hsl(140,55%,30%)' }}><FileDown style={{ width: 12, height: 12 }} /> Export PDF</button>
         </div>
 
         {showForm && (

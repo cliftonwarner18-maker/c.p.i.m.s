@@ -3,7 +3,8 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { ArrowLeft, Bus, Wrench, ClipboardCheck, FileText, Plus, Download, Edit, AlertTriangle, CheckCircle, XCircle, Clock, Pencil, Trash2 } from 'lucide-react';
+import { ArrowLeft, Bus, Wrench, ClipboardCheck, FileText, Plus, Download, Pencil, Trash2 } from 'lucide-react';
+import { exportBusHistoryPDF } from '../utils/exports/exportBusHistoryLocal';
 
 const S = {
   label: { fontSize: '9px', fontWeight: '700', letterSpacing: '0.07em', color: 'hsl(220,10%,50%)', textTransform: 'uppercase', marginBottom: '2px' },
@@ -38,8 +39,6 @@ export default function BusProfile() {
   const [showHistoryForm, setShowHistoryForm] = useState(false);
   const [editingHistoryId, setEditingHistoryId] = useState(null);
   const [historyForm, setHistoryForm] = useState({ technician: '', description: '', start_time: '', end_time: '' });
-  const [isExporting, setIsExporting] = useState(false);
-
   const { data: buses = [] } = useQuery({
     queryKey: ['buses'],
     queryFn: () => base44.entities.Bus.list('bus_number'),
@@ -147,24 +146,8 @@ export default function BusProfile() {
     setHistoryForm({ technician: '', description: '', start_time: '', end_time: '' });
   };
 
-  const handleExport = async () => {
-    setIsExporting(true);
-    try {
-      const response = await base44.functions.invoke('exportBusHistory', { busNumber });
-      const blob = new Blob([response.data], { type: 'application/pdf' });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `bus-${busNumber}-history.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      a.remove();
-    } catch (e) {
-      alert('Export failed: ' + e.message);
-    } finally {
-      setIsExporting(false);
-    }
+  const handleExport = () => {
+    exportBusHistoryPDF({ bus, workOrders: busWOs, inspections: busInspections, busHistory });
   };
 
   const statusColor = bus?.status === 'Active' ? 'hsl(140,55%,35%)' : bus?.status === 'Out of Service' ? 'hsl(0,65%,40%)' : 'hsl(220,10%,40%)';

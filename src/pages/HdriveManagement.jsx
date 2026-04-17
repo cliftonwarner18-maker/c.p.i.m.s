@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { HardDrive, Plus, Search, Edit2, Trash2, ArrowRightLeft, AlertTriangle, FileText } from 'lucide-react';
+import { HardDrive, Plus, Search, Edit2, Trash2, ArrowRightLeft, FileText } from 'lucide-react';
 import moment from 'moment';
-import jsPDF from 'jspdf';
+import { exportHDriveAuditHTML } from '../utils/exports/exportHDrive';
 import DeleteConfirmModal from '../components/DeleteConfirmModal';
 
 const FF = "'Courier Prime', monospace";
@@ -54,30 +54,12 @@ export default function HdriveManagement() {
     return result;
   };
 
-  const exportAuditPDF = async () => {
-    const response = await base44.functions.invoke('exportHDriveAudit', { search, userFilter: exportUser, locationFilter: exportLot, seizedOnly: false }, { responseType: 'arraybuffer' });
-    const blob = new Blob([response.data], { type: 'application/pdf' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'hdrive-audit-report.pdf';
-    document.body.appendChild(a);
-    a.click();
-    window.URL.revokeObjectURL(url);
-    a.remove();
+  const exportAuditPDF = () => {
+    exportHDriveAuditHTML({ drives, custodyLogs, userFilter: exportUser, locationFilter: exportLot, title: 'H-DRIVE CHAIN OF CUSTODY AUDIT' });
   };
 
-  const exportInventoryPDF = async () => {
-    const response = await base44.functions.invoke('exportHDriveAudit', { search: '', userFilter: exportUser, locationFilter: exportLot, seizedOnly: false }, { responseType: 'arraybuffer' });
-    const blob = new Blob([response.data], { type: 'application/pdf' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'hdrive-inventory.pdf';
-    document.body.appendChild(a);
-    a.click();
-    window.URL.revokeObjectURL(url);
-    a.remove();
+  const exportInventoryPDF = () => {
+    exportHDriveAuditHTML({ drives, custodyLogs: [], userFilter: exportUser, locationFilter: exportLot, title: 'H-DRIVE SIMPLE INVENTORY' });
   };
 
   const { data: drives = [], isLoading } = useQuery({

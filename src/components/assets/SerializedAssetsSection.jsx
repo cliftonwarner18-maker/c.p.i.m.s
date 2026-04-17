@@ -3,6 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import DeleteConfirmModal from '../DeleteConfirmModal';
 import { Plus, Edit2, Trash2, FileDown } from 'lucide-react';
+import { exportSerializedPDF } from '../../utils/exports/exportSerializedLocal';
 
 const FF = "'Courier Prime', monospace";
 const inputStyle = { width: '100%', padding: '5px 8px', fontSize: '11px', fontFamily: FF, border: '1px solid hsl(220,18%,70%)', borderRadius: '2px', background: 'white', outline: 'none', boxSizing: 'border-box' };
@@ -17,7 +18,6 @@ export default function SerializedAssetsSection() {
   const [statusFilter, setStatusFilter] = useState('All');
   const [assetTypeFilter, setAssetTypeFilter] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
-  const [isExporting, setIsExporting] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [isCleaningUp, setIsCleaningUp] = useState(false);
   const queryClient = useQueryClient();
@@ -33,16 +33,8 @@ export default function SerializedAssetsSection() {
   const handleEdit = (asset) => { setEditingAsset(asset); setFormData(asset); setShowForm(true); };
   const handleSubmit = (e) => { e.preventDefault(); editingAsset ? updateMutation.mutate(formData) : createMutation.mutate(formData); };
 
-  const handleExportPDF = async () => {
-    setIsExporting(true);
-    const response = await base44.functions.invoke('exportSerializedAssets', { statusFilter, assetTypeFilter, startDate: '', endDate: '' });
-    const html = response.data;
-    const win = window.open('', '_blank', 'width=900,height=700');
-    win.document.write(html);
-    win.document.close();
-    win.focus();
-    setTimeout(() => { win.print(); win.close(); }, 400);
-    setIsExporting(false);
+  const handleExportPDF = () => {
+    exportSerializedPDF({ assets: filteredAssets, statusFilter, assetTypeFilter });
   };
 
   const handleCleanupDuplicates = async () => {
@@ -90,7 +82,7 @@ export default function SerializedAssetsSection() {
           <select value={assetTypeFilter} onChange={e => setAssetTypeFilter(e.target.value)} style={{ ...inputStyle, width: 130 }}>
             {['All', 'DVR', 'GPS', 'HD Camera', 'Other'].map(t => <option key={t}>{t}</option>)}
           </select>
-          <button onClick={handleExportPDF} disabled={isExporting} style={{ ...btnBase, background: 'hsl(140,55%,38%)', color: 'white', borderColor: 'hsl(140,55%,30%)' }}><FileDown style={{ width: 12, height: 12 }} /> Export PDF</button>
+          <button onClick={handleExportPDF} style={{ ...btnBase, background: 'hsl(140,55%,38%)', color: 'white', borderColor: 'hsl(140,55%,30%)' }}><FileDown style={{ width: 12, height: 12 }} /> Export PDF</button>
           <button onClick={handleCleanupDuplicates} disabled={isCleaningUp} style={{ ...btnBase, background: 'hsl(0,65%,42%)', color: 'white', borderColor: 'hsl(0,65%,35%)' }}>🧹 {isCleaningUp ? 'CLEANING...' : 'CLEAN DUPLICATES'}</button>
         </div>
 
