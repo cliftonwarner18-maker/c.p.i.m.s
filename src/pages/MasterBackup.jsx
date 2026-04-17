@@ -1,13 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import LoadingScreen from '../components/LoadingScreen';
-import { Download, FileText, Database, AlertCircle } from 'lucide-react';
+import { FileText, Database, AlertCircle } from 'lucide-react';
+import { exportMasterHTMLReport } from '../utils/exports/exportMasterLocal';
 
 export default function MasterBackup() {
-  const [isExporting, setIsExporting] = useState(false);
-  const [exportFormat, setExportFormat] = useState(null);
-
   const { data: buses = [] } = useQuery({ queryKey: ['buses'], queryFn: () => base44.entities.Bus.list() });
   const { data: workOrders = [] } = useQuery({ queryKey: ['workOrders'], queryFn: () => base44.entities.WorkOrder.list() });
   const { data: inspections = [] } = useQuery({ queryKey: ['inspections'], queryFn: () => base44.entities.Inspection.list() });
@@ -18,48 +16,8 @@ export default function MasterBackup() {
 
   const isLoading = !buses.length || !workOrders.length;
 
-  const handleExportPDF = async () => {
-    setIsExporting(true);
-    setExportFormat('PDF');
-    try {
-      const response = await base44.functions.invoke('exportMasterPDF');
-      const blob = new Blob([response.data], { type: 'application/pdf' });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `master-backup-${new Date().toISOString().split('T')[0]}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      a.remove();
-    } catch (error) {
-      alert('Error exporting PDF: ' + error.message);
-    } finally {
-      setIsExporting(false);
-      setExportFormat(null);
-    }
-  };
-
-  const handleExportXLSX = async () => {
-    setIsExporting(true);
-    setExportFormat('XLSX');
-    try {
-      const response = await base44.functions.invoke('exportMasterDataZip');
-      const blob = new Blob([response.data], { type: 'application/x-tar' });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `master-backup-${new Date().toISOString().split('T')[0]}.tar`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      a.remove();
-    } catch (error) {
-      alert('Error exporting spreadsheet: ' + error.message);
-    } finally {
-      setIsExporting(false);
-      setExportFormat(null);
-    }
+  const handleExportHTML = () => {
+    exportMasterHTMLReport({ buses, workOrders, inspections, serializedAssets, nonSerializedAssets, hdrives });
   };
 
   return (
@@ -120,10 +78,8 @@ export default function MasterBackup() {
         <div style={{ fontSize: '11px', fontWeight: '700', color: 'hsl(220,20%,30%)', letterSpacing: '0.06em', marginBottom: '10px' }}>EXPORT FORMAT</div>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '8px' }}>
-          {/* PDF Export */}
           <button
-            onClick={handleExportPDF}
-            disabled={isExporting}
+            onClick={handleExportHTML}
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -136,57 +92,16 @@ export default function MasterBackup() {
               fontFamily: "'Courier Prime', monospace",
               fontWeight: '600',
               color: 'hsl(220,65%,35%)',
-              cursor: isExporting && exportFormat === 'PDF' ? 'default' : 'pointer',
-              opacity: isExporting && exportFormat === 'PDF' ? 0.6 : 1,
+              cursor: 'pointer',
               transition: 'all 0.15s',
             }}
-            onMouseEnter={(e) => {
-              if (!isExporting)
-                e.currentTarget.style.background = 'hsl(220,65%,95%)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'white';
-            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = 'hsl(220,65%,95%)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = 'white'; }}
           >
             <FileText style={{ width: 16, height: 16 }} />
             <div style={{ textAlign: 'left' }}>
-              <div style={{ fontSize: '12px', fontWeight: '700' }}>PDF</div>
-              <div style={{ fontSize: '9px', opacity: 0.8 }}>{isExporting && exportFormat === 'PDF' ? 'Exporting...' : 'Multi-page report'}</div>
-            </div>
-          </button>
-
-          {/* Excel Spreadsheet Export */}
-          <button
-            onClick={handleExportXLSX}
-            disabled={isExporting}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              padding: '12px',
-              background: 'white',
-              border: '2px solid hsl(45,90%,50%)',
-              borderRadius: '2px',
-              fontSize: '12px',
-              fontFamily: "'Courier Prime', monospace",
-              fontWeight: '600',
-              color: 'hsl(45,90%,35%)',
-              cursor: isExporting && exportFormat === 'XLSX' ? 'default' : 'pointer',
-              opacity: isExporting && exportFormat === 'XLSX' ? 0.6 : 1,
-              transition: 'all 0.15s',
-            }}
-            onMouseEnter={(e) => {
-              if (!isExporting)
-                e.currentTarget.style.background = 'hsl(45,90%,95%)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'white';
-            }}
-          >
-            <Download style={{ width: 16, height: 16 }} />
-            <div style={{ textAlign: 'left' }}>
-              <div style={{ fontSize: '12px', fontWeight: '700' }}>EXCEL (TAR)</div>
-              <div style={{ fontSize: '9px', opacity: 0.8 }}>{isExporting && exportFormat === 'XLSX' ? 'Exporting...' : '10 CSV files uncompressed'}</div>
+              <div style={{ fontSize: '12px', fontWeight: '700' }}>EXPORT HTML REPORT</div>
+              <div style={{ fontSize: '9px', opacity: 0.8 }}>Full multi-section printable report — all system data</div>
             </div>
           </button>
         </div>

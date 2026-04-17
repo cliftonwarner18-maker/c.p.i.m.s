@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { base44 } from '@/api/base44Client';
 import { FileDown } from 'lucide-react';
+import { exportWorkOrdersPDF } from '../../utils/exports/exportWorkOrders';
 
 const FF = "'Courier Prime', monospace";
 
@@ -15,7 +15,6 @@ const statusColor = (s) => {
 };
 
 export default function ActiveWorkOrders({ workOrders }) {
-  const [isExporting, setIsExporting] = useState(false);
   const [filterType, setFilterType] = useState('All');
   
   const active = workOrders
@@ -23,19 +22,8 @@ export default function ActiveWorkOrders({ workOrders }) {
     .filter(w => filterType === 'All' || w.work_order_type === filterType)
     .sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
 
-  const handleExportFieldPDF = async () => {
-    setIsExporting(true);
-    const response = await base44.functions.invoke('exportFieldWorkOrders');
-    const blob = new Blob([response.data], { type: 'application/pdf' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'field-work-orders.pdf';
-    document.body.appendChild(a);
-    a.click();
-    window.URL.revokeObjectURL(url);
-    a.remove();
-    setIsExporting(false);
+  const handleExportFieldPDF = () => {
+    exportWorkOrdersPDF({ orders: active, statusFilter: 'Active', typeFilter: filterType });
   };
 
   const repairTypes = ['All', 'Camera Repair', 'Radio Repair', 'Seat Repair', 'Other'];
@@ -49,8 +37,8 @@ export default function ActiveWorkOrders({ workOrders }) {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%', background: 'white', border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', overflow: 'hidden' }}>
       <div style={{ background: 'linear-gradient(to right, hsl(45,90%,32%), hsl(45,85%,42%))', color: 'white', padding: '7px 12px', fontSize: '11px', fontWeight: '700', letterSpacing: '0.08em', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <span>⚠️ ACTIVE WORK ORDERS — PENDING REPAIRS</span>
-        <button onClick={handleExportFieldPDF} disabled={isExporting} style={{ display: 'inline-flex', alignItems: 'center', gap: 3, padding: '3px 8px', fontSize: '9px', fontFamily: FF, fontWeight: '700', background: 'rgba(255,255,255,0.2)', color: 'white', border: '1px solid rgba(255,255,255,0.35)', borderRadius: '2px', cursor: isExporting ? 'not-allowed' : 'pointer', opacity: isExporting ? 0.5 : 1 }}>
-          <FileDown style={{ width: 10, height: 10 }} /> {isExporting ? 'EXPORTING...' : 'EXPORT'}
+        <button onClick={handleExportFieldPDF} style={{ display: 'inline-flex', alignItems: 'center', gap: 3, padding: '3px 8px', fontSize: '9px', fontFamily: FF, fontWeight: '700', background: 'rgba(255,255,255,0.2)', color: 'white', border: '1px solid rgba(255,255,255,0.35)', borderRadius: '2px', cursor: 'pointer' }}>
+          <FileDown style={{ width: 10, height: 10 }} /> EXPORT
         </button>
       </div>
       
