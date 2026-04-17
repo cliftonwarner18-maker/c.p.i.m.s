@@ -19,7 +19,6 @@ export default function SerializedAssetsSection() {
   const [assetTypeFilter, setAssetTypeFilter] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [deleteTarget, setDeleteTarget] = useState(null);
-  const [isCleaningUp, setIsCleaningUp] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: assets = [] } = useQuery({ queryKey: ['serializedAssets'], queryFn: () => base44.entities.SerializedAsset.list() });
@@ -35,15 +34,6 @@ export default function SerializedAssetsSection() {
 
   const handleExportPDF = () => {
     exportSerializedPDF({ assets: filteredAssets, statusFilter, assetTypeFilter });
-  };
-
-  const handleCleanupDuplicates = async () => {
-    if (!window.confirm('Delete duplicate serialized assets?\n\nThis cannot be undone.')) return;
-    setIsCleaningUp(true);
-    const response = await base44.functions.invoke('cleanupDuplicates', { entityName: 'SerializedAsset' });
-    queryClient.invalidateQueries({ queryKey: ['serializedAssets'] });
-    alert(`Cleanup complete!\n${response.data.message}`);
-    setIsCleaningUp(false);
   };
 
   const serialCounts = assets.reduce((acc, a) => { const key = a.serial_number?.trim().toLowerCase(); if (key) acc[key] = (acc[key] || 0) + 1; return acc; }, {});
@@ -83,7 +73,7 @@ export default function SerializedAssetsSection() {
             {['All', 'DVR', 'GPS', 'HD Camera', 'Other'].map(t => <option key={t}>{t}</option>)}
           </select>
           <button onClick={handleExportPDF} style={{ ...btnBase, background: 'hsl(140,55%,38%)', color: 'white', borderColor: 'hsl(140,55%,30%)' }}><FileDown style={{ width: 12, height: 12 }} /> Export PDF</button>
-          <button onClick={handleCleanupDuplicates} disabled={isCleaningUp} style={{ ...btnBase, background: 'hsl(0,65%,42%)', color: 'white', borderColor: 'hsl(0,65%,35%)' }}>🧹 {isCleaningUp ? 'CLEANING...' : 'CLEAN DUPLICATES'}</button>
+
         </div>
 
         {/* Form */}
