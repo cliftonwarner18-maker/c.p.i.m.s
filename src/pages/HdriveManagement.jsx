@@ -187,7 +187,8 @@ export default function HdriveManagement() {
           <div style={labelStyle}>FILTER BY LOT</div>
           <select value={exportLot} onChange={e => setExportLot(e.target.value)} style={{ ...inputStyle, width: '130px' }}>
             <option value="">All Lots</option>
-            {LOTS.map(l => <option key={l} value={l}>{l}</option>)}
+            <option value="Main">Main</option>
+            <option value="North">North</option>
           </select>
         </div>
         <div>
