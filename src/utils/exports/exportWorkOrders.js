@@ -24,10 +24,9 @@ export function exportWorkOrdersPDF({ orders, statusFilter = 'All', typeFilter =
             <div class="wo-field"><span class="wo-label">REPORTED BY</span><span class="wo-val">${wo.reported_by || '—'}</span></div>
             <div class="wo-field"><span class="wo-label">TECHNICIAN</span><span class="wo-val">${wo.technician_name || '___________________'}</span></div>
           </div>
-          <div class="wo-row">
+          <div class="wo-row" style="grid-template-columns:1fr 1fr;">
             <div class="wo-field"><span class="wo-label">START TIME</span><span class="wo-val">${startTime}</span></div>
             <div class="wo-field"><span class="wo-label">END TIME</span><span class="wo-val">${endTime}</span></div>
-            <div class="wo-field"><span class="wo-label">ELAPSED</span><span class="wo-val">${wo.elapsed_time_minutes ? `${Math.floor(wo.elapsed_time_minutes/60)}h ${wo.elapsed_time_minutes%60}m` : '_______________'}</span></div>
           </div>
           <div class="wo-issue"><span class="wo-label">ISSUE:</span> ${wo.issue_description || '—'}</div>
           ${wo.repairs_rendered ? `<div class="wo-issue"><span class="wo-label">REPAIRS RENDERED:</span> ${wo.repairs_rendered}</div>` : '<div class="wo-issue wo-blank"><span class="wo-label">REPAIRS RENDERED:</span> &nbsp;</div>'}
