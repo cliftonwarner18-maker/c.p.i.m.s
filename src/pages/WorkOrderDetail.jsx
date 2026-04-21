@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, Save, CheckCircle, FileDown } from 'lucide-react';
 import moment from 'moment';
+import { printHtml, PRINT_BASE_CSS } from '../utils/printHtml';
 
 const FF = "'Courier Prime', monospace";
 const inputStyle = { padding: '5px 8px', fontSize: '11px', fontFamily: FF, border: '1px solid hsl(220,18%,70%)', borderRadius: '2px', background: 'white', outline: 'none', width: '100%', boxSizing: 'border-box' };
@@ -89,112 +90,56 @@ export default function WorkOrderDetail() {
     updateMutation.mutate(updated);
   };
 
-  const handleExportPDF = async () => {
+  const handleExportPDF = () => {
     if (!form) return;
-    const { jsPDF } = await import('jspdf');
-    const doc = new jsPDF({ unit: 'pt', format: 'letter' });
-    const W = doc.internal.pageSize.getWidth();
-    const margin = 40;
-    let y = 40;
-
-    doc.setFillColor(31, 62, 120);
-    doc.rect(0, 0, W, 70, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFont('courier', 'bold');
-    doc.setFontSize(15);
-    doc.text('NEW HANOVER COUNTY SCHOOLS', margin, 24);
-    doc.setFontSize(11);
-    doc.text('Transportation — Vehicle Surveillance System', margin, 40);
-    doc.setFontSize(13);
-    doc.text('WORK ORDER & REPAIR REPORT', W - margin, 30, { align: 'right' });
-    doc.setFontSize(10);
-    doc.text(`PRINTED: ${moment().format('MM/DD/YYYY HH:mm')}`, W - margin, 45, { align: 'right' });
-    y = 85;
-
-    doc.setDrawColor(180, 180, 180);
-    doc.setFillColor(240, 244, 250);
-    doc.roundedRect(margin, y, W - margin * 2, 64, 3, 3, 'FD');
-    doc.setTextColor(30, 40, 80);
-    doc.setFont('courier', 'bold');
-    doc.setFontSize(11);
-    doc.text(`ORDER #: ${form.order_number || '—'}`, margin + 10, y + 16);
-    doc.text(`BUS #: ${form.bus_number || '—'}`, margin + 10, y + 30);
-    doc.text(`LOT: ${form.lot || '—'}`, margin + 10, y + 44);
-    doc.text(`STATUS: ${(form.status || '').toUpperCase()}`, W / 2 + 10, y + 16);
-    doc.text(`REPORTED BY: ${form.reported_by || '—'}`, W / 2 + 10, y + 30);
-    doc.text(`DATE OPENED: ${moment(form.created_date).format('MM/DD/YYYY HH:mm')}`, W / 2 + 10, y + 44);
-    y += 74;
-
-    doc.setFillColor(31, 62, 120);
-    doc.rect(margin, y, W - margin * 2, 18, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFont('courier', 'bold');
-    doc.setFontSize(10);
-    doc.text('INITIAL COMPLAINT / ISSUE DESCRIPTION', margin + 6, y + 12);
-    y += 22;
-    doc.setTextColor(30, 30, 30);
-    doc.setFont('courier', 'normal');
-    doc.setFontSize(10);
-    const issueLines = doc.splitTextToSize(form.issue_description || 'None recorded.', W - margin * 2 - 12);
-    doc.setFillColor(255, 255, 255);
-    doc.rect(margin, y, W - margin * 2, issueLines.length * 14 + 12, 'F');
-    doc.setDrawColor(200, 200, 200);
-    doc.rect(margin, y, W - margin * 2, issueLines.length * 14 + 12);
-    doc.text(issueLines, margin + 6, y + 12);
-    y += issueLines.length * 14 + 20;
-
-    doc.setFillColor(31, 62, 120);
-    doc.rect(margin, y, W - margin * 2, 18, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFont('courier', 'bold');
-    doc.setFontSize(10);
-    doc.text('REPAIR INFORMATION', margin + 6, y + 12);
-    y += 22;
-    doc.setFillColor(240, 244, 250);
-    doc.rect(margin, y, W - margin * 2, 52, 'FD');
-    doc.setTextColor(30, 40, 80);
-    doc.setFont('courier', 'bold');
-    doc.setFontSize(10);
-    doc.text(`TECHNICIAN: ${form.technician_name || '—'}`, margin + 10, y + 14);
-    doc.text(`START TIME: ${form.repair_start_time ? moment(form.repair_start_time).format('MM/DD/YYYY HH:mm') : '—'}`, margin + 10, y + 28);
-    doc.text(`END TIME: ${form.repair_end_time ? moment(form.repair_end_time).format('MM/DD/YYYY HH:mm') : '—'}`, margin + 10, y + 42);
     const elMin = form.elapsed_time_minutes || 0;
     const elStr = elMin > 0 ? `${Math.floor(elMin / 60)}h ${elMin % 60}m (${elMin} min)` : '—';
-    doc.text(`ELAPSED TIME: ${elStr}`, W / 2 + 10, y + 14);
-    if (form.completed_date) doc.text(`COMPLETED: ${moment(form.completed_date).format('MM/DD/YYYY HH:mm')}`, W / 2 + 10, y + 28);
-    y += 60;
 
-    doc.setFillColor(31, 62, 120);
-    doc.rect(margin, y, W - margin * 2, 18, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFont('courier', 'bold');
-    doc.setFontSize(10);
-    doc.text('REPAIRS / REMEDY RENDERED', margin + 6, y + 12);
-    y += 22;
-    doc.setTextColor(30, 30, 30);
-    doc.setFont('courier', 'normal');
-    doc.setFontSize(10);
-    const repairLines = doc.splitTextToSize(form.repairs_rendered || 'No repairs recorded.', W - margin * 2 - 12);
-    doc.setFillColor(255, 255, 255);
-    doc.rect(margin, y, W - margin * 2, repairLines.length * 14 + 12, 'F');
-    doc.setDrawColor(200, 200, 200);
-    doc.rect(margin, y, W - margin * 2, repairLines.length * 14 + 12);
-    doc.text(repairLines, margin + 6, y + 12);
-    y += repairLines.length * 14 + 24;
+    const html = `<!DOCTYPE html><html><head><meta charset="utf-8">
+    <title>Work Order ${form.order_number || ''}</title>
+    <style>
+      ${PRINT_BASE_CSS}
+      .wo-meta { display:grid; grid-template-columns:1fr 1fr; gap:6px; background:#edf1fc; border:1px solid #1e3c78; padding:10px 12px; margin-bottom:12px; font-size:10px; }
+      .wo-meta b { color:#1e3c78; }
+      .wo-field-box { background:white; border:1px solid #dde2ee; padding:8px 10px; font-size:10px; white-space:pre-wrap; line-height:1.5; min-height:40px; }
+      .sig-row { display:flex; gap:40px; margin-top:20px; padding-top:12px; border-top:1px dashed #bbb; }
+      .sig-line { flex:1; border-top:1px solid #666; padding-top:4px; font-size:9px; color:#555; }
+    </style>
+    </head><body>
+    <div class="page-header">
+      <div class="org">NEW HANOVER COUNTY SCHOOLS</div>
+      <div class="dept">Transportation Department — Vehicle Surveillance System</div>
+      <div class="title">WORK ORDER &amp; REPAIR REPORT</div>
+    </div>
+    <div class="gold-bar"></div>
+    <div class="wo-meta">
+      <div><b>ORDER #:</b> ${form.order_number || '—'}</div>
+      <div><b>STATUS:</b> ${(form.status || '').toUpperCase()}</div>
+      <div><b>BUS #:</b> ${form.bus_number || '—'}</div>
+      <div><b>LOT:</b> ${form.lot || '—'}</div>
+      <div><b>REPORTED BY:</b> ${form.reported_by || '—'}</div>
+      <div><b>DATE OPENED:</b> ${moment(form.created_date).format('MM/DD/YYYY HH:mm')}</div>
+    </div>
+    <div class="section-header">INITIAL COMPLAINT / ISSUE DESCRIPTION</div>
+    <div class="wo-field-box">${form.issue_description || 'None recorded.'}</div>
+    <div class="section-header" style="margin-top:12px;">REPAIR INFORMATION</div>
+    <div class="meta-box">
+      <div class="meta-item"><b>TECHNICIAN:</b> ${form.technician_name || '—'}</div>
+      <div class="meta-item"><b>START TIME:</b> ${form.repair_start_time ? moment(form.repair_start_time).format('MM/DD/YYYY HH:mm') : '—'}</div>
+      <div class="meta-item"><b>END TIME:</b> ${form.repair_end_time ? moment(form.repair_end_time).format('MM/DD/YYYY HH:mm') : '—'}</div>
+      <div class="meta-item"><b>ELAPSED:</b> ${elStr}</div>
+      ${form.completed_date ? `<div class="meta-item"><b>COMPLETED:</b> ${moment(form.completed_date).format('MM/DD/YYYY HH:mm')}</div>` : ''}
+    </div>
+    <div class="section-header" style="margin-top:12px;">REPAIRS / REMEDY RENDERED</div>
+    <div class="wo-field-box">${form.repairs_rendered || 'No repairs recorded.'}</div>
+    <div class="sig-row">
+      <div class="sig-line">Technician Signature &amp; Date</div>
+      <div class="sig-line">Supervisor Approval &amp; Date</div>
+    </div>
+    <div class="page-footer">NHCS Transportation — Vehicle Surveillance System | Powered by Base44</div>
+    </body></html>`;
 
-    if (y + 80 > doc.internal.pageSize.getHeight() - 40) { doc.addPage(); y = 40; }
-    doc.setDrawColor(100, 100, 100);
-    doc.setTextColor(80, 80, 80);
-    doc.setFont('courier', 'normal');
-    doc.setFontSize(9);
-    doc.line(margin, y + 30, margin + 180, y + 30);
-    doc.text('Technician Signature', margin, y + 42);
-    doc.line(W - margin - 180, y + 30, W - margin, y + 30);
-    doc.text('Supervisor Signature', W - margin - 180, y + 42);
-    doc.setFontSize(8);
-    doc.setTextColor(140, 140, 140);
-    doc.text('NHCS Transportation — Vehicle Surveillance System | Powered by Base44', W / 2, doc.internal.pageSize.getHeight() - 20, { align: 'center' });
-    doc.save(`WorkOrder_${form.order_number || id}.pdf`);
+    printHtml(html);
   };
 
   if (isLoading || !form) return (
