@@ -42,8 +42,8 @@ export default function FleetTable({ buses, busNumCounts, vinCounts = {}, onEdit
         <table style={{ width: '100%', fontSize: '11px', fontFamily: "'Courier Prime', monospace", borderCollapse: 'collapse' }}>
           <thead>
             <tr style={{ background: 'hsl(220,45%,28%)', color: 'white', position: 'sticky', top: 0, zIndex: 10 }}>
-              {['BUS #', 'TYPE', 'YR', 'MAKE / MODEL', 'LOCATION', 'VIN', 'CAMERA SYSTEM', 'ASSET #', 'STOP ARM', 'AI CAM', 'STATUS', 'INSP. DUE', ''].map((h, i) => (
-                <th key={i} style={{ padding: '7px 8px', textAlign: 'left', fontWeight: '700', fontSize: '10px', letterSpacing: '0.06em', whiteSpace: 'nowrap', borderRight: i < 11 ? '1px solid rgba(255,255,255,0.1)' : 'none' }}>
+              {['BUS #', 'TYPE', 'YR', 'MAKE / MODEL', 'LOCATION', 'VIN', 'CAMERA SYSTEM', 'ASSET #', 'STOP ARM', 'AI CAM', 'IN', 'OUT', 'AI#', 'STATUS', 'INSP. DUE', ''].map((h, i) => (
+                <th key={i} style={{ padding: '7px 8px', textAlign: 'left', fontWeight: '700', fontSize: '10px', letterSpacing: '0.06em', whiteSpace: 'nowrap', borderRight: i < 14 ? '1px solid rgba(255,255,255,0.1)' : 'none' }}>
                   {h}
                 </th>
               ))}
@@ -137,6 +137,12 @@ export default function FleetTable({ buses, busNumCounts, vinCounts = {}, onEdit
                       : <span style={{ fontSize: '9px', color: 'hsl(220,10%,55%)', background: 'hsl(220,10%,90%)', border: '1px solid hsl(220,10%,78%)', padding: '1px 5px', borderRadius: '2px' }}>NO</span>
                     }
                   </td>
+                  {/* Inside Cameras */}
+                  <td style={{ padding: '5px 8px', textAlign: 'center', fontSize: '10px', fontWeight: '600' }}>{b.cameras_inside ?? 0}</td>
+                  {/* Outside Cameras */}
+                  <td style={{ padding: '5px 8px', textAlign: 'center', fontSize: '10px', fontWeight: '600' }}>{b.cameras_outside ?? 0}</td>
+                  {/* AI Camera Count */}
+                  <td style={{ padding: '5px 8px', textAlign: 'center', fontSize: '10px', fontWeight: '600' }}>{b.cameras_ai ?? 0}</td>
                   {/* Status */}
                   <td style={{ padding: '5px 8px', whiteSpace: 'nowrap' }}>
                     <Badge label={b.status || 'Active'} style={statusStyle} />
@@ -157,10 +163,11 @@ export default function FleetTable({ buses, busNumCounts, vinCounts = {}, onEdit
                     <div style={{ display: 'flex', gap: '3px', alignItems: 'center' }}>
                       <Link
                         to={`/BusProfile?bus=${b.bus_number}`}
-                        title="View Profile"
-                        style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 24, height: 24, background: 'hsl(220,55%,38%)', color: 'white', borderRadius: '2px', textDecoration: 'none', border: '1px solid hsl(220,55%,30%)' }}
+                        title={`View Profile — ${(b.cameras_inside || 0) + (b.cameras_outside || 0) + (b.cameras_ai || 0)} total cameras`}
+                        style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 2, minWidth: 24, height: 24, padding: '0 5px', background: 'hsl(220,55%,38%)', color: 'white', borderRadius: '2px', textDecoration: 'none', border: '1px solid hsl(220,55%,30%)', fontSize: '9px', fontWeight: '700' }}
                       >
                         <Eye style={{ width: 11, height: 11 }} />
+                        <span>{(b.cameras_inside || 0) + (b.cameras_outside || 0) + (b.cameras_ai || 0)}</span>
                       </Link>
                       <button
                         title="Edit"

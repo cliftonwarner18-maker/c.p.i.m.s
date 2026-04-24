@@ -3,7 +3,7 @@ import moment from 'moment';
 
 export function exportFleetPDF({ buses, title = 'FLEET INVENTORY REPORT' }) {
   const rows = buses.map(b => {
-    const total = ((b.cameras_inside || 0) + (b.cameras_outside || 0)) || '—';
+    const total = (b.cameras_inside || 0) + (b.cameras_outside || 0) + (b.cameras_ai || 0);
     return `
       <tr>
         <td><strong>${b.bus_number || '—'}</strong></td>
@@ -13,8 +13,9 @@ export function exportFleetPDF({ buses, title = 'FLEET INVENTORY REPORT' }) {
         <td>${[b.make, b.model].filter(Boolean).join(' ') || '—'}</td>
         <td>${b.status || '—'}</td>
         <td>${b.camera_system_type || '—'}</td>
-        <td>${b.cameras_inside ?? '—'}</td>
-        <td>${b.cameras_outside ?? '—'}</td>
+        <td>${b.cameras_inside ?? 0}</td>
+        <td>${b.cameras_outside ?? 0}</td>
+        <td>${b.cameras_ai ?? 0}</td>
         <td><strong>${total}</strong></td>
         <td>${b.stop_arm_cameras ? 'YES' : 'NO'}</td>
       </tr>`;
@@ -41,13 +42,13 @@ export function exportFleetPDF({ buses, title = 'FLEET INVENTORY REPORT' }) {
     <thead>
       <tr>
         <th>BUS #</th><th>TYPE</th><th>LOCATION</th><th>YEAR</th><th>MAKE / MODEL</th>
-        <th>STATUS</th><th>CAM SYSTEM</th><th>IN</th><th>OUT</th><th>TOTAL</th><th>STOP ARM</th>
+        <th>STATUS</th><th>CAM SYSTEM</th><th>IN</th><th>OUT</th><th>AI</th><th>TOTAL</th><th>STOP ARM</th>
       </tr>
     </thead>
     <tbody>${rows}</tbody>
     <tfoot>
       <tr class="totals-row">
-        <td colspan="10">TOTAL VEHICLES</td>
+        <td colspan="11">TOTAL VEHICLES</td>
         <td>${buses.length}</td>
       </tr>
     </tfoot>
