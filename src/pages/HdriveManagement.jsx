@@ -14,7 +14,7 @@ const fieldStyle = { flex: '1', minWidth: '160px' };
 
 const EMPTY_DRIVE = { make: '', model: '', serial_number: '', current_user: '', current_lot: '', current_sublocation: '', seized: false, seizing_agency: '', seizing_person: '', seizure_case_number: '', seizure_date: '', seizure_reason: '', seizure_notes: '' };
 const EMPTY_CUSTODY = { hdrive_serial: '', transferred_from: '', transferred_to: '', previous_location: '', new_lot: '', new_sublocation: '', reason: '', transfer_date: '' };
-const LOTS = ['Main', 'North', 'Central', 'On a Bus', 'Other'];
+const LOTS = ['Main', 'North', 'Garage', 'On a Bus', 'Other'];
 
 function SectionHeader({ title }) {
   return (
