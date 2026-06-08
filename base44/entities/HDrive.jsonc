@@ -1,0 +1,75 @@
+{
+  "name": "HDrive",
+  "type": "object",
+  "properties": {
+    "make": {
+      "type": "string",
+      "description": "Manufacturer (SEON, Safety Vision, etc.)"
+    },
+    "model": {
+      "type": "string",
+      "description": "Model number"
+    },
+    "serial_number": {
+      "type": "string",
+      "description": "Serial number (unique identifier)"
+    },
+    "current_user": {
+      "type": "string",
+      "description": "Current authorized user holding the drive"
+    },
+    "current_lot": {
+      "type": "string",
+      "enum": [
+        "Main",
+        "North",
+        "Central",
+        "Other"
+      ],
+      "description": "General lot/facility location"
+    },
+    "current_sublocation": {
+      "type": "string",
+      "description": "Pinpointed sub-location (e.g. Officer drawer left side locked)"
+    },
+    "current_location": {
+      "type": "string",
+      "description": "Combined location string (lot \u2014 sublocation)"
+    },
+    "seized": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this H-Drive has been seized"
+    },
+    "seizing_agency": {
+      "type": "string",
+      "description": "Agency that seized the drive"
+    },
+    "seizing_person": {
+      "type": "string",
+      "description": "Name of the person who seized the drive"
+    },
+    "seizure_case_number": {
+      "type": "string",
+      "description": "Case number associated with the seizure"
+    },
+    "seizure_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date and time of seizure"
+    },
+    "seizure_reason": {
+      "type": "string",
+      "description": "Reason for seizure (e.g., Title 9, Crash, Investigation)"
+    },
+    "seizure_notes": {
+      "type": "string",
+      "description": "Additional notes about the seizure"
+    }
+  },
+  "required": [
+    "make",
+    "model",
+    "serial_number"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "name": "SystemUser",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Staff member name"
+    },
+    "role": {
+      "type": "string",
+      "description": "Role/Title"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Is this user active in the system"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

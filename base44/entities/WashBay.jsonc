@@ -1,0 +1,42 @@
+{
+  "name": "WashBay",
+  "type": "object",
+  "properties": {
+    "bus_number": {
+      "type": "string",
+      "description": "Bus number being washed"
+    },
+    "washer_name": {
+      "type": "string",
+      "description": "Name of technician/washer"
+    },
+    "wash_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of wash"
+    },
+    "start_time": {
+      "type": "string",
+      "description": "Start time (24hr ISO format)"
+    },
+    "end_time": {
+      "type": "string",
+      "description": "End time (24hr ISO format)"
+    },
+    "elapsed_time_minutes": {
+      "type": "number",
+      "description": "Total elapsed time in minutes"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes about the wash"
+    }
+  },
+  "required": [
+    "bus_number",
+    "washer_name",
+    "wash_date",
+    "start_time",
+    "end_time"
+  ]
+}

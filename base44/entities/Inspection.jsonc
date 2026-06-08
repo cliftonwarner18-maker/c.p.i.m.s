@@ -1,0 +1,98 @@
+{
+  "name": "Inspection",
+  "type": "object",
+  "properties": {
+    "inspection_number": {
+      "type": "string",
+      "description": "Auto-generated inspection number"
+    },
+    "bus_number": {
+      "type": "string",
+      "description": "Bus number reference"
+    },
+    "inspector_name": {
+      "type": "string",
+      "description": "Name of inspector"
+    },
+    "inspection_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date/time of inspection"
+    },
+    "inspection_start_time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Inspection start date/time"
+    },
+    "inspection_end_time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Inspection end date/time"
+    },
+    "elapsed_minutes": {
+      "type": "number",
+      "description": "Elapsed inspection time in minutes"
+    },
+    "camera_system_functional": {
+      "type": "boolean",
+      "default": false,
+      "description": "Camera system functional"
+    },
+    "lenses_condition": {
+      "type": "string",
+      "enum": [
+        "Pass",
+        "Fail",
+        "Needs Repair"
+      ],
+      "description": "Lens condition"
+    },
+    "mounting_secure": {
+      "type": "boolean",
+      "default": false,
+      "description": "Mounting secure"
+    },
+    "dvr_functional": {
+      "type": "boolean",
+      "default": false,
+      "description": "DVR system functional"
+    },
+    "date_time_accuracy": {
+      "type": "boolean",
+      "default": false,
+      "description": "Date/time accuracy verified"
+    },
+    "signals_lights_functional": {
+      "type": "boolean",
+      "default": false,
+      "description": "Signals and lights functional"
+    },
+    "programming_verified": {
+      "type": "boolean",
+      "default": false,
+      "description": "Programming verified"
+    },
+    "overall_status": {
+      "type": "string",
+      "enum": [
+        "Pass",
+        "Fail",
+        "Conditional"
+      ],
+      "description": "Overall inspection status"
+    },
+    "inspection_notes": {
+      "type": "string",
+      "description": "Inspection notes"
+    },
+    "next_inspection_due": {
+      "type": "string",
+      "format": "date",
+      "description": "Next inspection due date"
+    }
+  },
+  "required": [
+    "bus_number",
+    "inspector_name"
+  ]
+}

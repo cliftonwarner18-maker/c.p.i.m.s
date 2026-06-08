@@ -1,0 +1,91 @@
+{
+  "name": "BusWashOrder",
+  "type": "object",
+  "properties": {
+    "order_number": {
+      "type": "string",
+      "description": "Auto-generated wash order number"
+    },
+    "bus_number": {
+      "type": "string",
+      "description": "Bus number to be washed"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Pending",
+        "In Progress",
+        "Completed"
+      ],
+      "default": "Pending",
+      "description": "Wash order status"
+    },
+    "assigned_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the wash was assigned"
+    },
+    "washers": {
+      "type": "array",
+      "description": "List of technician/washer names assigned to this wash",
+      "items": {
+        "type": "string"
+      }
+    },
+    "start_time": {
+      "type": "string",
+      "description": "Wash start time (ISO 8601 format)"
+    },
+    "end_time": {
+      "type": "string",
+      "description": "Wash end time (ISO 8601 format)"
+    },
+    "elapsed_time_minutes": {
+      "type": "number",
+      "description": "Total elapsed time in minutes"
+    },
+    "checklist": {
+      "type": "object",
+      "description": "Wash task checklist status",
+      "properties": {
+        "washed_exterior": {
+          "type": "boolean",
+          "default": false
+        },
+        "windows": {
+          "type": "boolean",
+          "default": false
+        },
+        "interior_sweep": {
+          "type": "boolean",
+          "default": false
+        },
+        "mop": {
+          "type": "boolean",
+          "default": false
+        },
+        "wipe_clean_seats": {
+          "type": "boolean",
+          "default": false
+        },
+        "clean_inside_windows": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes about the wash"
+    },
+    "completed_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date and time when the wash was completed"
+    }
+  },
+  "required": [
+    "bus_number",
+    "assigned_date"
+  ]
+}

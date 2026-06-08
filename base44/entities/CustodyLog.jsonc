@@ -1,0 +1,41 @@
+{
+  "name": "CustodyLog",
+  "type": "object",
+  "properties": {
+    "hdrive_serial": {
+      "type": "string",
+      "description": "Serial number of the H-Drive"
+    },
+    "transferred_from": {
+      "type": "string",
+      "description": "User who transferred the drive"
+    },
+    "transferred_to": {
+      "type": "string",
+      "description": "User who received the drive"
+    },
+    "previous_location": {
+      "type": "string",
+      "description": "Previous location of the drive"
+    },
+    "new_location": {
+      "type": "string",
+      "description": "New location of the drive"
+    },
+    "reason": {
+      "type": "string",
+      "description": "Reason for the transfer"
+    },
+    "transfer_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date and time of transfer"
+    }
+  },
+  "required": [
+    "hdrive_serial",
+    "transferred_from",
+    "transferred_to",
+    "new_location"
+  ]
+}

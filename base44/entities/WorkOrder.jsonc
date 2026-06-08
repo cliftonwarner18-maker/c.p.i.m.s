@@ -1,0 +1,84 @@
+{
+  "name": "WorkOrder",
+  "type": "object",
+  "properties": {
+    "order_number": {
+      "type": "string",
+      "description": "Auto-generated work order number"
+    },
+    "lot": {
+      "type": "string",
+      "enum": [
+        "Main",
+        "North",
+        "Central"
+      ],
+      "description": "Lot/location where the bus is"
+    },
+    "reported_by": {
+      "type": "string",
+      "description": "Name of person reporting the issue"
+    },
+    "bus_number": {
+      "type": "string",
+      "description": "Bus number reference"
+    },
+    "work_order_type": {
+      "type": "string",
+      "enum": [
+        "Camera Repair",
+        "Radio Repair",
+        "Seat Repair",
+        "Other"
+      ],
+      "default": "Camera Repair",
+      "description": "Type of repair requested"
+    },
+    "issue_description": {
+      "type": "string",
+      "description": "Description of the issue (initial complaint)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Pending",
+        "In Progress",
+        "Completed",
+        "Cancelled"
+      ],
+      "default": "Pending",
+      "description": "Work order status"
+    },
+    "technician_name": {
+      "type": "string",
+      "description": "Name of repair technician"
+    },
+    "repairs_rendered": {
+      "type": "string",
+      "description": "Description of repairs performed"
+    },
+    "repair_start_time": {
+      "type": "string",
+      "description": "Repair start time (24hr ISO)"
+    },
+    "repair_end_time": {
+      "type": "string",
+      "description": "Repair end time (24hr ISO)"
+    },
+    "elapsed_time_minutes": {
+      "type": "number",
+      "description": "Elapsed repair time in minutes"
+    },
+    "completed_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date and time repair was completed"
+    }
+  },
+  "required": [
+    "bus_number",
+    "reported_by",
+    "issue_description",
+    "work_order_type"
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "name": "NonSerializedAsset",
+  "type": "object",
+  "properties": {
+    "part_name": {
+      "type": "string",
+      "description": "Spare Part Name/Description"
+    },
+    "brand": {
+      "type": "string",
+      "description": "Brand/Manufacturer"
+    },
+    "model_number": {
+      "type": "string",
+      "description": "Model Number"
+    },
+    "use": {
+      "type": "string",
+      "description": "Purpose/Use of Part"
+    },
+    "quantity_on_hand": {
+      "type": "number",
+      "default": 0,
+      "description": "Quantity Available"
+    },
+    "low_level_threshold": {
+      "type": "number",
+      "default": 0,
+      "description": "Low stock alert threshold \u2014 alert triggers when quantity is at or below this number"
+    },
+    "current_location": {
+      "type": "string",
+      "description": "Current Inventory Location (user defined)"
+    }
+  },
+  "required": [
+    "part_name",
+    "brand",
+    "model_number"
+  ]
+}
