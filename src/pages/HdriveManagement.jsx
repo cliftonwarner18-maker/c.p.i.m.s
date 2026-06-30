@@ -46,11 +46,13 @@ export default function HdriveManagement() {
   const [tab, setTab] = useState('drives'); // 'drives' | 'seized'
   const [exportLot, setExportLot] = useState('');
   const [exportUser, setExportUser] = useState('');
+  const [exportBus, setExportBus] = useState('');
 
   const getExportDrives = () => {
     let result = drives.filter(d => !d.seized);
     if (exportLot) result = result.filter(d => d.current_lot === exportLot);
     if (exportUser) result = result.filter(d => d.current_user === exportUser);
+    if (exportBus) result = result.filter(d => d.current_sublocation === exportBus);
     return result;
   };
 
@@ -152,7 +154,8 @@ export default function HdriveManagement() {
     const matchSearch = !q || d.serial_number?.toLowerCase().includes(q) || d.make?.toLowerCase().includes(q) || d.model?.toLowerCase().includes(q) || d.current_user?.toLowerCase().includes(q);
     const matchLot = !exportLot || d.current_lot === exportLot;
     const matchUser = !exportUser || d.current_user === exportUser;
-    return matchSearch && matchLot && matchUser;
+    const matchBus = !exportBus || d.current_sublocation === exportBus;
+    return matchSearch && matchLot && matchUser && matchBus;
   });
 
   const displayDrives = tab === 'seized' ? filtered.filter(d => d.seized) : filtered.filter(d => !d.seized);
@@ -195,7 +198,7 @@ export default function HdriveManagement() {
         <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', gap: '10px' }}>
           <div>
             <div style={labelStyle}>FILTER BY LOT</div>
-            <select value={exportLot} onChange={e => setExportLot(e.target.value)} style={{ ...inputStyle, width: '150px' }}>
+            <select value={exportLot} onChange={e => { setExportLot(e.target.value); setExportBus(''); }} style={{ ...inputStyle, width: '150px' }}>
               <option value="">All Lots</option>
               {LOTS.map(l => <option key={l} value={l}>{l}</option>)}
             </select>
@@ -207,8 +210,17 @@ export default function HdriveManagement() {
               {activeUsers.map(u => <option key={u.id} value={u.name}>{u.name}</option>)}
             </select>
           </div>
-          {(exportLot || exportUser) && (
-            <button onClick={() => { setExportLot(''); setExportUser(''); }} style={{ padding: '5px 10px', background: 'hsl(220,18%,88%)', border: '1px solid hsl(220,18%,70%)', borderRadius: '2px', fontSize: '10px', fontFamily: FF, cursor: 'pointer', color: 'hsl(220,20%,30%)' }}>
+          {exportLot === 'On a Bus' && (
+            <div>
+              <div style={labelStyle}>FILTER BY BUS #</div>
+              <select value={exportBus} onChange={e => setExportBus(e.target.value)} style={{ ...inputStyle, width: '160px' }}>
+                <option value="">All Buses</option>
+                {activeBuses.map(b => <option key={b.id} value={`Bus #${b.bus_number}`}>Bus #{b.bus_number}</option>)}
+              </select>
+            </div>
+          )}
+          {(exportLot || exportUser || exportBus) && (
+            <button onClick={() => { setExportLot(''); setExportUser(''); setExportBus(''); }} style={{ padding: '5px 10px', background: 'hsl(220,18%,88%)', border: '1px solid hsl(220,18%,70%)', borderRadius: '2px', fontSize: '10px', fontFamily: FF, cursor: 'pointer', color: 'hsl(220,20%,30%)' }}>
               CLEAR FILTERS
             </button>
           )}
