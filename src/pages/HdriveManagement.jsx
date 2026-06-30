@@ -67,6 +67,12 @@ export default function HdriveManagement() {
     queryFn: () => base44.entities.HDrive.list('serial_number'),
   });
 
+  const { data: buses = [] } = useQuery({
+    queryKey: ['buses'],
+    queryFn: () => base44.entities.Bus.list('bus_number'),
+  });
+  const activeBuses = buses.filter(b => b.status !== 'Retired').sort((a, b) => a.bus_number?.localeCompare(b.bus_number, undefined, { numeric: true }));
+
   const { data: systemUsers = [] } = useQuery({
     queryKey: ['systemUsers'],
     queryFn: () => base44.entities.SystemUser.list('name'),
@@ -143,7 +149,10 @@ export default function HdriveManagement() {
 
   const filtered = drives.filter(d => {
     const q = search.toLowerCase();
-    return !q || d.serial_number?.toLowerCase().includes(q) || d.make?.toLowerCase().includes(q) || d.model?.toLowerCase().includes(q) || d.current_user?.toLowerCase().includes(q);
+    const matchSearch = !q || d.serial_number?.toLowerCase().includes(q) || d.make?.toLowerCase().includes(q) || d.model?.toLowerCase().includes(q) || d.current_user?.toLowerCase().includes(q);
+    const matchLot = !exportLot || d.current_lot === exportLot;
+    const matchUser = !exportUser || d.current_user === exportUser;
+    return matchSearch && matchLot && matchUser;
   });
 
   const displayDrives = tab === 'seized' ? filtered.filter(d => d.seized) : filtered.filter(d => !d.seized);
@@ -180,30 +189,38 @@ export default function HdriveManagement() {
         ))}
       </div>
 
-      {/* Export Panel */}
-      <div style={{ background: 'white', border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', padding: '10px 14px', display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', gap: '10px' }}>
-        <div style={{ fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,35%)', letterSpacing: '0.06em', alignSelf: 'center', marginRight: '4px' }}>PDF EXPORT:</div>
-        <div>
-          <div style={labelStyle}>FILTER BY LOT</div>
-          <select value={exportLot} onChange={e => setExportLot(e.target.value)} style={{ ...inputStyle, width: '130px' }}>
-            <option value="">All Lots</option>
-            <option value="Main">Main</option>
-            <option value="North">North</option>
-          </select>
+      {/* Filter + Export Panel */}
+      <div style={{ background: 'white', border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', padding: '10px 14px' }}>
+        <div style={{ fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,35%)', letterSpacing: '0.06em', marginBottom: '8px' }}>FILTERS — apply to both table preview and PDF exports:</div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', gap: '10px' }}>
+          <div>
+            <div style={labelStyle}>FILTER BY LOT</div>
+            <select value={exportLot} onChange={e => setExportLot(e.target.value)} style={{ ...inputStyle, width: '150px' }}>
+              <option value="">All Lots</option>
+              {LOTS.map(l => <option key={l} value={l}>{l}</option>)}
+            </select>
+          </div>
+          <div>
+            <div style={labelStyle}>FILTER BY USER</div>
+            <select value={exportUser} onChange={e => setExportUser(e.target.value)} style={{ ...inputStyle, width: '180px' }}>
+              <option value="">All Users</option>
+              {activeUsers.map(u => <option key={u.id} value={u.name}>{u.name}</option>)}
+            </select>
+          </div>
+          {(exportLot || exportUser) && (
+            <button onClick={() => { setExportLot(''); setExportUser(''); }} style={{ padding: '5px 10px', background: 'hsl(220,18%,88%)', border: '1px solid hsl(220,18%,70%)', borderRadius: '2px', fontSize: '10px', fontFamily: FF, cursor: 'pointer', color: 'hsl(220,20%,30%)' }}>
+              CLEAR FILTERS
+            </button>
+          )}
+          <div style={{ borderLeft: '1px solid hsl(220,18%,80%)', paddingLeft: '10px', display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+            <Btn onClick={exportAuditPDF} style={{ background: 'hsl(220,55%,38%)' }}>
+              <FileText style={{ width: 12, height: 12 }} /> AUDIT SHEET (PDF)
+            </Btn>
+            <Btn onClick={exportInventoryPDF} style={{ background: 'hsl(200,60%,38%)' }}>
+              <FileText style={{ width: 12, height: 12 }} /> SIMPLE INVENTORY (PDF)
+            </Btn>
+          </div>
         </div>
-        <div>
-          <div style={labelStyle}>FILTER BY USER</div>
-          <select value={exportUser} onChange={e => setExportUser(e.target.value)} style={{ ...inputStyle, width: '160px' }}>
-            <option value="">All Users</option>
-            {activeUsers.map(u => <option key={u.id} value={u.name}>{u.name}</option>)}
-          </select>
-        </div>
-        <Btn onClick={exportAuditPDF} style={{ background: 'hsl(220,55%,38%)' }}>
-          <FileText style={{ width: 12, height: 12 }} /> AUDIT SHEET (PDF)
-        </Btn>
-        <Btn onClick={exportInventoryPDF} style={{ background: 'hsl(200,60%,38%)' }}>
-          <FileText style={{ width: 12, height: 12 }} /> SIMPLE INVENTORY (PDF)
-        </Btn>
       </div>
 
       {/* Add/Edit Form */}
@@ -231,10 +248,20 @@ export default function HdriveManagement() {
                   {LOTS.map(l => <option key={l} value={l}>{l}</option>)}
                 </select>
               </div>
-              <div style={fieldStyle}>
-                <label style={labelStyle}>SUB LOCATION (PINPOINTED)</label>
-                <input value={form.current_sublocation || ''} onChange={e => setForm({ ...form, current_sublocation: e.target.value })} style={inputStyle} placeholder="e.g. Officer drawer left side locked" />
-              </div>
+              {form.current_lot === 'On a Bus' ? (
+                <div style={fieldStyle}>
+                  <label style={labelStyle}>BUS NUMBER</label>
+                  <select value={form.current_sublocation || ''} onChange={e => setForm({ ...form, current_sublocation: e.target.value })} style={inputStyle}>
+                    <option value="">— Select Bus —</option>
+                    {activeBuses.map(b => <option key={b.id} value={`Bus #${b.bus_number}`}>Bus #{b.bus_number}{b.make ? ` — ${b.make}` : ''}</option>)}
+                  </select>
+                </div>
+              ) : (
+                <div style={fieldStyle}>
+                  <label style={labelStyle}>SUB LOCATION (PINPOINTED)</label>
+                  <input value={form.current_sublocation || ''} onChange={e => setForm({ ...form, current_sublocation: e.target.value })} style={inputStyle} placeholder="e.g. Officer drawer left side locked" />
+                </div>
+              )}
             </div>
 
             {/* Seizure */}
@@ -297,10 +324,20 @@ export default function HdriveManagement() {
                   {LOTS.map(l => <option key={l} value={l}>{l}</option>)}
                 </select>
               </div>
-              <div style={fieldStyle}>
-                <label style={labelStyle}>NEW SUB LOCATION *</label>
-                <input required value={custodyForm.new_sublocation || ''} onChange={e => setCustodyForm({ ...custodyForm, new_sublocation: e.target.value })} style={inputStyle} placeholder="e.g. Officer drawer left side locked" />
-              </div>
+              {custodyForm.new_lot === 'On a Bus' ? (
+                <div style={fieldStyle}>
+                  <label style={labelStyle}>BUS NUMBER *</label>
+                  <select required value={custodyForm.new_sublocation || ''} onChange={e => setCustodyForm({ ...custodyForm, new_sublocation: e.target.value })} style={inputStyle}>
+                    <option value="">— Select Bus —</option>
+                    {activeBuses.map(b => <option key={b.id} value={`Bus #${b.bus_number}`}>Bus #{b.bus_number}{b.make ? ` — ${b.make}` : ''}</option>)}
+                  </select>
+                </div>
+              ) : (
+                <div style={fieldStyle}>
+                  <label style={labelStyle}>NEW SUB LOCATION *</label>
+                  <input required value={custodyForm.new_sublocation || ''} onChange={e => setCustodyForm({ ...custodyForm, new_sublocation: e.target.value })} style={inputStyle} placeholder="e.g. Officer drawer left side locked" />
+                </div>
+              )}
             </div>
             <div><label style={labelStyle}>REASON FOR TRANSFER</label><textarea value={custodyForm.reason} onChange={e => setCustodyForm({ ...custodyForm, reason: e.target.value })} rows={3} style={{ ...inputStyle, resize: 'vertical', marginBottom: '10px' }} /></div>
             <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end', paddingTop: '10px', borderTop: '1px solid hsl(220,18%,85%)' }}>
@@ -421,7 +458,7 @@ export default function HdriveManagement() {
       )}
 
       <div style={{ fontSize: '10px', color: 'hsl(220,10%,55%)', fontFamily: FF, paddingBottom: '4px' }}>
-        SHOWING {displayDrives.length} OF {drives.length} DRIVES
+        SHOWING {displayDrives.length} OF {drives.length} DRIVES{(exportLot || exportUser) ? ` (FILTERED)` : ''}
       </div>
     </div>
   );
