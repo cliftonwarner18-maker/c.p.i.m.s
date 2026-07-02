@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import DeleteConfirmModal from '../DeleteConfirmModal';
+import FormModal from '../FormModal';
 import { Plus, Edit2, Trash2, FileDown, AlertTriangle } from 'lucide-react';
 import { exportNonSerializedPDF } from '../../utils/exports/exportNonSerializedLocal';
 
@@ -53,8 +54,8 @@ export default function NonSerializedAssetsSection() {
           <button onClick={handleExportPDF} style={{ ...btnBase, background: 'hsl(140,55%,38%)', color: 'white', borderColor: 'hsl(140,55%,30%)' }}><FileDown style={{ width: 12, height: 12 }} /> Export PDF</button>
         </div>
 
-        {showForm && (
-          <div style={{ background: 'hsl(220,18%,96%)', border: '1px solid hsl(220,18%,80%)', borderRadius: '2px', padding: '12px' }}>
+        <FormModal open={showForm} onClose={resetForm} maxWidth="480px">
+          <div style={{ background: 'white', borderRadius: '2px' }}>
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {[['Part Name', 'part_name'], ['Brand', 'brand'], ['Model #', 'model_number'], ['Use/Purpose', 'use']].map(([label, field]) => (
                 <div key={field}>
@@ -82,7 +83,7 @@ export default function NonSerializedAssetsSection() {
               </div>
             </form>
           </div>
-        )}
+        </FormModal>
 
         {/* Low stock banner */}
         {assets.some(a => a.low_level_threshold > 0 && (a.quantity_on_hand || 0) <= a.low_level_threshold) && (

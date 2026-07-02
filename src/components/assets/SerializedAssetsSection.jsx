@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import DeleteConfirmModal from '../DeleteConfirmModal';
+import FormModal from '../FormModal';
 import { Plus, Edit2, Trash2, FileDown } from 'lucide-react';
 import { exportSerializedPDF } from '../../utils/exports/exportSerializedLocal';
 
@@ -77,8 +78,8 @@ export default function SerializedAssetsSection() {
         </div>
 
         {/* Form */}
-        {showForm && (
-          <div style={{ background: 'hsl(220,18%,96%)', border: '1px solid hsl(220,18%,80%)', borderRadius: '2px', padding: '12px' }}>
+        <FormModal open={showForm} onClose={resetForm} maxWidth="480px">
+          <div style={{ background: 'white', borderRadius: '2px' }}>
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {[['Asset #', 'asset_number'], ['Brand', 'brand'], ['Model', 'model'], ['Serial #', 'serial_number']].map(([label, field]) => (
                 <div key={field}>
@@ -115,7 +116,7 @@ export default function SerializedAssetsSection() {
               </div>
             </form>
           </div>
-        )}
+        </FormModal>
 
         <div style={{ fontSize: '10px', color: 'hsl(220,10%,50%)' }}>Showing {filteredAssets.length} of {assets.length} assets</div>
 

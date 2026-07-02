@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import DeleteConfirmModal from '../DeleteConfirmModal';
+import FormModal from '../FormModal';
 import { Plus, Edit2, Trash2, FileDown } from 'lucide-react';
 import { exportDecommissionedPDF } from '../../utils/exports/exportDecommissioned';
 
@@ -97,8 +98,8 @@ export default function DecommissionedAssetsSection() {
           <button onClick={handleExportPDF} style={{ ...btnBase, background: 'hsl(140,55%,38%)', color: 'white', borderColor: 'hsl(140,55%,30%)' }}><FileDown style={{ width: 12, height: 12 }} /> Export PDF</button>
         </div>
 
-        {showForm && (
-          <div style={{ background: 'hsl(220,18%,96%)', border: '1px solid hsl(220,18%,80%)', borderRadius: '2px', padding: '12px', maxHeight: 480, overflowY: 'auto' }}>
+        <FormModal open={showForm} onClose={resetForm} maxWidth="520px">
+          <div style={{ background: 'white', borderRadius: '2px' }}>
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               <div>
                 <label style={labelStyle}>Out of Service Date:</label>
@@ -145,7 +146,7 @@ export default function DecommissionedAssetsSection() {
               </div>
             </form>
           </div>
-        )}
+        </FormModal>
 
         {bulkModifyMode && selectedIds.size > 0 && (
           <div style={{ background: 'hsl(200,80%,92%)', border: '1px solid hsl(200,80%,70%)', borderRadius: '2px', padding: '10px', marginBottom: '8px', display: 'flex', flexDirection: 'column', gap: '8px' }}>

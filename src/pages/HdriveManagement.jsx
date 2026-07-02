@@ -5,6 +5,7 @@ import { HardDrive, Plus, Search, Edit2, Trash2, ArrowRightLeft, FileText } from
 import moment from 'moment';
 import { exportHDriveAuditHTML } from '../utils/exports/exportHDrive';
 import DeleteConfirmModal from '../components/DeleteConfirmModal';
+import FormModal from '../components/FormModal';
 
 const FF = "'Courier Prime', monospace";
 const inputStyle = { padding: '5px 8px', fontSize: '11px', fontFamily: FF, border: '1px solid hsl(220,18%,70%)', borderRadius: '2px', background: 'white', outline: 'none', width: '100%', boxSizing: 'border-box' };
@@ -236,8 +237,8 @@ export default function HdriveManagement() {
       </div>
 
       {/* Add/Edit Form */}
-      {showForm && (
-        <div style={{ background: 'white', border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', padding: '14px' }}>
+      <FormModal open={showForm} onClose={() => { setShowForm(false); setEditDrive(null); }}>
+        <div style={{ background: 'white', borderRadius: '2px' }}>
           <SectionHeader title={editDrive ? `EDIT DRIVE — ${editDrive.serial_number}` : 'ADD NEW H-DRIVE'} />
           <form onSubmit={handleSubmit}>
             <div style={rowStyle}>
@@ -304,11 +305,12 @@ export default function HdriveManagement() {
             </div>
           </form>
         </div>
-      )}
+      </FormModal>
 
       {/* Custody Transfer Form */}
-      {showCustody && custodyDrive && (
-        <div style={{ background: 'white', border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', padding: '14px' }}>
+      <FormModal open={showCustody && !!custodyDrive} onClose={() => { setShowCustody(false); setCustodyDrive(null); }}>
+        {custodyDrive && (
+        <div style={{ background: 'white', borderRadius: '2px' }}>
           <SectionHeader title={`CUSTODY TRANSFER — ${custodyDrive.serial_number}`} />
           <form onSubmit={handleCustodySubmit}>
             <div style={rowStyle}>
@@ -358,7 +360,8 @@ export default function HdriveManagement() {
             </div>
           </form>
         </div>
-      )}
+        )}
+      </FormModal>
 
       {/* Delete confirm modal */}
       {deleteTarget && (

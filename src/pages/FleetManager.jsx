@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import LoadingScreen from '../components/LoadingScreen';
 import { exportFleetPDF, exportFleetMakeSummaryPDF } from '../utils/exports/exportFleet';
 import BusForm from '../components/fleet/BusForm';
+import FormModal from '../components/FormModal';
 import FleetTable from '../components/fleet/FleetTable.jsx';
 import DeleteConfirmModal from '../components/DeleteConfirmModal';
 import { Plus, FileDown, Search, Bus, MapPin, Filter, AlertTriangle } from 'lucide-react';
@@ -104,13 +105,13 @@ export default function FleetManager() {
         />
       )}
 
-      {showForm && (
+      <FormModal open={showForm} onClose={() => { setShowForm(false); setEditingBus(null); }}>
         <BusForm
           bus={editingBus}
           onClose={() => { setShowForm(false); setEditingBus(null); }}
           onSaved={() => { setShowForm(false); setEditingBus(null); queryClient.invalidateQueries({ queryKey: ['buses'] }); }}
         />
-      )}
+      </FormModal>
 
       {/* Header Bar */}
       <div style={{ background: 'linear-gradient(to right, hsl(220,50%,30%), hsl(220,45%,40%))', color: 'white', padding: '10px 14px', borderRadius: '2px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
