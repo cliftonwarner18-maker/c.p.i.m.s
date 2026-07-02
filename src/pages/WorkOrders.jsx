@@ -3,8 +3,9 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import LoadingScreen from '../components/LoadingScreen';
 import DeleteConfirmModal from '../components/DeleteConfirmModal';
-import { Link } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
+import FormModal from '../components/FormModal';
+import NewWorkOrderForm from '../components/workorders/NewWorkOrderForm';
+import WorkOrderDetailForm from '../components/workorders/WorkOrderDetailForm';
 import { FileText, Plus, Search, Eye, Trash2, Filter, FileDown } from 'lucide-react';
 import moment from 'moment';
 import { exportWorkOrdersPDF } from '../utils/exports/exportWorkOrders';
@@ -23,6 +24,8 @@ export default function WorkOrders() {
   const [statusFilter, setStatusFilter] = useState('All');
   const [typeFilter, setTypeFilter] = useState('All');
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [showNewForm, setShowNewForm] = useState(false);
+  const [viewingId, setViewingId] = useState(null);
   const queryClient = useQueryClient();
 
   const { data: workOrders = [], isLoading } = useQuery({
@@ -82,6 +85,17 @@ export default function WorkOrders() {
         />
       )}
 
+      <FormModal open={showNewForm} onClose={() => setShowNewForm(false)}>
+        <NewWorkOrderForm
+          onClose={() => setShowNewForm(false)}
+          onCreated={(id) => { setShowNewForm(false); setViewingId(id); }}
+        />
+      </FormModal>
+
+      <FormModal open={!!viewingId} onClose={() => setViewingId(null)} maxWidth="900px">
+        {viewingId && <WorkOrderDetailForm id={viewingId} onClose={() => setViewingId(null)} />}
+      </FormModal>
+
       {/* Header */}
       <div style={{ background: 'linear-gradient(to right, hsl(220,50%,30%), hsl(220,45%,40%))', color: 'white', padding: '10px 14px', borderRadius: '2px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -91,12 +105,12 @@ export default function WorkOrders() {
             <div style={{ fontSize: '10px', opacity: 0.8, letterSpacing: '0.05em' }}>REPAIR LOG — {workOrders.length} TOTAL RECORDS</div>
           </div>
         </div>
-        <Link
-          to={createPageUrl('NewWorkOrder')}
-          style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '6px 12px', background: 'hsl(140,55%,38%)', color: 'white', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '2px', fontSize: '11px', fontFamily: FF, fontWeight: '600', cursor: 'pointer', letterSpacing: '0.05em', textDecoration: 'none' }}
+        <button
+          onClick={() => setShowNewForm(true)}
+          style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '6px 12px', background: 'hsl(140,55%,38%)', color: 'white', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '2px', fontSize: '11px', fontFamily: FF, fontWeight: '600', cursor: 'pointer', letterSpacing: '0.05em' }}
         >
           <Plus style={{ width: 13, height: 13 }} /> NEW WORK ORDER
-        </Link>
+        </button>
       </div>
 
       {/* Stats */}
@@ -178,9 +192,9 @@ export default function WorkOrders() {
                     <td style={{ padding: '5px 8px', whiteSpace: 'nowrap' }}>{elapsed}</td>
                     <td style={{ padding: '5px 8px' }}>
                       <div style={{ display: 'flex', gap: '3px' }}>
-                        <Link to={`/WorkOrderDetail?id=${wo.id}`} style={{ ...btnBase, textDecoration: 'none' }} title="View">
+                        <button style={btnBase} onClick={() => setViewingId(wo.id)} title="View">
                           <Eye style={{ width: 12, height: 12 }} />
-                        </Link>
+                        </button>
                         <button style={btnBase} onClick={() => setDeleteTarget(wo)} title="Delete">
                           <Trash2 style={{ width: 12, height: 12 }} />
                         </button>

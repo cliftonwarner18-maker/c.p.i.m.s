@@ -1,0 +1,148 @@
+import React, { useState } from 'react';
+import { base44 } from '@/api/base44Client';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { PlusCircle } from 'lucide-react';
+import moment from 'moment';
+
+const FF = "'Courier Prime', monospace";
+const inputStyle = { padding: '5px 8px', fontSize: '11px', fontFamily: FF, border: '1px solid hsl(220,18%,70%)', borderRadius: '2px', background: 'white', outline: 'none', width: '100%', boxSizing: 'border-box' };
+const labelStyle = { fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,35%)', letterSpacing: '0.06em', marginBottom: '3px', display: 'block' };
+const rowStyle = { display: 'flex', gap: '12px', flexWrap: 'wrap', marginBottom: '10px' };
+const fieldStyle = { flex: '1', minWidth: '180px' };
+
+function SectionHeader({ title }) {
+  return (
+    <div style={{ background: 'hsl(220,18%,94%)', border: '1px solid hsl(220,18%,78%)', borderLeft: '3px solid hsl(220,55%,40%)', padding: '6px 10px', fontSize: '10px', fontWeight: '700', letterSpacing: '0.08em', color: 'hsl(220,20%,25%)', marginBottom: '10px', marginTop: '6px', borderRadius: '2px' }}>
+      {title}
+    </div>
+  );
+}
+
+export default function NewWorkOrderForm({ onClose, onCreated }) {
+  const queryClient = useQueryClient();
+  const now = moment().format('MM/DD/YYYY HH:mm');
+
+  const { data: existingOrders = [] } = useQuery({
+    queryKey: ['workOrders'],
+    queryFn: () => base44.entities.WorkOrder.list('-created_date'),
+  });
+
+  const { data: buses = [] } = useQuery({
+    queryKey: ['buses'],
+    queryFn: () => base44.entities.Bus.list('bus_number'),
+  });
+
+  const { data: systemUsers = [] } = useQuery({
+    queryKey: ['systemUsers'],
+    queryFn: () => base44.entities.SystemUser.list('name'),
+  });
+
+  const nextOrderNum = (() => {
+    const nums = existingOrders
+      .map(w => parseInt(w.order_number?.replace(/\D/g, ''), 10))
+      .filter(n => !isNaN(n));
+    const max = nums.length > 0 ? Math.max(...nums) : 1000;
+    return `WO-${String(max + 1).padStart(4, '0')}`;
+  })();
+
+  const activeUsers = systemUsers.filter(u => u.active !== false);
+
+  const [form, setForm] = useState({
+    lot: 'Main',
+    reported_by: '',
+    bus_number: '',
+    work_order_type: 'Camera Repair',
+    issue_description: '',
+  });
+
+  const createMutation = useMutation({
+    mutationFn: (data) => base44.entities.WorkOrder.create({
+      ...data,
+      order_number: nextOrderNum,
+      status: 'Pending',
+    }),
+    onSuccess: (newWo) => {
+      queryClient.invalidateQueries({ queryKey: ['workOrders'] });
+      onCreated?.(newWo.id);
+    },
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    createMutation.mutate(form);
+  };
+
+  return (
+    <div style={{ fontFamily: FF }}>
+      <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '2px', padding: '8px 12px', fontSize: '11px', color: '#1e40af', fontFamily: FF, marginBottom: '10px' }}>
+        <strong>ORDER #: {nextOrderNum}</strong> &nbsp;|&nbsp; DATE/TIME: {now}<br />
+        Fill out the initial complaint below and save. The technician will complete repairs in the next step.
+      </div>
+
+      <form onSubmit={handleSubmit}>
+        <SectionHeader title="REPORTING INFORMATION" />
+        <div style={rowStyle}>
+          <div style={fieldStyle}>
+            <label style={labelStyle}>LOT *</label>
+            <select value={form.lot} onChange={e => setForm({ ...form, lot: e.target.value })} required style={inputStyle}>
+              <option value="">— Select Lot —</option>
+              {['Main', 'North', 'Central'].map(l => <option key={l} value={l}>{l}</option>)}
+            </select>
+          </div>
+          <div style={fieldStyle}>
+            <label style={labelStyle}>REPORTED BY *</label>
+            <select value={form.reported_by} onChange={e => setForm({ ...form, reported_by: e.target.value })} required style={inputStyle}>
+              <option value="">— Select User —</option>
+              {activeUsers.map(u => <option key={u.id} value={u.name}>{u.name}{u.role ? ` — ${u.role}` : ''}</option>)}
+            </select>
+          </div>
+          <div style={fieldStyle}>
+            <label style={labelStyle}>BUS NUMBER *</label>
+            <select value={form.bus_number} onChange={e => setForm({ ...form, bus_number: e.target.value })} required style={inputStyle}>
+              <option value="">— Select Bus —</option>
+              {buses.filter(b => b.status !== 'Retired').map(b => (
+                <option key={b.id} value={b.bus_number}>
+                  {b.bus_number}{b.make ? ` — ${b.year || ''} ${b.make} ${b.model || ''}`.trim() : ''}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <SectionHeader title="REPAIR TYPE & COMPLAINT" />
+        <div style={rowStyle}>
+          <div style={fieldStyle}>
+            <label style={labelStyle}>REPAIR TYPE *</label>
+            <select value={form.work_order_type} onChange={e => setForm({ ...form, work_order_type: e.target.value })} required style={inputStyle}>
+              <option value="Camera Repair">Camera Repair</option>
+              <option value="Radio Repair">Radio Repair</option>
+              <option value="Seat Repair">Seat Repair</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div style={{ marginBottom: '10px' }}>
+          <label style={labelStyle}>DESCRIBE ISSUES WITH SYSTEM *</label>
+          <textarea
+            value={form.issue_description}
+            onChange={e => setForm({ ...form, issue_description: e.target.value })}
+            placeholder="Describe the issue(s) in detail..."
+            rows={6}
+            required
+            style={{ ...inputStyle, resize: 'vertical', lineHeight: '1.5' }}
+          />
+        </div>
+
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '16px', paddingTop: '12px', borderTop: '1px solid hsl(220,18%,85%)' }}>
+          <button type="button" onClick={onClose} style={{ padding: '8px 16px', background: 'hsl(220,18%,88%)', color: 'hsl(220,20%,20%)', border: '1px solid hsl(220,18%,70%)', borderRadius: '2px', fontSize: '11px', fontFamily: FF, fontWeight: '600', cursor: 'pointer' }}>
+            CANCEL
+          </button>
+          <button type="submit" disabled={createMutation.isPending} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 20px', background: 'hsl(140,55%,38%)', color: 'white', border: 'none', borderRadius: '2px', fontSize: '12px', fontFamily: FF, fontWeight: '700', cursor: createMutation.isPending ? 'default' : 'pointer', letterSpacing: '0.05em' }}>
+            <PlusCircle style={{ width: 13, height: 13 }} /> {createMutation.isPending ? 'SAVING...' : 'SAVE COMPLAINT & OPEN WORK ORDER'}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}
