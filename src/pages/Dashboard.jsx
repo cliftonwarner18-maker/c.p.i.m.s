@@ -6,8 +6,9 @@ import DashboardStats from '../components/dashboard/DashboardStats';
 import FormModal from '../components/FormModal';
 import NewWorkOrderForm from '../components/workorders/NewWorkOrderForm';
 import WorkOrderDetailForm from '../components/workorders/WorkOrderDetailForm';
+import LabHoursForm from '../components/dashboard/LabHoursForm';
 import { useNavigate } from 'react-router-dom';
-import { PlusCircle } from 'lucide-react';
+import { PlusCircle, Clock } from 'lucide-react';
 import moment from 'moment';
 
 const FF = "'Courier Prime', monospace";
@@ -15,6 +16,7 @@ const FF = "'Courier Prime', monospace";
 export default function Dashboard() {
   const navigate = useNavigate();
   const [showNewWorkOrder, setShowNewWorkOrder] = useState(false);
+  const [showLabHours, setShowLabHours] = useState(false);
   const [viewingId, setViewingId] = useState(null);
 
   const { data: buses = [], isLoading: busesLoading } = useQuery({ queryKey: ['buses'], queryFn: () => base44.entities.Bus.list('-created_date'), retry: 2 });
@@ -53,6 +55,9 @@ export default function Dashboard() {
         <button onClick={() => setShowNewWorkOrder(true)} style={{ ...btnStyle('hsl(140,55%,38%)', 'hsl(140,55%,30%)'), color: 'white' }}>
           <PlusCircle style={{ width: 13, height: 13 }} /> NEW WORK ORDER
         </button>
+        <button onClick={() => setShowLabHours(true)} style={{ ...btnStyle('hsl(280,40%,35%)', 'hsl(280,40%,28%)'), color: 'white' }}>
+          <Clock style={{ width: 13, height: 13 }} /> LAB / FIELD HOURS
+        </button>
       </div>
 
       <FormModal open={showNewWorkOrder} onClose={() => setShowNewWorkOrder(false)}>
@@ -64,6 +69,10 @@ export default function Dashboard() {
 
       <FormModal open={!!viewingId} onClose={() => setViewingId(null)} maxWidth="900px">
         {viewingId && <WorkOrderDetailForm id={viewingId} onClose={() => setViewingId(null)} />}
+      </FormModal>
+
+      <FormModal open={showLabHours} onClose={() => setShowLabHours(false)}>
+        <LabHoursForm onClose={() => setShowLabHours(false)} />
       </FormModal>
 
       {/* Footer */}
