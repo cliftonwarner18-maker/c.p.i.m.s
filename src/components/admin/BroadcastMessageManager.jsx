@@ -47,7 +47,15 @@ export default function BroadcastMessageManager() {
           <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '2px', padding: '10px', fontSize: '11px' }}>
             <div style={{ fontWeight: '700', color: '#92400e', marginBottom: 4 }}>CURRENT ACTIVE BROADCAST — sent {moment(current.created_date).format('MM/DD/YYYY HH:mm')}</div>
             <div style={{ whiteSpace: 'pre-wrap', marginBottom: 8 }}>{current.message}</div>
-            <div style={{ fontSize: '10px', color: 'hsl(220,10%,45%)', marginBottom: 8 }}>ACKNOWLEDGED BY {current.acknowledged_by?.length || 0} USER(S)</div>
+            <div style={{ fontSize: '10px', fontWeight: '700', color: 'hsl(220,10%,45%)', marginBottom: 4 }}>ACKNOWLEDGED BY {current.acknowledged_by?.length || 0} USER(S):</div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginBottom: 8 }}>
+              {(current.acknowledged_by || []).length === 0 && (
+                <span style={{ fontSize: '10px', color: 'hsl(220,10%,55%)', fontStyle: 'italic' }}>No one has acknowledged yet.</span>
+              )}
+              {(current.acknowledged_by || []).map(email => (
+                <span key={email} style={{ fontSize: '10px', padding: '2px 7px', background: '#f0fdf4', color: '#166534', border: '1px solid #bbf7d0', borderRadius: '2px' }}>{email}</span>
+              ))}
+            </div>
             <button onClick={() => clearMutation.mutate(current.id)} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 10px', background: '#fef2f2', color: '#991b1b', border: '1px solid #fecaca', borderRadius: '2px', fontSize: '10px', fontFamily: FF, fontWeight: '700', cursor: 'pointer' }}>
               <XCircle style={{ width: 12, height: 12 }} /> DEACTIVATE
             </button>

@@ -15,10 +15,11 @@ export default function BroadcastAcknowledge() {
         const user = await base44.auth.me();
         const messages = await base44.entities.BroadcastMessage.filter({ is_active: true }, '-created_date', 1);
         const msg = messages[0];
-        if (msg && user?.email && !(msg.acknowledged_by || []).includes(user.email)) {
-          setBroadcast(msg);
-          setUserEmail(user.email);
-        }
+        if (!msg || !user?.email) return;
+        const ackedLocally = localStorage.getItem(`broadcast_ack_${msg.id}`) === user.email;
+        if (ackedLocally || (msg.acknowledged_by || []).includes(user.email)) return;
+        setBroadcast(msg);
+        setUserEmail(user.email);
       } catch (e) {
         // not logged in or no access — ignore
       }
@@ -30,6 +31,7 @@ export default function BroadcastAcknowledge() {
     setAcking(true);
     const updated = Array.from(new Set([...(broadcast.acknowledged_by || []), userEmail]));
     await base44.entities.BroadcastMessage.update(broadcast.id, { acknowledged_by: updated });
+    localStorage.setItem(`broadcast_ack_${broadcast.id}`, userEmail);
     setBroadcast(null);
   };
 
