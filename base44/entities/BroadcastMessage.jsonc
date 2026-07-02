@@ -1,0 +1,25 @@
+{
+  "name": "BroadcastMessage",
+  "type": "object",
+  "properties": {
+    "message": {
+      "type": "string",
+      "description": "Broadcast message text shown to users on login"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether this broadcast is currently active and shown to users"
+    },
+    "acknowledged_by": {
+      "type": "array",
+      "description": "List of user emails who have acknowledged this message",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "message"
+  ]
+}

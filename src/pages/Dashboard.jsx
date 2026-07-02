@@ -3,13 +3,11 @@ import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import LoadingScreen from '../components/LoadingScreen';
 import DashboardStats from '../components/dashboard/DashboardStats';
-import ActiveWorkOrders from '../components/dashboard/ActiveWorkOrders';
 import FormModal from '../components/FormModal';
 import NewWorkOrderForm from '../components/workorders/NewWorkOrderForm';
 import WorkOrderDetailForm from '../components/workorders/WorkOrderDetailForm';
-import { Link, useNavigate } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
-import { AlertTriangle, PlusCircle, Bus, ClipboardCheck, FileDown } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { AlertTriangle, PlusCircle, FileDown } from 'lucide-react';
 import moment from 'moment';
 import { exportOverdueInspectionsPDF } from '../utils/exports/exportOverdueInspections';
 
@@ -36,7 +34,6 @@ export default function Dashboard() {
   const { data: inspections = [], isLoading: inspLoading } = useQuery({ queryKey: ['inspections'], queryFn: () => base44.entities.Inspection.list('-created_date'), retry: 2 });
 
   const isLoading = busesLoading || woLoading || inspLoading;
-  const recentCompleted = workOrders.filter((w) => w.status === 'Completed').slice(0, 5);
   const overdueInspections = buses.filter((b) => b.next_inspection_due && new Date(b.next_inspection_due) < new Date());
 
   const handleExportOverduePDF = () => {
@@ -70,15 +67,9 @@ export default function Dashboard() {
 
       {/* Quick Actions */}
       <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-        
-
-        
-        <Link to={createPageUrl('FleetManager')} style={{ ...btnStyle('hsl(220,18%,88%)', 'hsl(220,18%,70%)'), color: 'hsl(220,20%,20%)' }}>
-          <Bus style={{ width: 13, height: 13 }} /> MANAGE FLEET
-        </Link>
-        <Link to={createPageUrl('Inspections')} style={{ ...btnStyle('hsl(220,18%,88%)', 'hsl(220,18%,70%)'), color: 'hsl(220,20%,20%)' }}>
-          <ClipboardCheck style={{ width: 13, height: 13 }} /> INSPECTIONS
-        </Link>
+        <button onClick={() => setShowNewWorkOrder(true)} style={{ ...btnStyle('hsl(140,55%,38%)', 'hsl(140,55%,30%)'), color: 'white' }}>
+          <PlusCircle style={{ width: 13, height: 13 }} /> NEW WORK ORDER
+        </button>
       </div>
 
       <FormModal open={showNewWorkOrder} onClose={() => setShowNewWorkOrder(false)}>
@@ -92,9 +83,6 @@ export default function Dashboard() {
         {viewingId && <WorkOrderDetailForm id={viewingId} onClose={() => setViewingId(null)} />}
       </FormModal>
 
-      {/* Active Work Orders with Type Filter */}
-      <ActiveWorkOrders workOrders={workOrders} />
-      
       {/* Wash Bay Section */}
       <Section title="🚐 SUMMER WASH BAY HOURS">
         <div style={{ fontSize: '11px', color: 'hsl(220,10%,50%)', padding: '8px 0' }}>
@@ -129,24 +117,6 @@ export default function Dashboard() {
                 <div style={{ color: 'hsl(0,60%,45%)', fontWeight: '700', fontSize: '11px' }}>OVERDUE</div>
                 <div style={{ fontWeight: '700', fontSize: '11px' }}>DUE: {moment(b.next_inspection_due).format('MM/DD/YY')}</div>
               </div>
-            </div>
-          )}
-        </div>
-      </Section>
-
-      {/* Recently Completed */}
-      <Section title="✅ RECENTLY COMPLETED REPAIRS">
-        <div style={{ maxHeight: 280, overflowY: 'auto' }}>
-          {recentCompleted.length === 0 ?
-          <div style={{ padding: '16px', textAlign: 'center', color: 'hsl(220,10%,50%)', fontSize: '12px' }}>NO COMPLETED REPAIRS</div> :
-          recentCompleted.map((wo) =>
-          <div key={wo.id} style={{ fontSize: '12px', padding: '7px 4px', borderBottom: '1px solid hsl(220,18%,88%)', fontFamily: FF }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontWeight: '700' }}>{wo.order_number} — BUS #{wo.bus_number}</span>
-                <span style={{ color: 'hsl(140,55%,30%)', fontWeight: '700' }}>[DONE]</span>
-              </div>
-              <div style={{ color: 'hsl(220,10%,40%)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginTop: 3 }}>{wo.repairs_rendered}</div>
-              {wo.technician_name && <div style={{ fontSize: '11px', color: 'hsl(220,10%,45%)', marginTop: 2 }}>TECH: {wo.technician_name}</div>}
             </div>
           )}
         </div>

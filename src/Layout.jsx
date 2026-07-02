@@ -9,6 +9,7 @@ import {
 import FormModal from '@/components/FormModal';
 import NewWorkOrderForm from '@/components/workorders/NewWorkOrderForm';
 import WorkOrderDetailForm from '@/components/workorders/WorkOrderDetailForm';
+import BroadcastAcknowledge from '@/components/BroadcastAcknowledge';
 
 const navItems = [
 { name: 'Dashboard', icon: LayoutDashboard, page: 'Dashboard' },
@@ -213,6 +214,8 @@ export default function Layout({ children, currentPageName }) {
       <FormModal open={!!viewingId} onClose={() => setViewingId(null)} maxWidth="900px">
         {viewingId && <WorkOrderDetailForm id={viewingId} onClose={() => setViewingId(null)} />}
       </FormModal>
+
+      <BroadcastAcknowledge />
 
       {/* Bottom Status Bar */}
       <div style={{ background: 'hsl(220,18%,92%)', borderTop: '1px solid hsl(220,18%,75%)', display: 'flex', alignItems: 'center', fontSize: '10px', fontFamily: "'Courier Prime',monospace", padding: '4px 8px', gap: '8px', height: 'auto', minHeight: '28px', flexWrap: 'wrap' }}>

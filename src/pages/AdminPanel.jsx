@@ -6,6 +6,7 @@ import moment from 'moment';
 import { exportTechHoursPDF } from '../utils/exports/exportTechHours';
 import DeleteConfirmModal from '../components/DeleteConfirmModal';
 import WashBayHoursReport from '../components/admin/WashBayHoursReport';
+import BroadcastMessageManager from '../components/admin/BroadcastMessageManager';
 
 const FF = "'Courier Prime', monospace";
 const inputStyle = { padding: '5px 8px', fontSize: '11px', fontFamily: FF, border: '1px solid hsl(220,18%,70%)', borderRadius: '2px', background: 'white', outline: 'none', width: '100%', boxSizing: 'border-box' };
@@ -230,6 +231,9 @@ export default function AdminPanel() {
           </form>
         </div>
       )}
+
+      {/* Broadcast Message */}
+      <BroadcastMessageManager />
 
       {/* Hours Reports */}
       <TechHoursReport users={users} />
