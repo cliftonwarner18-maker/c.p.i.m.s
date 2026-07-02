@@ -162,7 +162,7 @@ export default function FleetTable({ buses, busNumCounts, vinCounts = {}, onEdit
                   <td style={{ padding: '5px 8px', whiteSpace: 'nowrap' }}>
                     <div style={{ display: 'flex', gap: '3px', alignItems: 'center' }}>
                       <Link
-                        to={`/BusProfile?bus=${b.bus_number}`}
+                        to={`/BusProfile?bus=${encodeURIComponent(b.bus_number)}`}
                         title={`View Profile — ${(b.cameras_inside || 0) + (b.cameras_outside || 0) + (b.cameras_ai || 0)} total cameras`}
                         style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 2, minWidth: 24, height: 24, padding: '0 5px', background: 'hsl(220,55%,38%)', color: 'white', borderRadius: '2px', textDecoration: 'none', border: '1px solid hsl(220,55%,30%)', fontSize: '9px', fontWeight: '700' }}
                       >
