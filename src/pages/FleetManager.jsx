@@ -17,6 +17,7 @@ export default function FleetManager() {
   const [typeFilter, setTypeFilter] = useState('All');
   const [locationFilter, setLocationFilter] = useState('All');
   const [stopArmFilter, setStopArmFilter] = useState(false);
+  const [noStopArmFilter, setNoStopArmFilter] = useState(false);
   const [aiCamFilter, setAiCamFilter] = useState(false);
   const [cameraFilter, setCameraFilter] = useState('All');
   const [makeFilter, setMakeFilter] = useState('All');
@@ -58,10 +59,11 @@ export default function FleetManager() {
     const matchType = typeFilter === 'All' || b.bus_type === typeFilter;
     const matchLocation = locationFilter === 'All' || b.base_location === locationFilter;
     const matchStopArm = !stopArmFilter || b.stop_arm_cameras === true;
+    const matchNoStopArm = !noStopArmFilter || b.stop_arm_cameras !== true;
     const matchAiCam = !aiCamFilter || b.ai_cameras_installed === true;
     const matchCamera = cameraFilter === 'All' || b.camera_system_type === cameraFilter;
     const matchMake = makeFilter === 'All' || b.make === makeFilter;
-    return matchSearch && matchType && matchLocation && matchStopArm && matchAiCam && matchCamera && matchMake;
+    return matchSearch && matchType && matchLocation && matchStopArm && matchNoStopArm && matchAiCam && matchCamera && matchMake;
   });
 
   const activeCount = buses.filter(b => b.status === 'Active').length;
@@ -186,6 +188,10 @@ export default function FleetManager() {
           <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer', fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,35%)', letterSpacing: '0.06em', userSelect: 'none', whiteSpace: 'nowrap' }}>
             <input type="checkbox" checked={stopArmFilter} onChange={e => setStopArmFilter(e.target.checked)} style={{ accentColor: 'hsl(220,70%,35%)', cursor: 'pointer' }} />
             STOP ARM ONLY
+          </label>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer', fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,35%)', letterSpacing: '0.06em', userSelect: 'none', whiteSpace: 'nowrap' }}>
+            <input type="checkbox" checked={noStopArmFilter} onChange={e => setNoStopArmFilter(e.target.checked)} style={{ accentColor: 'hsl(220,70%,35%)', cursor: 'pointer' }} />
+            NO STOP ARM CAMERAS
           </label>
           <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer', fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,35%)', letterSpacing: '0.06em', userSelect: 'none', whiteSpace: 'nowrap' }}>
             <input type="checkbox" checked={aiCamFilter} onChange={e => setAiCamFilter(e.target.checked)} style={{ accentColor: 'hsl(220,70%,35%)', cursor: 'pointer' }} />
