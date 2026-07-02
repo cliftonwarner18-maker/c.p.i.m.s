@@ -10,6 +10,13 @@ const labelStyle = { fontSize: '10px', fontWeight: '700', display: 'block', marg
 const sectionHeader = { background: 'linear-gradient(to right, hsl(220,50%,30%), hsl(220,45%,40%))', color: 'white', padding: '5px 10px', fontSize: '10px', fontWeight: '700', letterSpacing: '0.08em', marginBottom: '8px' };
 const sectionBox = { background: 'white', border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', padding: '10px', marginBottom: '8px' };
 
+function elapsedDisplay(minutes) {
+  if (!minutes || minutes <= 0) return '00:00';
+  const h = Math.floor(minutes / 60);
+  const m = Math.round(minutes % 60);
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+}
+
 export default function NewInspection() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -152,6 +159,15 @@ export default function NewInspection() {
                 {endLocked && (
                   <button type="button" onClick={() => setEndLocked(false)} style={{ padding: '5px 10px', background: 'hsl(220,18%,88%)', color: 'hsl(220,20%,20%)', border: '1px solid hsl(220,18%,70%)', borderRadius: '2px', fontSize: '11px', fontWeight: '700', cursor: 'pointer', whiteSpace: 'nowrap' }}>EDIT</button>
                 )}
+              </div>
+            </div>
+            <div>
+              <label style={labelStyle}>ELAPSED TIME</label>
+              <div style={{ background: '#000', border: '2px solid #1a1a1a', borderRadius: '2px', padding: '6px 10px', textAlign: 'center', boxShadow: 'inset 0 0 8px rgba(0,255,80,0.08)' }}>
+                <div style={{ fontFamily: "'VT323', monospace", fontSize: '30px', color: '#00ff44', letterSpacing: '0.1em', lineHeight: 1, textShadow: '0 0 8px #00ff44' }}>
+                  {elapsedDisplay(form.inspection_start_time && form.inspection_end_time ? Math.round((new Date(form.inspection_end_time) - new Date(form.inspection_start_time)) / 60000) : 0)}
+                </div>
+                <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: '9px', color: '#00aa33', letterSpacing: '0.12em', marginTop: '2px' }}>HH:MM</div>
               </div>
             </div>
           </div>
