@@ -77,6 +77,11 @@
       "default": false,
       "description": "Signals and lights functional"
     },
+    "panic_alarm_functional": {
+      "type": "boolean",
+      "default": false,
+      "description": "Panic/alarm button functioning"
+    },
     "programming_verified": {
       "type": "boolean",
       "default": false,

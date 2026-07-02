@@ -56,6 +56,7 @@ export default function NewInspection() {
     dvr_functional: false,
     date_time_accuracy: false,
     signals_lights_functional: false,
+    panic_alarm_functional: false,
     programming_verified: false,
     overall_status: 'Pass',
     inspection_notes: '',
@@ -186,6 +187,7 @@ export default function NewInspection() {
             <CheckRow label="DVR SYSTEM FUNCTIONAL" field="dvr_functional" />
             <CheckRow label="DATE/TIME ACCURACY" field="date_time_accuracy" />
             <CheckRow label="SIGNALS & LIGHTS FUNCTIONAL" field="signals_lights_functional" />
+            <CheckRow label="PANIC/ALARM BUTTON FUNCTIONING" field="panic_alarm_functional" />
             <CheckRow label="PROGRAMMING VERIFIED" field="programming_verified" />
           </div>
           <div style={{ marginTop: '8px' }}>
