@@ -91,9 +91,10 @@ export default function BusProfile() {
     },
   });
 
+  const norm = (s) => (s || '').toString().trim().toUpperCase();
   const isLabHoursBus = (num) => !!num && num.toUpperCase().includes('LAB') && num.toUpperCase().includes('HOURS');
-  const bus = buses.find(b => b.bus_number === busNumber);
-  const matchesBusNumber = (num) => num === busNumber || (isLabHoursBus(busNumber) && isLabHoursBus(num));
+  const bus = buses.find(b => norm(b.bus_number) === norm(busNumber));
+  const matchesBusNumber = (num) => norm(num) === norm(busNumber) || (isLabHoursBus(busNumber) && isLabHoursBus(num));
   const busWOs = workOrders.filter(wo => matchesBusNumber(wo.bus_number));
   const busInspections = inspections.filter(i => matchesBusNumber(i.bus_number));
   const busHistory = history.filter(h => matchesBusNumber(h.bus_number));
