@@ -91,7 +91,7 @@ export default function InspectionDetail() {
           <div class="checklist">
             <div class="check-item"><span>Camera System</span><span class="${inspection.camera_system_functional ? 'check-pass' : 'check-fail'}">${inspection.camera_system_functional ? '✓ PASS' : '✗ FAIL'}</span></div>
             <div class="check-item"><span>DVR Functional</span><span class="${inspection.dvr_functional ? 'check-pass' : 'check-fail'}">${inspection.dvr_functional ? '✓ PASS' : '✗ FAIL'}</span></div>
-            <div class="check-item"><span>Lenses</span><span class="${inspection.lenses_condition === 'Pass' ? 'check-pass' : 'check-fail'}">${inspection.lenses_condition?.toUpperCase()}</span></div>
+            <div class="check-item"><span>Lenses</span><span class="${inspection.lenses_condition === 'Pass' ? 'check-pass' : 'check-fail'}">${inspection.lenses_condition === 'Pass' ? '✓' : '✗'} ${inspection.lenses_condition?.toUpperCase()}</span></div>
             <div class="check-item"><span>Mounting Secure</span><span class="${inspection.mounting_secure ? 'check-pass' : 'check-fail'}">${inspection.mounting_secure ? '✓ PASS' : '✗ FAIL'}</span></div>
             <div class="check-item"><span>Date/Time Accuracy</span><span class="${inspection.date_time_accuracy ? 'check-pass' : 'check-fail'}">${inspection.date_time_accuracy ? '✓ PASS' : '✗ FAIL'}</span></div>
             <div class="check-item"><span>Signals & Lights</span><span class="${inspection.signals_lights_functional ? 'check-pass' : 'check-fail'}">${inspection.signals_lights_functional ? '✓ PASS' : '✗ FAIL'}</span></div>
@@ -264,7 +264,7 @@ export default function InspectionDetail() {
               ))}
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px dotted #ccc', padding: '1px 0', fontSize: '7pt' }}>
                 <span>Lenses</span>
-                <span style={{ fontWeight: 'bold', color: inspection.lenses_condition === 'Pass' ? '#166534' : '#991b1b' }}>{inspection.lenses_condition?.toUpperCase()}</span>
+                <span style={{ fontWeight: 'bold', color: inspection.lenses_condition === 'Pass' ? '#166534' : '#991b1b' }}>{inspection.lenses_condition === 'Pass' ? '✓' : '✗'} {inspection.lenses_condition?.toUpperCase()}</span>
               </div>
             </div>
             {inspection.next_inspection_due && (
