@@ -16,7 +16,7 @@ const navItems = [
 { name: 'Fleet', icon: Bus, page: 'FleetManager' },
 { name: 'New W/O', icon: PlusCircle, page: 'NewWorkOrder' },
 { name: 'Work Orders', icon: FileText, page: 'WorkOrders' },
-{ name: 'Inspections', icon: ClipboardCheck, page: 'Inspections' },
+{ name: 'Camera Inspections', icon: ClipboardCheck, page: 'Inspections' },
 { name: 'Wash Bay', icon: HardDrive, page: 'WashBay', teal: true },
 { name: 'Assets', icon: Package2, page: 'Assets' },
 { name: 'H-Drive', icon: HardDrive, page: 'HdriveManagement' },
