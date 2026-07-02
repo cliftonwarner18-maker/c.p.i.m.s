@@ -22,8 +22,8 @@ function Section({ title, children }) {
         {title}
       </div>
       <div style={{ padding: '8px', background: 'hsl(220,10%,98%)' }}>{children}</div>
-    </div>
-  );
+    </div>);
+
 }
 
 export default function Dashboard() {
@@ -36,8 +36,8 @@ export default function Dashboard() {
   const { data: inspections = [], isLoading: inspLoading } = useQuery({ queryKey: ['inspections'], queryFn: () => base44.entities.Inspection.list('-created_date'), retry: 2 });
 
   const isLoading = busesLoading || woLoading || inspLoading;
-  const recentCompleted = workOrders.filter(w => w.status === 'Completed').slice(0, 5);
-  const overdueInspections = buses.filter(b => b.next_inspection_due && new Date(b.next_inspection_due) < new Date());
+  const recentCompleted = workOrders.filter((w) => w.status === 'Completed').slice(0, 5);
+  const overdueInspections = buses.filter((b) => b.next_inspection_due && new Date(b.next_inspection_due) < new Date());
 
   const handleExportOverduePDF = () => {
     exportOverdueInspectionsPDF({ buses: overdueInspections });
@@ -70,7 +70,7 @@ export default function Dashboard() {
 
       {/* Quick Actions */}
       <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-        <button onClick={() => setShowNewWorkOrder(true)} style={{ ...btnStyle('hsl(140,55%,38%)', 'hsl(140,55%,30%)'), color: 'white' }}>
+        <button onClick={() => setShowNewWorkOrder(true)} style={{ ...btnStyle('hsl(140,55%,38%)', 'hsl(140,55%,30%)'), color: 'white' }} className="hidden">
           <PlusCircle style={{ width: 13, height: 13 }} /> NEW WORK ORDER
         </button>
         <Link to={createPageUrl('FleetManager')} style={{ ...btnStyle('hsl(220,18%,88%)', 'hsl(220,18%,70%)'), color: 'hsl(220,20%,20%)' }}>
@@ -84,8 +84,8 @@ export default function Dashboard() {
       <FormModal open={showNewWorkOrder} onClose={() => setShowNewWorkOrder(false)}>
         <NewWorkOrderForm
           onClose={() => setShowNewWorkOrder(false)}
-          onCreated={(id) => { setShowNewWorkOrder(false); setViewingId(id); }}
-        />
+          onCreated={(id) => {setShowNewWorkOrder(false);setViewingId(id);}} />
+        
       </FormModal>
 
       <FormModal open={!!viewingId} onClose={() => setViewingId(null)} maxWidth="900px">
@@ -104,20 +104,20 @@ export default function Dashboard() {
 
       {/* Overdue Inspections */}
       <Section title={
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
           <span>🔴 OVERDUE INSPECTIONS</span>
-          {overdueInspections.length > 0 && (
-            <button onClick={handleExportOverduePDF} style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '3px 8px', fontSize: '10px', fontFamily: FF, background: 'rgba(255,255,255,0.15)', color: 'white', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '2px', cursor: 'pointer' }}>
+          {overdueInspections.length > 0 &&
+        <button onClick={handleExportOverduePDF} style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '3px 8px', fontSize: '10px', fontFamily: FF, background: 'rgba(255,255,255,0.15)', color: 'white', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '2px', cursor: 'pointer' }}>
               <FileDown style={{ width: 11, height: 11 }} /> EXPORT PDF
             </button>
-          )}
+        }
         </div>
       }>
         <div style={{ maxHeight: 360, overflowY: 'auto' }}>
-          {overdueInspections.length === 0 ? (
-            <div style={{ padding: '16px', textAlign: 'center', color: 'hsl(220,10%,50%)', fontSize: '12px' }}>NO OVERDUE INSPECTIONS</div>
-          ) : overdueInspections.map(b => (
-            <div key={b.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '12px', padding: '7px 4px', borderBottom: '1px solid hsl(220,18%,88%)', fontFamily: FF }}>
+          {overdueInspections.length === 0 ?
+          <div style={{ padding: '16px', textAlign: 'center', color: 'hsl(220,10%,50%)', fontSize: '12px' }}>NO OVERDUE INSPECTIONS</div> :
+          overdueInspections.map((b) =>
+          <div key={b.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '12px', padding: '7px 4px', borderBottom: '1px solid hsl(220,18%,88%)', fontFamily: FF }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <AlertTriangle style={{ width: 15, height: 15, color: 'hsl(0,60%,45%)', flexShrink: 0 }} />
                 <div>
@@ -130,17 +130,17 @@ export default function Dashboard() {
                 <div style={{ fontWeight: '700', fontSize: '11px' }}>DUE: {moment(b.next_inspection_due).format('MM/DD/YY')}</div>
               </div>
             </div>
-          ))}
+          )}
         </div>
       </Section>
 
       {/* Recently Completed */}
       <Section title="✅ RECENTLY COMPLETED REPAIRS">
         <div style={{ maxHeight: 280, overflowY: 'auto' }}>
-          {recentCompleted.length === 0 ? (
-            <div style={{ padding: '16px', textAlign: 'center', color: 'hsl(220,10%,50%)', fontSize: '12px' }}>NO COMPLETED REPAIRS</div>
-          ) : recentCompleted.map(wo => (
-            <div key={wo.id} style={{ fontSize: '12px', padding: '7px 4px', borderBottom: '1px solid hsl(220,18%,88%)', fontFamily: FF }}>
+          {recentCompleted.length === 0 ?
+          <div style={{ padding: '16px', textAlign: 'center', color: 'hsl(220,10%,50%)', fontSize: '12px' }}>NO COMPLETED REPAIRS</div> :
+          recentCompleted.map((wo) =>
+          <div key={wo.id} style={{ fontSize: '12px', padding: '7px 4px', borderBottom: '1px solid hsl(220,18%,88%)', fontFamily: FF }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontWeight: '700' }}>{wo.order_number} — BUS #{wo.bus_number}</span>
                 <span style={{ color: 'hsl(140,55%,30%)', fontWeight: '700' }}>[DONE]</span>
@@ -148,7 +148,7 @@ export default function Dashboard() {
               <div style={{ color: 'hsl(220,10%,40%)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginTop: 3 }}>{wo.repairs_rendered}</div>
               {wo.technician_name && <div style={{ fontSize: '11px', color: 'hsl(220,10%,45%)', marginTop: 2 }}>TECH: {wo.technician_name}</div>}
             </div>
-          ))}
+          )}
         </div>
       </Section>
 
@@ -162,6 +162,6 @@ export default function Dashboard() {
           Powered by Base44 &nbsp;|&nbsp; Developed by Clifton Warner M. &nbsp;&copy; {new Date().getFullYear()}
         </div>
       </div>
-    </div>
-  );
+    </div>);
+
 }
