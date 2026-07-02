@@ -8,7 +8,14 @@
     },
     "technician": {
       "type": "string",
-      "description": "Technician name"
+      "description": "Technician name (legacy single technician)"
+    },
+    "technicians": {
+      "type": "array",
+      "description": "List of technicians/users who worked on this entry (each credited full elapsed time)",
+      "items": {
+        "type": "string"
+      }
     },
     "description": {
       "type": "string",

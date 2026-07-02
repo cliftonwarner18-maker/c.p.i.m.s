@@ -51,7 +51,14 @@
     },
     "technician_name": {
       "type": "string",
-      "description": "Name of repair technician"
+      "description": "Name of repair technician (legacy single technician)"
+    },
+    "technicians": {
+      "type": "array",
+      "description": "List of technicians/users who worked on this repair (each credited full elapsed time)",
+      "items": {
+        "type": "string"
+      }
     },
     "repairs_rendered": {
       "type": "string",

@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Save, CheckCircle, FileDown } from 'lucide-react';
 import moment from 'moment';
 import { printHtml, PRINT_BASE_CSS } from '../../utils/printHtml';
+import TechnicianMultiSelect from '@/components/TechnicianMultiSelect';
 
 const FF = "'Courier Prime', monospace";
 const inputStyle = { padding: '5px 8px', fontSize: '11px', fontFamily: FF, border: '1px solid hsl(220,18%,70%)', borderRadius: '2px', background: 'white', outline: 'none', width: '100%', boxSizing: 'border-box' };
@@ -11,21 +12,6 @@ const roStyle = { padding: '5px 8px', fontSize: '11px', fontFamily: FF, border: 
 const labelStyle = { fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,35%)', letterSpacing: '0.06em', marginBottom: '3px', display: 'block' };
 const rowStyle = { display: 'flex', gap: '12px', flexWrap: 'wrap', marginBottom: '10px' };
 const fieldStyle = { flex: '1', minWidth: '160px' };
-
-function TechnicianSelect({ value, onChange }) {
-  const { data: users = [] } = useQuery({
-    queryKey: ['systemUsers'],
-    queryFn: () => base44.entities.SystemUser.list('name'),
-  });
-  const activeUsers = users.filter(u => u.active !== false);
-  return (
-    <select value={value} onChange={e => onChange(e.target.value)} style={{ padding: '5px 8px', fontSize: '11px', fontFamily: FF, border: '1px solid hsl(220,18%,70%)', borderRadius: '2px', background: 'white', outline: 'none', width: '100%', boxSizing: 'border-box' }}>
-      <option value="">— Select Technician —</option>
-      {activeUsers.map(u => <option key={u.id} value={u.name}>{u.name}{u.role ? ` (${u.role})` : ''}</option>)}
-      {value && !activeUsers.find(u => u.name === value) && <option value={value}>{value}</option>}
-    </select>
-  );
-}
 
 const STATUS_COLORS = {
   Pending:       { bg: '#fffbeb', color: '#92400e', border: '#fde68a' },
@@ -119,7 +105,7 @@ export default function WorkOrderDetailForm({ id, onClose }) {
     <div class="wo-field-box">${form.issue_description || 'None recorded.'}</div>
     <div class="section-header" style="margin-top:12px;">REPAIR INFORMATION</div>
     <div class="meta-box">
-      <div class="meta-item"><b>TECHNICIAN:</b> ${form.technician_name || '—'}</div>
+      <div class="meta-item"><b>TECHNICIAN(S):</b> ${(form.technicians && form.technicians.length ? form.technicians.join(', ') : form.technician_name) || '—'}</div>
       <div class="meta-item"><b>START TIME:</b> ${form.repair_start_time ? moment(form.repair_start_time).format('MM/DD/YYYY HH:mm') : '—'}</div>
       <div class="meta-item"><b>END TIME:</b> ${form.repair_end_time ? moment(form.repair_end_time).format('MM/DD/YYYY HH:mm') : '—'}</div>
       <div class="meta-item"><b>ELAPSED:</b> ${elStr}</div>
@@ -256,12 +242,13 @@ export default function WorkOrderDetailForm({ id, onClose }) {
           </div>
         </div>
 
-        {/* Technician */}
-        <div style={rowStyle}>
-          <div style={fieldStyle}>
-            <label style={labelStyle}>TECHNICIAN NAME</label>
-            <TechnicianSelect value={form.technician_name || ''} onChange={v => setForm({ ...form, technician_name: v })} />
-          </div>
+        {/* Technicians */}
+        <div style={{ marginBottom: '10px' }}>
+          <label style={labelStyle}>TECHNICIANS (ALL SELECTED GET FULL CREDIT HOURS)</label>
+          <TechnicianMultiSelect
+            value={form.technicians || (form.technician_name ? [form.technician_name] : [])}
+            onChange={v => setForm({ ...form, technicians: v, technician_name: v[0] || '' })}
+          />
         </div>
 
         {/* Repairs */}

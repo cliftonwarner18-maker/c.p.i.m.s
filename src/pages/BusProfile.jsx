@@ -6,6 +6,7 @@ import { createPageUrl } from '@/utils';
 import { ArrowLeft, Bus, Wrench, ClipboardCheck, FileText, Plus, Download, Pencil, Trash2 } from 'lucide-react';
 import { exportBusHistoryPDF } from '../utils/exports/exportBusHistoryLocal';
 import FormModal from '@/components/FormModal';
+import TechnicianMultiSelect from '@/components/TechnicianMultiSelect';
 
 const S = {
   label: { fontSize: '9px', fontWeight: '700', letterSpacing: '0.07em', color: 'hsl(220,10%,50%)', textTransform: 'uppercase', marginBottom: '2px' },
@@ -39,7 +40,7 @@ export default function BusProfile() {
   const queryClient = useQueryClient();
   const [showHistoryForm, setShowHistoryForm] = useState(false);
   const [editingHistoryId, setEditingHistoryId] = useState(null);
-  const [historyForm, setHistoryForm] = useState({ technician: '', description: '', start_time: '', end_time: '' });
+  const [historyForm, setHistoryForm] = useState({ technicians: [], description: '', start_time: '', end_time: '' });
   const { data: buses = [] } = useQuery({
     queryKey: ['buses'],
     queryFn: () => base44.entities.Bus.list('bus_number'),
@@ -70,7 +71,7 @@ export default function BusProfile() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['busHistory'] });
       setShowHistoryForm(false);
-      setHistoryForm({ technician: '', description: '', start_time: '', end_time: '' });
+      setHistoryForm({ technicians: [], description: '', start_time: '', end_time: '' });
     },
   });
 
@@ -79,7 +80,7 @@ export default function BusProfile() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['busHistory'] });
       setEditingHistoryId(null);
-      setHistoryForm({ technician: '', description: '', start_time: '', end_time: '' });
+      setHistoryForm({ technicians: [], description: '', start_time: '', end_time: '' });
     },
   });
 
@@ -119,7 +120,8 @@ export default function BusProfile() {
     const elapsed = calcElapsed(historyForm.start_time, historyForm.end_time);
     const data = {
       bus_number: busNumber,
-      technician: historyForm.technician,
+      technician: historyForm.technicians[0] || '',
+      technicians: historyForm.technicians,
       description: historyForm.description,
       start_time: historyForm.start_time,
       end_time: historyForm.end_time,
@@ -136,7 +138,7 @@ export default function BusProfile() {
   const handleEditHistory = (entry) => {
     setEditingHistoryId(entry.id);
     setHistoryForm({
-      technician: entry.technician,
+      technicians: entry.technicians && entry.technicians.length ? entry.technicians : (entry.technician ? [entry.technician] : []),
       description: entry.description,
       start_time: entry.start_time,
       end_time: entry.end_time,
@@ -147,7 +149,7 @@ export default function BusProfile() {
   const handleCancelEdit = () => {
     setEditingHistoryId(null);
     setShowHistoryForm(false);
-    setHistoryForm({ technician: '', description: '', start_time: '', end_time: '' });
+    setHistoryForm({ technicians: [], description: '', start_time: '', end_time: '' });
   };
 
   const handleExport = () => {
@@ -363,7 +365,7 @@ export default function BusProfile() {
                     {busHistory.map((h, i) => (
                       <tr key={h.id} style={{ background: i % 2 === 0 ? 'white' : 'hsl(220,20%,97%)' }}>
                         <td style={S.td}>{new Date(h.created_date).toLocaleDateString()}</td>
-                        <td style={S.td}>{h.technician}</td>
+                        <td style={S.td}>{(h.technicians && h.technicians.length ? h.technicians.join(', ') : h.technician) || '—'}</td>
                         <td style={S.td}>{h.start_time ? new Date(h.start_time).toLocaleString() : '—'}</td>
                         <td style={S.td}>{h.end_time ? new Date(h.end_time).toLocaleString() : '—'}</td>
                         <td style={S.td}>{h.elapsed_time_minutes ? `${h.elapsed_time_minutes} min` : '—'}</td>
@@ -418,12 +420,9 @@ export default function BusProfile() {
             {editingHistoryId ? 'EDIT SERVICE LOG ENTRY' : 'NEW SERVICE LOG ENTRY'}
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '10px' }}>
-            <div>
-              <div style={S.label}>TECHNICIAN *</div>
-              <select value={historyForm.technician} onChange={e => setHistoryForm(f => ({ ...f, technician: e.target.value }))} style={{ width: '100%', padding: '5px 8px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", border: '1px solid hsl(220,18%,72%)', borderRadius: '2px', background: 'white', outline: 'none', boxSizing: 'border-box' }}>
-                <option value="">-- SELECT TECHNICIAN --</option>
-                {systemUsers.filter(u => u.active !== false).map(u => <option key={u.id} value={u.name}>{u.name}</option>)}
-              </select>
+            <div style={{ gridColumn: '1 / -1' }}>
+              <div style={S.label}>TECHNICIANS * (ALL SELECTED GET FULL CREDIT HOURS)</div>
+              <TechnicianMultiSelect value={historyForm.technicians} onChange={v => setHistoryForm(f => ({ ...f, technicians: v }))} />
             </div>
             <div>
               <div style={S.label}>START TIME</div>
@@ -439,7 +438,7 @@ export default function BusProfile() {
             </div>
           </div>
           <div style={{ display: 'flex', gap: '6px' }}>
-            <button onClick={handleAddHistory} disabled={!historyForm.technician || !historyForm.description} style={{ padding: '6px 14px', background: 'hsl(140,55%,38%)', color: 'white', border: '1px solid hsl(140,55%,30%)', borderRadius: '2px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", fontWeight: '600', cursor: 'pointer' }}>
+            <button onClick={handleAddHistory} disabled={historyForm.technicians.length === 0 || !historyForm.description} style={{ padding: '6px 14px', background: 'hsl(140,55%,38%)', color: 'white', border: '1px solid hsl(140,55%,30%)', borderRadius: '2px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", fontWeight: '600', cursor: 'pointer' }}>
               {editingHistoryId ? 'UPDATE ENTRY' : 'SAVE ENTRY'}
             </button>
             <button onClick={handleCancelEdit} style={{ padding: '6px 14px', background: 'hsl(220,18%,88%)', color: 'hsl(220,20%,25%)', border: '1px solid hsl(220,18%,72%)', borderRadius: '2px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", cursor: 'pointer' }}>

@@ -35,9 +35,12 @@ function TechHoursReport({ users }) {
     queryFn: () => base44.entities.BusHistory.list(),
   });
 
+  const woTechs = (wo) => wo.technicians && wo.technicians.length ? wo.technicians : (wo.technician_name ? [wo.technician_name] : []);
+  const bhTechs = (bh) => bh.technicians && bh.technicians.length ? bh.technicians : (bh.technician ? [bh.technician] : []);
+
   const filtered = workOrders.filter(wo => {
     if (!wo.elapsed_time_minutes) return false;
-    if (selectedTech && wo.technician_name !== selectedTech) return false;
+    if (selectedTech && !woTechs(wo).includes(selectedTech)) return false;
     if (startDate) {
       const ref = wo.completed_date || wo.updated_date || wo.created_date;
       if (ref && new Date(ref) < new Date(startDate)) return false;
@@ -65,7 +68,7 @@ function TechHoursReport({ users }) {
 
   const filteredBusHistory = busHistory.filter(bh => {
     if (!bh.elapsed_time_minutes) return false;
-    if (selectedTech && bh.technician !== selectedTech) return false;
+    if (selectedTech && !bhTechs(bh).includes(selectedTech)) return false;
     if (startDate) {
       const ref = bh.start_time || bh.created_date;
       if (ref && new Date(ref) < new Date(startDate)) return false;
@@ -77,9 +80,9 @@ function TechHoursReport({ users }) {
     return true;
   });
 
-  const totalWorkOrderMinutes = filtered.reduce((sum, wo) => sum + (wo.elapsed_time_minutes || 0), 0);
+  const totalWorkOrderMinutes = filtered.reduce((sum, wo) => sum + (wo.elapsed_time_minutes || 0) * Math.max(woTechs(wo).length, 1), 0);
   const totalInspectionMinutes = filteredInspections.reduce((sum, insp) => sum + (insp.elapsed_minutes || 0), 0);
-  const totalBusHistoryMinutes = filteredBusHistory.reduce((sum, bh) => sum + (bh.elapsed_time_minutes || 0), 0);
+  const totalBusHistoryMinutes = filteredBusHistory.reduce((sum, bh) => sum + (bh.elapsed_time_minutes || 0) * Math.max(bhTechs(bh).length, 1), 0);
   const totalMinutes = totalWorkOrderMinutes + totalInspectionMinutes + totalBusHistoryMinutes;
   const totalHours = (totalMinutes / 60).toFixed(2);
 
@@ -88,9 +91,9 @@ function TechHoursReport({ users }) {
     setExporting(true);
     try {
       const allItems = [
-        ...filtered.map(wo => ({ order_number: wo.order_number, bus_number: wo.bus_number, wo_type: wo.work_order_type || '—', tech: wo.technician_name, elapsed: wo.elapsed_time_minutes || 0, dateRef: wo.completed_date || wo.updated_date || wo.created_date, start: wo.repair_start_time, end: wo.repair_end_time })),
+        ...filtered.flatMap(wo => (woTechs(wo).length ? woTechs(wo) : ['—']).filter(t => !selectedTech || t === selectedTech).map(tech => ({ order_number: wo.order_number, bus_number: wo.bus_number, wo_type: wo.work_order_type || '—', tech, elapsed: wo.elapsed_time_minutes || 0, dateRef: wo.completed_date || wo.updated_date || wo.created_date, start: wo.repair_start_time, end: wo.repair_end_time }))),
         ...filteredInspections.map(insp => ({ order_number: insp.inspection_number, bus_number: insp.bus_number, wo_type: 'INSP', tech: insp.inspector_name, elapsed: insp.elapsed_minutes || 0, dateRef: insp.inspection_date || insp.created_date, start: insp.inspection_start_time, end: insp.inspection_end_time })),
-        ...filteredBusHistory.map(bh => ({ order_number: 'SVC-LOG', bus_number: bh.bus_number, wo_type: '—', tech: bh.technician, elapsed: bh.elapsed_time_minutes || 0, dateRef: bh.start_time || bh.created_date, start: bh.start_time, end: bh.end_time })),
+        ...filteredBusHistory.flatMap(bh => (bhTechs(bh).length ? bhTechs(bh) : ['—']).filter(t => !selectedTech || t === selectedTech).map(tech => ({ order_number: 'SVC-LOG', bus_number: bh.bus_number, wo_type: '—', tech, elapsed: bh.elapsed_time_minutes || 0, dateRef: bh.start_time || bh.created_date, start: bh.start_time, end: bh.end_time }))),
       ].sort((a, b) => new Date(a.dateRef || '') - new Date(b.dateRef || ''));
       exportTechHoursPDF({ allItems, selectedTech, startDate, endDate, totalMinutes });
     } finally {
