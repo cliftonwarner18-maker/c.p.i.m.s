@@ -7,22 +7,10 @@ import FormModal from '../components/FormModal';
 import NewWorkOrderForm from '../components/workorders/NewWorkOrderForm';
 import WorkOrderDetailForm from '../components/workorders/WorkOrderDetailForm';
 import { useNavigate } from 'react-router-dom';
-import { AlertTriangle, PlusCircle, FileDown } from 'lucide-react';
+import { PlusCircle } from 'lucide-react';
 import moment from 'moment';
-import { exportOverdueInspectionsPDF } from '../utils/exports/exportOverdueInspections';
 
 const FF = "'Courier Prime', monospace";
-
-function Section({ title, children }) {
-  return (
-    <div style={{ background: 'white', border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', overflow: 'hidden' }}>
-      <div style={{ background: 'linear-gradient(to right, hsl(220,50%,30%), hsl(220,45%,40%))', color: 'white', padding: '7px 12px', fontSize: '11px', fontWeight: '700', letterSpacing: '0.08em', fontFamily: FF, display: 'flex', alignItems: 'center' }}>
-        {title}
-      </div>
-      <div style={{ padding: '8px', background: 'hsl(220,10%,98%)' }}>{children}</div>
-    </div>);
-
-}
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -34,11 +22,6 @@ export default function Dashboard() {
   const { data: inspections = [], isLoading: inspLoading } = useQuery({ queryKey: ['inspections'], queryFn: () => base44.entities.Inspection.list('-created_date'), retry: 2 });
 
   const isLoading = busesLoading || woLoading || inspLoading;
-  const overdueInspections = buses.filter((b) => b.next_inspection_due && new Date(b.next_inspection_due) < new Date());
-
-  const handleExportOverduePDF = () => {
-    exportOverdueInspectionsPDF({ buses: overdueInspections });
-  };
 
   const btnStyle = (bg, borderC) => ({
     display: 'inline-flex', alignItems: 'center', gap: 6, padding: '7px 14px',
@@ -82,45 +65,6 @@ export default function Dashboard() {
       <FormModal open={!!viewingId} onClose={() => setViewingId(null)} maxWidth="900px">
         {viewingId && <WorkOrderDetailForm id={viewingId} onClose={() => setViewingId(null)} />}
       </FormModal>
-
-      {/* Wash Bay Section */}
-      <Section title="🚐 SUMMER WASH BAY HOURS">
-        <div style={{ fontSize: '11px', color: 'hsl(220,10%,50%)', padding: '8px 0' }}>
-          📌 Track technician and washer summer hours. View Wash Bay Management page for full hours log and reports.
-        </div>
-      </Section>
-
-      {/* Overdue Inspections */}
-      <Section title={
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-          <span>🔴 OVERDUE INSPECTIONS</span>
-          {overdueInspections.length > 0 &&
-        <button onClick={handleExportOverduePDF} style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '3px 8px', fontSize: '10px', fontFamily: FF, background: 'rgba(255,255,255,0.15)', color: 'white', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '2px', cursor: 'pointer' }}>
-              <FileDown style={{ width: 11, height: 11 }} /> EXPORT PDF
-            </button>
-        }
-        </div>
-      }>
-        <div style={{ maxHeight: 360, overflowY: 'auto' }}>
-          {overdueInspections.length === 0 ?
-          <div style={{ padding: '16px', textAlign: 'center', color: 'hsl(220,10%,50%)', fontSize: '12px' }}>NO OVERDUE INSPECTIONS</div> :
-          overdueInspections.map((b) =>
-          <div key={b.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '12px', padding: '7px 4px', borderBottom: '1px solid hsl(220,18%,88%)', fontFamily: FF }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <AlertTriangle style={{ width: 15, height: 15, color: 'hsl(0,60%,45%)', flexShrink: 0 }} />
-                <div>
-                  <div style={{ fontWeight: '700' }}>BUS #{b.bus_number}</div>
-                  <div style={{ fontSize: '11px', color: 'hsl(220,10%,45%)' }}>{b.year} {b.make} {b.model}</div>
-                </div>
-              </div>
-              <div style={{ textAlign: 'right' }}>
-                <div style={{ color: 'hsl(0,60%,45%)', fontWeight: '700', fontSize: '11px' }}>OVERDUE</div>
-                <div style={{ fontWeight: '700', fontSize: '11px' }}>DUE: {moment(b.next_inspection_due).format('MM/DD/YY')}</div>
-              </div>
-            </div>
-          )}
-        </div>
-      </Section>
 
       {/* Footer */}
       <div style={{ background: 'hsl(220,18%,96%)', border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', padding: '8px 12px', fontSize: '11px', color: 'hsl(220,10%,40%)', fontFamily: FF, lineHeight: '1.7' }}>
