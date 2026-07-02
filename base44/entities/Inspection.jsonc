@@ -47,6 +47,16 @@
       ],
       "description": "Lens condition"
     },
+    "lenses_domes_clean": {
+      "type": "boolean",
+      "default": false,
+      "description": "Lenses/Domes clean and clear"
+    },
+    "focus_adjustment": {
+      "type": "boolean",
+      "default": false,
+      "description": "Focus/adjustment verified"
+    },
     "mounting_secure": {
       "type": "boolean",
       "default": false,

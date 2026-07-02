@@ -50,6 +50,8 @@ export default function NewInspection() {
     inspection_end_time: '',
     camera_system_functional: false,
     lenses_condition: 'Pass',
+    lenses_domes_clean: false,
+    focus_adjustment: false,
     mounting_secure: false,
     dvr_functional: false,
     date_time_accuracy: false,
@@ -178,6 +180,8 @@ export default function NewInspection() {
           <div style={sectionHeader}>▸ SURVEILLANCE SYSTEM INSPECTION CHECKLIST</div>
           <div style={{ border: '1px solid hsl(220,18%,82%)', borderRadius: '2px', overflow: 'hidden' }}>
             <CheckRow label="CAMERA SYSTEM FUNCTIONAL" field="camera_system_functional" />
+            <CheckRow label="LENSES/DOMES CLEAN AND CLEAR" field="lenses_domes_clean" />
+            <CheckRow label="FOCUS/ADJUSTMENT" field="focus_adjustment" />
             <CheckRow label="MOUNTING SECURE" field="mounting_secure" />
             <CheckRow label="DVR SYSTEM FUNCTIONAL" field="dvr_functional" />
             <CheckRow label="DATE/TIME ACCURACY" field="date_time_accuracy" />
