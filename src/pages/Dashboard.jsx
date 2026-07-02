@@ -70,9 +70,9 @@ export default function Dashboard() {
 
       {/* Quick Actions */}
       <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-        <button onClick={() => setShowNewWorkOrder(true)} style={{ ...btnStyle('hsl(140,55%,38%)', 'hsl(140,55%,30%)'), color: 'white' }} className="hidden">
-          <PlusCircle style={{ width: 13, height: 13 }} /> NEW WORK ORDER
-        </button>
+        
+
+        
         <Link to={createPageUrl('FleetManager')} style={{ ...btnStyle('hsl(220,18%,88%)', 'hsl(220,18%,70%)'), color: 'hsl(220,20%,20%)' }}>
           <Bus style={{ width: 13, height: 13 }} /> MANAGE FLEET
         </Link>
