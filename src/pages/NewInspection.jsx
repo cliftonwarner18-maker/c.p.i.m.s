@@ -53,6 +53,9 @@ export default function NewInspection() {
     next_inspection_due: '',
   });
 
+  const [startLocked, setStartLocked] = useState(false);
+  const [endLocked, setEndLocked] = useState(false);
+
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.Inspection.create(data),
     onSuccess: (result) => {
@@ -141,15 +144,21 @@ export default function NewInspection() {
             <div>
               <label style={labelStyle}>START TIME *</label>
               <div style={{ display: 'flex', gap: '6px' }}>
-                <input type="datetime-local" style={{ ...inputStyle, flex: 1 }} value={form.inspection_start_time} onChange={e => setForm({ ...form, inspection_start_time: e.target.value })} required />
-                <button type="button" onClick={() => setForm({ ...form, inspection_start_time: new Date().toISOString().slice(0, 16) })} style={{ padding: '5px 12px', background: 'hsl(140,55%,38%)', color: 'white', border: '1px solid hsl(140,55%,30%)', borderRadius: '2px', fontSize: '11px', fontWeight: '700', cursor: 'pointer', whiteSpace: 'nowrap' }}>NOW</button>
+                <input type="datetime-local" style={{ ...inputStyle, flex: 1, background: startLocked ? 'hsl(220,15%,94%)' : 'white' }} value={form.inspection_start_time} onChange={e => setForm({ ...form, inspection_start_time: e.target.value })} disabled={startLocked} required />
+                <button type="button" onClick={() => { setForm({ ...form, inspection_start_time: moment().format('YYYY-MM-DDTHH:mm') }); setStartLocked(true); }} style={{ padding: '5px 12px', background: startLocked ? 'hsl(220,18%,70%)' : 'hsl(140,55%,38%)', color: 'white', border: '1px solid hsl(140,55%,30%)', borderRadius: '2px', fontSize: '11px', fontWeight: '700', cursor: startLocked ? 'default' : 'pointer', whiteSpace: 'nowrap' }} disabled={startLocked}>{startLocked ? 'LOCKED' : 'START NOW'}</button>
+                {startLocked && (
+                  <button type="button" onClick={() => setStartLocked(false)} style={{ padding: '5px 10px', background: 'hsl(220,18%,88%)', color: 'hsl(220,20%,20%)', border: '1px solid hsl(220,18%,70%)', borderRadius: '2px', fontSize: '11px', fontWeight: '700', cursor: 'pointer', whiteSpace: 'nowrap' }}>EDIT</button>
+                )}
               </div>
             </div>
             <div>
               <label style={labelStyle}>END TIME *</label>
               <div style={{ display: 'flex', gap: '6px' }}>
-                <input type="datetime-local" style={{ ...inputStyle, flex: 1 }} value={form.inspection_end_time} onChange={e => setForm({ ...form, inspection_end_time: e.target.value })} required />
-                <button type="button" onClick={() => setForm({ ...form, inspection_end_time: new Date().toISOString().slice(0, 16) })} style={{ padding: '5px 12px', background: 'hsl(140,55%,38%)', color: 'white', border: '1px solid hsl(140,55%,30%)', borderRadius: '2px', fontSize: '11px', fontWeight: '700', cursor: 'pointer', whiteSpace: 'nowrap' }}>NOW</button>
+                <input type="datetime-local" style={{ ...inputStyle, flex: 1, background: endLocked ? 'hsl(220,15%,94%)' : 'white' }} value={form.inspection_end_time} onChange={e => setForm({ ...form, inspection_end_time: e.target.value })} disabled={endLocked} required />
+                <button type="button" onClick={() => { setForm({ ...form, inspection_end_time: moment().format('YYYY-MM-DDTHH:mm') }); setEndLocked(true); }} style={{ padding: '5px 12px', background: endLocked ? 'hsl(220,18%,70%)' : 'hsl(140,55%,38%)', color: 'white', border: '1px solid hsl(140,55%,30%)', borderRadius: '2px', fontSize: '11px', fontWeight: '700', cursor: endLocked ? 'default' : 'pointer', whiteSpace: 'nowrap' }} disabled={endLocked}>{endLocked ? 'LOCKED' : 'END NOW'}</button>
+                {endLocked && (
+                  <button type="button" onClick={() => setEndLocked(false)} style={{ padding: '5px 10px', background: 'hsl(220,18%,88%)', color: 'hsl(220,20%,20%)', border: '1px solid hsl(220,18%,70%)', borderRadius: '2px', fontSize: '11px', fontWeight: '700', cursor: 'pointer', whiteSpace: 'nowrap' }}>EDIT</button>
+                )}
               </div>
             </div>
           </div>
