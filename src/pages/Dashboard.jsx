@@ -4,10 +4,12 @@ import { useQuery } from '@tanstack/react-query';
 import LoadingScreen from '../components/LoadingScreen';
 import DashboardStats from '../components/dashboard/DashboardStats';
 import ActiveWorkOrders from '../components/dashboard/ActiveWorkOrders';
-import QuickTranscribe from '../components/dashboard/QuickTranscribe';
-import { Link } from 'react-router-dom';
+import FormModal from '../components/FormModal';
+import NewWorkOrderForm from '../components/workorders/NewWorkOrderForm';
+import WorkOrderDetailForm from '../components/workorders/WorkOrderDetailForm';
+import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { AlertTriangle, PlusCircle, Bus, ClipboardCheck, Zap, FileDown } from 'lucide-react';
+import { AlertTriangle, PlusCircle, Bus, ClipboardCheck, FileDown } from 'lucide-react';
 import moment from 'moment';
 import { exportOverdueInspectionsPDF } from '../utils/exports/exportOverdueInspections';
 
@@ -25,7 +27,9 @@ function Section({ title, children }) {
 }
 
 export default function Dashboard() {
-  const [showTranscribe, setShowTranscribe] = useState(false);
+  const navigate = useNavigate();
+  const [showNewWorkOrder, setShowNewWorkOrder] = useState(false);
+  const [viewingId, setViewingId] = useState(null);
 
   const { data: buses = [], isLoading: busesLoading } = useQuery({ queryKey: ['buses'], queryFn: () => base44.entities.Bus.list('-created_date'), retry: 2 });
   const { data: workOrders = [], isLoading: woLoading } = useQuery({ queryKey: ['workOrders'], queryFn: () => base44.entities.WorkOrder.list('-created_date'), retry: 2 });
@@ -66,21 +70,27 @@ export default function Dashboard() {
 
       {/* Quick Actions */}
       <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-        <Link to={createPageUrl('NewWorkOrder')} style={{ ...btnStyle('hsl(140,55%,38%)', 'hsl(140,55%,30%)'), color: 'white' }}>
+        <button onClick={() => setShowNewWorkOrder(true)} style={{ ...btnStyle('hsl(140,55%,38%)', 'hsl(140,55%,30%)'), color: 'white' }}>
           <PlusCircle style={{ width: 13, height: 13 }} /> NEW WORK ORDER
-        </Link>
+        </button>
         <Link to={createPageUrl('FleetManager')} style={{ ...btnStyle('hsl(220,18%,88%)', 'hsl(220,18%,70%)'), color: 'hsl(220,20%,20%)' }}>
           <Bus style={{ width: 13, height: 13 }} /> MANAGE FLEET
         </Link>
         <Link to={createPageUrl('Inspections')} style={{ ...btnStyle('hsl(220,18%,88%)', 'hsl(220,18%,70%)'), color: 'hsl(220,20%,20%)' }}>
           <ClipboardCheck style={{ width: 13, height: 13 }} /> INSPECTIONS
         </Link>
-        <button onClick={() => setShowTranscribe(true)} style={{ ...btnStyle('hsl(45,90%,50%)', 'hsl(45,90%,40%)'), color: 'hsl(220,20%,10%)' }}>
-          <Zap style={{ width: 13, height: 13 }} /> QUICK TRANSCRIBE
-        </button>
       </div>
 
-      {showTranscribe && <QuickTranscribe onClose={() => setShowTranscribe(false)} />}
+      <FormModal open={showNewWorkOrder} onClose={() => setShowNewWorkOrder(false)}>
+        <NewWorkOrderForm
+          onClose={() => setShowNewWorkOrder(false)}
+          onCreated={(id) => { setShowNewWorkOrder(false); setViewingId(id); }}
+        />
+      </FormModal>
+
+      <FormModal open={!!viewingId} onClose={() => setViewingId(null)} maxWidth="900px">
+        {viewingId && <WorkOrderDetailForm id={viewingId} onClose={() => setViewingId(null)} />}
+      </FormModal>
 
       {/* Active Work Orders with Type Filter */}
       <ActiveWorkOrders workOrders={workOrders} />
