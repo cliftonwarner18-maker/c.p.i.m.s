@@ -6,6 +6,9 @@ import {
   LayoutDashboard, Bus, FileText, ClipboardCheck,
   PlusCircle, Database, Package2, HardDrive, ShieldAlert, Download } from
 'lucide-react';
+import FormModal from '@/components/FormModal';
+import NewWorkOrderForm from '@/components/workorders/NewWorkOrderForm';
+import WorkOrderDetailForm from '@/components/workorders/WorkOrderDetailForm';
 
 const navItems = [
 { name: 'Dashboard', icon: LayoutDashboard, page: 'Dashboard' },
@@ -25,6 +28,8 @@ export default function Layout({ children, currentPageName }) {
   const [adminModal, setAdminModal] = useState(false);
   const [adminCode, setAdminCode] = useState('');
   const [adminError, setAdminError] = useState('');
+  const [showNewWorkOrder, setShowNewWorkOrder] = useState(false);
+  const [viewingId, setViewingId] = useState(null);
 
   const handleAdminClick = (e) => {
     e.preventDefault();
@@ -76,6 +81,24 @@ export default function Layout({ children, currentPageName }) {
                   borderColor: 'rgba(0,0,0,0.2)',
                   fontFamily: "'Courier Prime',monospace", fontWeight: '500', whiteSpace: 'nowrap', flexShrink: 0, borderRadius: '2px', transition: 'all 0.15s', cursor: 'pointer'
                 }} className="bg-red-600 text-white hover:opacity-90"
+              >
+                <item.icon style={{ width: 13, height: 13, flexShrink: 0 }} />
+                {item.name}
+              </button>
+            );
+          }
+          if (item.page === 'NewWorkOrder') {
+            return (
+              <button
+                key={item.page}
+                onClick={() => setShowNewWorkOrder(true)}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 5,
+                  padding: '4px 10px', fontSize: 11, border: '1px solid',
+                  background: 'hsl(140,60%,42%)', color: 'white',
+                  borderColor: 'rgba(0,0,0,0.2)',
+                  fontFamily: "'Courier Prime',monospace", fontWeight: '500', whiteSpace: 'nowrap', flexShrink: 0, borderRadius: '2px', transition: 'all 0.15s', cursor: 'pointer'
+                }}
               >
                 <item.icon style={{ width: 13, height: 13, flexShrink: 0 }} />
                 {item.name}
@@ -179,6 +202,17 @@ export default function Layout({ children, currentPageName }) {
           </div>
         </div>
       )}
+
+      <FormModal open={showNewWorkOrder} onClose={() => setShowNewWorkOrder(false)}>
+        <NewWorkOrderForm
+          onClose={() => setShowNewWorkOrder(false)}
+          onCreated={(id) => { setShowNewWorkOrder(false); setViewingId(id); }}
+        />
+      </FormModal>
+
+      <FormModal open={!!viewingId} onClose={() => setViewingId(null)} maxWidth="900px">
+        {viewingId && <WorkOrderDetailForm id={viewingId} onClose={() => setViewingId(null)} />}
+      </FormModal>
 
       {/* Bottom Status Bar */}
       <div style={{ background: 'hsl(220,18%,92%)', borderTop: '1px solid hsl(220,18%,75%)', display: 'flex', alignItems: 'center', fontSize: '10px', fontFamily: "'Courier Prime',monospace", padding: '4px 8px', gap: '8px', height: 'auto', minHeight: '28px', flexWrap: 'wrap' }}>
