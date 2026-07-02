@@ -151,7 +151,7 @@ export default function NewInspection() {
               <label style={labelStyle}>START TIME (AUTO) *</label>
               <input type="datetime-local" style={inputStyle} value={form.inspection_start_time} onChange={e => setForm({ ...form, inspection_start_time: e.target.value })} required />
             </div>
-            <div>
+            <div style={{ gridColumn: 'span 2', minWidth: '260px' }}>
               <label style={labelStyle}>END TIME *</label>
               <div style={{ display: 'flex', gap: '6px' }}>
                 <input type="datetime-local" style={{ ...inputStyle, flex: 1, background: endLocked ? 'hsl(220,15%,94%)' : 'white' }} value={form.inspection_end_time} onChange={e => setForm({ ...form, inspection_end_time: e.target.value })} disabled={endLocked} required />
@@ -161,7 +161,7 @@ export default function NewInspection() {
                 )}
               </div>
             </div>
-            <div>
+            <div style={{ minWidth: '160px' }}>
               <label style={labelStyle}>ELAPSED TIME</label>
               <div style={{ background: '#000', border: '2px solid #1a1a1a', borderRadius: '2px', padding: '6px 10px', textAlign: 'center', boxShadow: 'inset 0 0 8px rgba(0,255,80,0.08)' }}>
                 <div style={{ fontFamily: "'VT323', monospace", fontSize: '30px', color: '#00ff44', letterSpacing: '0.1em', lineHeight: 1, textShadow: '0 0 8px #00ff44' }}>
