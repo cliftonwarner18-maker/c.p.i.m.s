@@ -23,6 +23,7 @@ export default function WorkOrders() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [typeFilter, setTypeFilter] = useState('All');
+  const [lotFilter, setLotFilter] = useState('All');
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [showNewForm, setShowNewForm] = useState(false);
   const [viewingId, setViewingId] = useState(null);
@@ -48,7 +49,8 @@ export default function WorkOrders() {
       wo.issue_description?.toLowerCase().includes(q);
     const matchStatus = statusFilter === 'All' || wo.status === statusFilter;
     const matchType = typeFilter === 'All' || wo.work_order_type === typeFilter;
-    return matchSearch && matchStatus && matchType;
+    const matchLot = lotFilter === 'All' || wo.lot === lotFilter;
+    return matchSearch && matchStatus && matchType && matchLot;
   });
 
   const counts = {
@@ -140,6 +142,14 @@ export default function WorkOrders() {
           {['All', 'Camera Repair', 'Radio Repair', 'Seat Repair', 'Other'].map(t => (
             <button key={t} onClick={() => setTypeFilter(t)} style={{ padding: '3px 8px', fontSize: '10px', fontFamily: FF, fontWeight: typeFilter === t ? '700' : '500', background: typeFilter === t ? 'hsl(200,70%,42%)' : 'white', color: typeFilter === t ? 'white' : 'hsl(220,20%,30%)', border: `1px solid ${typeFilter === t ? 'hsl(200,70%,42%)' : 'hsl(220,18%,72%)'}`, borderRadius: '2px', cursor: 'pointer' }}>
               {t.toUpperCase()}
+            </button>
+          ))}
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+          <span style={{ fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,35%)', letterSpacing: '0.06em' }}>LOT:</span>
+          {['All', 'Main', 'North', 'Central'].map(l => (
+            <button key={l} onClick={() => setLotFilter(l)} style={{ padding: '3px 8px', fontSize: '10px', fontFamily: FF, fontWeight: lotFilter === l ? '700' : '500', background: lotFilter === l ? 'hsl(30,60%,42%)' : 'white', color: lotFilter === l ? 'white' : 'hsl(220,20%,30%)', border: `1px solid ${lotFilter === l ? 'hsl(30,60%,42%)' : 'hsl(220,18%,72%)'}`, borderRadius: '2px', cursor: 'pointer' }}>
+              {l.toUpperCase()}
             </button>
           ))}
         </div>
