@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, Bus, Wrench, ClipboardCheck, FileText, Plus, Download, Pencil, Trash2 } from 'lucide-react';
 import { exportBusHistoryPDF } from '../utils/exports/exportBusHistoryLocal';
+import FormModal from '@/components/FormModal';
 
 const S = {
   label: { fontSize: '9px', fontWeight: '700', letterSpacing: '0.07em', color: 'hsl(220,10%,50%)', textTransform: 'uppercase', marginBottom: '2px' },
@@ -346,40 +347,6 @@ export default function BusProfile() {
               </button>
             </div>
 
-            {showHistoryForm && (
-              <div style={{ padding: '12px 14px', background: 'hsl(220,18%,96%)', borderBottom: '1px solid hsl(220,18%,82%)' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '10px', marginBottom: '10px' }}>
-                  <div>
-                    <div style={S.label}>TECHNICIAN *</div>
-                    <select value={historyForm.technician} onChange={e => setHistoryForm(f => ({ ...f, technician: e.target.value }))} style={{ width: '100%', padding: '5px 8px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", border: '1px solid hsl(220,18%,72%)', borderRadius: '2px', background: 'white', outline: 'none', boxSizing: 'border-box' }}>
-                      <option value="">-- SELECT TECHNICIAN --</option>
-                      {systemUsers.filter(u => u.active !== false).map(u => <option key={u.id} value={u.name}>{u.name}</option>)}
-                    </select>
-                  </div>
-                  <div>
-                    <div style={S.label}>START TIME</div>
-                    <input type="datetime-local" value={historyForm.start_time} onChange={e => setHistoryForm(f => ({ ...f, start_time: e.target.value }))} style={{ width: '100%', padding: '5px 8px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", border: '1px solid hsl(220,18%,72%)', borderRadius: '2px', background: 'white', outline: 'none', boxSizing: 'border-box' }} />
-                  </div>
-                  <div>
-                    <div style={S.label}>END TIME</div>
-                    <input type="datetime-local" value={historyForm.end_time} onChange={e => setHistoryForm(f => ({ ...f, end_time: e.target.value }))} style={{ width: '100%', padding: '5px 8px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", border: '1px solid hsl(220,18%,72%)', borderRadius: '2px', background: 'white', outline: 'none', boxSizing: 'border-box' }} />
-                  </div>
-                  <div style={{ gridColumn: '1 / -1' }}>
-                    <div style={S.label}>DESCRIPTION *</div>
-                    <textarea value={historyForm.description} onChange={e => setHistoryForm(f => ({ ...f, description: e.target.value }))} placeholder="Work performed..." rows={3} style={{ width: '100%', padding: '5px 8px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", border: '1px solid hsl(220,18%,72%)', borderRadius: '2px', background: 'white', outline: 'none', resize: 'vertical', boxSizing: 'border-box' }} />
-                  </div>
-                </div>
-                <div style={{ display: 'flex', gap: '6px' }}>
-                  <button onClick={handleAddHistory} disabled={!historyForm.technician || !historyForm.description} style={{ padding: '6px 14px', background: 'hsl(140,55%,38%)', color: 'white', border: '1px solid hsl(140,55%,30%)', borderRadius: '2px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", fontWeight: '600', cursor: 'pointer' }}>
-                    {editingHistoryId ? 'UPDATE ENTRY' : 'SAVE ENTRY'}
-                  </button>
-                  <button onClick={handleCancelEdit} style={{ padding: '6px 14px', background: 'hsl(220,18%,88%)', color: 'hsl(220,20%,25%)', border: '1px solid hsl(220,18%,72%)', borderRadius: '2px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", cursor: 'pointer' }}>
-                    CANCEL
-                  </button>
-                </div>
-              </div>
-            )}
-
             {busHistory.length === 0 ? (
               <div style={{ padding: '16px', textAlign: 'center', color: 'hsl(220,10%,55%)', fontSize: '11px', background: 'white' }}>NO MANUAL LOG ENTRIES</div>
             ) : (
@@ -444,6 +411,43 @@ export default function BusProfile() {
           )}
         </>
       )}
+
+      <FormModal open={showHistoryForm} onClose={handleCancelEdit}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div style={{ fontSize: '13px', fontWeight: '700', letterSpacing: '0.06em', color: 'hsl(220,20%,20%)' }}>
+            {editingHistoryId ? 'EDIT SERVICE LOG ENTRY' : 'NEW SERVICE LOG ENTRY'}
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '10px' }}>
+            <div>
+              <div style={S.label}>TECHNICIAN *</div>
+              <select value={historyForm.technician} onChange={e => setHistoryForm(f => ({ ...f, technician: e.target.value }))} style={{ width: '100%', padding: '5px 8px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", border: '1px solid hsl(220,18%,72%)', borderRadius: '2px', background: 'white', outline: 'none', boxSizing: 'border-box' }}>
+                <option value="">-- SELECT TECHNICIAN --</option>
+                {systemUsers.filter(u => u.active !== false).map(u => <option key={u.id} value={u.name}>{u.name}</option>)}
+              </select>
+            </div>
+            <div>
+              <div style={S.label}>START TIME</div>
+              <input type="datetime-local" value={historyForm.start_time} onChange={e => setHistoryForm(f => ({ ...f, start_time: e.target.value }))} style={{ width: '100%', padding: '5px 8px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", border: '1px solid hsl(220,18%,72%)', borderRadius: '2px', background: 'white', outline: 'none', boxSizing: 'border-box' }} />
+            </div>
+            <div>
+              <div style={S.label}>END TIME</div>
+              <input type="datetime-local" value={historyForm.end_time} onChange={e => setHistoryForm(f => ({ ...f, end_time: e.target.value }))} style={{ width: '100%', padding: '5px 8px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", border: '1px solid hsl(220,18%,72%)', borderRadius: '2px', background: 'white', outline: 'none', boxSizing: 'border-box' }} />
+            </div>
+            <div style={{ gridColumn: '1 / -1' }}>
+              <div style={S.label}>DESCRIPTION *</div>
+              <textarea value={historyForm.description} onChange={e => setHistoryForm(f => ({ ...f, description: e.target.value }))} placeholder="Work performed..." rows={3} style={{ width: '100%', padding: '5px 8px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", border: '1px solid hsl(220,18%,72%)', borderRadius: '2px', background: 'white', outline: 'none', resize: 'vertical', boxSizing: 'border-box' }} />
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: '6px' }}>
+            <button onClick={handleAddHistory} disabled={!historyForm.technician || !historyForm.description} style={{ padding: '6px 14px', background: 'hsl(140,55%,38%)', color: 'white', border: '1px solid hsl(140,55%,30%)', borderRadius: '2px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", fontWeight: '600', cursor: 'pointer' }}>
+              {editingHistoryId ? 'UPDATE ENTRY' : 'SAVE ENTRY'}
+            </button>
+            <button onClick={handleCancelEdit} style={{ padding: '6px 14px', background: 'hsl(220,18%,88%)', color: 'hsl(220,20%,25%)', border: '1px solid hsl(220,18%,72%)', borderRadius: '2px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", cursor: 'pointer' }}>
+              CANCEL
+            </button>
+          </div>
+        </div>
+      </FormModal>
     </div>
   );
 }
