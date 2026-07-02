@@ -95,6 +95,9 @@ export default function InspectionDetail() {
             <div class="check-item"><span>Mounting Secure</span><span class="${inspection.mounting_secure ? 'check-pass' : 'check-fail'}">${inspection.mounting_secure ? '✓ PASS' : '✗ FAIL'}</span></div>
             <div class="check-item"><span>Date/Time Accuracy</span><span class="${inspection.date_time_accuracy ? 'check-pass' : 'check-fail'}">${inspection.date_time_accuracy ? '✓ PASS' : '✗ FAIL'}</span></div>
             <div class="check-item"><span>Signals & Lights</span><span class="${inspection.signals_lights_functional ? 'check-pass' : 'check-fail'}">${inspection.signals_lights_functional ? '✓ PASS' : '✗ FAIL'}</span></div>
+            <div class="check-item"><span>Panic/Alarm Button</span><span class="${inspection.panic_alarm_functional ? 'check-pass' : 'check-fail'}">${inspection.panic_alarm_functional ? '✓ PASS' : '✗ FAIL'}</span></div>
+            <div class="check-item"><span>Lenses/Domes Clean</span><span class="${inspection.lenses_domes_clean ? 'check-pass' : 'check-fail'}">${inspection.lenses_domes_clean ? '✓ PASS' : '✗ FAIL'}</span></div>
+            <div class="check-item"><span>Focus/Adjustment</span><span class="${inspection.focus_adjustment ? 'check-pass' : 'check-fail'}">${inspection.focus_adjustment ? '✓ PASS' : '✗ FAIL'}</span></div>
             <div class="check-item"><span>Programming</span><span class="${inspection.programming_verified ? 'check-pass' : 'check-fail'}">${inspection.programming_verified ? '✓ PASS' : '✗ FAIL'}</span></div>
           </div>
           ${inspection.next_inspection_due ? `<div class="next-due">Next Inspection Due:<br>${moment(inspection.next_inspection_due).format('MM/DD/YYYY')}</div>` : ''}
@@ -188,6 +191,9 @@ export default function InspectionDetail() {
             <PassFail label="DVR SYSTEM FUNCTIONAL" pass={inspection.dvr_functional} />
             <PassFail label="DATE/TIME ACCURACY" pass={inspection.date_time_accuracy} />
             <PassFail label="SIGNALS & LIGHTS FUNCTIONAL" pass={inspection.signals_lights_functional} />
+            <PassFail label="PANIC/ALARM BUTTON FUNCTIONING" pass={inspection.panic_alarm_functional} />
+            <PassFail label="LENSES/DOMES CLEAN AND CLEAR" pass={inspection.lenses_domes_clean} />
+            <PassFail label="FOCUS/ADJUSTMENT" pass={inspection.focus_adjustment} />
             <PassFail label="PROGRAMMING VERIFIED" pass={inspection.programming_verified} />
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 8px', fontSize: '11px', fontFamily: "'Courier Prime', monospace" }}>
               <span style={{ fontWeight: '700' }}>LENS CONDITION</span>
@@ -255,6 +261,9 @@ export default function InspectionDetail() {
                 ['Mounting Secure', inspection.mounting_secure],
                 ['Date/Time Accuracy', inspection.date_time_accuracy],
                 ['Signals & Lights', inspection.signals_lights_functional],
+                ['Panic/Alarm Button', inspection.panic_alarm_functional],
+                ['Lenses/Domes Clean', inspection.lenses_domes_clean],
+                ['Focus/Adjustment', inspection.focus_adjustment],
                 ['Programming', inspection.programming_verified],
               ].map(([label, val]) => (
                 <div key={label} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px dotted #ccc', padding: '1px 0', fontSize: '7pt' }}>

@@ -8,6 +8,9 @@ export function exportInspectionPDF({ inspection, bus }) {
     { label: 'DVR System Functional', val: inspection.dvr_functional },
     { label: 'Date / Time Accuracy', val: inspection.date_time_accuracy },
     { label: 'Signals & Lights Functional', val: inspection.signals_lights_functional },
+    { label: 'Panic/Alarm Button Functioning', val: inspection.panic_alarm_functional },
+    { label: 'Lenses/Domes Clean and Clear', val: inspection.lenses_domes_clean },
+    { label: 'Focus/Adjustment', val: inspection.focus_adjustment },
     { label: 'Programming Verified', val: inspection.programming_verified },
   ];
 
