@@ -7,7 +7,9 @@ import BusForm from '../components/fleet/BusForm';
 import FormModal from '../components/FormModal';
 import FleetTable from '../components/fleet/FleetTable.jsx';
 import DeleteConfirmModal from '../components/DeleteConfirmModal';
-import { Plus, FileDown, Search, Bus, MapPin, Filter, AlertTriangle } from 'lucide-react';
+import { Plus, FileDown, Search, Bus, MapPin, Filter, AlertTriangle, Clock } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 
 export default function FleetManager() {
   const queryClient = useQueryClient();
@@ -137,6 +139,9 @@ export default function FleetManager() {
           <button onClick={handleExportPDF} style={{ display: 'flex', alignItems: 'center', gap: '5px', padding: '6px 12px', background: 'rgba(255,255,255,0.18)', color: 'white', border: '1px solid rgba(255,255,255,0.25)', borderRadius: '2px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", fontWeight: '600', cursor: 'pointer', letterSpacing: '0.05em' }}>
             <FileDown style={{ width: 13, height: 13 }} /> ENTIRE FLEET PDF
           </button>
+          <Link to={createPageUrl('BusProfile') + '?bus=LAB HOURS'} style={{ display: 'flex', alignItems: 'center', gap: '5px', padding: '6px 12px', background: 'hsl(280,45%,40%)', color: 'white', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '2px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", fontWeight: '600', textDecoration: 'none', letterSpacing: '0.05em' }}>
+            <Clock style={{ width: 13, height: 13 }} /> LAB/FIELD HOURS
+          </Link>
         </div>
       </div>
 

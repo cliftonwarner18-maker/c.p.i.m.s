@@ -93,8 +93,9 @@ export default function BusProfile() {
   const busWOs = workOrders.filter(wo => wo.bus_number === busNumber);
   const busInspections = inspections.filter(i => i.bus_number === busNumber);
   const busHistory = history.filter(h => h.bus_number === busNumber);
+  const isPlaceholder = !bus && busNumber?.trim().toUpperCase() === 'LAB HOURS';
 
-  if (!bus && buses.length > 0) {
+  if (!bus && !isPlaceholder && buses.length > 0) {
     return (
       <div style={{ padding: '40px', textAlign: 'center', fontFamily: "'Courier Prime', monospace" }}>
         <div style={{ fontSize: '13px', color: 'hsl(0,65%,40%)', marginBottom: '12px' }}>BUS #{busNumber} NOT FOUND IN DATABASE</div>
@@ -163,9 +164,9 @@ export default function BusProfile() {
           </Link>
           <Bus style={{ width: 20, height: 20 }} />
           <div>
-            <div style={{ fontSize: '14px', fontWeight: '700', letterSpacing: '0.08em' }}>Bus #{busNumber} - Vehicle Profile</div>
+            <div style={{ fontSize: '14px', fontWeight: '700', letterSpacing: '0.08em' }}>{isPlaceholder ? 'LAB / FIELD HOURS' : `Bus #${busNumber} - Vehicle Profile`}</div>
             <div style={{ fontSize: '10px', opacity: 0.8, letterSpacing: '0.05em' }}>
-              {bus ? `${bus.year || ''} ${bus.make || ''} ${bus.model || ''}`.trim() || 'Vehicle Details' : 'Loading...'}
+              {isPlaceholder ? 'Non-vehicle labor log' : bus ? `${bus.year || ''} ${bus.make || ''} ${bus.model || ''}`.trim() || 'Vehicle Details' : 'Loading...'}
             </div>
           </div>
           {bus && (
@@ -181,147 +182,155 @@ export default function BusProfile() {
         </div>
       </div>
 
-      {!bus ? (
+      {(!bus && !isPlaceholder) ? (
         <div style={{ background: 'white', border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', padding: '40px', textAlign: 'center', color: 'hsl(220,10%,50%)', fontSize: '12px' }}>
           LOADING VEHICLE DATA...
         </div>
       ) : (
         <>
           {/* Vehicle Info */}
-          <div style={{ border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', overflow: 'hidden' }}>
-            <SectionHeader title="VEHICLE INFORMATION" icon={Bus} />
-            <div style={{ padding: '12px 14px', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '12px', background: 'white' }}>
-              <Field label="Bus Number" value={bus.bus_number} />
-              <Field label="Type" value={bus.bus_type} />
-              <Field label="Year" value={bus.year} />
-              <Field label="Make" value={bus.make} />
-              <Field label="Model" value={bus.model} />
-              <Field label="VIN" value={bus.vin} />
-              <Field label="Engine" value={bus.engine} />
-              <Field label="Capacity" value={bus.passenger_capacity ? `${bus.passenger_capacity} passengers` : null} />
-              <Field label="Location" value={bus.base_location} />
-              <Field label="Asset #" value={bus.asset_number} />
-              <Field label="Wheelchair" value={bus.wheelchair_accessible ? 'YES' : 'NO'} />
-              <Field label="Next Inspection" value={bus.next_inspection_due ? (
-                <span style={{ color: overdue ? 'hsl(0,65%,40%)' : 'hsl(140,50%,32%)', fontWeight: overdue ? '700' : '500' }}>
-                  {overdue ? '⚠ OVERDUE — ' : ''}{new Date(bus.next_inspection_due).toLocaleDateString()}
-                </span>
-              ) : null} />
+          {bus && (
+            <div style={{ border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', overflow: 'hidden' }}>
+              <SectionHeader title="VEHICLE INFORMATION" icon={Bus} />
+              <div style={{ padding: '12px 14px', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '12px', background: 'white' }}>
+                <Field label="Bus Number" value={bus.bus_number} />
+                <Field label="Type" value={bus.bus_type} />
+                <Field label="Year" value={bus.year} />
+                <Field label="Make" value={bus.make} />
+                <Field label="Model" value={bus.model} />
+                <Field label="VIN" value={bus.vin} />
+                <Field label="Engine" value={bus.engine} />
+                <Field label="Capacity" value={bus.passenger_capacity ? `${bus.passenger_capacity} passengers` : null} />
+                <Field label="Location" value={bus.base_location} />
+                <Field label="Asset #" value={bus.asset_number} />
+                <Field label="Wheelchair" value={bus.wheelchair_accessible ? 'YES' : 'NO'} />
+                <Field label="Next Inspection" value={bus.next_inspection_due ? (
+                  <span style={{ color: overdue ? 'hsl(0,65%,40%)' : 'hsl(140,50%,32%)', fontWeight: overdue ? '700' : '500' }}>
+                    {overdue ? '⚠ OVERDUE — ' : ''}{new Date(bus.next_inspection_due).toLocaleDateString()}
+                  </span>
+                ) : null} />
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Camera System */}
-          <div style={{ border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', overflow: 'hidden' }}>
-            <SectionHeader title="CAMERA & SURVEILLANCE SYSTEM" icon={ClipboardCheck} color="hsl(200,65%,30%)" />
-            <div style={{ padding: '12px 14px', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '12px', background: 'white' }}>
-              <Field label="Primary Camera Type" value={bus.camera_system_type} />
-              <Field label="Camera Serial Number" value={bus.camera_serial_number} />
-              <Field label="Camera Model Number" value={bus.camera_model_number} />
-              <Field label="Inside Cameras" value={bus.cameras_inside != null ? String(bus.cameras_inside) : '—'} />
-              <Field label="Outside Cameras" value={bus.cameras_outside != null ? String(bus.cameras_outside) : '—'} />
-              <Field label="AI Cameras" value={bus.cameras_ai != null ? String(bus.cameras_ai) : '—'} />
-              <Field label="Total Cameras Installed" value={
-                (() => {
-                  const total = (bus.cameras_inside||0)+(bus.cameras_outside||0)+(bus.cameras_ai||0);
-                  const parts = [];
-                  if (bus.cameras_inside != null) parts.push(`${bus.cameras_inside} inside`);
-                  if (bus.cameras_outside != null) parts.push(`${bus.cameras_outside} outside`);
-                  if (bus.cameras_ai != null) parts.push(`${bus.cameras_ai} AI`);
-                  return <span style={{fontWeight:'700',color:'hsl(220,70%,35%)'}}>{total} <span style={{fontSize:'10px',color:'hsl(220,10%,50%)',fontWeight:'400'}}>{parts.length ? `(${parts.join(' + ')})` : ''}</span></span>;
-                })()
-              } />
-              <Field label="AI Cameras Installed" value={
-                <span style={{fontWeight:'700',color: bus.ai_cameras_installed ? 'hsl(140,55%,30%)' : 'hsl(0,60%,40%)'}}>{bus.ai_cameras_installed ? '✓ YES' : '✗ NO'}</span>
-              } />
-              <Field label="Stop Arm Violation Cameras" value={
-                <span style={{fontWeight:'700',color: bus.stop_arm_cameras ? 'hsl(140,55%,30%)' : 'hsl(0,60%,40%)'}}>{bus.stop_arm_cameras ? '✓ INSTALLED' : '✗ NOT INSTALLED'}</span>
-              } />
-              <Field label="Dash Cam SID" value={bus.dash_cam_sid} />
-              <Field label="Gateway SID" value={bus.gateway_sid} />
-              <Field label="Samsara Enabled" value={bus.samsara_enabled ? 'YES' : 'NO'} />
-              <Field label="Samsara Audio-Video" value={bus.samsara_av_enabled ? 'YES' : 'NO'} />
-              <Field label="Samsara Inputs Module" value={bus.samsara_inputs_enabled ? 'YES' : 'NO'} />
+          {bus && (
+            <div style={{ border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', overflow: 'hidden' }}>
+              <SectionHeader title="CAMERA & SURVEILLANCE SYSTEM" icon={ClipboardCheck} color="hsl(200,65%,30%)" />
+              <div style={{ padding: '12px 14px', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '12px', background: 'white' }}>
+                <Field label="Primary Camera Type" value={bus.camera_system_type} />
+                <Field label="Camera Serial Number" value={bus.camera_serial_number} />
+                <Field label="Camera Model Number" value={bus.camera_model_number} />
+                <Field label="Inside Cameras" value={bus.cameras_inside != null ? String(bus.cameras_inside) : '—'} />
+                <Field label="Outside Cameras" value={bus.cameras_outside != null ? String(bus.cameras_outside) : '—'} />
+                <Field label="AI Cameras" value={bus.cameras_ai != null ? String(bus.cameras_ai) : '—'} />
+                <Field label="Total Cameras Installed" value={
+                  (() => {
+                    const total = (bus.cameras_inside||0)+(bus.cameras_outside||0)+(bus.cameras_ai||0);
+                    const parts = [];
+                    if (bus.cameras_inside != null) parts.push(`${bus.cameras_inside} inside`);
+                    if (bus.cameras_outside != null) parts.push(`${bus.cameras_outside} outside`);
+                    if (bus.cameras_ai != null) parts.push(`${bus.cameras_ai} AI`);
+                    return <span style={{fontWeight:'700',color:'hsl(220,70%,35%)'}}>{total} <span style={{fontSize:'10px',color:'hsl(220,10%,50%)',fontWeight:'400'}}>{parts.length ? `(${parts.join(' + ')})` : ''}</span></span>;
+                  })()
+                } />
+                <Field label="AI Cameras Installed" value={
+                  <span style={{fontWeight:'700',color: bus.ai_cameras_installed ? 'hsl(140,55%,30%)' : 'hsl(0,60%,40%)'}}>{bus.ai_cameras_installed ? '✓ YES' : '✗ NO'}</span>
+                } />
+                <Field label="Stop Arm Violation Cameras" value={
+                  <span style={{fontWeight:'700',color: bus.stop_arm_cameras ? 'hsl(140,55%,30%)' : 'hsl(0,60%,40%)'}}>{bus.stop_arm_cameras ? '✓ INSTALLED' : '✗ NOT INSTALLED'}</span>
+                } />
+                <Field label="Dash Cam SID" value={bus.dash_cam_sid} />
+                <Field label="Gateway SID" value={bus.gateway_sid} />
+                <Field label="Samsara Enabled" value={bus.samsara_enabled ? 'YES' : 'NO'} />
+                <Field label="Samsara Audio-Video" value={bus.samsara_av_enabled ? 'YES' : 'NO'} />
+                <Field label="Samsara Inputs Module" value={bus.samsara_inputs_enabled ? 'YES' : 'NO'} />
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Work Orders */}
-          <div style={{ border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', overflow: 'hidden' }}>
-            <SectionHeader title={`WORK ORDERS (${busWOs.length})`} icon={Wrench} color="hsl(30,65%,35%)" />
-            {busWOs.length === 0 ? (
-              <div style={{ padding: '16px', textAlign: 'center', color: 'hsl(220,10%,55%)', fontSize: '11px', background: 'white' }}>NO WORK ORDERS ON FILE</div>
-            ) : (
-              <div style={{ overflowX: 'auto', background: 'white' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px', fontFamily: "'Courier Prime', monospace" }}>
-                  <thead>
-                    <tr>
-                      {['W/O #', 'DATE', 'REPORTED BY', 'ISSUE', 'STATUS', 'TECHNICIAN', 'ELAPSED'].map((h, i) => (
-                        <th key={i} style={S.th}>{h}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {busWOs.map((wo, i) => (
-                      <tr key={wo.id} style={{ background: i % 2 === 0 ? 'white' : 'hsl(220,20%,97%)' }}>
-                        <td style={S.td}>
-                          <Link to={`/WorkOrderDetail?id=${wo.id}`} style={{ color: 'hsl(220,60%,40%)', textDecoration: 'none', fontWeight: '700' }}>
-                            {wo.order_number || wo.id?.slice(-6)}
-                          </Link>
-                        </td>
-                        <td style={S.td}>{wo.created_date ? new Date(wo.created_date).toLocaleDateString() : '—'}</td>
-                        <td style={S.td}>{wo.reported_by || '—'}</td>
-                        <td style={{ ...S.td, maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{wo.issue_description || '—'}</td>
-                        <td style={S.td}>
-                          <span style={{ fontWeight: '700', color: wo.status === 'Completed' ? 'hsl(140,55%,30%)' : wo.status === 'Pending' ? 'hsl(30,70%,38%)' : 'hsl(220,55%,35%)' }}>
-                            {wo.status}
-                          </span>
-                        </td>
-                        <td style={S.td}>{wo.technician_name || '—'}</td>
-                        <td style={S.td}>{wo.elapsed_time_minutes ? `${wo.elapsed_time_minutes} min` : '—'}</td>
+          {bus && (
+            <div style={{ border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', overflow: 'hidden' }}>
+              <SectionHeader title={`WORK ORDERS (${busWOs.length})`} icon={Wrench} color="hsl(30,65%,35%)" />
+              {busWOs.length === 0 ? (
+                <div style={{ padding: '16px', textAlign: 'center', color: 'hsl(220,10%,55%)', fontSize: '11px', background: 'white' }}>NO WORK ORDERS ON FILE</div>
+              ) : (
+                <div style={{ overflowX: 'auto', background: 'white' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px', fontFamily: "'Courier Prime', monospace" }}>
+                    <thead>
+                      <tr>
+                        {['W/O #', 'DATE', 'REPORTED BY', 'ISSUE', 'STATUS', 'TECHNICIAN', 'ELAPSED'].map((h, i) => (
+                          <th key={i} style={S.th}>{h}</th>
+                        ))}
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
+                    </thead>
+                    <tbody>
+                      {busWOs.map((wo, i) => (
+                        <tr key={wo.id} style={{ background: i % 2 === 0 ? 'white' : 'hsl(220,20%,97%)' }}>
+                          <td style={S.td}>
+                            <Link to={`/WorkOrderDetail?id=${wo.id}`} style={{ color: 'hsl(220,60%,40%)', textDecoration: 'none', fontWeight: '700' }}>
+                              {wo.order_number || wo.id?.slice(-6)}
+                            </Link>
+                          </td>
+                          <td style={S.td}>{wo.created_date ? new Date(wo.created_date).toLocaleDateString() : '—'}</td>
+                          <td style={S.td}>{wo.reported_by || '—'}</td>
+                          <td style={{ ...S.td, maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{wo.issue_description || '—'}</td>
+                          <td style={S.td}>
+                            <span style={{ fontWeight: '700', color: wo.status === 'Completed' ? 'hsl(140,55%,30%)' : wo.status === 'Pending' ? 'hsl(30,70%,38%)' : 'hsl(220,55%,35%)' }}>
+                              {wo.status}
+                            </span>
+                          </td>
+                          <td style={S.td}>{wo.technician_name || '—'}</td>
+                          <td style={S.td}>{wo.elapsed_time_minutes ? `${wo.elapsed_time_minutes} min` : '—'}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Inspections */}
-          <div style={{ border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', overflow: 'hidden' }}>
-            <SectionHeader title={`INSPECTIONS (${busInspections.length})`} icon={ClipboardCheck} color="hsl(140,50%,28%)" />
-            {busInspections.length === 0 ? (
-              <div style={{ padding: '16px', textAlign: 'center', color: 'hsl(220,10%,55%)', fontSize: '11px', background: 'white' }}>NO INSPECTIONS ON FILE</div>
-            ) : (
-              <div style={{ overflowX: 'auto', background: 'white' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px', fontFamily: "'Courier Prime', monospace" }}>
-                  <thead>
-                    <tr>
-                      {['DATE', 'INSPECTOR', 'OVERALL', 'CAMERA', 'DVR', 'SIGNALS', 'NEXT DUE', 'NOTES'].map((h, i) => (
-                        <th key={i} style={S.th}>{h}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {busInspections.map((ins, i) => (
-                      <tr key={ins.id} style={{ background: i % 2 === 0 ? 'white' : 'hsl(220,20%,97%)' }}>
-                        <td style={S.td}>{ins.inspection_date ? new Date(ins.inspection_date).toLocaleDateString() : new Date(ins.created_date).toLocaleDateString()}</td>
-                        <td style={S.td}>{ins.inspector_name || '—'}</td>
-                        <td style={S.td}>
-                          <span style={{ fontWeight: '700', color: ins.overall_status === 'Pass' ? 'hsl(140,55%,30%)' : ins.overall_status === 'Fail' ? 'hsl(0,65%,40%)' : 'hsl(30,70%,38%)' }}>
-                            {ins.overall_status || '—'}
-                          </span>
-                        </td>
-                        <td style={S.td}>{ins.camera_system_functional ? '✓' : '✗'}</td>
-                        <td style={S.td}>{ins.dvr_functional ? '✓' : '✗'}</td>
-                        <td style={S.td}>{ins.signals_lights_functional ? '✓' : '✗'}</td>
-                        <td style={S.td}>{ins.next_inspection_due ? new Date(ins.next_inspection_due).toLocaleDateString() : '—'}</td>
-                        <td style={{ ...S.td, maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{ins.inspection_notes || '—'}</td>
+          {bus && (
+            <div style={{ border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', overflow: 'hidden' }}>
+              <SectionHeader title={`INSPECTIONS (${busInspections.length})`} icon={ClipboardCheck} color="hsl(140,50%,28%)" />
+              {busInspections.length === 0 ? (
+                <div style={{ padding: '16px', textAlign: 'center', color: 'hsl(220,10%,55%)', fontSize: '11px', background: 'white' }}>NO INSPECTIONS ON FILE</div>
+              ) : (
+                <div style={{ overflowX: 'auto', background: 'white' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px', fontFamily: "'Courier Prime', monospace" }}>
+                    <thead>
+                      <tr>
+                        {['DATE', 'INSPECTOR', 'OVERALL', 'CAMERA', 'DVR', 'SIGNALS', 'NEXT DUE', 'NOTES'].map((h, i) => (
+                          <th key={i} style={S.th}>{h}</th>
+                        ))}
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
+                    </thead>
+                    <tbody>
+                      {busInspections.map((ins, i) => (
+                        <tr key={ins.id} style={{ background: i % 2 === 0 ? 'white' : 'hsl(220,20%,97%)' }}>
+                          <td style={S.td}>{ins.inspection_date ? new Date(ins.inspection_date).toLocaleDateString() : new Date(ins.created_date).toLocaleDateString()}</td>
+                          <td style={S.td}>{ins.inspector_name || '—'}</td>
+                          <td style={S.td}>
+                            <span style={{ fontWeight: '700', color: ins.overall_status === 'Pass' ? 'hsl(140,55%,30%)' : ins.overall_status === 'Fail' ? 'hsl(0,65%,40%)' : 'hsl(30,70%,38%)' }}>
+                              {ins.overall_status || '—'}
+                            </span>
+                          </td>
+                          <td style={S.td}>{ins.camera_system_functional ? '✓' : '✗'}</td>
+                          <td style={S.td}>{ins.dvr_functional ? '✓' : '✗'}</td>
+                          <td style={S.td}>{ins.signals_lights_functional ? '✓' : '✗'}</td>
+                          <td style={S.td}>{ins.next_inspection_due ? new Date(ins.next_inspection_due).toLocaleDateString() : '—'}</td>
+                          <td style={{ ...S.td, maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{ins.inspection_notes || '—'}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Manual Service Log */}
           <div style={{ border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', overflow: 'hidden' }}>
@@ -409,7 +418,7 @@ export default function BusProfile() {
           </div>
 
           {/* Notes & Legacy */}
-          {(bus.notes || bus.legacy_upload) && (
+          {bus && (bus.notes || bus.legacy_upload) && (
             <div style={{ border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', overflow: 'hidden' }}>
               <SectionHeader title="NOTES & LEGACY DATA" icon={FileText} color="hsl(220,20%,35%)" />
               <div style={{ padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: '10px', background: 'white' }}>
