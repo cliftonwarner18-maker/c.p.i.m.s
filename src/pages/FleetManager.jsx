@@ -17,6 +17,7 @@ export default function FleetManager() {
   const [editingBus, setEditingBus] = useState(null);
   const [searchBus, setSearchBus] = useState('');
   const [searchVin, setSearchVin] = useState('');
+  const [searchTag, setSearchTag] = useState('');
   const [typeFilter, setTypeFilter] = useState('All');
   const [locationFilter, setLocationFilter] = useState('All');
   const [stopArmFilter, setStopArmFilter] = useState(false);
@@ -57,6 +58,7 @@ export default function FleetManager() {
   const filtered = buses.filter(b => {
     const matchBus = !searchBus || b.bus_number?.toLowerCase().includes(searchBus.trim().toLowerCase());
     const matchVin = !searchVin || b.vin?.toLowerCase().includes(searchVin.trim().toLowerCase());
+    const matchTag = !searchTag || b.license_plate?.toLowerCase().includes(searchTag.trim().toLowerCase());
     const matchType = typeFilter === 'All' || b.bus_type === typeFilter;
     const matchLocation = locationFilter === 'All' || b.base_location === locationFilter;
     const matchStopArm = !stopArmFilter || b.stop_arm_cameras === true;
@@ -64,7 +66,7 @@ export default function FleetManager() {
     const matchAiCam = !aiCamFilter || b.ai_cameras_installed === true;
     const matchCamera = cameraFilter === 'All' || b.camera_system_type === cameraFilter;
     const matchMake = makeFilter === 'All' || b.make === makeFilter;
-    return matchBus && matchVin && matchType && matchLocation && matchStopArm && matchNoStopArm && matchAiCam && matchCamera && matchMake;
+    return matchBus && matchVin && matchTag && matchType && matchLocation && matchStopArm && matchNoStopArm && matchAiCam && matchCamera && matchMake;
   });
 
   const activeCount = buses.filter(b => b.status === 'Active').length;
@@ -206,6 +208,7 @@ export default function FleetManager() {
           <Search style={{ width: 12, height: 12, color: 'hsl(220,20%,45%)' }} />
           <input placeholder="Search BUS #..." value={searchBus} onChange={e => setSearchBus(e.target.value)} style={{ padding: '4px 8px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", border: '1px solid hsl(220,18%,72%)', borderRadius: '2px', background: 'white', width: '150px', outline: 'none' }} />
           <input placeholder="Search VIN..." value={searchVin} onChange={e => setSearchVin(e.target.value)} style={{ padding: '4px 8px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", border: '1px solid hsl(220,18%,72%)', borderRadius: '2px', background: 'white', width: '180px', outline: 'none' }} />
+          <input placeholder="Search TAG #..." value={searchTag} onChange={e => setSearchTag(e.target.value)} style={{ padding: '4px 8px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", border: '1px solid hsl(220,18%,72%)', borderRadius: '2px', background: 'white', width: '150px', outline: 'none' }} />
         </div>
       </div>
 
