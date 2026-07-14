@@ -46,7 +46,7 @@ export default function WorkOrderDetailForm({ id, onClose }) {
 
   const [form, setForm] = useState(null);
   useEffect(() => {
-    if (workOrder && (!form || form.id !== workOrder.id)) setForm({ ...workOrder });
+    if (workOrder && (!form || form.id !== workOrder.id)) setForm({ ...workOrder, td18_operations: workOrder.td18_operations || [] });
   }, [workOrder]);
 
   const updateMutation = useMutation({
@@ -126,6 +126,17 @@ export default function WorkOrderDetailForm({ id, onClose }) {
   const handleExportTD18 = () => {
     if (!form) return;
     const createdDate = moment(form.created_date).format('MM/DD/YYYY');
+    const ops = Array.isArray(form.td18_operations) ? form.td18_operations.filter(o => o && (o.description || o.person_id || o.hours)) : [];
+    const workRows = ops.length > 0 ? ops.map((op, i) => `
+        <tr>
+          <td style="font-weight:700;">${String((i + 1) * 10).padStart(3, '0')}</td>
+          <td style="white-space:pre-wrap; word-break:break-word; padding:4px 6px;">${op.description || ''}</td>
+          <td>${op.person_id || ''}</td>
+          <td>${op.hours || ''}</td>
+          <td></td><td></td><td></td><td></td>
+        </tr>`).join('') : '';
+    const blankRowCount = Math.max(0, 8 - ops.length);
+    const blankRows = Array.from({ length: blankRowCount }, (_, i) => `<tr><td style="font-weight:700;">${String((ops.length + i + 1) * 10).padStart(3, '0')}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>`).join('');
 
     const html = `<!DOCTYPE html><html><head><meta charset="utf-8">
     <title>TD-18 Work Order ${form.order_number || ''}</title>
@@ -166,11 +177,11 @@ export default function WorkOrderDetailForm({ id, onClose }) {
     <!-- Row 2: ORDER TYPE / PERSON RESPONSIBLE / PM ACT TYPE / DAMAGE CAUSE / OPERATOR -->
     <table>
       <tr>
-        <td style="width:15%"><span class="cell-label">ORDER TYPE</span><span class="cell-val">${form.work_order_type || ''}</span></td>
+        <td style="width:15%"><span class="cell-label">ORDER TYPE</span><span class="cell-val"></span></td>
         <td style="width:25%"><span class="cell-label">PERSON RESPONSIBLE-WO</span><span class="cell-val"></span></td>
         <td style="width:14%"><span class="cell-label">PM ACT. TYPE</span><span class="cell-val"></span></td>
         <td style="width:16%"><span class="cell-label">DAMAGE/CAUSE</span><span class="cell-val"></span></td>
-        <td><span class="cell-label">OPERATOR/PERSON RPRT.</span><span class="cell-val">${form.reported_by || ''}</span></td>
+        <td><span class="cell-label">OPERATOR/PERSON RPRT.</span><span class="cell-val"></span></td>
       </tr>
     </table>
 
@@ -182,7 +193,7 @@ export default function WorkOrderDetailForm({ id, onClose }) {
           <span class="cell-val">Vehicle No. ${form.bus_number || '________'} — ${form.issue_description || ''}</span>
         </td>
         <td style="width:15%"><span class="cell-label">AGENCY</span><span class="cell-val"></span></td>
-        <td><span class="cell-label">R/3 ORDER NO.</span><span class="cell-val">${form.order_number || ''}</span></td>
+        <td><span class="cell-label">R/3 ORDER NO.</span><span class="cell-val"></span></td>
       </tr>
     </table>
 
@@ -202,12 +213,8 @@ export default function WorkOrderDetailForm({ id, onClose }) {
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td style="font-weight:700;">010</td>
-          <td style="white-space:pre-wrap; word-break:break-word; padding:4px 6px; min-height:40px;">${form.repairs_rendered || ''}</td>
-          <td></td><td></td><td></td><td></td><td></td><td></td>
-        </tr>
-        ${Array.from({ length: 7 }, (_, i) => `<tr><td style="font-weight:700;">${String((i + 2) * 10).padStart(3, '0')}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>`).join('')}
+        ${workRows}
+        ${blankRows}
       </tbody>
     </table>
 
@@ -381,6 +388,44 @@ export default function WorkOrderDetailForm({ id, onClose }) {
         <div style={{ marginBottom: '12px' }}>
           <label style={labelStyle}>REPAIRS / REMEDY RENDERED</label>
           <textarea value={form.repairs_rendered || ''} onChange={e => setForm({ ...form, repairs_rendered: e.target.value })} placeholder="Describe all repairs performed in detail..." rows={7} style={{ ...inputStyle, resize: 'vertical', lineHeight: '1.5' }} />
+        </div>
+
+        {/* TD-18 Operations line items */}
+        <div style={{ marginBottom: '12px' }}>
+          <label style={labelStyle}>TD-18 OPERATIONS (LINE ITEMS FOR TD-18 EXPORT)</label>
+          <div style={{ border: '1px solid hsl(220,18%,72%)', borderRadius: '2px', background: 'hsl(45,40%,96%)', padding: '8px' }}>
+            {(form.td18_operations || []).map((op, idx) => (
+              <div key={idx} style={{ display: 'flex', gap: '6px', marginBottom: '6px', alignItems: 'center' }}>
+                <span style={{ fontSize: '11px', fontWeight: '700', color: 'hsl(220,20%,35%)', minWidth: '32px' }}>{String((idx + 1) * 10).padStart(3, '0')}</span>
+                <input
+                  value={op.description || ''}
+                  onChange={e => { const arr = [...(form.td18_operations || [])]; arr[idx] = { ...arr[idx], description: e.target.value }; setForm({ ...form, td18_operations: arr }); }}
+                  placeholder="Operation description..."
+                  style={{ ...inputStyle, flex: 1 }}
+                />
+                <input
+                  value={op.person_id || ''}
+                  onChange={e => { const arr = [...(form.td18_operations || [])]; arr[idx] = { ...arr[idx], person_id: e.target.value }; setForm({ ...form, td18_operations: arr }); }}
+                  placeholder="PER. ID"
+                  style={{ ...inputStyle, width: '100px' }}
+                />
+                <input
+                  value={op.hours || ''}
+                  onChange={e => { const arr = [...(form.td18_operations || [])]; arr[idx] = { ...arr[idx], hours: e.target.value }; setForm({ ...form, td18_operations: arr }); }}
+                  placeholder="HRS."
+                  style={{ ...inputStyle, width: '70px' }}
+                />
+                <button
+                  onClick={() => { const arr = (form.td18_operations || []).filter((_, i) => i !== idx); setForm({ ...form, td18_operations: arr }); }}
+                  style={{ padding: '4px 8px', fontSize: '11px', fontFamily: FF, background: 'hsl(0,65%,48%)', color: 'white', border: 'none', borderRadius: '2px', cursor: 'pointer', fontWeight: '700' }}
+                >✕</button>
+              </div>
+            ))}
+            <button
+              onClick={() => setForm({ ...form, td18_operations: [...(form.td18_operations || []), { description: '', person_id: '', hours: '' }] })}
+              style={{ padding: '5px 12px', fontSize: '10px', fontFamily: FF, background: 'hsl(45,90%,45%)', color: '#1a1a1a', border: '1px solid hsl(45,90%,35%)', borderRadius: '2px', cursor: 'pointer', fontWeight: '700' }}
+            >+ ADD OPERATION</button>
+          </div>
         </div>
 
         {/* Action buttons */}

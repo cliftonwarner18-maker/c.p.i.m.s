@@ -64,6 +64,27 @@
       "type": "string",
       "description": "Description of repairs performed"
     },
+    "td18_operations": {
+      "type": "array",
+      "description": "Line items for the TD-18 Work Performed section",
+      "items": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "description": "Operation description"
+          },
+          "person_id": {
+            "type": "string",
+            "description": "Person ID"
+          },
+          "hours": {
+            "type": "string",
+            "description": "Hours"
+          }
+        }
+      }
+    },
     "repair_start_time": {
       "type": "string",
       "description": "Repair start time (24hr ISO)"
