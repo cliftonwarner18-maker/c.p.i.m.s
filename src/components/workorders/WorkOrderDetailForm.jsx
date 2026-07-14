@@ -75,6 +75,25 @@ export default function WorkOrderDetailForm({ id, onClose }) {
     if (!form) return;
     const elMin = form.elapsed_time_minutes || 0;
     const elStr = elMin > 0 ? `${Math.floor(elMin / 60)}h ${elMin % 60}m (${elMin} min)` : '—';
+    const opsPdf = (form.td18_operations || []).filter(o => o && (o.description || o.person_id || o.hours)).slice(0, 8);
+    const opsHtml = opsPdf.length ? `
+    <div class="section-header" style="margin-top:12px;">TD-18 OPERATIONS</div>
+    <table style="width:100%; border-collapse:collapse; font-size:9pt; margin-bottom:8px;">
+      <thead><tr style="background:#edf1fc;">
+        <th style="border:1px solid #1e3c78; padding:4px 6px; text-align:left; width:8%;">OP.</th>
+        <th style="border:1px solid #1e3c78; padding:4px 6px; text-align:left; width:56%;">DESCRIPTION</th>
+        <th style="border:1px solid #1e3c78; padding:4px 6px; text-align:left; width:18%;">PER. ID</th>
+        <th style="border:1px solid #1e3c78; padding:4px 6px; text-align:left; width:18%;">HRS.</th>
+      </tr></thead>
+      <tbody>
+        ${opsPdf.map((op, i) => `<tr>
+          <td style="border:1px solid #dde2ee; padding:4px 6px;">${String((i+1)*10).padStart(3,'0')}</td>
+          <td style="border:1px solid #dde2ee; padding:4px 6px; white-space:pre-wrap;">${op.description || ''}</td>
+          <td style="border:1px solid #dde2ee; padding:4px 6px;">${op.person_id || ''}</td>
+          <td style="border:1px solid #dde2ee; padding:4px 6px;">${op.hours || ''}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>` : '';
 
     const html = `<!DOCTYPE html><html><head><meta charset="utf-8">
     <title>Work Order ${form.order_number || ''}</title>
@@ -110,9 +129,11 @@ export default function WorkOrderDetailForm({ id, onClose }) {
       <div class="meta-item"><b>END TIME:</b> ${form.repair_end_time ? moment(form.repair_end_time).format('MM/DD/YYYY HH:mm') : '—'}</div>
       <div class="meta-item"><b>ELAPSED:</b> ${elStr}</div>
       ${form.completed_date ? `<div class="meta-item"><b>COMPLETED:</b> ${moment(form.completed_date).format('MM/DD/YYYY HH:mm')}</div>` : ''}
+      <div class="meta-item"><b>ODOMETER:</b> ${form.meter_reading || '—'}</div>
     </div>
     <div class="section-header" style="margin-top:12px;">REPAIRS / REMEDY RENDERED</div>
     <div class="wo-field-box">${form.repairs_rendered || 'No repairs recorded.'}</div>
+    ${opsHtml}
     <div class="sig-row">
       <div class="sig-line">Technician Signature &amp; Date</div>
       <div class="sig-line">Supervisor Approval &amp; Date</div>
@@ -125,7 +146,7 @@ export default function WorkOrderDetailForm({ id, onClose }) {
 
   const handleExportTD18 = () => {
     if (!form) return;
-    const createdDate = moment(form.created_date).format('MM/DD/YYYY');
+    const repairDate = moment(form.repair_start_time || form.completed_date || form.created_date).format('MM/DD/YYYY');
     const ops = (Array.isArray(form.td18_operations) ? form.td18_operations.filter(o => o && (o.description || o.person_id || o.hours)) : []).slice(0, 8);
     const workRows = ops.length > 0 ? ops.map((op, i) => `
         <tr>
@@ -165,7 +186,7 @@ export default function WorkOrderDetailForm({ id, onClose }) {
     <!-- Row 1: DATE / PLANT / VEHICLE NO / LIC PLATE / VIN / METER -->
     <table>
       <tr>
-        <td style="width:12%"><span class="cell-label">DATE</span><span class="cell-val">${createdDate}</span></td>
+        <td style="width:12%"><span class="cell-label">DATE</span><span class="cell-val">${repairDate}</span></td>
         <td style="width:10%"><span class="cell-label">PLANT</span><span class="cell-val">6065</span></td>
         <td style="width:14%"><span class="cell-label">VEHICLE NO.</span><span class="cell-val">${form.bus_number || ''}</span></td>
         <td style="width:14%"><span class="cell-label">LIC. PLATE</span><span class="cell-val"></span></td>
@@ -177,11 +198,11 @@ export default function WorkOrderDetailForm({ id, onClose }) {
     <!-- Row 2: ORDER TYPE / PERSON RESPONSIBLE / PM ACT TYPE / DAMAGE CAUSE / OPERATOR -->
     <table>
       <tr>
-        <td style="width:15%"><span class="cell-label">ORDER TYPE</span><span class="cell-val"></span></td>
-        <td style="width:25%"><span class="cell-label">PERSON RESPONSIBLE-WO</span><span class="cell-val"></span></td>
-        <td style="width:14%"><span class="cell-label">PM ACT. TYPE</span><span class="cell-val"></span></td>
-        <td style="width:16%"><span class="cell-label">DAMAGE/CAUSE</span><span class="cell-val"></span></td>
-        <td><span class="cell-label">OPERATOR/PERSON RPRT.</span><span class="cell-val"></span></td>
+        <td style="width:15%"><span class="cell-label">ORDER TYPE</span><span class="cell-val" style="display:block; min-height:34px;"></span></td>
+        <td style="width:25%"><span class="cell-label">PERSON RESPONSIBLE-WO</span><span class="cell-val" style="display:block; min-height:34px;"></span></td>
+        <td style="width:14%"><span class="cell-label">PM ACT. TYPE</span><span class="cell-val" style="display:block; min-height:34px;"></span></td>
+        <td style="width:16%"><span class="cell-label">DAMAGE/CAUSE</span><span class="cell-val" style="display:block; min-height:34px;"></span></td>
+        <td><span class="cell-label">OPERATOR/PERSON RPRT.</span><span class="cell-val" style="display:block; min-height:34px;"></span></td>
       </tr>
     </table>
 
