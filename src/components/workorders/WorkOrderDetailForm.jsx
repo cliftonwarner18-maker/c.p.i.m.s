@@ -49,6 +49,11 @@ export default function WorkOrderDetailForm({ id, onClose }) {
     queryFn: () => base44.entities.Bus.list(),
   });
 
+  const [form, setForm] = useState(null);
+  useEffect(() => {
+    if (workOrder && (!form || form.id !== workOrder.id)) setForm({ ...workOrder, td18_operations: workOrder.td18_operations || [] });
+  }, [workOrder]);
+
   const matchedBus = (() => {
     if (!buses || !form?.bus_number) return null;
     const norm = s => (s || '').trim().toLowerCase();
@@ -56,11 +61,6 @@ export default function WorkOrderDetailForm({ id, onClose }) {
   })();
   const busVin = matchedBus?.vin || '';
   const busPlate = matchedBus?.license_plate || '';
-
-  const [form, setForm] = useState(null);
-  useEffect(() => {
-    if (workOrder && (!form || form.id !== workOrder.id)) setForm({ ...workOrder, td18_operations: workOrder.td18_operations || [] });
-  }, [workOrder]);
 
   const updateMutation = useMutation({
     mutationFn: (data) => base44.entities.WorkOrder.update(id, data),
