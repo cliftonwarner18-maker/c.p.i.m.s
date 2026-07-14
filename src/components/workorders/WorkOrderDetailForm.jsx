@@ -309,11 +309,6 @@ export default function WorkOrderDetailForm({ id, onClose }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontFamily: FF }}>
-      {/* Mechanics Only Banner */}
-      <div style={{ background: 'hsl(0,70%,18%)', color: 'white', textAlign: 'center', fontSize: '11px', fontWeight: '700', letterSpacing: '0.18em', padding: '4px 0', borderRadius: '2px', border: '2px solid hsl(0,70%,12%)' }}>
-        ⚠ FOR MECHANICS USE ONLY ⚠
-      </div>
-
       {/* Header */}
       <div style={{ background: 'linear-gradient(to right, hsl(220,50%,30%), hsl(220,45%,40%))', color: 'white', padding: '10px 14px', borderRadius: '2px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
         <div>
@@ -431,8 +426,11 @@ export default function WorkOrderDetailForm({ id, onClose }) {
 
         {/* TD-18 Operations line items */}
         <div style={{ marginBottom: '12px' }}>
+          <div style={{ background: 'hsl(0,70%,18%)', color: 'white', textAlign: 'center', fontSize: '11px', fontWeight: '700', letterSpacing: '0.18em', padding: '4px 0', borderRadius: '2px 2px 0 0', border: '2px solid hsl(0,70%,12%)', borderBottom: 'none' }}>
+            ⚠ FOR MECHANICS USE ONLY ⚠
+          </div>
           <label style={labelStyle}>TD-18 OPERATIONS (LINE ITEMS FOR TD-18 EXPORT)</label>
-          <div style={{ border: '1px solid hsl(220,18%,72%)', borderRadius: '2px', background: 'hsl(45,40%,96%)', padding: '8px' }}>
+          <div style={{ border: '2px solid hsl(0,70%,12%)', borderTop: 'none', borderRadius: '0 0 2px 2px', background: 'hsl(45,40%,96%)', padding: '8px' }}>
             <div style={{ marginBottom: '8px', paddingBottom: '8px', borderBottom: '1px dashed hsl(220,18%,78%)' }}>
               <label style={labelStyle}>ODOMETER / METER READING (6 DIGITS)</label>
               <input
