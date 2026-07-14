@@ -74,50 +74,152 @@ export default function WorkOrderDetailForm({ id, onClose }) {
   const handleExportPDF = () => {
     if (!form) return;
     const elMin = form.elapsed_time_minutes || 0;
-    const elStr = elMin > 0 ? `${Math.floor(elMin / 60)}h ${elMin % 60}m (${elMin} min)` : '—';
+    const elHrs = elMin > 0 ? (elMin / 60).toFixed(2) : '—';
+    const techs = (form.technicians && form.technicians.length ? form.technicians : form.technician_name ? [form.technician_name] : []);
+    const createdDate = moment(form.created_date).format('MM/DD/YYYY');
+    const endDate = form.repair_end_time ? moment(form.repair_end_time).format('MM/DD/YYYY') : '';
+    const endTime = form.repair_end_time ? moment(form.repair_end_time).format('HH:mm') : '';
+
+    // Build WORK PERFORMED rows — one row per technician, first row has description
+    const workRows = techs.length > 0 ? techs.map((tech, i) => `
+      <tr>
+        <td style="font-weight:700;">${String((i + 1) * 10).padStart(3, '0')}</td>
+        <td style="white-space:pre-wrap; word-break:break-word; padding:4px 6px;">${i === 0 ? (form.repairs_rendered || '') : ''}</td>
+        <td>${tech}</td>
+        <td>${i === 0 ? elHrs : ''}</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>`).join('') : `
+      <tr>
+        <td>010</td>
+        <td style="white-space:pre-wrap; word-break:break-word; padding:4px 6px;">${form.repairs_rendered || ''}</td>
+        <td></td><td>${elHrs}</td><td></td><td></td><td></td><td></td>
+      </tr>` + `<tr><td>020</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>`.repeat(7);
+
+    // Pad to at least 8 rows total
+    const rowCount = techs.length || 1;
+    const extraRows = rowCount < 8 ? Array.from({ length: 8 - rowCount }, (_, i) => `
+      <tr>
+        <td style="font-weight:700;">${String((rowCount + i + 1) * 10).padStart(3, '0')}</td>
+        <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+      </tr>`).join('') : '';
 
     const html = `<!DOCTYPE html><html><head><meta charset="utf-8">
-    <title>Work Order ${form.order_number || ''}</title>
+    <title>TD-18 Work Order ${form.order_number || ''}</title>
     <style>
-      ${PRINT_BASE_CSS}
-      .wo-meta { display:grid; grid-template-columns:1fr 1fr; gap:6px; background:#edf1fc; border:1px solid #1e3c78; padding:10px 12px; margin-bottom:12px; font-size:10px; }
-      .wo-meta b { color:#1e3c78; }
-      .wo-field-box { background:white; border:1px solid #dde2ee; padding:8px 10px; font-size:10px; white-space:pre-wrap; line-height:1.5; min-height:40px; }
-      .sig-row { display:flex; gap:40px; margin-top:20px; padding-top:12px; border-top:1px dashed #bbb; }
-      .sig-line { flex:1; border-top:1px solid #666; padding-top:4px; font-size:9px; color:#555; }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body { font-family: Arial, Helvetica, sans-serif; font-size: 9pt; color: #000; padding: 20px 24px; }
+      h1 { text-align: center; font-size: 13pt; font-weight: bold; margin-bottom: 2px; }
+      h2 { text-align: center; font-size: 12pt; font-weight: bold; margin-bottom: 10px; }
+      .form-ref { font-size: 8pt; display: flex; justify-content: space-between; margin-bottom: 4px; }
+      table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+      td, th { border: 1px solid #000; padding: 3px 5px; font-size: 8.5pt; vertical-align: top; }
+      th { font-weight: bold; font-size: 8pt; text-align: center; background: #f0f0f0; }
+      .cell-label { font-size: 7pt; font-weight: bold; display: block; color: #333; border-bottom: 1px solid #ccc; margin-bottom: 2px; }
+      .cell-val { font-size: 9pt; min-height: 14px; }
+      .section-title { text-align: center; font-weight: bold; font-size: 10pt; margin: 10px 0 4px; }
+      .sig-table td { border: none; padding: 8px 4px 2px; }
+      .sig-line { border-top: 1px solid #000; display: block; margin-top: 16px; font-size: 8pt; }
+      .desc-cell { min-height: 60px; white-space: pre-wrap; word-break: break-word; }
+      @media print { body { padding: 10px 14px; } }
     </style>
     </head><body>
-    <div class="page-header">
-      <div class="org">NEW HANOVER COUNTY SCHOOLS</div>
-      <div class="dept">Transportation Department — Vehicle Surveillance System</div>
-      <div class="title">WORK ORDER &amp; REPAIR REPORT</div>
-    </div>
-    <div class="gold-bar"></div>
-    <div class="wo-meta">
-      <div><b>ORDER #:</b> ${form.order_number || '—'}</div>
-      <div><b>STATUS:</b> ${(form.status || '').toUpperCase()}</div>
-      <div><b>BUS #:</b> ${form.bus_number || '—'}</div>
-      <div><b>LOT:</b> ${form.lot || '—'}</div>
-      <div><b>REPORTED BY:</b> ${form.reported_by || '—'}</div>
-      <div><b>DATE OPENED:</b> ${moment(form.created_date).format('MM/DD/YYYY HH:mm')}</div>
-    </div>
-    <div class="section-header">INITIAL COMPLAINT / ISSUE DESCRIPTION</div>
-    <div class="wo-field-box">${form.issue_description || 'None recorded.'}</div>
-    <div class="section-header" style="margin-top:12px;">REPAIR INFORMATION</div>
-    <div class="meta-box">
-      <div class="meta-item"><b>TECHNICIAN(S):</b> ${(form.technicians && form.technicians.length ? form.technicians.join(', ') : form.technician_name) || '—'}</div>
-      <div class="meta-item"><b>START TIME:</b> ${form.repair_start_time ? moment(form.repair_start_time).format('MM/DD/YYYY HH:mm') : '—'}</div>
-      <div class="meta-item"><b>END TIME:</b> ${form.repair_end_time ? moment(form.repair_end_time).format('MM/DD/YYYY HH:mm') : '—'}</div>
-      <div class="meta-item"><b>ELAPSED:</b> ${elStr}</div>
-      ${form.completed_date ? `<div class="meta-item"><b>COMPLETED:</b> ${moment(form.completed_date).format('MM/DD/YYYY HH:mm')}</div>` : ''}
-    </div>
-    <div class="section-header" style="margin-top:12px;">REPAIRS / REMEDY RENDERED</div>
-    <div class="wo-field-box">${form.repairs_rendered || 'No repairs recorded.'}</div>
-    <div class="sig-row">
-      <div class="sig-line">Technician Signature &amp; Date</div>
-      <div class="sig-line">Supervisor Approval &amp; Date</div>
-    </div>
-    <div class="page-footer">NHCS Transportation — Vehicle Surveillance System | Powered by Base44</div>
+
+    <div class="form-ref"><span>Form TD-18</span><span>Revised 3-03</span></div>
+    <h1>NC PUBLIC SCHOOL TRANSPORTATION</h1>
+    <h2>WORK ORDER AND MATERIAL ISSUE</h2>
+
+    <!-- Row 1: DATE / PLANT / VEHICLE NO / LIC PLATE / VIN / METER -->
+    <table>
+      <tr>
+        <td style="width:12%"><span class="cell-label">DATE</span><span class="cell-val">${createdDate}</span></td>
+        <td style="width:10%"><span class="cell-label">PLANT</span><span class="cell-val">6065</span></td>
+        <td style="width:14%"><span class="cell-label">VEHICLE NO.</span><span class="cell-val">${form.bus_number || ''}</span></td>
+        <td style="width:14%"><span class="cell-label">LIC. PLATE</span><span class="cell-val"></span></td>
+        <td style="width:32%"><span class="cell-label">VIN</span><span class="cell-val"></span></td>
+        <td style="width:18%"><span class="cell-label">METER</span><span class="cell-val"></span></td>
+      </tr>
+    </table>
+
+    <!-- Row 2: ORDER TYPE / PERSON RESPONSIBLE / PM ACT TYPE / DAMAGE CAUSE / OPERATOR -->
+    <table>
+      <tr>
+        <td style="width:15%"><span class="cell-label">ORDER TYPE</span><span class="cell-val">${form.work_order_type || ''}</span></td>
+        <td style="width:25%"><span class="cell-label">PERSON RESPONSIBLE-WO</span><span class="cell-val">${techs[0] || ''}</span></td>
+        <td style="width:14%"><span class="cell-label">PM ACT. TYPE</span><span class="cell-val"></span></td>
+        <td style="width:16%"><span class="cell-label">DAMAGE/CAUSE</span><span class="cell-val"></span></td>
+        <td><span class="cell-label">OPERATOR/PERSON RPRT.</span><span class="cell-val">${form.reported_by || ''}</span></td>
+      </tr>
+    </table>
+
+    <!-- Row 3: WORK ORDER DESCRIPTION / AGENCY / R3 ORDER NO -->
+    <table>
+      <tr>
+        <td style="width:65%">
+          <span class="cell-label">WORK ORDER DESCRIPTION</span>
+          <span class="cell-val">Vehicle No. ${form.bus_number || '________'} — ${form.issue_description || ''}</span>
+        </td>
+        <td style="width:15%"><span class="cell-label">AGENCY</span><span class="cell-val"></span></td>
+        <td><span class="cell-label">R/3 ORDER NO.</span><span class="cell-val">${form.order_number || ''}</span></td>
+      </tr>
+    </table>
+
+    <!-- WORK PERFORMED -->
+    <div class="section-title">WORK PERFORMED</div>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:5%">OP.</th>
+          <th style="width:38%">DESCRIPTION</th>
+          <th style="width:14%">PER. ID</th>
+          <th style="width:7%">HRS.</th>
+          <th style="width:10%">PER. ID</th>
+          <th style="width:7%">HRS.</th>
+          <th style="width:9%">REA/WA</th>
+          <th style="width:10%">VMRS</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${workRows}
+        ${extraRows}
+      </tbody>
+    </table>
+
+    <!-- MATERIAL ISSUED -->
+    <div class="section-title">MATERIAL ISSUED</div>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:14%">DOT/VMRS<br>NUMBER</th>
+          <th style="width:6%">QTY</th>
+          <th style="width:5%">UM</th>
+          <th style="width:8%">INV.<br>PLANT</th>
+          <th style="width:8%">STOR.<br>LOC.</th>
+          <th style="width:10%">G/L<br>ACCOUNT</th>
+          <th style="width:9%">U/PRICE</th>
+          <th>MFG. NO./TEXT</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${Array(8).fill('<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>').join('')}
+      </tbody>
+    </table>
+
+    <!-- Signatures -->
+    <table class="sig-table">
+      <tr>
+        <td style="width:35%"><span class="sig-line">TECH SIGNATURE</span></td>
+        <td style="width:28%"><span class="sig-line">END DATE &nbsp;&nbsp; ${endDate}</span></td>
+        <td><span class="sig-line">TIME &nbsp;&nbsp; ${endTime}</span></td>
+      </tr>
+      <tr>
+        <td><span class="sig-line">SUPERVISOR</span></td>
+        <td colspan="2"><span class="sig-line">DATE</span></td>
+      </tr>
+    </table>
+
     </body></html>`;
 
     printHtml(html);
