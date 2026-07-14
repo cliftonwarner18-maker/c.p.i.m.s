@@ -170,7 +170,7 @@ export default function WorkOrderDetailForm({ id, onClose }) {
         <td style="width:14%"><span class="cell-label">VEHICLE NO.</span><span class="cell-val">${form.bus_number || ''}</span></td>
         <td style="width:14%"><span class="cell-label">LIC. PLATE</span><span class="cell-val"></span></td>
         <td style="width:32%"><span class="cell-label">VIN</span><span class="cell-val"></span></td>
-        <td style="width:18%"><span class="cell-label">METER</span><span class="cell-val"></span></td>
+        <td style="width:18%"><span class="cell-label">METER</span><span class="cell-val">${form.meter_reading || ''}</span></td>
       </tr>
     </table>
 
@@ -394,6 +394,17 @@ export default function WorkOrderDetailForm({ id, onClose }) {
         <div style={{ marginBottom: '12px' }}>
           <label style={labelStyle}>TD-18 OPERATIONS (LINE ITEMS FOR TD-18 EXPORT)</label>
           <div style={{ border: '1px solid hsl(220,18%,72%)', borderRadius: '2px', background: 'hsl(45,40%,96%)', padding: '8px' }}>
+            <div style={{ marginBottom: '8px', paddingBottom: '8px', borderBottom: '1px dashed hsl(220,18%,78%)' }}>
+              <label style={labelStyle}>ODOMETER / METER READING (6 DIGITS)</label>
+              <input
+                type="text"
+                maxLength={6}
+                value={form.meter_reading || ''}
+                onChange={e => { const v = e.target.value.replace(/\D/g, '').slice(0, 6); setForm({ ...form, meter_reading: v }); }}
+                placeholder="000000"
+                style={{ ...inputStyle, maxWidth: '120px', letterSpacing: '0.1em', fontWeight: '700', textAlign: 'center' }}
+              />
+            </div>
             {(form.td18_operations || []).map((op, idx) => (
               <div key={idx} style={{ display: 'flex', gap: '6px', marginBottom: '6px', alignItems: 'center' }}>
                 <span style={{ fontSize: '11px', fontWeight: '700', color: 'hsl(220,20%,35%)', minWidth: '32px' }}>{String((idx + 1) * 10).padStart(3, '0')}</span>

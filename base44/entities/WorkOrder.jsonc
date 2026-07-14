@@ -85,6 +85,10 @@
         }
       }
     },
+    "meter_reading": {
+      "type": "string",
+      "description": "Odometer/Meter reading (6 digits) for TD-18 METER field"
+    },
     "repair_start_time": {
       "type": "string",
       "description": "Repair start time (24hr ISO)"
