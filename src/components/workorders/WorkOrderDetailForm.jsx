@@ -175,10 +175,12 @@ export default function WorkOrderDetailForm({ id, onClose }) {
       .section-title { text-align: center; font-weight: bold; font-size: 10pt; margin: 10px 0 4px; }
       .sig-table td { border: none; padding: 8px 4px 2px; }
       .sig-line { border-top: 1px solid #000; display: block; margin-top: 16px; font-size: 8pt; }
+      .mech-banner { background: hsl(0,70%,18%); color: #fff; text-align: center; font-size: 9pt; font-weight: bold; letter-spacing: 0.18em; padding: 3px 0; margin-bottom: 6px; border: 2px solid hsl(0,70%,12%); }
       @media print { body { padding: 10px 14px; } }
     </style>
     </head><body>
 
+    <div class="mech-banner">⚠ FOR MECHANICS USE ONLY ⚠</div>
     <div class="form-ref"><span>Form TD-18</span><span>Revised 3-03</span></div>
     <h1>NC PUBLIC SCHOOL TRANSPORTATION</h1>
     <h2>WORK ORDER AND MATERIAL ISSUE</h2>
