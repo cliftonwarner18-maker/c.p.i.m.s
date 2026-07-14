@@ -53,6 +53,7 @@ export function exportBusHistoryPDF({ bus, workOrders, inspections, busHistory }
   <div class="gold-bar"></div>
   <div class="meta-box">
     <div class="meta-item"><strong>BUS #:</strong> ${bus?.bus_number || '—'}</div>
+    <div class="meta-item"><strong>LIC. PLATE:</strong> ${bus?.license_plate || '—'}</div>
     <div class="meta-item"><strong>MAKE/MODEL:</strong> ${[bus?.year, bus?.make, bus?.model].filter(Boolean).join(' ') || '—'}</div>
     <div class="meta-item"><strong>TYPE:</strong> ${bus?.bus_type || '—'}</div>
     <div class="meta-item"><strong>LOCATION:</strong> ${bus?.base_location || '—'}</div>

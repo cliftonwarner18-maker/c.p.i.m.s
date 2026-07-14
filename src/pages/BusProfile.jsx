@@ -205,6 +205,7 @@ export default function BusProfile() {
                 <Field label="Make" value={bus.make} />
                 <Field label="Model" value={bus.model} />
                 <Field label="VIN" value={bus.vin} />
+                <Field label="License Plate" value={bus.license_plate} />
                 <Field label="Engine" value={bus.engine} />
                 <Field label="Capacity" value={bus.passenger_capacity ? `${bus.passenger_capacity} passengers` : null} />
                 <Field label="Location" value={bus.base_location} />
