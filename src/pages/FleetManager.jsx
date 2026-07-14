@@ -204,11 +204,18 @@ export default function FleetManager() {
             AI CAMS ONLY
           </label>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginLeft: 'auto' }}>
-          <Search style={{ width: 12, height: 12, color: 'hsl(220,20%,45%)' }} />
-          <input placeholder="Search BUS #..." value={searchBus} onChange={e => setSearchBus(e.target.value)} style={{ padding: '4px 8px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", border: '1px solid hsl(220,18%,72%)', borderRadius: '2px', background: 'white', width: '150px', outline: 'none' }} />
-          <input placeholder="Search VIN..." value={searchVin} onChange={e => setSearchVin(e.target.value)} style={{ padding: '4px 8px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", border: '1px solid hsl(220,18%,72%)', borderRadius: '2px', background: 'white', width: '180px', outline: 'none' }} />
-          <input placeholder="Search TAG #..." value={searchTag} onChange={e => setSearchTag(e.target.value)} style={{ padding: '4px 8px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", border: '1px solid hsl(220,18%,72%)', borderRadius: '2px', background: 'white', width: '150px', outline: 'none' }} />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', marginLeft: 'auto' }}>
+          <div style={{ display: 'flex', gap: '5px' }}>
+            <span style={{ fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,25%)', letterSpacing: '0.08em', width: '150px', textAlign: 'center' }}>BUS #</span>
+            <span style={{ fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,25%)', letterSpacing: '0.08em', width: '180px', textAlign: 'center' }}>VIN #</span>
+            <span style={{ fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,25%)', letterSpacing: '0.08em', width: '150px', textAlign: 'center' }}>TAG #</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+            <Search style={{ width: 12, height: 12, color: 'hsl(220,20%,45%)' }} />
+            <input placeholder="Search BUS #..." value={searchBus} onChange={e => setSearchBus(e.target.value)} style={{ padding: '4px 8px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", border: '1px solid hsl(220,18%,72%)', borderRadius: '2px', background: 'white', width: '150px', outline: 'none' }} />
+            <input placeholder="Search VIN..." value={searchVin} onChange={e => setSearchVin(e.target.value)} style={{ padding: '4px 8px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", border: '1px solid hsl(220,18%,72%)', borderRadius: '2px', background: 'white', width: '180px', outline: 'none' }} />
+            <input placeholder="Search TAG #..." value={searchTag} onChange={e => setSearchTag(e.target.value)} style={{ padding: '4px 8px', fontSize: '11px', fontFamily: "'Courier Prime', monospace", border: '1px solid hsl(220,18%,72%)', borderRadius: '2px', background: 'white', width: '150px', outline: 'none' }} />
+          </div>
         </div>
       </div>
 
