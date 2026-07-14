@@ -126,7 +126,7 @@ export default function WorkOrderDetailForm({ id, onClose }) {
   const handleExportTD18 = () => {
     if (!form) return;
     const createdDate = moment(form.created_date).format('MM/DD/YYYY');
-    const ops = Array.isArray(form.td18_operations) ? form.td18_operations.filter(o => o && (o.description || o.person_id || o.hours)) : [];
+    const ops = (Array.isArray(form.td18_operations) ? form.td18_operations.filter(o => o && (o.description || o.person_id || o.hours)) : []).slice(0, 8);
     const workRows = ops.length > 0 ? ops.map((op, i) => `
         <tr>
           <td style="font-weight:700;">${String((i + 1) * 10).padStart(3, '0')}</td>
@@ -421,10 +421,16 @@ export default function WorkOrderDetailForm({ id, onClose }) {
                 >✕</button>
               </div>
             ))}
-            <button
-              onClick={() => setForm({ ...form, td18_operations: [...(form.td18_operations || []), { description: '', person_id: '', hours: '' }] })}
-              style={{ padding: '5px 12px', fontSize: '10px', fontFamily: FF, background: 'hsl(45,90%,45%)', color: '#1a1a1a', border: '1px solid hsl(45,90%,35%)', borderRadius: '2px', cursor: 'pointer', fontWeight: '700' }}
-            >+ ADD OPERATION</button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <button
+                onClick={() => setForm({ ...form, td18_operations: [...(form.td18_operations || []), { description: '', person_id: '', hours: '' }] })}
+                disabled={(form.td18_operations || []).length >= 8}
+                style={{ padding: '5px 12px', fontSize: '10px', fontFamily: FF, background: (form.td18_operations || []).length >= 8 ? 'hsl(220,10%,80%)' : 'hsl(45,90%,45%)', color: (form.td18_operations || []).length >= 8 ? 'hsl(220,10%,55%)' : '#1a1a1a', border: '1px solid hsl(45,90%,35%)', borderRadius: '2px', cursor: (form.td18_operations || []).length >= 8 ? 'not-allowed' : 'pointer', fontWeight: '700' }}
+              >+ ADD OPERATION</button>
+              <span style={{ fontSize: '9px', fontFamily: FF, color: 'hsl(220,10%,45%)', fontWeight: '600' }}>
+                {(form.td18_operations || []).length}/8 LINE ITEMS {((form.td18_operations || []).length >= 8) && '— MAX REACHED'}
+              </span>
+            </div>
           </div>
         </div>
 
