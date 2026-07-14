@@ -39,6 +39,10 @@
       "type": "string",
       "description": "Vehicle Identification Number"
     },
+    "license_plate": {
+      "type": "string",
+      "description": "License plate number"
+    },
     "engine": {
       "type": "string",
       "description": "Engine type"

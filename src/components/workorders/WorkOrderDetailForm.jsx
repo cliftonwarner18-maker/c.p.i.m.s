@@ -49,12 +49,13 @@ export default function WorkOrderDetailForm({ id, onClose }) {
     queryFn: () => base44.entities.Bus.list(),
   });
 
-  const busVin = (() => {
-    if (!buses || !form?.bus_number) return '';
+  const matchedBus = (() => {
+    if (!buses || !form?.bus_number) return null;
     const norm = s => (s || '').trim().toLowerCase();
-    const match = buses.find(b => norm(b.bus_number) === norm(form.bus_number));
-    return (match && match.vin) ? match.vin : '';
+    return buses.find(b => norm(b.bus_number) === norm(form.bus_number)) || null;
   })();
+  const busVin = matchedBus?.vin || '';
+  const busPlate = matchedBus?.license_plate || '';
 
   const [form, setForm] = useState(null);
   useEffect(() => {
@@ -203,7 +204,7 @@ export default function WorkOrderDetailForm({ id, onClose }) {
         <td style="width:12%"><span class="cell-label">DATE</span><span class="cell-val">${repairDate}</span></td>
         <td style="width:10%"><span class="cell-label">PLANT</span><span class="cell-val">6065</span></td>
         <td style="width:14%"><span class="cell-label">VEHICLE NO.</span><span class="cell-val">${form.bus_number || ''}</span></td>
-        <td style="width:14%"><span class="cell-label">LIC. PLATE</span><span class="cell-val"></span></td>
+        <td style="width:14%"><span class="cell-label">LIC. PLATE</span><span class="cell-val">${busPlate}</span></td>
         <td style="width:32%"><span class="cell-label">VIN</span><span class="cell-val">${busVin}</span></td>
         <td style="width:18%"><span class="cell-label">METER</span><span class="cell-val">${form.meter_reading || ''}</span></td>
       </tr>

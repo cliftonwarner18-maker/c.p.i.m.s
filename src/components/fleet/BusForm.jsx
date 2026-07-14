@@ -45,7 +45,7 @@ export default function BusForm({ bus, onClose, onSaved }) {
 
   const [form, setForm] = useState({
     bus_number: '', bus_type: 'School Bus', base_location: 'Main', year: '', make: '', model: '',
-    vin: '', engine: '', passenger_capacity: '', wheelchair_accessible: false,
+    vin: '', license_plate: '', engine: '', passenger_capacity: '', wheelchair_accessible: false,
     asset_number: '', camera_system_type: 'None', camera_serial_number: '',
     camera_model_number: '', cameras_inside: '', cameras_outside: '', cameras_ai: '', ai_cameras_installed: false, stop_arm_cameras: false,
     samsara_enabled: false, samsara_av_enabled: false,
@@ -63,6 +63,7 @@ export default function BusForm({ bus, onClose, onSaved }) {
         make: bus.make || '',
         model: bus.model || '',
         vin: bus.vin || '',
+        license_plate: bus.license_plate || '',
         engine: bus.engine || '',
         passenger_capacity: bus.passenger_capacity || '',
         wheelchair_accessible: bus.wheelchair_accessible || false,
@@ -157,6 +158,9 @@ export default function BusForm({ bus, onClose, onSaved }) {
             </Field>
             <Field label="VIN">
               <input className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.vin} onChange={e => setForm(prev => ({...prev, vin: e.target.value}))} />
+            </Field>
+            <Field label="LICENSE PLATE #">
+              <input className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.license_plate} onChange={e => setForm(prev => ({...prev, license_plate: e.target.value}))} />
             </Field>
             <Field label="ENGINE">
               <input className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.engine} onChange={e => setForm(prev => ({...prev, engine: e.target.value}))} />
