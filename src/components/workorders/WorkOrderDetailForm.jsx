@@ -74,37 +74,58 @@ export default function WorkOrderDetailForm({ id, onClose }) {
   const handleExportPDF = () => {
     if (!form) return;
     const elMin = form.elapsed_time_minutes || 0;
-    const elHrs = elMin > 0 ? (elMin / 60).toFixed(2) : '—';
-    const techs = (form.technicians && form.technicians.length ? form.technicians : form.technician_name ? [form.technician_name] : []);
+    const elStr = elMin > 0 ? `${Math.floor(elMin / 60)}h ${elMin % 60}m (${elMin} min)` : '—';
+
+    const html = `<!DOCTYPE html><html><head><meta charset="utf-8">
+    <title>Work Order ${form.order_number || ''}</title>
+    <style>
+      ${PRINT_BASE_CSS}
+      .wo-meta { display:grid; grid-template-columns:1fr 1fr; gap:6px; background:#edf1fc; border:1px solid #1e3c78; padding:10px 12px; margin-bottom:12px; font-size:10px; }
+      .wo-meta b { color:#1e3c78; }
+      .wo-field-box { background:white; border:1px solid #dde2ee; padding:8px 10px; font-size:10px; white-space:pre-wrap; line-height:1.5; min-height:40px; }
+      .sig-row { display:flex; gap:40px; margin-top:20px; padding-top:12px; border-top:1px dashed #bbb; }
+      .sig-line { flex:1; border-top:1px solid #666; padding-top:4px; font-size:9px; color:#555; }
+    </style>
+    </head><body>
+    <div class="page-header">
+      <div class="org">NEW HANOVER COUNTY SCHOOLS</div>
+      <div class="dept">Transportation Department — Vehicle Surveillance System</div>
+      <div class="title">WORK ORDER &amp; REPAIR REPORT</div>
+    </div>
+    <div class="gold-bar"></div>
+    <div class="wo-meta">
+      <div><b>ORDER #:</b> ${form.order_number || '—'}</div>
+      <div><b>STATUS:</b> ${(form.status || '').toUpperCase()}</div>
+      <div><b>BUS #:</b> ${form.bus_number || '—'}</div>
+      <div><b>LOT:</b> ${form.lot || '—'}</div>
+      <div><b>REPORTED BY:</b> ${form.reported_by || '—'}</div>
+      <div><b>DATE OPENED:</b> ${moment(form.created_date).format('MM/DD/YYYY HH:mm')}</div>
+    </div>
+    <div class="section-header">INITIAL COMPLAINT / ISSUE DESCRIPTION</div>
+    <div class="wo-field-box">${form.issue_description || 'None recorded.'}</div>
+    <div class="section-header" style="margin-top:12px;">REPAIR INFORMATION</div>
+    <div class="meta-box">
+      <div class="meta-item"><b>TECHNICIAN(S):</b> ${(form.technicians && form.technicians.length ? form.technicians.join(', ') : form.technician_name) || '—'}</div>
+      <div class="meta-item"><b>START TIME:</b> ${form.repair_start_time ? moment(form.repair_start_time).format('MM/DD/YYYY HH:mm') : '—'}</div>
+      <div class="meta-item"><b>END TIME:</b> ${form.repair_end_time ? moment(form.repair_end_time).format('MM/DD/YYYY HH:mm') : '—'}</div>
+      <div class="meta-item"><b>ELAPSED:</b> ${elStr}</div>
+      ${form.completed_date ? `<div class="meta-item"><b>COMPLETED:</b> ${moment(form.completed_date).format('MM/DD/YYYY HH:mm')}</div>` : ''}
+    </div>
+    <div class="section-header" style="margin-top:12px;">REPAIRS / REMEDY RENDERED</div>
+    <div class="wo-field-box">${form.repairs_rendered || 'No repairs recorded.'}</div>
+    <div class="sig-row">
+      <div class="sig-line">Technician Signature &amp; Date</div>
+      <div class="sig-line">Supervisor Approval &amp; Date</div>
+    </div>
+    <div class="page-footer">NHCS Transportation — Vehicle Surveillance System | Powered by Base44</div>
+    </body></html>`;
+
+    printHtml(html);
+  };
+
+  const handleExportTD18 = () => {
+    if (!form) return;
     const createdDate = moment(form.created_date).format('MM/DD/YYYY');
-    const endDate = form.repair_end_time ? moment(form.repair_end_time).format('MM/DD/YYYY') : '';
-    const endTime = form.repair_end_time ? moment(form.repair_end_time).format('HH:mm') : '';
-
-    // Build WORK PERFORMED rows — one row per technician, first row has description
-    const workRows = techs.length > 0 ? techs.map((tech, i) => `
-      <tr>
-        <td style="font-weight:700;">${String((i + 1) * 10).padStart(3, '0')}</td>
-        <td style="white-space:pre-wrap; word-break:break-word; padding:4px 6px;">${i === 0 ? (form.repairs_rendered || '') : ''}</td>
-        <td>${tech}</td>
-        <td>${i === 0 ? elHrs : ''}</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>`).join('') : `
-      <tr>
-        <td>010</td>
-        <td style="white-space:pre-wrap; word-break:break-word; padding:4px 6px;">${form.repairs_rendered || ''}</td>
-        <td></td><td>${elHrs}</td><td></td><td></td><td></td><td></td>
-      </tr>` + `<tr><td>020</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>`.repeat(7);
-
-    // Pad to at least 8 rows total
-    const rowCount = techs.length || 1;
-    const extraRows = rowCount < 8 ? Array.from({ length: 8 - rowCount }, (_, i) => `
-      <tr>
-        <td style="font-weight:700;">${String((rowCount + i + 1) * 10).padStart(3, '0')}</td>
-        <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-      </tr>`).join('') : '';
 
     const html = `<!DOCTYPE html><html><head><meta charset="utf-8">
     <title>TD-18 Work Order ${form.order_number || ''}</title>
@@ -122,7 +143,6 @@ export default function WorkOrderDetailForm({ id, onClose }) {
       .section-title { text-align: center; font-weight: bold; font-size: 10pt; margin: 10px 0 4px; }
       .sig-table td { border: none; padding: 8px 4px 2px; }
       .sig-line { border-top: 1px solid #000; display: block; margin-top: 16px; font-size: 8pt; }
-      .desc-cell { min-height: 60px; white-space: pre-wrap; word-break: break-word; }
       @media print { body { padding: 10px 14px; } }
     </style>
     </head><body>
@@ -147,7 +167,7 @@ export default function WorkOrderDetailForm({ id, onClose }) {
     <table>
       <tr>
         <td style="width:15%"><span class="cell-label">ORDER TYPE</span><span class="cell-val">${form.work_order_type || ''}</span></td>
-        <td style="width:25%"><span class="cell-label">PERSON RESPONSIBLE-WO</span><span class="cell-val">${techs[0] || ''}</span></td>
+        <td style="width:25%"><span class="cell-label">PERSON RESPONSIBLE-WO</span><span class="cell-val"></span></td>
         <td style="width:14%"><span class="cell-label">PM ACT. TYPE</span><span class="cell-val"></span></td>
         <td style="width:16%"><span class="cell-label">DAMAGE/CAUSE</span><span class="cell-val"></span></td>
         <td><span class="cell-label">OPERATOR/PERSON RPRT.</span><span class="cell-val">${form.reported_by || ''}</span></td>
@@ -182,8 +202,12 @@ export default function WorkOrderDetailForm({ id, onClose }) {
         </tr>
       </thead>
       <tbody>
-        ${workRows}
-        ${extraRows}
+        <tr>
+          <td style="font-weight:700;">010</td>
+          <td style="white-space:pre-wrap; word-break:break-word; padding:4px 6px; min-height:40px;">${form.repairs_rendered || ''}</td>
+          <td></td><td></td><td></td><td></td><td></td><td></td>
+        </tr>
+        ${Array.from({ length: 7 }, (_, i) => `<tr><td style="font-weight:700;">${String((i + 2) * 10).padStart(3, '0')}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>`).join('')}
       </tbody>
     </table>
 
@@ -211,8 +235,8 @@ export default function WorkOrderDetailForm({ id, onClose }) {
     <table class="sig-table">
       <tr>
         <td style="width:35%"><span class="sig-line">TECH SIGNATURE</span></td>
-        <td style="width:28%"><span class="sig-line">END DATE &nbsp;&nbsp; ${endDate}</span></td>
-        <td><span class="sig-line">TIME &nbsp;&nbsp; ${endTime}</span></td>
+        <td style="width:28%"><span class="sig-line">END DATE</span></td>
+        <td><span class="sig-line">TIME</span></td>
       </tr>
       <tr>
         <td><span class="sig-line">SUPERVISOR</span></td>
@@ -378,9 +402,14 @@ export default function WorkOrderDetailForm({ id, onClose }) {
             </button>
           )}
           {isCompleted && (
-            <span style={{ fontSize: '11px', color: '#166534', fontWeight: '700', display: 'flex', alignItems: 'center', gap: 5 }}>
-              <CheckCircle style={{ width: 14, height: 14 }} /> COMPLETED — {form.completed_date ? moment(form.completed_date).format('MM/DD/YYYY HH:mm') : ''}
-            </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+              <span style={{ fontSize: '11px', color: '#166534', fontWeight: '700', display: 'flex', alignItems: 'center', gap: 5 }}>
+                <CheckCircle style={{ width: 14, height: 14 }} /> COMPLETED — {form.completed_date ? moment(form.completed_date).format('MM/DD/YYYY HH:mm') : ''}
+              </span>
+              <button onClick={handleExportTD18} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '8px 16px', background: 'hsl(45,90%,45%)', color: '#1a1a1a', border: '1px solid hsl(45,90%,35%)', borderRadius: '2px', fontSize: '11px', fontFamily: FF, fontWeight: '700', cursor: 'pointer' }}>
+                <FileDown style={{ width: 12, height: 12 }} /> EXPORT TD-18
+              </button>
+            </div>
           )}
         </div>
       </div>
