@@ -123,6 +123,10 @@ export default function DecommissionedAssetsSection() {
                 </div>
               ))}
               <div>
+                <label style={labelStyle}>Quantity <span style={{ fontWeight: 400, color: 'hsl(220,10%,50%)' }}>(bulk non-serialized items — no serial #)</span>:</label>
+                <input type="number" min="1" step="1" style={inputStyle} value={formData.quantity ?? 1} onChange={e => setFormData({ ...formData, quantity: parseInt(e.target.value, 10) || 1 })} />
+              </div>
+              <div>
                 <label style={labelStyle}>Describe OOS Reason:</label>
                 <textarea style={{ ...inputStyle, minHeight: 60, resize: 'vertical' }} value={formData.oos_reason || ''} onChange={e => setFormData({ ...formData, oos_reason: e.target.value })} />
               </div>
@@ -184,7 +188,7 @@ export default function DecommissionedAssetsSection() {
           <table style={{ width: '100%', fontSize: '10px', fontFamily: FF, borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ background: 'hsl(0,55%,30%)', color: 'white', position: 'sticky', top: 0 }}>
-                {(bulkModifyMode ? ['✓', 'OOS Date', 'Employee', 'Bus #', 'Make/Model', 'Serial #', 'Decom Status', 'Location', 'Out of Inv.', 'Actions'] : ['OOS Date', 'Employee', 'Bus #', 'Make/Model', 'Serial #', 'Decom Status', 'Location', 'Out of Inv.', 'Actions']).map(h => (
+                {(bulkModifyMode ? ['✓', 'OOS Date', 'Employee', 'Bus #', 'Make/Model', 'Serial #', 'Qty', 'Decom Status', 'Location', 'Out of Inv.', 'Actions'] : ['OOS Date', 'Employee', 'Bus #', 'Make/Model', 'Serial #', 'Qty', 'Decom Status', 'Location', 'Out of Inv.', 'Actions']).map(h => (
                   <th key={h} style={{ padding: '5px 7px', textAlign: h === '✓' ? 'center' : 'left', fontSize: '10px', fontWeight: '700', whiteSpace: 'nowrap' }}>{h}</th>
                 ))}
               </tr>
@@ -211,6 +215,10 @@ export default function DecommissionedAssetsSection() {
                     <td style={{ padding: '4px 7px' }}>
                       {dup && <span style={{ background: 'hsl(0,65%,45%)', color: 'white', fontSize: '8px', padding: '0 3px', marginRight: 3, fontWeight: '700' }}>DUP</span>}
                       {asset.serial_number || '—'}
+                    </td>
+                    <td style={{ padding: '4px 7px', textAlign: 'center', fontWeight: (asset.quantity && asset.quantity > 1) ? 700 : 400, color: (asset.quantity && asset.quantity > 1) ? 'hsl(200,70%,35%)' : 'inherit' }}>
+                      {(asset.quantity && asset.quantity > 1) ? <span style={{ background: 'hsl(200,70%,90%)', color: 'hsl(200,70%,30%)', fontSize: '8px', padding: '0 3px', fontWeight: '700', marginRight: 3 }}>BULK</span> : null}
+                      {asset.quantity || 1}
                     </td>
                     <td style={{ padding: '4px 7px' }}>{asset.decom_status}</td>
                     <td style={{ padding: '4px 7px', fontSize: '9px', maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{asset.current_location || '—'}</td>

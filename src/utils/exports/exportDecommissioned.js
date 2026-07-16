@@ -11,6 +11,7 @@ export function exportDecommissionedPDF({ assets, statusFilter = 'All', startDat
       <td>${a.bus_number || '—'}</td>
       <td><strong>${a.make || '—'} ${a.model || ''}</strong></td>
       <td>${a.serial_number || '—'}</td>
+      <td style="text-align:center;font-weight:700;color:${(a.quantity && a.quantity > 1) ? '#1d4ed8' : '#555'}">${(a.quantity && a.quantity > 1) ? `${a.quantity} (BULK)` : (a.quantity || 1)}</td>
       <td>${a.asset_number || '—'}</td>
       <td>${a.decom_status || '—'}</td>
       <td>${a.current_location || '—'}</td>
@@ -43,15 +44,15 @@ export function exportDecommissionedPDF({ assets, statusFilter = 'All', startDat
     <thead>
       <tr>
         <th>OOS DATE</th><th>EMPLOYEE</th><th>BUS #</th><th>MAKE / MODEL</th>
-        <th>SERIAL #</th><th>ASSET #</th><th>DECOM STATUS</th><th>LOCATION</th>
+        <th>SERIAL #</th><th>QTY</th><th>ASSET #</th><th>DECOM STATUS</th><th>LOCATION</th>
         <th>OUT OF INV.</th><th>OOS REASON</th>
       </tr>
     </thead>
     <tbody>${rows}</tbody>
     <tfoot>
       <tr class="totals-row">
-        <td colspan="9">TOTAL RECORDS</td>
-        <td>${assets.length}</td>
+        <td colspan="10">TOTAL UNITS</td>
+        <td>${assets.reduce((s, a) => s + (a.quantity || 1), 0)}</td>
       </tr>
     </tfoot>
   </table>

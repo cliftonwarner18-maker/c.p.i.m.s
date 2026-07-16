@@ -35,6 +35,11 @@
       "type": "string",
       "description": "Serial Number (if applicable)"
     },
+    "quantity": {
+      "type": "number",
+      "default": 1,
+      "description": "Quantity decommissioned (use >1 for bulk non-serialized items with no serial numbers)"
+    },
     "oos_reason": {
       "type": "string",
       "description": "Describe reason for being out of service"
