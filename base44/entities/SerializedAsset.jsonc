@@ -16,7 +16,7 @@
     },
     "serial_number": {
       "type": "string",
-      "description": "Serial Number"
+      "description": "Serial Number (optional \u2014 radios and some equipment may not have one)"
     },
     "asset_type": {
       "type": "string",
@@ -55,7 +55,6 @@
   "required": [
     "asset_number",
     "brand",
-    "model",
-    "serial_number"
+    "model"
   ]
 }

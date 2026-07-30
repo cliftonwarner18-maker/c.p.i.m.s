@@ -5,6 +5,7 @@ import DeleteConfirmModal from '../DeleteConfirmModal';
 import FormModal from '../FormModal';
 import { Plus, Edit2, Trash2, FileDown } from 'lucide-react';
 import { exportSerializedPDF } from '../../utils/exports/exportSerializedLocal';
+import { useToast } from '@/components/ui/use-toast';
 
 const FF = "'Courier Prime', monospace";
 const inputStyle = { width: '100%', padding: '5px 8px', fontSize: '11px', fontFamily: FF, border: '1px solid hsl(220,18%,70%)', borderRadius: '2px', background: 'white', outline: 'none', boxSizing: 'border-box' };
@@ -21,13 +22,14 @@ export default function SerializedAssetsSection() {
   const [searchQuery, setSearchQuery] = useState('');
   const [deleteTarget, setDeleteTarget] = useState(null);
   const queryClient = useQueryClient();
+  const { toast } = useToast();
 
   const { data: assets = [] } = useQuery({ queryKey: ['serializedAssets'], queryFn: () => base44.entities.SerializedAsset.list() });
   const { data: buses = [] } = useQuery({ queryKey: ['buses'], queryFn: () => base44.entities.Bus.list() });
 
-  const createMutation = useMutation({ mutationFn: (data) => base44.entities.SerializedAsset.create(data), onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['serializedAssets'] }); resetForm(); } });
-  const updateMutation = useMutation({ mutationFn: (data) => base44.entities.SerializedAsset.update(editingAsset.id, data), onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['serializedAssets'] }); resetForm(); } });
-  const deleteMutation = useMutation({ mutationFn: (id) => base44.entities.SerializedAsset.delete(id), onSuccess: () => queryClient.invalidateQueries({ queryKey: ['serializedAssets'] }) });
+  const createMutation = useMutation({ mutationFn: (data) => base44.entities.SerializedAsset.create(data), onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['serializedAssets'] }); resetForm(); }, onError: (err) => { toast({ title: 'SAVE FAILED', description: err?.message || 'Could not save asset. Check required fields (Asset #, Brand, Model, Serial #).', variant: 'destructive' }); } });
+  const updateMutation = useMutation({ mutationFn: (data) => base44.entities.SerializedAsset.update(editingAsset.id, data), onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['serializedAssets'] }); resetForm(); }, onError: (err) => { toast({ title: 'UPDATE FAILED', description: err?.message || 'Could not update asset.', variant: 'destructive' }); } });
+  const deleteMutation = useMutation({ mutationFn: (id) => base44.entities.SerializedAsset.delete(id), onSuccess: () => queryClient.invalidateQueries({ queryKey: ['serializedAssets'] }), onError: (err) => { toast({ title: 'DELETE FAILED', description: err?.message || 'Could not delete asset.', variant: 'destructive' }); } });
 
   const resetForm = () => { setFormData({}); setEditingAsset(null); setShowForm(false); };
   const handleEdit = (asset) => { setEditingAsset(asset); setFormData(asset); setShowForm(true); };
