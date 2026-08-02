@@ -18,6 +18,7 @@ const STATUS_ORDER = ['Available', 'Dead Line', 'MI', 'PM'];
 export default function WhiteBoard() {
   const queryClient = useQueryClient();
   const [lotFilter, setLotFilter] = useState('All');
+  const [typeFilter, setTypeFilter] = useState('All');
   const [search, setSearch] = useState('');
   const [selectedBus, setSelectedBus] = useState(null);
 
@@ -35,9 +36,10 @@ export default function WhiteBoard() {
 
   const filtered = activeBuses.filter(b => {
     const lotMatch = lotFilter === 'All' || b.base_location === lotFilter;
+    const typeMatch = typeFilter === 'All' || b.bus_type === typeFilter;
     const q = search.toLowerCase();
     const searchMatch = !search || b.bus_number?.toLowerCase().includes(q) || b.make?.toLowerCase().includes(q) || b.model?.toLowerCase().includes(q);
-    return lotMatch && searchMatch;
+    return lotMatch && typeMatch && searchMatch;
   });
 
   const counts = STATUS_ORDER.reduce((acc, s) => {
@@ -97,6 +99,12 @@ export default function WhiteBoard() {
         {['All', 'Main', 'North'].map(l => (
           <button key={l} onClick={() => setLotFilter(l)} style={{ ...btnBase, background: lotFilter === l ? 'hsl(220,55%,38%)' : 'white', color: lotFilter === l ? 'white' : 'hsl(220,20%,30%)', borderColor: lotFilter === l ? 'hsl(220,55%,38%)' : 'hsl(220,18%,72%)' }}>
             {l.toUpperCase()}
+          </button>
+        ))}
+        <span style={{ fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,35%)', letterSpacing: '0.06em', marginLeft: '8px' }}>TYPE:</span>
+        {['All', 'School Bus', 'Activity Bus'].map(t => (
+          <button key={t} onClick={() => setTypeFilter(t)} style={{ ...btnBase, background: typeFilter === t ? 'hsl(220,55%,38%)' : 'white', color: typeFilter === t ? 'white' : 'hsl(220,20%,30%)', borderColor: typeFilter === t ? 'hsl(220,55%,38%)' : 'hsl(220,18%,72%)' }}>
+            {t === 'All' ? 'ALL' : t.toUpperCase()}
           </button>
         ))}
         <span style={{ fontSize: '10px', color: 'hsl(220,10%,50%)', marginLeft: 'auto' }}>SHOWING {filtered.length} BUSES</span>
