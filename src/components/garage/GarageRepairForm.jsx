@@ -164,8 +164,9 @@ export default function GarageRepairForm({ repair, buses = [], onClose, onSaved 
 
         {/* Time tracking */}
         <div style={{ background: 'hsl(210,50%,97%)', border: '1px solid hsl(210,40%,82%)', borderRadius: '2px', padding: '8px 10px' }}>
-          <div style={{ fontSize: '10px', fontWeight: '700', color: 'hsl(210,60%,35%)', letterSpacing: '0.06em', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <Clock style={{ width: 10, height: 10 }} /> MECHANIC TIME TRACKING
+          <div style={{ fontSize: '10px', fontWeight: '700', color: 'hsl(210,60%,35%)', letterSpacing: '0.06em', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '4px', justifyContent: 'space-between' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Clock style={{ width: 10, height: 10 }} /> MECHANIC TIME TRACKING</span>
+            <span style={{ color: 'hsl(220,20%,30%)' }}>MECHANIC: <span style={{ color: 'hsl(210,60%,35%)' }}>{form.mechanic || '— NOT SET —'}</span></span>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
             <div>
