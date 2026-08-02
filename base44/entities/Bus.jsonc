@@ -23,6 +23,15 @@
       ],
       "description": "Vehicle duty/base location"
     },
+    "route_class": {
+      "type": "string",
+      "enum": [
+        "Permanent",
+        "Substitute"
+      ],
+      "default": "Permanent",
+      "description": "Route assignment class \u2014 Permanent (regular route) or Substitute (spare/fill-in)"
+    },
     "year": {
       "type": "string",
       "description": "Year of the bus"

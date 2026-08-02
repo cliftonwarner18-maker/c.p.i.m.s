@@ -50,7 +50,7 @@ export default function BusForm({ bus, onClose, onSaved }) {
     camera_model_number: '', cameras_inside: '', cameras_outside: '', cameras_ai: '', ai_cameras_installed: false, stop_arm_cameras: false,
     samsara_enabled: false, samsara_av_enabled: false,
     samsara_inputs_enabled: false, dash_cam_sid: '', gateway_sid: '',
-    next_inspection_due: '', status: 'Active', board_status: 'Available', whiteboard_tracking: true, notes: '', legacy_upload: '',
+    next_inspection_due: '', status: 'Active', route_class: 'Permanent', board_status: 'Available', whiteboard_tracking: true, notes: '', legacy_upload: '',
   });
 
   useEffect(() => {
@@ -83,6 +83,7 @@ export default function BusForm({ bus, onClose, onSaved }) {
         gateway_sid: bus.gateway_sid || '',
         next_inspection_due: bus.next_inspection_due || '',
         status: bus.status || 'Active',
+        route_class: bus.route_class || 'Permanent',
         board_status: bus.board_status || 'Available',
         whiteboard_tracking: bus.whiteboard_tracking !== false,
         notes: bus.notes || '',
@@ -182,6 +183,12 @@ export default function BusForm({ bus, onClose, onSaved }) {
                 <option value="Active">Active</option>
                 <option value="Out of Service">Out of Service</option>
                 <option value="Retired">Retired</option>
+              </select>
+            </Field>
+            <Field label="ROUTE CLASS">
+              <select className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.route_class} onChange={e => setForm(prev => ({...prev, route_class: e.target.value}))}>
+                <option value="Permanent">Permanent Bus</option>
+                <option value="Substitute">Substitute Bus</option>
               </select>
             </Field>
             <Field label="WHITE BOARD STATUS">
