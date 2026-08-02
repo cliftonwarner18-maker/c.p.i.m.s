@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { X, Clock, CheckCircle, AlertTriangle } from 'lucide-react';
+import { X, Clock, AlertTriangle } from 'lucide-react';
 
 const FF = "'Courier Prime', monospace";
 const inp = { width: '100%', padding: '5px 8px', fontSize: '12px', fontFamily: FF, border: '1px solid hsl(220,18%,70%)', borderRadius: '2px', background: 'white', boxSizing: 'border-box' };
@@ -14,6 +14,7 @@ const STATUS_COLORS = {
   'Completed': 'hsl(140,60%,40%)',
   'Cancelled': 'hsl(0,60%,48%)',
 };
+const BOARD_STATUSES = ['Available', 'Dead Line', 'MI', 'PM', 'Active Trip', 'Parked OOS'];
 
 function calcMinutes(start, end) {
   if (!start || !end) return null;
@@ -42,11 +43,15 @@ export default function GarageRepairForm({ repair, buses = [], onClose, onSaved 
     end_time: '',
     elapsed_minutes: null,
     return_to_service: false,
+    board_status: 'Parked OOS',
     notes: '',
   });
 
   useEffect(() => {
-    if (repair) setForm({ ...form, ...repair });
+    if (repair) {
+      const matchBus = buses.find(b => b.bus_number === repair.bus_number);
+      setForm(f => ({ ...f, ...repair, board_status: matchBus?.board_status || 'Parked OOS' }));
+    }
   }, [repair?.id]);
 
   const set = (k, v) => setForm(f => {
@@ -61,18 +66,13 @@ export default function GarageRepairForm({ repair, buses = [], onClose, onSaved 
   const saveMut = useMutation({
     mutationFn: async (data) => {
       const matchBus = buses.find(b => b.bus_number === data.bus_number);
-      // If marking return to service, update the bus whiteboard status to Available
-      if (data.return_to_service && !repair?.return_to_service) {
-        if (matchBus) {
-          await base44.entities.Bus.update(matchBus.id, { board_status: 'Available' });
-        }
+      // Update the bus White Board status to whatever was selected in the dropdown
+      if (matchBus && data.board_status) {
+        await base44.entities.Bus.update(matchBus.id, { board_status: data.board_status });
       }
-      // On new repair, mark the bus as Parked OOS on the White Board
-      if (isNew && matchBus) {
-        await base44.entities.Bus.update(matchBus.id, { board_status: 'Parked OOS' });
-      }
-      if (isNew) return base44.entities.GarageRepair.create(data);
-      return base44.entities.GarageRepair.update(repair.id, data);
+      const payload = { ...data, return_to_service: data.board_status === 'Available' };
+      if (isNew) return base44.entities.GarageRepair.create(payload);
+      return base44.entities.GarageRepair.update(repair.id, payload);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['garage_repairs'] });
@@ -211,16 +211,13 @@ export default function GarageRepairForm({ repair, buses = [], onClose, onSaved 
           <textarea value={form.notes} onChange={e => set('notes', e.target.value)} style={{ ...inp, minHeight: '40px', resize: 'vertical' }} />
         </div>
 
-        {/* Return to service toggle */}
-        <div style={{ background: form.return_to_service ? 'hsl(140,60%,96%)' : 'hsl(0,0%,97%)', border: `2px solid ${form.return_to_service ? 'hsl(140,60%,45%)' : 'hsl(220,18%,78%)'}`, borderRadius: '2px', padding: '10px 12px', display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}
-          onClick={() => set('return_to_service', !form.return_to_service)}>
-          <div style={{ width: '18px', height: '18px', border: `2px solid ${form.return_to_service ? 'hsl(140,60%,45%)' : 'hsl(220,18%,65%)'}`, borderRadius: '2px', background: form.return_to_service ? 'hsl(140,60%,45%)' : 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            {form.return_to_service && <CheckCircle style={{ width: 14, height: 14, color: 'white' }} />}
-          </div>
-          <div>
-            <div style={{ fontSize: '11px', fontWeight: '700', color: form.return_to_service ? 'hsl(140,60%,35%)' : 'hsl(220,20%,30%)', letterSpacing: '0.06em' }}>RETURN TO SERVICE — UPDATE WHITEBOARD TO AVAILABLE</div>
-            <div style={{ fontSize: '10px', color: 'hsl(220,10%,50%)' }}>Checking this will automatically set Bus #{form.bus_number || '??'} status to AVAILABLE on the White Board.</div>
-          </div>
+        {/* White Board status dropdown */}
+        <div style={{ background: 'hsl(220,15%,97%)', border: '2px solid hsl(220,18%,78%)', borderRadius: '2px', padding: '10px 12px' }}>
+          <label style={lbl}>WHITE BOARD STATUS — BUS #{form.bus_number || '??'}</label>
+          <select value={form.board_status} onChange={e => set('board_status', e.target.value)} style={{ ...inp, fontWeight: '700' }}>
+            {BOARD_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
+          </select>
+          <div style={{ fontSize: '10px', color: 'hsl(220,10%,50%)', marginTop: '4px' }}>Set to <b>Parked OOS</b> or <b>Dead Line</b> when parking. Change to <b>Available</b> when repair is complete.</div>
         </div>
 
         {saveMut.isError && (
