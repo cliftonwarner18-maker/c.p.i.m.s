@@ -60,12 +60,16 @@ export default function GarageRepairForm({ repair, buses = [], onClose, onSaved 
 
   const saveMut = useMutation({
     mutationFn: async (data) => {
-      // If marking return to service, update the bus whiteboard status too
+      const matchBus = buses.find(b => b.bus_number === data.bus_number);
+      // If marking return to service, update the bus whiteboard status to Available
       if (data.return_to_service && !repair?.return_to_service) {
-        const matchBus = buses.find(b => b.bus_number === data.bus_number);
         if (matchBus) {
           await base44.entities.Bus.update(matchBus.id, { board_status: 'Available' });
         }
+      }
+      // On new repair, mark the bus as Parked OOS on the White Board
+      if (isNew && matchBus) {
+        await base44.entities.Bus.update(matchBus.id, { board_status: 'Parked OOS' });
       }
       if (isNew) return base44.entities.GarageRepair.create(data);
       return base44.entities.GarageRepair.update(repair.id, data);
