@@ -50,7 +50,7 @@ export default function BusForm({ bus, onClose, onSaved }) {
     camera_model_number: '', cameras_inside: '', cameras_outside: '', cameras_ai: '', ai_cameras_installed: false, stop_arm_cameras: false,
     samsara_enabled: false, samsara_av_enabled: false,
     samsara_inputs_enabled: false, dash_cam_sid: '', gateway_sid: '',
-    next_inspection_due: '', status: 'Active', board_status: 'Available', notes: '', legacy_upload: '',
+    next_inspection_due: '', status: 'Active', board_status: 'Available', whiteboard_tracking: true, notes: '', legacy_upload: '',
   });
 
   useEffect(() => {
@@ -84,6 +84,7 @@ export default function BusForm({ bus, onClose, onSaved }) {
         next_inspection_due: bus.next_inspection_due || '',
         status: bus.status || 'Active',
         board_status: bus.board_status || 'Available',
+        whiteboard_tracking: bus.whiteboard_tracking !== false,
         notes: bus.notes || '',
         legacy_upload: bus.legacy_upload || '',
       });
@@ -191,6 +192,10 @@ export default function BusForm({ bus, onClose, onSaved }) {
                 <option value="PM">PM (Yellow)</option>
               </select>
             </Field>
+            <div style={{display:'flex',alignItems:'center',gap:'4px',fontSize:'11px',cursor:'pointer',marginBottom:'12px'}}>
+              <input type="checkbox" checked={form.whiteboard_tracking} onChange={e => setForm(prev => ({...prev, whiteboard_tracking: e.target.checked}))} style={{accentColor:'hsl(220,70%,35%)'}} />
+              WHITEBOARD TRACKING (SHOW ON WHITE BOARD)
+            </div>
             <Field label="INSP. DUE">
               <input type="date" className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.next_inspection_due} onChange={e => setForm(prev => ({...prev, next_inspection_due: e.target.value}))} />
             </Field>

@@ -32,7 +32,7 @@ export default function WhiteBoard() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['buses'] }),
   });
 
-  const activeBuses = buses.filter(b => b.status !== 'Retired' && b.base_location !== 'Sold' && (b.bus_number || '').toUpperCase() !== 'LAB HOURS');
+  const activeBuses = buses.filter(b => b.status !== 'Retired' && b.base_location !== 'Sold' && b.whiteboard_tracking !== false && (b.bus_number || '').toUpperCase() !== 'LAB HOURS');
 
   const filtered = activeBuses.filter(b => {
     const lotMatch = lotFilter === 'All' || b.base_location === lotFilter;

@@ -150,6 +150,11 @@
       "default": "Available",
       "description": "White Board status \u2014 Available (green), Dead Line (red), MI (blue), PM (yellow)"
     },
+    "whiteboard_tracking": {
+      "type": "boolean",
+      "default": true,
+      "description": "Show this bus on the White Board status board"
+    },
     "notes": {
       "type": "string",
       "description": "Additional notes"
