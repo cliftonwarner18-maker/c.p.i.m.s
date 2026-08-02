@@ -61,9 +61,10 @@ const STATUS_META = {
   'MI':         { label: 'MI',         bg: 'hsl(210,70%,50%)',  border: 'hsl(210,70%,38%)', text: 'white',  glow: '0 0 10px hsl(210,70%,50%)' },
   'PM':         { label: 'PM',         bg: 'hsl(45,90%,50%)',   border: 'hsl(45,90%,38%)',  text: '#1a1a1a', glow: '0 0 10px hsl(45,90%,50%)' },
   'Active Trip': { label: 'ACTIVE TRIP', bg: 'hsl(280,55%,48%)', border: 'hsl(280,55%,36%)', text: 'white', glow: '0 0 10px hsl(280,55%,48%)' },
+  'Parked OOS': { label: 'PARKED OOS', bg: 'hsl(220,8%,45%)', border: 'hsl(220,10%,32%)', text: 'white', glow: '0 0 8px hsl(220,8%,40%)' },
 };
 
-const STATUS_ORDER = ['Available', 'Dead Line', 'MI', 'PM', 'Active Trip'];
+const STATUS_ORDER = ['Available', 'Dead Line', 'MI', 'PM', 'Active Trip', 'Parked OOS'];
 
 export default function WhiteBoard() {
   const queryClient = useQueryClient();

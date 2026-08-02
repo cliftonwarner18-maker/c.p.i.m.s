@@ -155,10 +155,11 @@
         "Dead Line",
         "MI",
         "PM",
-        "Active Trip"
+        "Active Trip",
+        "Parked OOS"
       ],
       "default": "Available",
-      "description": "White Board status \u2014 Available (green), Dead Line (red), MI (blue), PM (yellow), Active Trip (purple \u2014 bus on a trip, not available)"
+      "description": "White Board status \u2014 Available (green), Dead Line (red), MI (blue), PM (yellow), Active Trip (purple \u2014 bus on a trip, not available), Parked OOS (gray \u2014 parked / out of service)"
     },
     "whiteboard_tracking": {
       "type": "boolean",
