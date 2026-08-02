@@ -19,6 +19,7 @@ export default function WhiteBoard() {
   const queryClient = useQueryClient();
   const [lotFilter, setLotFilter] = useState('All');
   const [typeFilter, setTypeFilter] = useState('All');
+  const [routeClassFilter, setRouteClassFilter] = useState('All');
   const [search, setSearch] = useState('');
   const [selectedBus, setSelectedBus] = useState(null);
 
@@ -37,9 +38,10 @@ export default function WhiteBoard() {
   const filtered = activeBuses.filter(b => {
     const lotMatch = lotFilter === 'All' || b.base_location === lotFilter;
     const typeMatch = typeFilter === 'All' || b.bus_type === typeFilter;
+    const routeClassMatch = routeClassFilter === 'All' || (b.route_class || 'Permanent') === routeClassFilter;
     const q = search.toLowerCase();
     const searchMatch = !search || b.bus_number?.toLowerCase().includes(q) || b.make?.toLowerCase().includes(q) || b.model?.toLowerCase().includes(q);
-    return lotMatch && typeMatch && searchMatch;
+    return lotMatch && typeMatch && routeClassMatch && searchMatch;
   });
 
   const counts = STATUS_ORDER.reduce((acc, s) => {
@@ -105,6 +107,12 @@ export default function WhiteBoard() {
         {['All', 'School Bus', 'Activity Bus'].map(t => (
           <button key={t} onClick={() => setTypeFilter(t)} style={{ ...btnBase, background: typeFilter === t ? 'hsl(220,55%,38%)' : 'white', color: typeFilter === t ? 'white' : 'hsl(220,20%,30%)', borderColor: typeFilter === t ? 'hsl(220,55%,38%)' : 'hsl(220,18%,72%)' }}>
             {t === 'All' ? 'ALL' : t.toUpperCase()}
+          </button>
+        ))}
+        <span style={{ fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,35%)', letterSpacing: '0.06em', marginLeft: '8px' }}>ROUTE:</span>
+        {['All', 'Permanent', 'Substitute'].map(r => (
+          <button key={r} onClick={() => setRouteClassFilter(r)} style={{ ...btnBase, background: routeClassFilter === r ? (r === 'Substitute' ? 'hsl(330,80%,52%)' : 'hsl(220,55%,38%)') : 'white', color: routeClassFilter === r ? 'white' : 'hsl(220,20%,30%)', borderColor: routeClassFilter === r ? (r === 'Substitute' ? 'hsl(330,80%,42%)' : 'hsl(220,55%,38%)') : 'hsl(220,18%,72%)' }}>
+            {r === 'All' ? 'ALL' : r === 'Substitute' ? 'SUBSTITUTE' : 'PERMANENT'}
           </button>
         ))}
         <span style={{ fontSize: '10px', color: 'hsl(220,10%,50%)', marginLeft: 'auto' }}>SHOWING {filtered.length} BUSES</span>
