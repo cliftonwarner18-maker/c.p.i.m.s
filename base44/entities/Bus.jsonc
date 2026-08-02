@@ -139,6 +139,17 @@
       "default": "Active",
       "description": "Bus status"
     },
+    "board_status": {
+      "type": "string",
+      "enum": [
+        "Available",
+        "Dead Line",
+        "MI",
+        "PM"
+      ],
+      "default": "Available",
+      "description": "White Board status \u2014 Available (green), Dead Line (red), MI (blue), PM (yellow)"
+    },
     "notes": {
       "type": "string",
       "description": "Additional notes"
