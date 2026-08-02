@@ -1,0 +1,92 @@
+{
+  "name": "GarageRepair",
+  "type": "object",
+  "properties": {
+    "bus_number": {
+      "type": "string",
+      "description": "Bus number"
+    },
+    "mechanic": {
+      "type": "string",
+      "description": "Mechanic initials or name assigned"
+    },
+    "model": {
+      "type": "string",
+      "description": "Bus model (IC, C2, GMC, etc.)"
+    },
+    "date_parked": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the bus was parked for repair"
+    },
+    "reason_for_parking": {
+      "type": "string",
+      "description": "Reason the bus was parked / initial complaint"
+    },
+    "bus_location": {
+      "type": "string",
+      "enum": [
+        "Main",
+        "North",
+        "Central",
+        "Other"
+      ],
+      "description": "Location of the bus"
+    },
+    "estimated_repair_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Estimated date of repair completion"
+    },
+    "actual_repair_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Actual date repair was completed"
+    },
+    "repair_status": {
+      "type": "string",
+      "enum": [
+        "Open",
+        "In Progress",
+        "Completed",
+        "Cancelled"
+      ],
+      "default": "Open",
+      "description": "Current repair status"
+    },
+    "repairs_rendered": {
+      "type": "string",
+      "description": "Description of repairs performed / remedy"
+    },
+    "reason_not_completed": {
+      "type": "string",
+      "description": "Reason repair was not completed or is still pending"
+    },
+    "start_time": {
+      "type": "string",
+      "description": "Repair start time (ISO)"
+    },
+    "end_time": {
+      "type": "string",
+      "description": "Repair end time (ISO)"
+    },
+    "elapsed_minutes": {
+      "type": "number",
+      "description": "Elapsed repair time in minutes"
+    },
+    "return_to_service": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the bus has been returned to service / whiteboard updated to Available"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes"
+    }
+  },
+  "required": [
+    "bus_number",
+    "date_parked",
+    "reason_for_parking"
+  ]
+}

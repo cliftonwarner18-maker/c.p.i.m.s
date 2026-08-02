@@ -4,7 +4,7 @@ import { createPageUrl } from '@/utils';
 import { format } from 'date-fns';
 import {
   LayoutDashboard, Bus, FileText, ClipboardCheck,
-  PlusCircle, Database, Package2, HardDrive, ShieldAlert, Download, LayoutGrid } from
+  PlusCircle, Database, Package2, HardDrive, ShieldAlert, Download, LayoutGrid, Wrench } from
 'lucide-react';
 import FormModal from '@/components/FormModal';
 import NewWorkOrderForm from '@/components/workorders/NewWorkOrderForm';
@@ -15,6 +15,7 @@ const navItems = [
 { name: 'Dashboard', icon: LayoutDashboard, page: 'Dashboard' },
 { name: 'Fleet', icon: Bus, page: 'FleetManager' },
 { name: 'White Board', icon: LayoutGrid, page: 'WhiteBoard', green: true },
+{ name: 'Garage Board', icon: Wrench, page: 'GarageBoard', orange: true },
 { name: 'New W/O', icon: PlusCircle, page: 'NewWorkOrder' },
 { name: 'Work Orders', icon: FileText, page: 'WorkOrders' },
 { name: 'Camera Inspections', icon: ClipboardCheck, page: 'Inspections' },
@@ -114,10 +115,10 @@ export default function Layout({ children, currentPageName }) {
               style={{
                 display: 'inline-flex', alignItems: 'center', gap: 5,
                 padding: '4px 10px', fontSize: 11, textDecoration: 'none',
-                background: item.red ? currentPageName === item.page ? 'hsl(0,65%,38%)' : 'hsl(0,65%,48%)' : item.yellow ? currentPageName === item.page ? 'hsl(45,90%,42%)' : 'hsl(45,90%,52%)' : item.teal ? currentPageName === item.page ? 'hsl(180,65%,35%)' : 'hsl(180,65%,45%)' : item.green ? currentPageName === item.page ? 'hsl(140,55%,32%)' : 'hsl(140,55%,42%)' : item.page === 'NewWorkOrder' ? 'hsl(140,60%,42%)' : currentPageName === item.page ? 'hsl(220,50%,38%)' : 'hsl(220,18%,88%)',
-                color: item.red || item.yellow || item.teal || item.green || item.page === 'NewWorkOrder' || currentPageName === item.page ? 'white' : 'hsl(220,20%,20%)',
+                background: item.red ? currentPageName === item.page ? 'hsl(0,65%,38%)' : 'hsl(0,65%,48%)' : item.yellow ? currentPageName === item.page ? 'hsl(45,90%,42%)' : 'hsl(45,90%,52%)' : item.teal ? currentPageName === item.page ? 'hsl(180,65%,35%)' : 'hsl(180,65%,45%)' : item.green ? currentPageName === item.page ? 'hsl(140,55%,32%)' : 'hsl(140,55%,42%)' : item.orange ? currentPageName === item.page ? 'hsl(30,70%,35%)' : 'hsl(30,65%,45%)' : item.page === 'NewWorkOrder' ? 'hsl(140,60%,42%)' : currentPageName === item.page ? 'hsl(220,50%,38%)' : 'hsl(220,18%,88%)',
+                color: item.red || item.yellow || item.teal || item.green || item.orange || item.page === 'NewWorkOrder' || currentPageName === item.page ? 'white' : 'hsl(220,20%,20%)',
                 border: '1px solid',
-                borderColor: item.red || item.yellow || item.teal || item.green || item.page === 'NewWorkOrder' || currentPageName === item.page ? 'rgba(0,0,0,0.2)' : 'hsl(220,18%,70%)',
+                borderColor: item.red || item.yellow || item.teal || item.green || item.orange || item.page === 'NewWorkOrder' || currentPageName === item.page ? 'rgba(0,0,0,0.2)' : 'hsl(220,18%,70%)',
                 fontFamily: "'Courier Prime',monospace", fontWeight: '500', whiteSpace: 'nowrap', flexShrink: 0, borderRadius: '2px', transition: 'all 0.15s', cursor: 'pointer'
               }} className="bg-cyan-600 text-slate-950">
 

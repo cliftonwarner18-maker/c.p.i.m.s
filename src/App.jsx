@@ -3,6 +3,7 @@ import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
 import { pagesConfig } from './pages.config'
 import WhiteBoard from './pages/WhiteBoard'
+import GarageBoard from './pages/GarageBoard'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
@@ -59,6 +60,7 @@ const AuthenticatedApp = () => {
         />
       ))}
       <Route path="/WhiteBoard" element={<LayoutWrapper currentPageName="WhiteBoard"><WhiteBoard /></LayoutWrapper>} />
+      <Route path="/GarageBoard" element={<LayoutWrapper currentPageName="GarageBoard"><GarageBoard /></LayoutWrapper>} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
