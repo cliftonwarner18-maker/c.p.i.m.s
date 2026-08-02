@@ -25,6 +25,7 @@ const exportGarageBoard = (repairs, tab) => {
     return `<tr>
       <td style="font-weight:700">${r.bus_number || ''}</td>
       <td>${r.mechanic || ''}</td>
+      <td>${r.repair_mechanic || ''}</td>
       <td>${r.model || ''}</td>
       <td>${fmtDate(r.date_parked)}</td>
       <td>${r.reason_for_parking || ''}</td>
@@ -51,7 +52,7 @@ const exportGarageBoard = (repairs, tab) => {
   <h1>GARAGE BOARD — ${tab.toUpperCase()} BUS REPAIRS</h1>
   <div class="sub">NHCS Transportation — Data-TraCs System &nbsp;|&nbsp; ${new Date().toLocaleString()}</div>
   <table>
-    <thead><tr><th>BUS #</th><th>MECH</th><th>MODEL</th><th>DATE PARKED</th><th>REASON</th><th>LOCATION</th><th>EST DATE</th><th>ACTUAL DATE</th><th>STATUS</th><th>REPAIRS RENDERED</th><th>PENDING NOTES</th></tr></thead>
+    <thead><tr><th>BUS #</th><th>PARKED BY</th><th>REPAIR MECH</th><th>MODEL</th><th>DATE PARKED</th><th>REASON</th><th>LOCATION</th><th>EST DATE</th><th>ACTUAL DATE</th><th>STATUS</th><th>REPAIRS RENDERED</th><th>PENDING NOTES</th></tr></thead>
     <tbody>${rows}</tbody>
   </table>
   <div class="foot">Total: ${repairs.length} records &nbsp;|&nbsp; Garage Board Export</div>
@@ -92,7 +93,7 @@ export default function GarageBoard() {
   const displayList = (tab === 'Active' ? activeRepairs : completedRepairs).filter(r => {
     if (locFilter !== 'All' && r.bus_location !== locFilter) return false;
     const q = search.toLowerCase();
-    return !search || r.bus_number?.toLowerCase().includes(q) || r.mechanic?.toLowerCase().includes(q) || r.reason_for_parking?.toLowerCase().includes(q) || r.bus_location?.toLowerCase().includes(q);
+    return !search || r.bus_number?.toLowerCase().includes(q) || r.mechanic?.toLowerCase().includes(q) || r.repair_mechanic?.toLowerCase().includes(q) || r.reason_for_parking?.toLowerCase().includes(q) || r.bus_location?.toLowerCase().includes(q);
   });
 
   const btnBase = { padding: '3px 10px', fontSize: '10px', fontFamily: FF, fontWeight: '700', border: '1px solid', borderRadius: '2px', cursor: 'pointer' };
@@ -164,7 +165,7 @@ export default function GarageBoard() {
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px', fontFamily: FF }}>
             <thead>
               <tr style={{ background: 'hsl(30,60%,35%)', color: 'white' }}>
-                {['BUS #', 'MECH', 'MODEL', 'DATE PARKED', 'REASON FOR PARKING', 'LOCATION', 'EST. DATE', 'ACTUAL DATE', 'STATUS', 'ACTIONS'].map(h => (
+                {['BUS #', 'PARKED BY', 'REPAIR MECH', 'MODEL', 'DATE PARKED', 'REASON FOR PARKING', 'LOCATION', 'EST. DATE', 'ACTUAL DATE', 'STATUS', 'ACTIONS'].map(h => (
                   <th key={h} style={{ padding: '6px 8px', textAlign: 'left', fontSize: '9px', letterSpacing: '0.06em', whiteSpace: 'nowrap', fontWeight: '700' }}>{h}</th>
                 ))}
               </tr>
@@ -176,6 +177,7 @@ export default function GarageBoard() {
                   <tr key={r.id} style={{ background: i % 2 === 0 ? 'white' : 'hsl(30,20%,98%)', borderBottom: '1px solid hsl(220,18%,88%)' }}>
                     <td style={{ padding: '6px 8px', fontWeight: '700', fontSize: '13px', whiteSpace: 'nowrap' }}>{r.bus_number}</td>
                     <td style={{ padding: '6px 8px', whiteSpace: 'nowrap' }}>{r.mechanic || '—'}</td>
+                    <td style={{ padding: '6px 8px', whiteSpace: 'nowrap' }}>{r.repair_mechanic || '—'}</td>
                     <td style={{ padding: '6px 8px', whiteSpace: 'nowrap' }}>{r.model || '—'}</td>
                     <td style={{ padding: '6px 8px', whiteSpace: 'nowrap' }}>{fmtDate(r.date_parked)}</td>
                     <td style={{ padding: '6px 8px', maxWidth: '260px' }}>

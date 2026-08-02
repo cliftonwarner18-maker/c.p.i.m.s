@@ -8,7 +8,11 @@
     },
     "mechanic": {
       "type": "string",
-      "description": "Mechanic initials or name assigned"
+      "description": "Mechanic who parked / logged the bus (initials or name)"
+    },
+    "repair_mechanic": {
+      "type": "string",
+      "description": "Mechanic performing the actual repairs (initials or name)"
     },
     "model": {
       "type": "string",

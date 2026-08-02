@@ -28,6 +28,7 @@ export default function GarageRepairForm({ repair, buses = [], onClose, onSaved 
   const [form, setForm] = useState({
     bus_number: '',
     mechanic: '',
+    repair_mechanic: '',
     model: '',
     date_parked: new Date().toISOString().slice(0, 10),
     reason_for_parking: '',
@@ -124,8 +125,12 @@ export default function GarageRepairForm({ repair, buses = [], onClose, onSaved 
             )}
           </div>
           <div>
-            <label style={lbl}>MECHANIC</label>
+            <label style={lbl}>PARKED BY (LOGGED)</label>
             <input value={form.mechanic} onChange={e => set('mechanic', e.target.value)} style={inp} placeholder="Initials / Name" />
+          </div>
+          <div>
+            <label style={lbl}>REPAIR MECHANIC</label>
+            <input value={form.repair_mechanic} onChange={e => set('repair_mechanic', e.target.value)} style={inp} placeholder="Initials / Name" />
           </div>
           <div>
             <label style={lbl}>MODEL</label>
@@ -166,7 +171,7 @@ export default function GarageRepairForm({ repair, buses = [], onClose, onSaved 
         <div style={{ background: 'hsl(210,50%,97%)', border: '1px solid hsl(210,40%,82%)', borderRadius: '2px', padding: '8px 10px' }}>
           <div style={{ fontSize: '10px', fontWeight: '700', color: 'hsl(210,60%,35%)', letterSpacing: '0.06em', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '4px', justifyContent: 'space-between' }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Clock style={{ width: 10, height: 10 }} /> MECHANIC TIME TRACKING</span>
-            <span style={{ color: 'hsl(220,20%,30%)' }}>MECHANIC: <span style={{ color: 'hsl(210,60%,35%)' }}>{form.mechanic || '— NOT SET —'}</span></span>
+            <span style={{ color: 'hsl(220,20%,30%)' }}>REPAIR MECH: <span style={{ color: 'hsl(210,60%,35%)' }}>{form.repair_mechanic || form.mechanic || '— NOT SET —'}</span></span>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
             <div>
