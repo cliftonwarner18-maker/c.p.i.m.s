@@ -154,10 +154,11 @@
         "Available",
         "Dead Line",
         "MI",
-        "PM"
+        "PM",
+        "Active Trip"
       ],
       "default": "Available",
-      "description": "White Board status \u2014 Available (green), Dead Line (red), MI (blue), PM (yellow)"
+      "description": "White Board status \u2014 Available (green), Dead Line (red), MI (blue), PM (yellow), Active Trip (purple \u2014 bus on a trip, not available)"
     },
     "whiteboard_tracking": {
       "type": "boolean",
