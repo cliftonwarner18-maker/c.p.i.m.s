@@ -139,7 +139,7 @@ export default function WorkOrders() {
         
         <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
           <span style={{ fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,35%)', letterSpacing: '0.06em' }}>TYPE:</span>
-          {['All', 'Camera Repair', 'Radio Repair', 'Seat Repair', 'Other'].map(t => (
+          {['All', 'Camera Repair', 'Radio Repair', 'Seat Repair', 'Mechanical', 'Other'].map(t => (
             <button key={t} onClick={() => setTypeFilter(t)} style={{ padding: '3px 8px', fontSize: '10px', fontFamily: FF, fontWeight: typeFilter === t ? '700' : '500', background: typeFilter === t ? 'hsl(200,70%,42%)' : 'white', color: typeFilter === t ? 'white' : 'hsl(220,20%,30%)', border: `1px solid ${typeFilter === t ? 'hsl(200,70%,42%)' : 'hsl(220,18%,72%)'}`, borderRadius: '2px', cursor: 'pointer' }}>
               {t.toUpperCase()}
             </button>
@@ -188,7 +188,7 @@ export default function WorkOrders() {
                 return (
                   <tr key={wo.id} style={{ background: i % 2 === 0 ? 'white' : 'hsl(220,15%,97%)', borderBottom: '1px solid hsl(220,18%,88%)' }}>
                     <td style={{ padding: '5px 8px', fontWeight: '700', whiteSpace: 'nowrap' }}>{wo.order_number}</td>
-                    <td style={{ padding: '5px 8px', fontSize: '9px', fontWeight: '600', background: wo.work_order_type === 'Camera Repair' ? 'hsl(200,80%,92%)' : wo.work_order_type === 'Radio Repair' ? 'hsl(280,70%,92%)' : wo.work_order_type === 'Seat Repair' ? 'hsl(30,80%,92%)' : 'hsl(220,70%,92%)' }}>{wo.work_order_type || 'Camera Repair'}</td>
+                    <td style={{ padding: '5px 8px', fontSize: '9px', fontWeight: '600', background: wo.work_order_type === 'Camera Repair' ? 'hsl(200,80%,92%)' : wo.work_order_type === 'Radio Repair' ? 'hsl(280,70%,92%)' : wo.work_order_type === 'Seat Repair' ? 'hsl(30,80%,92%)' : wo.work_order_type === 'Mechanical' ? 'hsl(160,60%,90%)' : 'hsl(220,70%,92%)' }}>{wo.work_order_type || 'Camera Repair'}</td>
                     <td style={{ padding: '5px 8px', whiteSpace: 'nowrap' }}>{moment(wo.created_date).format('MM/DD/YY')}</td>
                     <td style={{ padding: '5px 8px', fontWeight: '700' }}>{wo.bus_number}</td>
                     <td style={{ padding: '5px 8px', whiteSpace: 'nowrap' }}>{wo.reported_by}</td>

@@ -29,6 +29,7 @@
         "Camera Repair",
         "Radio Repair",
         "Seat Repair",
+        "Mechanical",
         "Other"
       ],
       "default": "Camera Repair",

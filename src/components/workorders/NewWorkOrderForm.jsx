@@ -117,6 +117,7 @@ export default function NewWorkOrderForm({ onClose, onCreated }) {
               <option value="Camera Repair">Camera Repair</option>
               <option value="Radio Repair">Radio Repair</option>
               <option value="Seat Repair">Seat Repair</option>
+              <option value="Mechanical">Mechanical</option>
               <option value="Other">Other</option>
             </select>
           </div>
