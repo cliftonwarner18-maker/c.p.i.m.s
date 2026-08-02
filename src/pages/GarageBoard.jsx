@@ -65,6 +65,7 @@ export default function GarageBoard() {
   const queryClient = useQueryClient();
   const [tab, setTab] = useState('Active');
   const [search, setSearch] = useState('');
+  const [locFilter, setLocFilter] = useState('All');
   const [editingRepair, setEditingRepair] = useState(null);
   const [showForm, setShowForm] = useState(false);
 
@@ -89,6 +90,7 @@ export default function GarageBoard() {
   const completedRepairs = repairs.filter(r => r.repair_status === 'Completed' || r.repair_status === 'Cancelled');
 
   const displayList = (tab === 'Active' ? activeRepairs : completedRepairs).filter(r => {
+    if (locFilter !== 'All' && r.bus_location !== locFilter) return false;
     const q = search.toLowerCase();
     return !search || r.bus_number?.toLowerCase().includes(q) || r.mechanic?.toLowerCase().includes(q) || r.reason_for_parking?.toLowerCase().includes(q) || r.bus_location?.toLowerCase().includes(q);
   });
@@ -114,6 +116,10 @@ export default function GarageBoard() {
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <select value={locFilter} onChange={e => setLocFilter(e.target.value)} style={{ padding: '4px 8px', fontSize: '11px', fontFamily: FF, border: '1px solid rgba(255,255,255,0.3)', borderRadius: '2px', background: 'rgba(255,255,255,0.15)', color: 'white', outline: 'none', cursor: 'pointer' }}>
+            <option value="All" style={{ color: '#333' }}>ALL LOCATIONS</option>
+            {['Main', 'North', 'Central', 'Other'].map(l => <option key={l} value={l} style={{ color: '#333' }}>{l.toUpperCase()}</option>)}
+          </select>
           <Search style={{ width: 12, height: 12, opacity: 0.7 }} />
           <input placeholder="Search bus, mechanic, reason..." value={search} onChange={e => setSearch(e.target.value)} style={{ padding: '4px 8px', fontSize: '11px', fontFamily: FF, border: '1px solid rgba(255,255,255,0.3)', borderRadius: '2px', background: 'rgba(255,255,255,0.15)', color: 'white', width: '220px', outline: 'none' }} />
         </div>
