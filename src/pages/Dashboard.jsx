@@ -8,7 +8,7 @@ import NewWorkOrderForm from '../components/workorders/NewWorkOrderForm';
 import WorkOrderDetailForm from '../components/workorders/WorkOrderDetailForm';
 import LabHoursForm from '../components/dashboard/LabHoursForm';
 import { useNavigate } from 'react-router-dom';
-import { PlusCircle, Clock } from 'lucide-react';
+import { PlusCircle, Clock, LayoutGrid, Wrench } from 'lucide-react';
 import moment from 'moment';
 
 const FF = "'Courier Prime', monospace";
@@ -57,6 +57,12 @@ export default function Dashboard() {
         </button>
         <button onClick={() => setShowLabHours(true)} style={{ ...btnStyle('hsl(280,40%,35%)', 'hsl(280,40%,28%)'), color: 'white' }}>
           <Clock style={{ width: 13, height: 13 }} /> LAB / FIELD HOURS
+        </button>
+        <button onClick={() => navigate('/WhiteBoard')} style={{ ...btnStyle('white', '#000000'), color: '#000000', fontWeight: '800' }}>
+          <LayoutGrid style={{ width: 13, height: 13 }} /> WHITE BOARD
+        </button>
+        <button onClick={() => navigate('/GarageBoard')} style={{ ...btnStyle('hsl(30,65%,42%)', 'hsl(30,65%,30%)'), color: 'white' }}>
+          <Wrench style={{ width: 13, height: 13 }} /> GARAGE BOARD
         </button>
       </div>
 
