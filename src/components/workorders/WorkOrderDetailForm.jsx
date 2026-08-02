@@ -320,6 +320,12 @@ export default function WorkOrderDetailForm({ id, onClose }) {
         </span>
       </div>
 
+      {form.work_order_type === 'Mechanical' && (
+        <div style={{ background: 'hsl(0,72%,20%)', color: 'white', textAlign: 'center', fontSize: '12px', fontWeight: '700', letterSpacing: '0.18em', padding: '8px 12px', border: '2px solid hsl(0,72%,12%)', borderRadius: '2px', fontFamily: FF }}>
+          ⚠ MECHANICS ONLY — ONLY AUTHORIZED MECHANICS MAY REPAIR THIS WORK ORDER ⚠
+        </div>
+      )}
+
       {/* PART 1: Read-only complaint */}
       <div style={{ background: 'white', border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', padding: '14px' }}>
         <SectionHeader title="PART 1 — INITIAL COMPLAINT (READ ONLY)" />

@@ -122,6 +122,11 @@ export default function NewWorkOrderForm({ onClose, onCreated }) {
             </select>
           </div>
         </div>
+        {form.work_order_type === 'Mechanical' && (
+          <div style={{ background: 'hsl(0,72%,20%)', color: 'white', textAlign: 'center', fontSize: '12px', fontWeight: '700', letterSpacing: '0.18em', padding: '8px 12px', border: '2px solid hsl(0,72%,12%)', borderRadius: '2px', marginBottom: '10px', fontFamily: FF }}>
+            ⚠ MECHANICS ONLY — ONLY AUTHORIZED MECHANICS MAY REPAIR THIS WORK ORDER ⚠
+          </div>
+        )}
 
         <div style={{ marginBottom: '10px' }}>
           <label style={labelStyle}>DESCRIBE ISSUES WITH SYSTEM *</label>
