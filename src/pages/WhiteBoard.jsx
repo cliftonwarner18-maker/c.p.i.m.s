@@ -121,27 +121,28 @@ export default function WhiteBoard() {
             {filtered.map(b => {
               const status = b.board_status || 'Available';
               const m = STATUS_META[status];
-              const isSub = (b.route_class || 'Permanent') === 'Substitute';
+              const isSubAvail = (b.route_class || 'Permanent') === 'Substitute' && status === 'Available';
+              const bg = isSubAvail ? 'hsl(330,80%,55%)' : m.bg;
+              const border = isSubAvail ? 'hsl(330,80%,42%)' : m.border;
+              const text = isSubAvail ? 'white' : m.text;
+              const glow = isSubAvail ? '0 0 10px hsl(330,80%,60%)' : m.glow;
               return (
                 <button
                   key={b.id}
                   onClick={() => setSelectedBus(b)}
                   style={{
-                    background: m.bg, color: m.text,
-                    border: isSub ? `3px dashed hsl(330,80%,55%)` : `2px solid ${m.border}`,
-                    borderRadius: '4px',
+                    background: bg, color: text, border: `2px solid ${border}`, borderRadius: '4px',
                     padding: '10px 6px', cursor: 'pointer', fontFamily: FF,
                     display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px',
-                    boxShadow: isSub ? `0 0 10px hsl(330,80%,60%), inset 0 0 12px rgba(255,105,180,0.35)` : m.glow,
-                    transition: 'transform 0.1s', minHeight: '78px',
+                    boxShadow: glow, transition: 'transform 0.1s', minHeight: '78px',
                     position: 'relative',
                   }}
                   onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.04)'; }}
                   onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }}
                 >
-                  {isSub && <div style={{ position: 'absolute', top: '2px', right: '3px', fontSize: '7px', fontWeight: '700', letterSpacing: '0.08em', background: 'hsl(330,80%,55%)', color: 'white', padding: '1px 4px', borderRadius: '2px' }}>SUB</div>}
+                  {isSubAvail && <div style={{ position: 'absolute', top: '2px', right: '3px', fontSize: '7px', fontWeight: '700', letterSpacing: '0.08em', background: 'white', color: 'hsl(330,80%,45%)', padding: '1px 4px', borderRadius: '2px' }}>SUB</div>}
                   <div style={{ fontSize: '18px', fontWeight: '700', letterSpacing: '0.05em', lineHeight: 1 }}>{b.bus_number}</div>
-                  <div style={{ fontSize: '8px', fontWeight: '700', letterSpacing: '0.1em', opacity: 0.9, background: 'rgba(0,0,0,0.18)', padding: '1px 6px', borderRadius: '2px' }}>{m.label}</div>
+                  <div style={{ fontSize: '8px', fontWeight: '700', letterSpacing: '0.1em', opacity: 0.9, background: 'rgba(0,0,0,0.18)', padding: '1px 6px', borderRadius: '2px' }}>{isSubAvail ? 'SUB — AVAIL' : m.label}</div>
                   {b.make && <div style={{ fontSize: '8px', opacity: 0.75, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%' }}>{b.make}</div>}
                 </button>
               );
