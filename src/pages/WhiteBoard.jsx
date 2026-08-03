@@ -3,6 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { LayoutGrid, Search, X, Download } from 'lucide-react';
 import FormModal from '../components/FormModal';
+import BusShape from '../components/whiteboard/BusShape';
 
 const exportBoard = (buses, filters) => {
   const rows = buses.map(b => {
@@ -193,19 +194,24 @@ export default function WhiteBoard() {
                   key={b.id}
                   onClick={() => setSelectedBus(b)}
                   style={{
-                    background: bg, color: text, border: `2px solid ${border}`, borderRadius: '4px',
-                    padding: '10px 6px', cursor: 'pointer', fontFamily: FF,
-                    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px',
-                    boxShadow: glow, transition: 'transform 0.1s', minHeight: '78px',
+                    background: 'transparent', border: 'none', padding: '4px 4px 10px', cursor: 'pointer', fontFamily: FF,
+                    display: 'flex', flexDirection: 'column', alignItems: 'center',
+                    boxShadow: 'none', transition: 'transform 0.1s', minHeight: '0',
                     position: 'relative',
                   }}
-                  onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.04)'; }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.06)'; }}
                   onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }}
                 >
-                  {isSubAvail && <div style={{ position: 'absolute', top: '2px', right: '3px', fontSize: '7px', fontWeight: '700', letterSpacing: '0.08em', background: 'white', color: 'hsl(330,80%,45%)', padding: '1px 4px', borderRadius: '2px' }}>SUB</div>}
-                  <div style={{ fontSize: '18px', fontWeight: '700', letterSpacing: '0.05em', lineHeight: 1 }}>{b.bus_number}</div>
-                  <div style={{ fontSize: '8px', fontWeight: '700', letterSpacing: '0.1em', opacity: 0.9, background: 'rgba(0,0,0,0.18)', padding: '1px 6px', borderRadius: '2px' }}>{isSubAvail ? 'SUB — AVAIL' : m.label}</div>
-                  {b.make && <div style={{ fontSize: '8px', opacity: 0.75, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%' }}>{b.make}</div>}
+                  <BusShape
+                    busNumber={b.bus_number}
+                    statusLabel={isSubAvail ? 'SUB — AVAIL' : m.label}
+                    bg={bg}
+                    border={border}
+                    text={text}
+                    isSub={isSubAvail}
+                    make={b.make}
+                    glow={glow}
+                  />
                 </button>
               );
             })}
