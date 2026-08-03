@@ -58,7 +58,7 @@ const FF = "'Courier Prime', monospace";
 
 const STATUS_META = {
   'Available':  { label: 'AVAILABLE',  bg: 'hsl(140,60%,45%)',  border: 'hsl(140,60%,32%)', text: 'white',  glow: '0 0 10px hsl(140,60%,45%)' },
-  'Subbed Out': { label: 'SUBBED OUT', bg: 'hsl(330,75%,40%)', border: 'hsl(330,75%,28%)', text: 'white', glow: '0 0 10px hsl(330,75%,52%)' },
+  'Subbed Out': { label: 'SUBBED OUT', bg: 'hsl(180,70%,40%)', border: 'hsl(180,70%,28%)', text: 'white', glow: '0 0 10px hsl(180,70%,50%)' },
   'Dead Line':  { label: 'DEAD LINE',  bg: 'hsl(0,70%,50%)',    border: 'hsl(0,70%,38%)',   text: 'white',  glow: '0 0 10px hsl(0,70%,50%)' },
   'MI':         { label: 'MI',         bg: 'hsl(210,70%,50%)',  border: 'hsl(210,70%,38%)', text: 'white',  glow: '0 0 10px hsl(210,70%,50%)' },
   'PM':         { label: 'PM',         bg: 'hsl(45,90%,50%)',   border: 'hsl(45,90%,38%)',  text: '#1a1a1a', glow: '0 0 10px hsl(45,90%,50%)' },
