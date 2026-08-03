@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { LayoutGrid, Search, X, Download } from 'lucide-react';
@@ -16,7 +16,7 @@ const exportBoard = (buses, filters) => {
       <td>${b.bus_type || ''}</td>
       <td>${b.base_location || ''}</td>
       <td>${b.route_class || 'Permanent'}</td>
-      <td style="text-align:center"><span style="background:${bg};color:${isSubAvail?'white':m.text};padding:2px 10px;border-radius:3px;font-size:11px;font-weight:700;letter-spacing:0.05em">${isSubAvail?'SUB — AVAIL':m.label}</span></td>
+      <td style="text-align:center"><span style="background:${bg};color:${isSubAvail?'white':m.text};padding:2px 10px;border-radius:3px;font-size:11px;font-weight:700;letter-spacing:0.05em">${isSubAvail?'SUB — AVAIL':(status==='Subbed Out'&&b.subbed_for_bus?`SUBBED → #${b.subbed_for_bus}`:m.label)}</span></td>
       <td>${b.make || ''} ${b.model || ''}</td>
     </tr>`;
   }).join('');
@@ -58,6 +58,7 @@ const FF = "'Courier Prime', monospace";
 
 const STATUS_META = {
   'Available':  { label: 'AVAILABLE',  bg: 'hsl(140,60%,45%)',  border: 'hsl(140,60%,32%)', text: 'white',  glow: '0 0 10px hsl(140,60%,45%)' },
+  'Subbed Out': { label: 'SUBBED OUT', bg: 'hsl(330,75%,40%)', border: 'hsl(330,75%,28%)', text: 'white', glow: '0 0 10px hsl(330,75%,52%)' },
   'Dead Line':  { label: 'DEAD LINE',  bg: 'hsl(0,70%,50%)',    border: 'hsl(0,70%,38%)',   text: 'white',  glow: '0 0 10px hsl(0,70%,50%)' },
   'MI':         { label: 'MI',         bg: 'hsl(210,70%,50%)',  border: 'hsl(210,70%,38%)', text: 'white',  glow: '0 0 10px hsl(210,70%,50%)' },
   'PM':         { label: 'PM',         bg: 'hsl(45,90%,50%)',   border: 'hsl(45,90%,38%)',  text: '#1a1a1a', glow: '0 0 10px hsl(45,90%,50%)' },
@@ -65,7 +66,7 @@ const STATUS_META = {
   'Parked OOS': { label: 'PARKED OOS', bg: 'hsl(220,8%,45%)', border: 'hsl(220,10%,32%)', text: 'white', glow: '0 0 8px hsl(220,8%,40%)' },
 };
 
-const STATUS_ORDER = ['Available', 'Dead Line', 'MI', 'PM', 'Active Trip', 'Parked OOS'];
+const STATUS_ORDER = ['Available', 'Subbed Out', 'Dead Line', 'MI', 'PM', 'Active Trip', 'Parked OOS'];
 
 export default function WhiteBoard() {
   const queryClient = useQueryClient();
@@ -74,6 +75,15 @@ export default function WhiteBoard() {
   const [routeClassFilter, setRouteClassFilter] = useState('All');
   const [search, setSearch] = useState('');
   const [selectedBus, setSelectedBus] = useState(null);
+  const [subbedFor, setSubbedFor] = useState('');
+  const [showSubInput, setShowSubInput] = useState(false);
+
+  useEffect(() => {
+    if (selectedBus) {
+      setSubbedFor(selectedBus.subbed_for_bus || '');
+      setShowSubInput((selectedBus.board_status || 'Available') === 'Subbed Out');
+    }
+  }, [selectedBus]);
 
   const { data: buses = [], isLoading } = useQuery({
     queryKey: ['buses'],
@@ -81,7 +91,7 @@ export default function WhiteBoard() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, board_status }) => base44.entities.Bus.update(id, { board_status }),
+    mutationFn: ({ id, ...data }) => base44.entities.Bus.update(id, data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['buses'] }),
   });
 
@@ -101,9 +111,11 @@ export default function WhiteBoard() {
     return acc;
   }, {});
 
-  const handleSetStatus = (status) => {
+  const handleSetStatus = (status, subFor) => {
     if (!selectedBus) return;
-    updateMutation.mutate({ id: selectedBus.id, board_status: status });
+    const payload = { id: selectedBus.id, board_status: status };
+    payload.subbed_for_bus = status === 'Subbed Out' ? (subFor || '').trim() : '';
+    updateMutation.mutate(payload);
     setSelectedBus(null);
   };
 
@@ -204,7 +216,7 @@ export default function WhiteBoard() {
                 >
                   <BusShape
                     busNumber={b.bus_number}
-                    statusLabel={isSubAvail ? 'SUB — AVAIL' : m.label}
+                    statusLabel={isSubAvail ? 'SUB — AVAIL' : (status === 'Subbed Out' && b.subbed_for_bus ? `SUB → #${b.subbed_for_bus}` : m.label)}
                     bg={bg}
                     border={border}
                     text={text}
@@ -232,18 +244,19 @@ export default function WhiteBoard() {
                 Current: <strong style={{ color: STATUS_META[selectedBus.board_status || 'Available'].bg }}>{STATUS_META[selectedBus.board_status || 'Available'].label}</strong>
                 {selectedBus.make ? ` — ${selectedBus.make} ${selectedBus.model || ''}`.trim() : ''}
               </div>
-              {STATUS_ORDER.map(s => {
+              {STATUS_ORDER.filter(s => s !== 'Subbed Out' || (selectedBus.route_class || 'Permanent') === 'Substitute').map(s => {
                 const m = STATUS_META[s];
                 const isCurrent = (selectedBus.board_status || 'Available') === s;
+                const isSubbedOut = s === 'Subbed Out';
                 return (
                   <button
                     key={s}
-                    onClick={() => handleSetStatus(s)}
-                    disabled={isCurrent}
+                    onClick={() => isSubbedOut ? setShowSubInput(true) : handleSetStatus(s)}
+                    disabled={isCurrent && !isSubbedOut}
                     style={{
                       background: m.bg, color: m.text, border: `2px solid ${m.border}`, borderRadius: '4px',
                       padding: '12px', fontFamily: FF, fontSize: '13px', fontWeight: '700', letterSpacing: '0.08em',
-                      cursor: isCurrent ? 'default' : 'pointer', opacity: isCurrent ? 0.55 : 1,
+                      cursor: (isCurrent && !isSubbedOut) ? 'default' : 'pointer', opacity: (isCurrent && !isSubbedOut) ? 0.55 : 1,
                       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                     }}
                   >
@@ -252,6 +265,26 @@ export default function WhiteBoard() {
                   </button>
                 );
               })}
+              {showSubInput && (selectedBus.route_class || 'Permanent') === 'Substitute' && (
+                <div style={{ border: '2px dashed hsl(330,75%,45%)', borderRadius: '4px', padding: '10px', background: 'hsl(330,60%,97%)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <div style={{ fontSize: '10px', fontWeight: '700', color: 'hsl(330,75%,35%)', letterSpacing: '0.06em' }}>BUS # BEING SUBBED FOR:</div>
+                  <input
+                    autoFocus
+                    value={subbedFor}
+                    onChange={e => setSubbedFor(e.target.value)}
+                    placeholder="Enter bus number..."
+                    style={{ padding: '6px 8px', fontSize: '13px', fontFamily: FF, border: '1px solid hsl(220,18%,70%)', borderRadius: '2px', outline: 'none' }}
+                    onKeyDown={e => { if (e.key === 'Enter' && subbedFor.trim()) handleSetStatus('Subbed Out', subbedFor); }}
+                  />
+                  <button
+                    onClick={() => handleSetStatus('Subbed Out', subbedFor)}
+                    disabled={!subbedFor.trim()}
+                    style={{ background: 'hsl(330,75%,40%)', color: 'white', border: '2px solid hsl(330,75%,28%)', borderRadius: '4px', padding: '8px', fontFamily: FF, fontSize: '12px', fontWeight: '700', letterSpacing: '0.08em', cursor: subbedFor.trim() ? 'pointer' : 'not-allowed', opacity: subbedFor.trim() ? 1 : 0.5 }}
+                  >
+                    CONFIRM SUBBED OUT
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         )}
