@@ -12,18 +12,26 @@ import WorkOrderDetailForm from '@/components/workorders/WorkOrderDetailForm';
 import BroadcastAcknowledge from '@/components/BroadcastAcknowledge';
 
 const navItems = [
-{ name: 'Dashboard', icon: LayoutDashboard, page: 'Dashboard' },
-{ name: 'Fleet', icon: Bus, page: 'FleetManager' },
+{ name: 'Dashboard', icon: LayoutDashboard, page: 'Dashboard', h: 220, s: 55, l: 40 },
+{ name: 'Fleet', icon: Bus, page: 'FleetManager', h: 282, s: 55, l: 45 },
 { name: 'White Board', icon: LayoutGrid, page: 'WhiteBoard', whiteboard: true },
-{ name: 'Garage Board', icon: Wrench, page: 'GarageBoard', orange: true },
-{ name: 'New W/O', icon: PlusCircle, page: 'NewWorkOrder' },
-{ name: 'Work Orders', icon: FileText, page: 'WorkOrders' },
-{ name: 'Camera Inspections', icon: ClipboardCheck, page: 'Inspections' },
-{ name: 'Wash Bay', icon: HardDrive, page: 'WashBay', teal: true },
-{ name: 'Assets', icon: Package2, page: 'Assets' },
-{ name: 'H-Drive', icon: HardDrive, page: 'HdriveManagement' },
-{ name: 'Master Backup', icon: Download, page: 'MasterBackup', yellow: true },
-{ name: 'Admin', icon: ShieldAlert, page: 'AdminPanel', red: true }];
+{ name: 'Garage Board', icon: Wrench, page: 'GarageBoard', h: 25, s: 70, l: 45 },
+{ name: 'New W/O', icon: PlusCircle, page: 'NewWorkOrder', h: 145, s: 60, l: 40 },
+{ name: 'Work Orders', icon: FileText, page: 'WorkOrders', h: 210, s: 16, l: 45 },
+{ name: 'Camera Inspections', icon: ClipboardCheck, page: 'Inspections', h: 190, s: 70, l: 42 },
+{ name: 'Wash Bay', icon: HardDrive, page: 'WashBay', h: 175, s: 65, l: 42 },
+{ name: 'Assets', icon: Package2, page: 'Assets', h: 38, s: 55, l: 38 },
+{ name: 'H-Drive', icon: HardDrive, page: 'HdriveManagement', h: 330, s: 60, l: 45 },
+{ name: 'Master Backup', icon: Download, page: 'MasterBackup', h: 48, s: 90, l: 50 },
+{ name: 'Admin', icon: ShieldAlert, page: 'AdminPanel', h: 0, s: 65, l: 48 }];
+
+const tabStyle = (item, active) => {
+  if (item.whiteboard) {
+    return { background: 'white', color: '#000000', borderColor: '#000000', fontWeight: '800' };
+  }
+  const bg = `hsl(${item.h}, ${item.s}%, ${active ? item.l : item.l + 10}%)`;
+  return { background: bg, color: 'white', borderColor: 'rgba(0,0,0,0.2)', fontWeight: '500' };
+};
 
 
 export default function Layout({ children, currentPageName }) {
@@ -79,11 +87,9 @@ export default function Layout({ children, currentPageName }) {
                 style={{
                   display: 'inline-flex', alignItems: 'center', gap: 5,
                   padding: '4px 10px', fontSize: 11, textDecoration: 'none', border: '1px solid',
-                  background: currentPageName === item.page ? 'hsl(0,65%,38%)' : 'hsl(0,65%,48%)',
-                  color: 'white',
-                  borderColor: 'rgba(0,0,0,0.2)',
-                  fontFamily: "'Courier Prime',monospace", fontWeight: '500', whiteSpace: 'nowrap', flexShrink: 0, borderRadius: '2px', transition: 'all 0.15s', cursor: 'pointer'
-                }} className="bg-red-600 text-white hover:opacity-90"
+                  ...tabStyle(item, currentPageName === item.page),
+                  fontFamily: "'Courier Prime',monospace", whiteSpace: 'nowrap', flexShrink: 0, borderRadius: '2px', transition: 'all 0.15s', cursor: 'pointer'
+                }} className="hover:opacity-90"
               >
                 <item.icon style={{ width: 13, height: 13, flexShrink: 0 }} />
                 {item.name}
@@ -98,9 +104,8 @@ export default function Layout({ children, currentPageName }) {
                 style={{
                   display: 'inline-flex', alignItems: 'center', gap: 5,
                   padding: '4px 10px', fontSize: 11, border: '1px solid',
-                  background: 'hsl(140,60%,42%)', color: 'white',
-                  borderColor: 'rgba(0,0,0,0.2)',
-                  fontFamily: "'Courier Prime',monospace", fontWeight: '500', whiteSpace: 'nowrap', flexShrink: 0, borderRadius: '2px', transition: 'all 0.15s', cursor: 'pointer'
+                  ...tabStyle(item, false),
+                  fontFamily: "'Courier Prime',monospace", whiteSpace: 'nowrap', flexShrink: 0, borderRadius: '2px', transition: 'all 0.15s', cursor: 'pointer'
                 }}
               >
                 <item.icon style={{ width: 13, height: 13, flexShrink: 0 }} />
@@ -115,12 +120,10 @@ export default function Layout({ children, currentPageName }) {
               style={{
                 display: 'inline-flex', alignItems: 'center', gap: 5,
                 padding: '4px 10px', fontSize: 11, textDecoration: 'none',
-                background: item.red ? currentPageName === item.page ? 'hsl(0,65%,38%)' : 'hsl(0,65%,48%)' : item.yellow ? currentPageName === item.page ? 'hsl(45,90%,42%)' : 'hsl(45,90%,52%)' : item.teal ? currentPageName === item.page ? 'hsl(180,65%,35%)' : 'hsl(180,65%,45%)' : item.whiteboard ? 'white' : item.orange ? currentPageName === item.page ? 'hsl(30,70%,35%)' : 'hsl(30,65%,45%)' : item.page === 'NewWorkOrder' ? 'hsl(140,60%,42%)' : currentPageName === item.page ? 'hsl(220,50%,38%)' : 'hsl(220,18%,88%)',
-                color: item.whiteboard ? '#000000' : item.red || item.yellow || item.teal || item.orange || item.page === 'NewWorkOrder' || currentPageName === item.page ? 'white' : 'hsl(220,20%,20%)',
                 border: '1px solid',
-                borderColor: item.whiteboard ? '#000000' : item.red || item.yellow || item.teal || item.orange || item.page === 'NewWorkOrder' || currentPageName === item.page ? 'rgba(0,0,0,0.2)' : 'hsl(220,18%,70%)',
-                fontFamily: "'Courier Prime',monospace", fontWeight: item.whiteboard ? '800' : '500', whiteSpace: 'nowrap', flexShrink: 0, borderRadius: '2px', transition: 'all 0.15s', cursor: 'pointer'
-              }} className="bg-cyan-600 text-slate-950">
+                ...tabStyle(item, currentPageName === item.page),
+                fontFamily: "'Courier Prime',monospace", whiteSpace: 'nowrap', flexShrink: 0, borderRadius: '2px', transition: 'all 0.15s', cursor: 'pointer'
+              }}>
 
               <item.icon style={{ width: 13, height: 13, flexShrink: 0 }} />
               {item.name}
