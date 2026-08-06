@@ -3,8 +3,6 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ShieldCheck, FileDown, Search, Lock, Unlock } from 'lucide-react';
 
-const VENDORS = ['Seon', 'Safety Vision', 'REI', 'Fortress', 'Samsara', 'Other'];
-
 const num = (v) => Number(v) || 0;
 
 export default function SafetyProducts() {
@@ -25,11 +23,6 @@ export default function SafetyProducts() {
   const toggle = (bus, field) => {
     if (locked) return;
     updateMutation.mutate({ id: bus.id, data: { [field]: !bus[field] } });
-  };
-
-  const setVendor = (bus, val) => {
-    if (locked) return;
-    updateMutation.mutate({ id: bus.id, data: { stop_arm_camera_vendor: val } });
   };
 
   // Only active fleet (exclude Sold/Retired) for the report
@@ -70,8 +63,8 @@ export default function SafetyProducts() {
   const stopArmCamCount = stopArmCamBuses.length;
   const stopVendorCounts = {};
   stopArmCamBuses.forEach(b => {
-    const v = b.stop_arm_camera_vendor || b.camera_system_type;
-    if (v) stopVendorCounts[v] = (stopVendorCounts[v] || 0) + 1;
+    const v = b.camera_system_type;
+    if (v && v !== 'None') stopVendorCounts[v] = (stopVendorCounts[v] || 0) + 1;
   });
   const rankedStopVendors = Object.entries(stopVendorCounts).sort((a, b) => b[1] - a[1]);
   const primaryStopVendor = rankedStopVendors[0]?.[0] || '—';
@@ -182,7 +175,7 @@ export default function SafetyProducts() {
                 <th style={{ textAlign: 'center', padding: '5px 8px', borderBottom: '1px solid hsl(220,18%,78%)' }}>STOP ARM CAM</th>
                 <th style={{ textAlign: 'center', padding: '5px 8px', borderBottom: '1px solid hsl(220,18%,78%)' }}>AI CAMS</th>
                 <th style={{ textAlign: 'center', padding: '5px 8px', borderBottom: '1px solid hsl(220,18%,78%)' }}>INT. CAMS</th>
-                <th style={{ textAlign: 'left', padding: '5px 8px', borderBottom: '1px solid hsl(220,18%,78%)' }}>STOP ARM VENDOR</th>
+                <th style={{ textAlign: 'left', padding: '5px 8px', borderBottom: '1px solid hsl(220,18%,78%)' }}>CAMERA SYSTEM</th>
               </tr>
             </thead>
             <tbody>
@@ -203,12 +196,7 @@ export default function SafetyProducts() {
                     <input type="checkbox" checked={!!b.ai_cameras_installed} onChange={() => toggle(b, 'ai_cameras_installed')} disabled={locked} style={{ accentColor: 'hsl(282,55%,40%)', cursor: locked ? 'not-allowed' : 'pointer' }} />
                   </td>
                   <td style={{ padding: '4px 8px', textAlign: 'center', color: 'hsl(220,30%,40%)' }}>{num(b.cameras_inside)}</td>
-                  <td style={{ padding: '4px 8px' }}>
-                    <select value={b.stop_arm_camera_vendor || ''} onChange={e => setVendor(b, e.target.value)} disabled={locked} style={{ padding: '2px 4px', fontSize: '10px', fontFamily: "'Courier Prime', monospace", border: '1px solid hsl(220,18%,72%)', borderRadius: '2px', background: locked ? 'hsl(220,18%,94%)' : 'white', cursor: locked ? 'not-allowed' : 'pointer' }}>
-                      <option value="">—</option>
-                      {VENDORS.map(v => <option key={v} value={v}>{v}</option>)}
-                    </select>
-                  </td>
+                  <td style={{ padding: '4px 8px', color: 'hsl(220,10%,40%)', fontSize: '10px' }}>{b.camera_system_type || '—'}</td>
                 </tr>
               ))}
             </tbody>

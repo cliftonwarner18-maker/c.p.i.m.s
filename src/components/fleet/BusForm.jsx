@@ -269,21 +269,10 @@ export default function BusForm({ bus, onClose, onSaved }) {
               <input type="checkbox" checked={form.illuminated_stop_arms} onChange={e => setForm(prev => ({...prev, illuminated_stop_arms: e.target.checked}))} style={{accentColor:'hsl(220,70%,35%)'}} />
               ILLUMINATED STOP ARMS
             </div>
-            <div style={{display:'flex',alignItems:'center',gap:'4px',fontSize:'11px',cursor:'pointer',marginBottom:'8px'}}>
+            <div style={{display:'flex',alignItems:'center',gap:'4px',fontSize:'11px',cursor:'pointer',marginBottom:'12px'}}>
               <input type="checkbox" checked={form.illuminated_school_bus_signage} onChange={e => setForm(prev => ({...prev, illuminated_school_bus_signage: e.target.checked}))} style={{accentColor:'hsl(220,70%,35%)'}} />
               ILLUMINATED SCHOOL BUS SIGNAGE
             </div>
-            <Field label="STOP ARM CAMERA VENDOR">
-              <select className="win-input" style={{width:'100%',fontSize:'11px'}} value={form.stop_arm_camera_vendor} onChange={e => setForm(prev => ({...prev, stop_arm_camera_vendor: e.target.value}))}>
-                <option value="">-- None --</option>
-                <option value="Seon">Seon</option>
-                <option value="Safety Vision">Safety Vision</option>
-                <option value="REI">REI</option>
-                <option value="Fortress">Fortress</option>
-                <option value="Samsara">Samsara</option>
-                <option value="Other">Other</option>
-              </select>
-            </Field>
           </div>
         </div>
 
