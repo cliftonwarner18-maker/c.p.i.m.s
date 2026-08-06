@@ -89,7 +89,7 @@ export default function SafetyProducts() {
       ['5. How many buses have exterior stop arm cameras?', stopArmCamCount],
       ['5a. Primary stop arm camera vendor', primaryStopVendor],
       ['5b. Secondary stop arm camera vendor', secondaryStopVendor],
-      ['AI cameras installed (buses)', aiCamCount],
+      ['AI Dash cam installed "Samsara" (buses)', aiCamCount],
     ];
     w.document.write(`<html><head><title>Safety Products Report</title><style>body{font-family:Arial;padding:24px}h1{font-size:16px}table{border-collapse:collapse;width:100%;margin-top:12px}td,th{border:1px solid #999;padding:6px 10px;font-size:12px;text-align:left}th{background:#e8e8e8}.num{text-align:center;font-weight:bold}</style></head><body><h1>NHCS Transportation — Safety Products Report</h1><div style="font-size:11px;color:#555">Generated ${new Date().toLocaleString()} — Active fleet: ${reportBuses.length} buses</div><table><tr><th>Question</th><th>Value</th></tr>${rows.map(r => `<tr><td>${r[0]}</td><td class="num">${r[1]}</td></tr>`).join('')}</table></body></html>`);
     w.document.close();
@@ -147,7 +147,7 @@ export default function SafetyProducts() {
               <tr><td style={qStyle}>5. How many buses have exterior stop arm cameras?</td><td style={valStyle}>{stopArmCamCount}</td></tr>
               <tr><td style={subStyle}>a. Primary stop arm camera vendor?</td><td style={subValStyle}>{primaryStopVendor}</td></tr>
               <tr><td style={subStyle}>b. Secondary stop arm camera vendor?</td><td style={subValStyle}>{secondaryStopVendor}</td></tr>
-              <tr><td style={qStyle}>AI cameras installed (buses)</td><td style={valStyle}>{aiCamCount}</td></tr>
+              <tr><td style={qStyle}>AI Dash cam installed "Samsara" (buses)</td><td style={valStyle}>{aiCamCount}</td></tr>
             </tbody>
           </table>
         </div>
