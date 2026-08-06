@@ -25,6 +25,10 @@ export default function FleetManager() {
   const [stopArmFilter, setStopArmFilter] = useState(false);
   const [noStopArmFilter, setNoStopArmFilter] = useState(false);
   const [aiCamFilter, setAiCamFilter] = useState(false);
+  const [illumStopArmFilter, setIllumStopArmFilter] = useState(false);
+  const [noIllumStopArmFilter, setNoIllumStopArmFilter] = useState(false);
+  const [illumSignageFilter, setIllumSignageFilter] = useState(false);
+  const [noIllumSignageFilter, setNoIllumSignageFilter] = useState(false);
   const [cameraFilter, setCameraFilter] = useState('All');
   const [makeFilter, setMakeFilter] = useState('All');
 
@@ -69,9 +73,13 @@ export default function FleetManager() {
     const matchStopArm = !stopArmFilter || b.stop_arm_cameras === true;
     const matchNoStopArm = !noStopArmFilter || b.stop_arm_cameras !== true;
     const matchAiCam = !aiCamFilter || b.ai_cameras_installed === true;
+    const matchIllumStopArm = !illumStopArmFilter || b.illuminated_stop_arms === true;
+    const matchNoIllumStopArm = !noIllumStopArmFilter || b.illuminated_stop_arms !== true;
+    const matchIllumSignage = !illumSignageFilter || b.illuminated_school_bus_signage === true;
+    const matchNoIllumSignage = !noIllumSignageFilter || b.illuminated_school_bus_signage !== true;
     const matchCamera = cameraFilter === 'All' || b.camera_system_type === cameraFilter;
     const matchMake = makeFilter === 'All' || b.make === makeFilter;
-    return matchBus && matchVin && matchTag && matchCam && matchType && matchLocation && matchStopArm && matchNoStopArm && matchAiCam && matchCamera && matchMake;
+    return matchBus && matchVin && matchTag && matchCam && matchType && matchLocation && matchStopArm && matchNoStopArm && matchAiCam && matchIllumStopArm && matchNoIllumStopArm && matchIllumSignage && matchNoIllumSignage && matchCamera && matchMake;
   });
 
   const activeCount = buses.filter(b => b.status === 'Active').length;
@@ -221,6 +229,22 @@ export default function FleetManager() {
           <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer', fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,35%)', letterSpacing: '0.06em', userSelect: 'none', whiteSpace: 'nowrap' }}>
             <input type="checkbox" checked={aiCamFilter} onChange={e => setAiCamFilter(e.target.checked)} style={{ accentColor: 'hsl(220,70%,35%)', cursor: 'pointer' }} />
             AI CAMS ONLY
+          </label>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer', fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,35%)', letterSpacing: '0.06em', userSelect: 'none', whiteSpace: 'nowrap' }}>
+            <input type="checkbox" checked={illumStopArmFilter} onChange={e => setIllumStopArmFilter(e.target.checked)} style={{ accentColor: 'hsl(282,55%,42%)', cursor: 'pointer' }} />
+            ILLUM. STOP ARMS ONLY
+          </label>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer', fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,35%)', letterSpacing: '0.06em', userSelect: 'none', whiteSpace: 'nowrap' }}>
+            <input type="checkbox" checked={noIllumStopArmFilter} onChange={e => setNoIllumStopArmFilter(e.target.checked)} style={{ accentColor: 'hsl(282,55%,42%)', cursor: 'pointer' }} />
+            NO ILLUM. STOP ARMS
+          </label>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer', fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,35%)', letterSpacing: '0.06em', userSelect: 'none', whiteSpace: 'nowrap' }}>
+            <input type="checkbox" checked={illumSignageFilter} onChange={e => setIllumSignageFilter(e.target.checked)} style={{ accentColor: 'hsl(282,55%,42%)', cursor: 'pointer' }} />
+            ILLUM. SIGNAGE ONLY
+          </label>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer', fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,35%)', letterSpacing: '0.06em', userSelect: 'none', whiteSpace: 'nowrap' }}>
+            <input type="checkbox" checked={noIllumSignageFilter} onChange={e => setNoIllumSignageFilter(e.target.checked)} style={{ accentColor: 'hsl(282,55%,42%)', cursor: 'pointer' }} />
+            NO ILLUM. SIGNAGE
           </label>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', marginLeft: 'auto' }}>
