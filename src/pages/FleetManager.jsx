@@ -22,6 +22,7 @@ export default function FleetManager() {
   const [searchCam, setSearchCam] = useState('');
   const [typeFilter, setTypeFilter] = useState('All');
   const [locationFilter, setLocationFilter] = useState('All');
+  const [statusFilter, setStatusFilter] = useState('Active');
   const [stopArmFilter, setStopArmFilter] = useState(false);
   const [noStopArmFilter, setNoStopArmFilter] = useState(false);
   const [aiCamFilter, setAiCamFilter] = useState(false);
@@ -79,7 +80,8 @@ export default function FleetManager() {
     const matchNoIllumSignage = !noIllumSignageFilter || b.illuminated_school_bus_signage !== true;
     const matchCamera = cameraFilter === 'All' || b.camera_system_type === cameraFilter;
     const matchMake = makeFilter === 'All' || b.make === makeFilter;
-    return matchBus && matchVin && matchTag && matchCam && matchType && matchLocation && matchStopArm && matchNoStopArm && matchAiCam && matchIllumStopArm && matchNoIllumStopArm && matchIllumSignage && matchNoIllumSignage && matchCamera && matchMake;
+    const matchStatus = statusFilter === 'All' || b.status === statusFilter;
+    return matchBus && matchVin && matchTag && matchCam && matchType && matchLocation && matchStopArm && matchNoStopArm && matchAiCam && matchIllumStopArm && matchNoIllumStopArm && matchIllumSignage && matchNoIllumSignage && matchCamera && matchMake && matchStatus;
   });
 
   const activeCount = buses.filter(b => b.status === 'Active').length;
@@ -200,6 +202,14 @@ export default function FleetManager() {
           {['All', 'Main', 'North', 'Sold'].map(l => (
             <button key={l} onClick={() => setLocationFilter(l)} style={{ padding: '3px 8px', fontSize: '10px', fontFamily: "'Courier Prime', monospace", fontWeight: locationFilter === l ? '700' : '500', background: locationFilter === l ? 'hsl(220,55%,38%)' : 'white', color: locationFilter === l ? 'white' : 'hsl(220,20%,30%)', border: `1px solid ${locationFilter === l ? 'hsl(220,55%,38%)' : 'hsl(220,18%,72%)'}`, borderRadius: '2px', cursor: 'pointer' }}>
               {l.toUpperCase()}
+            </button>
+          ))}
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+          <span style={{ fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,35%)', letterSpacing: '0.06em' }}>STATUS:</span>
+          {['All', 'Active', 'Out of Service', 'Retired'].map(s => (
+            <button key={s} onClick={() => setStatusFilter(s)} style={{ padding: '3px 8px', fontSize: '10px', fontFamily: "'Courier Prime', monospace", fontWeight: statusFilter === s ? '700' : '500', background: statusFilter === s ? 'hsl(220,55%,38%)' : 'white', color: statusFilter === s ? 'white' : 'hsl(220,20%,30%)', border: `1px solid ${statusFilter === s ? 'hsl(220,55%,38%)' : 'hsl(220,18%,72%)'}`, borderRadius: '2px', cursor: 'pointer' }}>
+              {s === 'All' ? 'ALL' : s === 'Out of Service' ? 'OOS' : s.toUpperCase()}
             </button>
           ))}
         </div>
