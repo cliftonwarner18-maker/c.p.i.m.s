@@ -42,8 +42,8 @@ export default function FleetTable({ buses, busNumCounts, vinCounts = {}, onEdit
         <table style={{ width: '100%', fontSize: '11px', fontFamily: "'Courier Prime', monospace", borderCollapse: 'collapse' }}>
           <thead>
             <tr style={{ background: 'hsl(220,45%,28%)', color: 'white', position: 'sticky', top: 0, zIndex: 10 }}>
-              {['BUS #', 'TYPE', 'YR', 'MAKE / MODEL', 'LOCATION', 'VIN', 'LIC. PLATE', 'CAMERA SYSTEM', 'ASSET #', 'STOP ARM', 'AI CAM', 'IN', 'OUT', 'AI#', 'STATUS', 'INSP. DUE', ''].map((h, i) => (
-                <th key={i} style={{ padding: '7px 8px', textAlign: 'left', fontWeight: '700', fontSize: '10px', letterSpacing: '0.06em', whiteSpace: 'nowrap', borderRight: i < 15 ? '1px solid rgba(255,255,255,0.1)' : 'none' }}>
+              {['BUS #', 'TYPE', 'YR', 'MAKE / MODEL', 'LOCATION', 'VIN', 'LIC. PLATE', 'CAMERA SYSTEM', 'ASSET #', 'STOP ARM', 'AI CAM', 'ILLUM. STOP', 'ILLUM. SIGN', 'IN', 'OUT', 'AI#', 'STATUS', 'INSP. DUE', ''].map((h, i) => (
+                <th key={i} style={{ padding: '7px 8px', textAlign: 'left', fontWeight: '700', fontSize: '10px', letterSpacing: '0.06em', whiteSpace: 'nowrap', borderRight: i < 17 ? '1px solid rgba(255,255,255,0.1)' : 'none' }}>
                   {h}
                 </th>
               ))}
@@ -138,6 +138,20 @@ export default function FleetTable({ buses, busNumCounts, vinCounts = {}, onEdit
                   <td style={{ padding: '5px 8px', textAlign: 'center', whiteSpace: 'nowrap' }}>
                     {b.ai_cameras_installed
                       ? <span style={{ fontSize: '9px', fontWeight: '700', color: 'hsl(200,70%,28%)', background: 'hsl(200,70%,90%)', border: '1px solid hsl(200,60%,72%)', padding: '1px 5px', borderRadius: '2px' }}>✓ YES</span>
+                      : <span style={{ fontSize: '9px', color: 'hsl(220,10%,55%)', background: 'hsl(220,10%,90%)', border: '1px solid hsl(220,10%,78%)', padding: '1px 5px', borderRadius: '2px' }}>NO</span>
+                    }
+                  </td>
+                  {/* Illuminated Stop Arm */}
+                  <td style={{ padding: '5px 8px', textAlign: 'center', whiteSpace: 'nowrap' }}>
+                    {b.illuminated_stop_arms
+                      ? <span style={{ fontSize: '9px', fontWeight: '700', color: 'hsl(282,55%,28%)', background: 'hsl(282,55%,92%)', border: '1px solid hsl(282,55%,72%)', padding: '1px 5px', borderRadius: '2px' }}>✓ YES</span>
+                      : <span style={{ fontSize: '9px', color: 'hsl(220,10%,55%)', background: 'hsl(220,10%,90%)', border: '1px solid hsl(220,10%,78%)', padding: '1px 5px', borderRadius: '2px' }}>NO</span>
+                    }
+                  </td>
+                  {/* Illuminated Signage */}
+                  <td style={{ padding: '5px 8px', textAlign: 'center', whiteSpace: 'nowrap' }}>
+                    {b.illuminated_school_bus_signage
+                      ? <span style={{ fontSize: '9px', fontWeight: '700', color: 'hsl(282,55%,28%)', background: 'hsl(282,55%,92%)', border: '1px solid hsl(282,55%,72%)', padding: '1px 5px', borderRadius: '2px' }}>✓ YES</span>
                       : <span style={{ fontSize: '9px', color: 'hsl(220,10%,55%)', background: 'hsl(220,10%,90%)', border: '1px solid hsl(220,10%,78%)', padding: '1px 5px', borderRadius: '2px' }}>NO</span>
                     }
                   </td>
