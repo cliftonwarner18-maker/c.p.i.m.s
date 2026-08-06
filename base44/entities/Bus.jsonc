@@ -110,6 +110,20 @@
       "default": false,
       "description": "Stop Arm Violation Cameras Installed"
     },
+    "illuminated_stop_arms": {
+      "type": "boolean",
+      "default": false,
+      "description": "Illuminated stop arms installed (safety product)"
+    },
+    "illuminated_school_bus_signage": {
+      "type": "boolean",
+      "default": false,
+      "description": "Illuminated school bus signage installed (safety product)"
+    },
+    "stop_arm_camera_vendor": {
+      "type": "string",
+      "description": "Stop arm camera vendor (primary)"
+    },
     "samsara_enabled": {
       "type": "boolean",
       "default": false,

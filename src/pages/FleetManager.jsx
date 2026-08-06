@@ -6,6 +6,7 @@ import { exportFleetPDF, exportFleetMakeSummaryPDF } from '../utils/exports/expo
 import BusForm from '../components/fleet/BusForm';
 import FormModal from '../components/FormModal';
 import FleetTable from '../components/fleet/FleetTable.jsx';
+import SafetyProducts from '../components/fleet/SafetyProducts.jsx';
 import DeleteConfirmModal from '../components/DeleteConfirmModal';
 import { Plus, FileDown, Search, Bus, MapPin, Filter, AlertTriangle, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -28,6 +29,7 @@ export default function FleetManager() {
   const [makeFilter, setMakeFilter] = useState('All');
 
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [activeTab, setActiveTab] = useState('inventory');
 
   const { data: buses = [], isLoading } = useQuery({
     queryKey: ['buses'],
@@ -121,6 +123,20 @@ export default function FleetManager() {
         />
       </FormModal>
 
+      {/* Tab Bar */}
+      <div style={{ display: 'flex', gap: '2px', borderBottom: '2px solid hsl(220,70%,35%)' }}>
+        <button onClick={() => setActiveTab('inventory')} style={{ padding: '6px 16px', fontSize: '11px', fontWeight: '700', letterSpacing: '0.06em', background: activeTab === 'inventory' ? 'hsl(220,70%,35%)' : 'hsl(220,18%,90%)', color: activeTab === 'inventory' ? 'white' : 'hsl(220,20%,30%)', border: '1px solid hsl(220,18%,72%)', borderBottom: 'none', borderRadius: '2px 2px 0 0', cursor: 'pointer', fontFamily: "'Courier Prime', monospace" }}>
+          <Bus style={{ width: 12, height: 12, display: 'inline', marginRight: '5px', verticalAlign: 'middle' }} />FLEET INVENTORY
+        </button>
+        <button onClick={() => setActiveTab('safety')} style={{ padding: '6px 16px', fontSize: '11px', fontWeight: '700', letterSpacing: '0.06em', background: activeTab === 'safety' ? 'hsl(282,55%,42%)' : 'hsl(220,18%,90%)', color: activeTab === 'safety' ? 'white' : 'hsl(220,20%,30%)', border: '1px solid hsl(220,18%,72%)', borderBottom: 'none', borderRadius: '2px 2px 0 0', cursor: 'pointer', fontFamily: "'Courier Prime', monospace" }}>
+          🛡️ SAFETY PRODUCTS
+        </button>
+      </div>
+
+      {activeTab === 'safety' && <SafetyProducts />}
+
+      {activeTab === 'inventory' && (
+      <>
       {/* Header Bar */}
       <div style={{ background: 'linear-gradient(to right, hsl(220,50%,30%), hsl(220,45%,40%))', color: 'white', padding: '10px 14px', borderRadius: '2px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -243,6 +259,8 @@ export default function FleetManager() {
         onEdit={(b) => { setEditingBus(b); setShowForm(true); }}
         onDelete={(b) => setDeleteTarget(b)}
       />
+      </>
+      )}
     </div>
   );
 }
