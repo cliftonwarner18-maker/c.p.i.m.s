@@ -202,7 +202,7 @@ export default function SafetyProducts() {
                 <th style={{ textAlign: 'center', padding: '5px 8px', borderBottom: '1px solid hsl(220,18%,78%)' }}>ILLUM. STOP ARM</th>
                 <th style={{ textAlign: 'center', padding: '5px 8px', borderBottom: '1px solid hsl(220,18%,78%)' }}>ILLUM. SIGN</th>
                 <th style={{ textAlign: 'center', padding: '5px 8px', borderBottom: '1px solid hsl(220,18%,78%)' }}>STOP ARM CAM</th>
-                <th style={{ textAlign: 'center', padding: '5px 8px', borderBottom: '1px solid hsl(220,18%,78%)' }}>AI CAMS</th>
+                <th style={{ textAlign: 'center', padding: '5px 8px', borderBottom: '1px solid hsl(220,18%,78%)' }}>AI DASH CAM</th>
                 <th style={{ textAlign: 'center', padding: '5px 8px', borderBottom: '1px solid hsl(220,18%,78%)' }}>INT. CAMS</th>
                 <th style={{ textAlign: 'left', padding: '5px 8px', borderBottom: '1px solid hsl(220,18%,78%)' }}>CAMERA SYSTEM</th>
               </tr>
