@@ -9,6 +9,8 @@ export default function SafetyProducts() {
   const queryClient = useQueryClient();
   const [search, setSearch] = useState('');
   const [locked, setLocked] = useState(true);
+  const [lotFilter, setLotFilter] = useState('All');
+  const [typeFilter, setTypeFilter] = useState('All');
 
   const { data: buses = [], isLoading } = useQuery({
     queryKey: ['buses'],
@@ -25,10 +27,12 @@ export default function SafetyProducts() {
     updateMutation.mutate({ id: bus.id, data: { [field]: !bus[field] } });
   };
 
-  // Only active fleet (exclude Sold/Retired) for the report
+  // Only active fleet (exclude Sold/Retired) for the report, with lot/type filters applied
   const reportBuses = useMemo(
-    () => buses.filter(b => b.base_location !== 'Sold' && b.status !== 'Retired'),
-    [buses]
+    () => buses.filter(b => b.base_location !== 'Sold' && b.status !== 'Retired'
+      && (lotFilter === 'All' || b.base_location === lotFilter)
+      && (typeFilter === 'All' || b.bus_type === typeFilter)),
+    [buses, lotFilter, typeFilter]
   );
 
   const filtered = useMemo(() => {
@@ -124,6 +128,31 @@ export default function SafetyProducts() {
             <FileDown style={{ width: 13, height: 13 }} /> EXPORT REPORT
           </button>
         </div>
+      </div>
+
+      {/* Filters */}
+      <div style={{ background: 'hsl(220,18%,96%)', border: '1px solid hsl(220,18%,78%)', borderRadius: '2px', padding: '8px 10px', display: 'flex', flexWrap: 'wrap', gap: '10px', alignItems: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+          <span style={{ fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,35%)', letterSpacing: '0.06em' }}>LOT:</span>
+          {['All', 'Main', 'North'].map(l => (
+            <button key={l} onClick={() => setLotFilter(l)} style={{ padding: '3px 8px', fontSize: '10px', fontFamily: "'Courier Prime', monospace", fontWeight: lotFilter === l ? '700' : '500', background: lotFilter === l ? 'hsl(282,55%,40%)' : 'white', color: lotFilter === l ? 'white' : 'hsl(220,20%,30%)', border: `1px solid ${lotFilter === l ? 'hsl(282,55%,40%)' : 'hsl(220,18%,72%)'}`, borderRadius: '2px', cursor: 'pointer' }}>
+              {l.toUpperCase()}
+            </button>
+          ))}
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+          <span style={{ fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,35%)', letterSpacing: '0.06em' }}>TYPE:</span>
+          {['All', 'School Bus', 'Activity Bus'].map(t => (
+            <button key={t} onClick={() => setTypeFilter(t)} style={{ padding: '3px 8px', fontSize: '10px', fontFamily: "'Courier Prime', monospace", fontWeight: typeFilter === t ? '700' : '500', background: typeFilter === t ? 'hsl(282,55%,40%)' : 'white', color: typeFilter === t ? 'white' : 'hsl(220,20%,30%)', border: `1px solid ${typeFilter === t ? 'hsl(282,55%,40%)' : 'hsl(220,18%,72%)'}`, borderRadius: '2px', cursor: 'pointer' }}>
+              {t === 'All' ? 'ALL' : t === 'School Bus' ? 'SCHOOL' : 'ACTIVITY'}
+            </button>
+          ))}
+        </div>
+        {(lotFilter !== 'All' || typeFilter !== 'All') && (
+          <button onClick={() => { setLotFilter('All'); setTypeFilter('All'); }} style={{ padding: '3px 8px', fontSize: '10px', fontFamily: "'Courier Prime', monospace", fontWeight: '600', background: 'white', color: 'hsl(0,60%,40%)', border: '1px solid hsl(220,18%,72%)', borderRadius: '2px', cursor: 'pointer' }}>
+            ✕ CLEAR
+          </button>
+        )}
       </div>
 
       {/* Auto-generated report */}
