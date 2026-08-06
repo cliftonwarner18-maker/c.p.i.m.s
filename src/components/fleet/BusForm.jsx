@@ -259,7 +259,7 @@ export default function BusForm({ bus, onClose, onSaved }) {
             </div>
             <div style={{display:'flex',alignItems:'center',gap:'4px',fontSize:'11px',cursor:'pointer',marginBottom:'8px'}}>
               <input type="checkbox" checked={form.ai_cameras_installed} onChange={e => setForm(prev => ({...prev, ai_cameras_installed: e.target.checked}))} style={{accentColor:'hsl(220,70%,35%)'}} />
-              AI CAMERAS INSTALLED
+              AI DASH CAM INSTALLED
             </div>
             <div style={{display:'flex',alignItems:'center',gap:'4px',fontSize:'11px',cursor:'pointer',marginBottom:'8px'}}>
               <input type="checkbox" checked={form.stop_arm_cameras} onChange={e => setForm(prev => ({...prev, stop_arm_cameras: e.target.checked}))} style={{accentColor:'hsl(220,70%,35%)'}} />

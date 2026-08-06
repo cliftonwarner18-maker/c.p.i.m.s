@@ -227,10 +227,6 @@ export default function FleetManager() {
             NO STOP ARM CAMERAS
           </label>
           <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer', fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,35%)', letterSpacing: '0.06em', userSelect: 'none', whiteSpace: 'nowrap' }}>
-            <input type="checkbox" checked={aiCamFilter} onChange={e => setAiCamFilter(e.target.checked)} style={{ accentColor: 'hsl(220,70%,35%)', cursor: 'pointer' }} />
-            AI DASH CAM ONLY
-          </label>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer', fontSize: '10px', fontWeight: '700', color: 'hsl(220,20%,35%)', letterSpacing: '0.06em', userSelect: 'none', whiteSpace: 'nowrap' }}>
             <input type="checkbox" checked={illumStopArmFilter} onChange={e => setIllumStopArmFilter(e.target.checked)} style={{ accentColor: 'hsl(282,55%,42%)', cursor: 'pointer' }} />
             ILLUM. STOP ARMS ONLY
           </label>

@@ -241,7 +241,7 @@ export default function BusProfile() {
                     return <span style={{fontWeight:'700',color:'hsl(220,70%,35%)'}}>{total} <span style={{fontSize:'10px',color:'hsl(220,10%,50%)',fontWeight:'400'}}>{parts.length ? `(${parts.join(' + ')})` : ''}</span></span>;
                   })()
                 } />
-                <Field label="AI Cameras Installed" value={
+                <Field label="AI Dash Cam Installed" value={
                   <span style={{fontWeight:'700',color: bus.ai_cameras_installed ? 'hsl(140,55%,30%)' : 'hsl(0,60%,40%)'}}>{bus.ai_cameras_installed ? '✓ YES' : '✗ NO'}</span>
                 } />
                 <Field label="Stop Arm Violation Cameras" value={
