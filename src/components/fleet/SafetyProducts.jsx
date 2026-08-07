@@ -46,12 +46,12 @@ export default function SafetyProducts() {
 
   const interiorCamBuses = reportBuses.filter(b => b.camera_system_type && b.camera_system_type !== 'None');
   const interiorCamCount = interiorCamBuses.length;
-  const recordToHardDrive = interiorCamBuses.filter(b => !b.samsara_enabled).length;
-  const recordToCloud = interiorCamBuses.filter(b => b.samsara_enabled).length;
+  const recordToHardDrive = interiorCamCount; // All DVRs (Seon, Safety Vision, Fortress, REI) record to H-Drive
+  const recordToCloud = 0; // No mobile camera system records to cloud
 
   const oneCam = interiorCamBuses.filter(b => num(b.cameras_inside) === 1).length;
   const twoCam = interiorCamBuses.filter(b => num(b.cameras_inside) === 2).length;
-  const threeCam = interiorCamBuses.filter(b => num(b.cameras_inside) === 3).length;
+  const threeOrFewerCam = interiorCamBuses.filter(b => num(b.cameras_inside) >= 1 && num(b.cameras_inside) <= 3).length;
   const fourPlusCam = interiorCamBuses.filter(b => num(b.cameras_inside) >= 4).length;
 
   const vendorCounts = {};
@@ -86,7 +86,7 @@ export default function SafetyProducts() {
       ['3b. How many record to cloud?', recordToCloud],
       ['4a. How many have one camera?', oneCam],
       ['4b. How many have two cameras?', twoCam],
-      ['4c. How many have three cameras?', threeCam],
+      ['4c. How many have three or fewer inside cameras?', threeOrFewerCam],
       ['4d. How many have four or more cameras?', fourPlusCam],
       ['4e. Primary camera vendor', primaryVendor],
       ['4f. Secondary camera vendor', secondaryVendor],
@@ -169,7 +169,7 @@ export default function SafetyProducts() {
               <tr><td style={qStyle}>4. For the interior camera systems detailed above:</td><td style={valStyle}></td></tr>
               <tr><td style={subStyle}>a. How many have one camera?</td><td style={subValStyle}>{oneCam}</td></tr>
               <tr><td style={subStyle}>b. How many have two cameras?</td><td style={subValStyle}>{twoCam}</td></tr>
-              <tr><td style={subStyle}>c. How many have three cameras?</td><td style={subValStyle}>{threeCam}</td></tr>
+              <tr><td style={subStyle}>c. How many have three or fewer inside cameras?</td><td style={subValStyle}>{threeOrFewerCam}</td></tr>
               <tr><td style={subStyle}>d. How many have four or more cameras?</td><td style={subValStyle}>{fourPlusCam}</td></tr>
               <tr><td style={subStyle}>e. Primary camera vendor?</td><td style={subValStyle}>{primaryVendor}</td></tr>
               <tr><td style={subStyle}>f. Secondary camera vendor?</td><td style={subValStyle}>{secondaryVendor}</td></tr>
