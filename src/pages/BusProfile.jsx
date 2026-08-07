@@ -247,6 +247,9 @@ export default function BusProfile() {
                 <Field label="Stop Arm Violation Cameras" value={
                   <span style={{fontWeight:'700',color: bus.stop_arm_cameras ? 'hsl(140,55%,30%)' : 'hsl(0,60%,40%)'}}>{bus.stop_arm_cameras ? '✓ INSTALLED' : '✗ NOT INSTALLED'}</span>
                 } />
+                <Field label="DVR Records To Cloud" value={
+                  <span style={{fontWeight:'700',color: bus.dvr_records_to_cloud ? 'hsl(200,70%,40%)' : 'hsl(220,10%,45%)'}}>{bus.dvr_records_to_cloud ? '☁ CLOUD' : '💾 H-DRIVE'}</span>
+                } />
                 <Field label="Dash Cam SID" value={bus.dash_cam_sid} />
                 <Field label="Gateway SID" value={bus.gateway_sid} />
                 <Field label="Samsara Enabled" value={bus.samsara_enabled ? 'YES' : 'NO'} />

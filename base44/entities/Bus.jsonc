@@ -120,6 +120,11 @@
       "default": false,
       "description": "Illuminated school bus signage installed (safety product)"
     },
+    "dvr_records_to_cloud": {
+      "type": "boolean",
+      "default": false,
+      "description": "DVR records to cloud (if false, records to H-Drive)"
+    },
     "stop_arm_camera_vendor": {
       "type": "string",
       "description": "Stop arm camera vendor (primary)"

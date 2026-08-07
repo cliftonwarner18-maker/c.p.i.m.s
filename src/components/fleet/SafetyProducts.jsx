@@ -46,8 +46,8 @@ export default function SafetyProducts() {
 
   const interiorCamBuses = reportBuses.filter(b => b.camera_system_type && b.camera_system_type !== 'None');
   const interiorCamCount = interiorCamBuses.length;
-  const recordToHardDrive = interiorCamCount; // All DVRs (Seon, Safety Vision, Fortress, REI) record to H-Drive
-  const recordToCloud = 0; // No mobile camera system records to cloud
+  const recordToCloud = interiorCamBuses.filter(b => b.dvr_records_to_cloud).length;
+  const recordToHardDrive = interiorCamCount - recordToCloud; // DVRs not marked as cloud record to H-Drive
 
   const oneCam = interiorCamBuses.filter(b => num(b.cameras_inside) === 1).length;
   const twoCam = interiorCamBuses.filter(b => num(b.cameras_inside) === 2).length;
@@ -203,6 +203,7 @@ export default function SafetyProducts() {
                 <th style={{ textAlign: 'center', padding: '5px 8px', borderBottom: '1px solid hsl(220,18%,78%)' }}>ILLUM. SIGN</th>
                 <th style={{ textAlign: 'center', padding: '5px 8px', borderBottom: '1px solid hsl(220,18%,78%)' }}>STOP ARM CAM</th>
                 <th style={{ textAlign: 'center', padding: '5px 8px', borderBottom: '1px solid hsl(220,18%,78%)' }}>AI DASH CAM</th>
+                <th style={{ textAlign: 'center', padding: '5px 8px', borderBottom: '1px solid hsl(220,18%,78%)' }}>DVR CLOUD</th>
                 <th style={{ textAlign: 'center', padding: '5px 8px', borderBottom: '1px solid hsl(220,18%,78%)' }}>INT. CAMS</th>
                 <th style={{ textAlign: 'left', padding: '5px 8px', borderBottom: '1px solid hsl(220,18%,78%)' }}>CAMERA SYSTEM</th>
               </tr>
@@ -223,6 +224,9 @@ export default function SafetyProducts() {
                   </td>
                   <td style={{ padding: '4px 8px', textAlign: 'center' }}>
                     <input type="checkbox" checked={!!b.ai_cameras_installed} onChange={() => toggle(b, 'ai_cameras_installed')} disabled={locked} style={{ accentColor: 'hsl(282,55%,40%)', cursor: locked ? 'not-allowed' : 'pointer' }} />
+                  </td>
+                  <td style={{ padding: '4px 8px', textAlign: 'center' }}>
+                    <input type="checkbox" checked={!!b.dvr_records_to_cloud} onChange={() => toggle(b, 'dvr_records_to_cloud')} disabled={locked} style={{ accentColor: 'hsl(200,70%,45%)', cursor: locked ? 'not-allowed' : 'pointer' }} />
                   </td>
                   <td style={{ padding: '4px 8px', textAlign: 'center', color: 'hsl(220,30%,40%)' }}>{num(b.cameras_inside)}</td>
                   <td style={{ padding: '4px 8px', color: 'hsl(220,10%,40%)', fontSize: '10px' }}>{b.camera_system_type || '—'}</td>

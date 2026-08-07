@@ -50,7 +50,7 @@ export default function BusForm({ bus, onClose, onSaved }) {
     camera_model_number: '', cameras_inside: '', cameras_outside: '', cameras_ai: '', ai_cameras_installed: false, stop_arm_cameras: false,
     samsara_enabled: false, samsara_av_enabled: false,
     samsara_inputs_enabled: false, dash_cam_sid: '', gateway_sid: '',
-    illuminated_stop_arms: false, illuminated_school_bus_signage: false, stop_arm_camera_vendor: '',
+    illuminated_stop_arms: false, illuminated_school_bus_signage: false, dvr_records_to_cloud: false, stop_arm_camera_vendor: '',
     next_inspection_due: '', status: 'Active', route_class: 'Permanent', board_status: 'Available', whiteboard_tracking: true, notes: '', legacy_upload: '',
   });
 
@@ -84,6 +84,7 @@ export default function BusForm({ bus, onClose, onSaved }) {
         gateway_sid: bus.gateway_sid || '',
         illuminated_stop_arms: bus.illuminated_stop_arms || false,
         illuminated_school_bus_signage: bus.illuminated_school_bus_signage || false,
+        dvr_records_to_cloud: bus.dvr_records_to_cloud || false,
         stop_arm_camera_vendor: bus.stop_arm_camera_vendor || '',
         next_inspection_due: bus.next_inspection_due || '',
         status: bus.status || 'Active',
@@ -269,9 +270,13 @@ export default function BusForm({ bus, onClose, onSaved }) {
               <input type="checkbox" checked={form.illuminated_stop_arms} onChange={e => setForm(prev => ({...prev, illuminated_stop_arms: e.target.checked}))} style={{accentColor:'hsl(220,70%,35%)'}} />
               ILLUMINATED STOP ARMS
             </div>
-            <div style={{display:'flex',alignItems:'center',gap:'4px',fontSize:'11px',cursor:'pointer',marginBottom:'12px'}}>
+            <div style={{display:'flex',alignItems:'center',gap:'4px',fontSize:'11px',cursor:'pointer',marginBottom:'8px'}}>
               <input type="checkbox" checked={form.illuminated_school_bus_signage} onChange={e => setForm(prev => ({...prev, illuminated_school_bus_signage: e.target.checked}))} style={{accentColor:'hsl(220,70%,35%)'}} />
               ILLUMINATED SCHOOL BUS SIGNAGE
+            </div>
+            <div style={{display:'flex',alignItems:'center',gap:'4px',fontSize:'11px',cursor:'pointer',marginBottom:'12px'}}>
+              <input type="checkbox" checked={form.dvr_records_to_cloud} onChange={e => setForm(prev => ({...prev, dvr_records_to_cloud: e.target.checked}))} style={{accentColor:'hsl(220,70%,35%)'}} />
+              DVR RECORDS TO CLOUD
             </div>
           </div>
         </div>
