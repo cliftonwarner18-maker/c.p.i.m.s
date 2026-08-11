@@ -175,11 +175,12 @@
         "Dead Line",
         "MI",
         "PM",
+        "In Shop",
         "Active Trip",
         "Parked OOS"
       ],
       "default": "Available",
-      "description": "White Board status \u2014 Available (green), Subbed Out (deep pink \u2014 substitute currently filling in for another bus), Dead Line (red), MI (blue), PM (yellow), Active Trip (purple \u2014 bus on a trip, not available), Parked OOS (gray \u2014 parked / out of service)"
+      "description": "White Board status \u2014 Available (green), Subbed Out (deep pink \u2014 substitute currently filling in for another bus), Dead Line (red), MI (blue), PM (yellow), In Shop (bright yellow \u2014 bus in shop for service), Active Trip (purple \u2014 bus on a trip, not available), Parked OOS (gray \u2014 parked / out of service)"
     },
     "subbed_for_bus": {
       "type": "string",

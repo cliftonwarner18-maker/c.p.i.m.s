@@ -62,11 +62,12 @@ const STATUS_META = {
   'Dead Line':  { label: 'DEAD LINE',  bg: 'hsl(0,70%,50%)',    border: 'hsl(0,70%,38%)',   text: 'white',  glow: '0 0 10px hsl(0,70%,50%)' },
   'MI':         { label: 'MI',         bg: 'hsl(210,70%,50%)',  border: 'hsl(210,70%,38%)', text: 'white',  glow: '0 0 10px hsl(210,70%,50%)' },
   'PM':         { label: 'PM',         bg: 'hsl(45,90%,50%)',   border: 'hsl(45,90%,38%)',  text: '#1a1a1a', glow: '0 0 10px hsl(45,90%,50%)' },
+  'In Shop':    { label: 'IN SHOP',    bg: 'hsl(56,100%,55%)', border: 'hsl(56,100%,42%)', text: '#1a1a1a', glow: '0 0 12px hsl(56,100%,60%)' },
   'Active Trip': { label: 'ACTIVE TRIP', bg: 'hsl(280,55%,48%)', border: 'hsl(280,55%,36%)', text: 'white', glow: '0 0 10px hsl(280,55%,48%)' },
   'Parked OOS': { label: 'PARKED OOS', bg: 'hsl(220,8%,45%)', border: 'hsl(220,10%,32%)', text: 'white', glow: '0 0 8px hsl(220,8%,40%)' },
 };
 
-const STATUS_ORDER = ['Available', 'Subbed Out', 'Dead Line', 'MI', 'PM', 'Active Trip', 'Parked OOS'];
+const STATUS_ORDER = ['Available', 'Subbed Out', 'Dead Line', 'MI', 'PM', 'In Shop', 'Active Trip', 'Parked OOS'];
 
 export default function WhiteBoard() {
   const queryClient = useQueryClient();
