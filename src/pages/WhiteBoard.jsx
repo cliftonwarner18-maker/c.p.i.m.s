@@ -91,6 +91,21 @@ export default function WhiteBoard() {
     queryFn: () => base44.entities.Bus.list('bus_number'),
   });
 
+  const { data: audits = [] } = useQuery({
+    queryKey: ['whiteBoardAudits'],
+    queryFn: () => base44.entities.WhiteBoardAudit.list('-changed_at', 500),
+  });
+
+  // Map bus_number -> latest audit entry (most recent changed_at)
+  const lastChangeByBus = {};
+  audits.forEach(a => {
+    const bn = a.bus_number;
+    if (!bn) return;
+    if (!lastChangeByBus[bn] || new Date(a.changed_at) > new Date(lastChangeByBus[bn].changed_at)) {
+      lastChangeByBus[bn] = a;
+    }
+  });
+
   const updateMutation = useMutation({
     mutationFn: async ({ id, _audit, ...data }) => {
       const result = await base44.entities.Bus.update(id, data);
@@ -249,6 +264,7 @@ export default function WhiteBoard() {
                     isSub={isSubAvail}
                     make={b.make}
                     glow={glow}
+                    lastChangedBy={lastChangeByBus[b.bus_number]?.changed_by_email || lastChangeByBus[b.bus_number]?.changed_by_name}
                   />
                 </button>
               );

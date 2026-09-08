@@ -5,7 +5,7 @@ import React from 'react';
  * Body color reflects board status. The hood/engine compartment protrudes
  * at the front (right side), with a windshield above it and round wheels below.
  */
-export default function BusShape({ busNumber, statusLabel, bg, border, text, isSub, make, glow }) {
+export default function BusShape({ busNumber, statusLabel, bg, border, text, isSub, make, glow, lastChangedBy }) {
   return (
     <div style={{ position: 'relative', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       {isSub && (
@@ -111,6 +111,11 @@ export default function BusShape({ busNumber, statusLabel, bg, border, text, isS
       {make && (
         <div style={{ fontSize: '7px', color: 'hsl(220,10%,45%)', textAlign: 'center', marginTop: '7px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%' }}>
           {make}
+        </div>
+      )}
+      {lastChangedBy && (
+        <div style={{ fontSize: '6px', color: 'hsl(220,10%,55%)', textAlign: 'center', marginTop: '2px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%', letterSpacing: '0.02em' }}>
+          {lastChangedBy}
         </div>
       )}
     </div>
