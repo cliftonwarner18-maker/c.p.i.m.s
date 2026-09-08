@@ -114,8 +114,8 @@ export default function BusShape({ busNumber, statusLabel, bg, border, text, isS
         </div>
       )}
       {lastChangedBy && (
-        <div style={{ fontSize: '6px', color: 'hsl(220,10%,55%)', textAlign: 'center', marginTop: '2px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%', letterSpacing: '0.02em' }}>
-          {lastChangedBy}
+        <div style={{ fontSize: '7px', color: 'hsl(220,20%,35%)', textAlign: 'center', marginTop: '2px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%', letterSpacing: '0.02em', fontWeight: '600' }}>
+          ↳ {lastChangedBy}
         </div>
       )}
     </div>
