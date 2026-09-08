@@ -92,7 +92,25 @@ export default function WhiteBoard() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, ...data }) => base44.entities.Bus.update(id, data),
+    mutationFn: async ({ id, _audit, ...data }) => {
+      const result = await base44.entities.Bus.update(id, data);
+      if (_audit) {
+        try {
+          const user = await base44.auth.me();
+          await base44.entities.WhiteBoardAudit.create({
+            bus_number: _audit.bus_number || '',
+            previous_status: _audit.previous_status || 'Available',
+            new_status: data.board_status || 'Available',
+            changed_by_email: user?.email || 'unknown',
+            changed_by_name: user?.full_name || '',
+            changed_at: new Date().toISOString(),
+            source: 'White Board',
+            subbed_for_bus: data.subbed_for_bus || '',
+          });
+        } catch (e) { console.error('Audit log failed', e); }
+      }
+      return result;
+    },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['buses'] }),
   });
 
@@ -114,7 +132,14 @@ export default function WhiteBoard() {
 
   const handleSetStatus = (status, subFor) => {
     if (!selectedBus) return;
-    const payload = { id: selectedBus.id, board_status: status };
+    const payload = {
+      id: selectedBus.id,
+      board_status: status,
+      _audit: {
+        bus_number: selectedBus.bus_number,
+        previous_status: selectedBus.board_status || 'Available',
+      },
+    };
     payload.subbed_for_bus = status === 'Subbed Out' ? (subFor || '').trim() : '';
     updateMutation.mutate(payload);
     setSelectedBus(null);

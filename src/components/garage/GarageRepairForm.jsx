@@ -68,7 +68,22 @@ export default function GarageRepairForm({ repair, buses = [], onClose, onSaved 
       const matchBus = buses.find(b => b.bus_number === data.bus_number);
       // Update the bus White Board status to whatever was selected in the dropdown
       if (matchBus && data.board_status) {
+        const prevStatus = matchBus.board_status || 'Available';
         await base44.entities.Bus.update(matchBus.id, { board_status: data.board_status });
+        if (prevStatus !== data.board_status) {
+          try {
+            const user = await base44.auth.me();
+            await base44.entities.WhiteBoardAudit.create({
+              bus_number: data.bus_number || '',
+              previous_status: prevStatus,
+              new_status: data.board_status,
+              changed_by_email: user?.email || 'unknown',
+              changed_by_name: user?.full_name || '',
+              changed_at: new Date().toISOString(),
+              source: 'Garage Board',
+            });
+          } catch (e) { console.error('Audit log failed', e); }
+        }
       }
       const payload = { ...data, return_to_service: data.board_status === 'Available' };
       if (isNew) return base44.entities.GarageRepair.create(payload);

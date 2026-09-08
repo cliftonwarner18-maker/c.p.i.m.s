@@ -1,0 +1,50 @@
+{
+  "name": "WhiteBoardAudit",
+  "type": "object",
+  "properties": {
+    "bus_number": {
+      "type": "string",
+      "description": "Bus number whose board status was changed"
+    },
+    "previous_status": {
+      "type": "string",
+      "description": "Previous white board status before the change"
+    },
+    "new_status": {
+      "type": "string",
+      "description": "New white board status after the change"
+    },
+    "changed_by_email": {
+      "type": "string",
+      "description": "Email / login account of the user who made the change"
+    },
+    "changed_by_name": {
+      "type": "string",
+      "description": "Full name of the user who made the change"
+    },
+    "changed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date and time the change was made"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "White Board",
+        "Garage Board"
+      ],
+      "default": "White Board",
+      "description": "Where the status change originated"
+    },
+    "subbed_for_bus": {
+      "type": "string",
+      "description": "Bus number being subbed for (set when new status is Subbed Out)"
+    }
+  },
+  "required": [
+    "bus_number",
+    "new_status",
+    "changed_by_email",
+    "changed_at"
+  ]
+}
