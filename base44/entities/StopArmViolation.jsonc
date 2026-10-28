@@ -1,0 +1,244 @@
+{
+  "name": "StopArmViolation",
+  "type": "object",
+  "properties": {
+    "case_number": {
+      "type": "string",
+      "description": "Auto-generated case number"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "New",
+        "Assigned",
+        "Under Investigation",
+        "Charges Filed",
+        "Court Pending",
+        "Closed - Convicted",
+        "Closed - Dismissed",
+        "Closed - No Action"
+      ],
+      "default": "New",
+      "description": "Case status"
+    },
+    "evidence_source": {
+      "type": "string",
+      "enum": [
+        "Stop Arm Camera",
+        "Driver Report",
+        "Witness Report",
+        "Other"
+      ],
+      "default": "Stop Arm Camera",
+      "description": "How the violation was identified"
+    },
+    "to_sergeant": {
+      "type": "string",
+      "description": "To: First Sergeant"
+    },
+    "violation_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date violation occurred"
+    },
+    "violation_time": {
+      "type": "string",
+      "description": "Time violation occurred (HH:MM, 24hr)"
+    },
+    "county": {
+      "type": "string",
+      "description": "County"
+    },
+    "highway": {
+      "type": "string",
+      "description": "Highway / road"
+    },
+    "school_bus_number": {
+      "type": "string",
+      "description": "School bus number"
+    },
+    "school_name": {
+      "type": "string",
+      "description": "School the bus is from"
+    },
+    "driver_name": {
+      "type": "string",
+      "description": "Bus driver name"
+    },
+    "driver_phone": {
+      "type": "string",
+      "description": "Bus driver phone"
+    },
+    "bus_heading": {
+      "type": "string",
+      "enum": [
+        "E",
+        "W",
+        "N",
+        "S"
+      ],
+      "description": "Direction bus was headed"
+    },
+    "stopped_activity": {
+      "type": "string",
+      "enum": [
+        "Loading",
+        "Unloading"
+      ],
+      "description": "Bus stopped loading / unloading"
+    },
+    "stop_arm_displayed": {
+      "type": "boolean",
+      "default": true,
+      "description": "Mechanical stop arm displayed"
+    },
+    "red_lights_activated": {
+      "type": "boolean",
+      "default": true,
+      "description": "Flashing red stoplight activated"
+    },
+    "vehicle_description": {
+      "type": "string",
+      "description": "Violator vehicle (year/make/model)"
+    },
+    "vehicle_color": {
+      "type": "string",
+      "description": "Vehicle color"
+    },
+    "license_plate": {
+      "type": "string",
+      "description": "License plate"
+    },
+    "plate_state": {
+      "type": "string",
+      "description": "License plate state"
+    },
+    "violator_name": {
+      "type": "string",
+      "description": "Vehicle driven by"
+    },
+    "violator_sex": {
+      "type": "string",
+      "enum": [
+        "Male",
+        "Female"
+      ],
+      "description": "Violator sex"
+    },
+    "violator_race": {
+      "type": "string",
+      "description": "Violator race"
+    },
+    "violator_age": {
+      "type": "string",
+      "description": "Violator age"
+    },
+    "violator_direction": {
+      "type": "string",
+      "enum": [
+        "E",
+        "W",
+        "N",
+        "S"
+      ],
+      "description": "Direction violator was going"
+    },
+    "witnesses": {
+      "type": "array",
+      "description": "Witnesses available for prosecution",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "reported_by": {
+      "type": "string",
+      "description": "Reported by"
+    },
+    "reported_by_phone": {
+      "type": "string",
+      "description": "Reporter phone"
+    },
+    "same_as_driver": {
+      "type": "boolean",
+      "default": false,
+      "description": "Reporter same as bus driver"
+    },
+    "identifiable_by_witness": {
+      "type": "boolean",
+      "default": false,
+      "description": "Violator identifiable by witness for court"
+    },
+    "received_by": {
+      "type": "string",
+      "description": "Received by"
+    },
+    "received_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date received"
+    },
+    "assigned_to": {
+      "type": "string",
+      "description": "Assigned to (trooper/officer)"
+    },
+    "call_no": {
+      "type": "string",
+      "description": "Call number"
+    },
+    "assigned_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date assigned"
+    },
+    "owner_contacted": {
+      "type": "string",
+      "enum": [
+        "Yes",
+        "No"
+      ],
+      "description": "Registered owner contacted"
+    },
+    "owner_not_contacted_reason": {
+      "type": "string",
+      "description": "Reason owner not contacted"
+    },
+    "action_taken": {
+      "type": "string",
+      "description": "Action taken (include dates and times)"
+    },
+    "charges_preferred": {
+      "type": "string",
+      "description": "Charge(s) preferred"
+    },
+    "citation_number": {
+      "type": "string",
+      "description": "Citation number"
+    },
+    "court_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Court date"
+    },
+    "returned_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date returned / case closed"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Internal notes"
+    }
+  },
+  "required": [
+    "violation_date",
+    "school_bus_number"
+  ]
+}

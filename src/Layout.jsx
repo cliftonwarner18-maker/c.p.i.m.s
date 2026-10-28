@@ -19,6 +19,7 @@ const navItems = [
 { name: 'New W/O', icon: PlusCircle, page: 'NewWorkOrder', h: 145, s: 60, l: 40 },
 { name: 'Work Orders', icon: FileText, page: 'WorkOrders', h: 210, s: 16, l: 45 },
 { name: 'Camera Inspections', icon: ClipboardCheck, page: 'Inspections', h: 190, s: 70, l: 42 },
+{ name: 'Enforcement Center', icon: ShieldAlert, page: 'EnforcementCenter', h: 350, s: 70, l: 38 },
 { name: 'Wash Bay', icon: HardDrive, page: 'WashBay', h: 175, s: 65, l: 42 },
 { name: 'Assets', icon: Package2, page: 'Assets', h: 38, s: 55, l: 38 },
 { name: 'H-Drive', icon: HardDrive, page: 'HdriveManagement', h: 330, s: 60, l: 45 },
