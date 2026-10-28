@@ -1,6 +1,7 @@
 import React from 'react';
 import { format } from 'date-fns';
 import { STATUS_COLORS } from './enforcementConstants';
+import { printHP311 } from './printHP311';
 
 const fmt = (d) => (d ? format(new Date(d + 'T12:00:00'), 'MM/dd/yyyy') : '—');
 
@@ -31,6 +32,7 @@ export default function ViolationList({ rows, onOpen, onDelete }) {
                 <span className="px-1.5 py-0.5 text-white font-bold whitespace-nowrap" style={{ background: STATUS_COLORS[r.status] || '#64748b' }}>{r.status}</span>
               </td>
               <td className="px-2 py-1">
+                <button className="text-blue-800 font-bold mr-3" onClick={(e) => { e.stopPropagation(); printHP311(r); }}>PRINT HP-311</button>
                 <button className="text-red-700 font-bold" onClick={(e) => { e.stopPropagation(); onDelete(r); }}>DELETE</button>
               </td>
             </tr>

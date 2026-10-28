@@ -3,6 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Field, TextField, SelectField, CheckField, Section, inputCls } from './Field';
 import { STATUSES, EVIDENCE_SOURCES, SCHOOL_GROUPS, COUNTIES } from './enforcementConstants';
+import { printHP311 } from './printHP311';
 
 const DIRS = ['E', 'W', 'N', 'S'];
 const ALL_SCHOOLS = SCHOOL_GROUPS.flatMap((g) => g.schools);
@@ -133,6 +134,7 @@ export default function ViolationForm({ record, onClose }) {
       {save.isError && <div className="text-xs font-bold text-red-700">Save failed. Please try again.</div>}
       <div className="flex gap-2">
         <button className="win-button" onClick={submit} disabled={save.isPending}>{save.isPending ? 'SAVING...' : 'SAVE CASE'}</button>
+        <button className="win-button" onClick={() => printHP311(f)}>PRINT HP-311</button>
         <button className="win-button" onClick={onClose}>CANCEL</button>
       </div>
     </div>
