@@ -5,6 +5,8 @@ export const STATUSES = [
 
 export const EVIDENCE_SOURCES = ['Stop Arm Camera', 'Driver Report', 'Witness Report', 'Other'];
 
+export const COUNTIES = ['New Hanover', 'Brunswick', 'Pender'];
+
 export const SCHOOL_GROUPS = [
   {
     group: 'Pre-Kindergarten Centers',

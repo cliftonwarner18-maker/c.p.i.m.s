@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Field, TextField, SelectField, CheckField, Section, inputCls } from './Field';
-import { STATUSES, EVIDENCE_SOURCES, SCHOOL_GROUPS } from './enforcementConstants';
+import { STATUSES, EVIDENCE_SOURCES, SCHOOL_GROUPS, COUNTIES } from './enforcementConstants';
 
 const DIRS = ['E', 'W', 'N', 'S'];
 const ALL_SCHOOLS = SCHOOL_GROUPS.flatMap((g) => g.schools);
@@ -58,7 +58,7 @@ export default function ViolationForm({ record, onClose }) {
       <Section title="Violation">
         <TextField label="Date *" type="date" value={f.violation_date} onChange={set('violation_date')} />
         <TextField label="Time" type="time" value={f.violation_time} onChange={set('violation_time')} />
-        <TextField label="County" value={f.county} onChange={set('county')} />
+        <SelectField label="County" value={f.county} onChange={set('county')} options={COUNTIES} />
         <TextField label="On Highway / Road" value={f.highway} onChange={set('highway')} />
         <SelectField label="School Bus No. *" value={f.school_bus_number} onChange={set('school_bus_number')} options={busNumbers} />
         <Field label="From School">
