@@ -232,13 +232,43 @@
       "format": "date",
       "description": "Date returned / case closed"
     },
+    "investigation_camera_pulled": {
+      "type": "boolean",
+      "default": false,
+      "description": "INTERNAL ONLY - camera footage pulled"
+    },
+    "camera_pulled_date": {
+      "type": "string",
+      "format": "date",
+      "description": "INTERNAL ONLY - date camera was pulled"
+    },
+    "camera_pulled_by": {
+      "type": "string",
+      "description": "INTERNAL ONLY - user who pulled the camera"
+    },
+    "investigation_outcome": {
+      "type": "string",
+      "enum": [
+        "Violations Validated / Found",
+        "No Violations Witnessed / False Alarm"
+      ],
+      "description": "INTERNAL ONLY - transportation investigation outcome"
+    },
+    "investigator_notes": {
+      "type": "string",
+      "description": "INTERNAL ONLY - transportation investigator notes"
+    },
+    "transportation_disposition": {
+      "type": "string",
+      "description": "INTERNAL ONLY - transportation disposition"
+    },
     "narrative": {
       "type": "string",
-      "description": "Narrative \u2014 internal record account of the incident"
+      "description": "Narrative - internal record account of the incident"
     },
     "disposition": {
       "type": "string",
-      "description": "Disposition \u2014 internal record outcome of the case"
+      "description": "Disposition - internal record outcome of the case"
     },
     "notes": {
       "type": "string",

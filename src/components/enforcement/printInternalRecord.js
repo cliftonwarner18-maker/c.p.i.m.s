@@ -81,6 +81,17 @@ export function printInternalRecord(r) {
     <div class="box sm">${witHtml}</div>
     <div class="sec">ACTION TAKEN (INCLUDING DATES AND TIMES)</div>
     <div class="box">${esc(r.action_taken) || '—'}</div>
+    <div class="sec">TRANSPORTATION INVESTIGATION</div>
+    <table>
+      <tr><td class="k">Camera Pulled</td><td>${tf(r.investigation_camera_pulled)}</td></tr>
+      <tr><td class="k">Date Pulled</td><td>${dt(r.camera_pulled_date)}</td></tr>
+      <tr><td class="k">Pulled By</td><td>${v(r.camera_pulled_by)}</td></tr>
+      <tr><td class="k">Finding</td><td>${v(r.investigation_outcome)}</td></tr>
+    </table>
+    <div class="sec">TRANSPORTATION INVESTIGATOR'S NOTES</div>
+    <div class="box">${esc(r.investigator_notes) || '—'}</div>
+    <div class="sec">TRANSPORTATION DISPOSITION</div>
+    <div class="box sm">${esc(r.transportation_disposition) || '—'}</div>
     <div class="sec">NARRATIVE</div>
     <div class="box">${esc(r.narrative) || '—'}</div>
     <div class="sec">DISPOSITION</div>

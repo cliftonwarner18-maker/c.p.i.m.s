@@ -22,6 +22,12 @@ export default function ViolationForm({ record, onClose }) {
   const setWit = (i, k, v) => setF((p) => ({ ...p, witnesses: p.witnesses.map((w, j) => (j === i ? { ...w, [k]: v } : w)) }));
 
   const { data: buses = [] } = useQuery({ queryKey: ['buses'], queryFn: () => base44.entities.Bus.list() });
+  const { data: users = [] } = useQuery({ queryKey: ['users'], queryFn: () => base44.entities.User.list() });
+  const userOptions = useMemo(() => {
+    const set = new Set(users.map((u) => u.full_name || u.email).filter(Boolean));
+    if (f.camera_pulled_by) set.add(f.camera_pulled_by);
+    return [...set].sort();
+  }, [users, f.camera_pulled_by]);
   const busNumbers = useMemo(() => {
     const set = new Set(buses.map((b) => b.bus_number).filter(Boolean));
     if (f.school_bus_number) set.add(f.school_bus_number);
@@ -126,6 +132,42 @@ export default function ViolationForm({ record, onClose }) {
         <TextField label="Citation Number" value={f.citation_number} onChange={set('citation_number')} />
         <TextField label="Court Date" type="date" value={f.court_date} onChange={set('court_date')} />
         <TextField label="Returned / Closed Date" type="date" value={f.returned_date} onChange={set('returned_date')} />
+      </Section>
+
+      <Section title="Transportation Investigation — Internal Only">
+        <div className="col-span-2 md:col-span-4 flex flex-wrap items-center gap-4">
+          <CheckField label="Camera Pulled" checked={f.investigation_camera_pulled} onChange={set('investigation_camera_pulled')} />
+          <div className="w-40">
+            <TextField label="Date Pulled" type="date" value={f.camera_pulled_date} onChange={set('camera_pulled_date')} />
+          </div>
+          <div className="w-56">
+            <SelectField label="Pulled By" value={f.camera_pulled_by} onChange={set('camera_pulled_by')} options={userOptions} />
+          </div>
+        </div>
+        <Field label="Investigation Finding" className="col-span-2 md:col-span-4">
+          <div className="flex flex-col md:flex-row gap-2">
+            {['Violations Validated / Found', 'No Violations Witnessed / False Alarm'].map((o) => {
+              const on = f.investigation_outcome === o;
+              return (
+                <button
+                  type="button"
+                  key={o}
+                  onClick={() => set('investigation_outcome')(on ? undefined : o)}
+                  className={`flex items-center gap-2 flex-1 text-left px-3 py-2 text-xs font-bold border-2 ${on ? 'border-slate-800 bg-slate-800 text-white' : 'border-slate-400 bg-white text-slate-700 hover:bg-slate-100'}`}
+                >
+                  <span className={`inline-block w-3.5 h-3.5 border border-current text-center leading-3 text-[10px] ${on ? 'bg-white text-slate-800' : ''}`}>{on ? 'X' : ''}</span>
+                  {o}
+                </button>
+              );
+            })}
+          </div>
+        </Field>
+        <Field label="Transportation Investigator's Notes" className="col-span-2 md:col-span-4">
+          <textarea className={inputCls} rows={5} value={f.investigator_notes || ''} onChange={(e) => set('investigator_notes')(e.target.value)} />
+        </Field>
+        <Field label="Transportation Disposition" className="col-span-2 md:col-span-4">
+          <textarea className={inputCls} rows={4} value={f.transportation_disposition || ''} onChange={(e) => set('transportation_disposition')(e.target.value)} />
+        </Field>
       </Section>
 
       <Section title="Internal Record — Narrative / Disposition">
