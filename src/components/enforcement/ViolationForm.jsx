@@ -2,9 +2,10 @@ import React, { useState, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Field, TextField, SelectField, CheckField, Section, inputCls } from './Field';
-import { STATUSES, EVIDENCE_SOURCES } from './enforcementConstants';
+import { STATUSES, EVIDENCE_SOURCES, SCHOOL_GROUPS } from './enforcementConstants';
 
 const DIRS = ['E', 'W', 'N', 'S'];
+const ALL_SCHOOLS = SCHOOL_GROUPS.flatMap((g) => g.schools);
 const blank = {
   status: 'New', evidence_source: 'Stop Arm Camera', stop_arm_displayed: true,
   red_lights_activated: true, witnesses: [{ name: '', phone: '' }, { name: '', phone: '' }],
@@ -60,7 +61,17 @@ export default function ViolationForm({ record, onClose }) {
         <TextField label="County" value={f.county} onChange={set('county')} />
         <TextField label="On Highway / Road" value={f.highway} onChange={set('highway')} />
         <SelectField label="School Bus No. *" value={f.school_bus_number} onChange={set('school_bus_number')} options={busNumbers} />
-        <TextField label="From School" value={f.school_name} onChange={set('school_name')} />
+        <Field label="From School">
+          <select className={inputCls} value={f.school_name || ''} onChange={(e) => set('school_name')(e.target.value)}>
+            <option value="">--</option>
+            {f.school_name && !ALL_SCHOOLS.includes(f.school_name) && <option value={f.school_name}>{f.school_name}</option>}
+            {SCHOOL_GROUPS.map((g) => (
+              <optgroup key={g.group} label={g.group}>
+                {g.schools.map((s) => <option key={s} value={s}>{s}</option>)}
+              </optgroup>
+            ))}
+          </select>
+        </Field>
         <TextField label="Bus Driver" value={f.driver_name} onChange={set('driver_name')} />
         <TextField label="Driver Phone" value={f.driver_phone} onChange={set('driver_phone')} />
         <SelectField label="Bus Headed" value={f.bus_heading} onChange={set('bus_heading')} options={DIRS} />
