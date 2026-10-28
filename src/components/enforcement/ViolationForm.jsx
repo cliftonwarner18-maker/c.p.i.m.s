@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Field, TextField, SelectField, CheckField, Section, inputCls } from './Field';
 import { STATUSES, EVIDENCE_SOURCES } from './enforcementConstants';
 
@@ -17,6 +17,13 @@ export default function ViolationForm({ record, onClose }) {
   const [error, setError] = useState('');
   const set = (k) => (v) => setF((p) => ({ ...p, [k]: v }));
   const setWit = (i, k, v) => setF((p) => ({ ...p, witnesses: p.witnesses.map((w, j) => (j === i ? { ...w, [k]: v } : w)) }));
+
+  const { data: buses = [] } = useQuery({ queryKey: ['buses'], queryFn: () => base44.entities.Bus.list() });
+  const busNumbers = useMemo(() => {
+    const set = new Set(buses.map((b) => b.bus_number).filter(Boolean));
+    if (f.school_bus_number) set.add(f.school_bus_number);
+    return [...set].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+  }, [buses, f.school_bus_number]);
 
   const save = useMutation({
     mutationFn: async () => {
@@ -52,7 +59,7 @@ export default function ViolationForm({ record, onClose }) {
         <TextField label="Time" type="time" value={f.violation_time} onChange={set('violation_time')} />
         <TextField label="County" value={f.county} onChange={set('county')} />
         <TextField label="On Highway / Road" value={f.highway} onChange={set('highway')} />
-        <TextField label="School Bus No. *" value={f.school_bus_number} onChange={set('school_bus_number')} />
+        <SelectField label="School Bus No. *" value={f.school_bus_number} onChange={set('school_bus_number')} options={busNumbers} />
         <TextField label="From School" value={f.school_name} onChange={set('school_name')} />
         <TextField label="Bus Driver" value={f.driver_name} onChange={set('driver_name')} />
         <TextField label="Driver Phone" value={f.driver_phone} onChange={set('driver_phone')} />
