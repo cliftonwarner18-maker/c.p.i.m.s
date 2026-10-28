@@ -32,10 +32,27 @@ export default function ViolationList({ rows, onOpen, onDelete }) {
               <td className="px-2 py-1">
                 <span className="px-1.5 py-0.5 text-white font-bold whitespace-nowrap" style={{ background: STATUS_COLORS[r.status] || '#64748b' }}>{r.status}</span>
               </td>
-              <td className="px-2 py-1">
-                <button className="text-blue-800 font-bold mr-3" onClick={(e) => { e.stopPropagation(); printHP311(r); }}>PRINT HP-311</button>
-                <button className="text-emerald-800 font-bold mr-3" onClick={(e) => { e.stopPropagation(); printInternalRecord(r); }}>INTERNAL RECORD</button>
-                <button className="text-red-700 font-bold" onClick={(e) => { e.stopPropagation(); onDelete(r); }}>DELETE</button>
+              <td className="px-2 py-1 whitespace-nowrap">
+                <div className="flex gap-1.5">
+                  <button
+                    className="px-2 py-1 text-[10px] font-bold bg-blue-700 text-white border border-blue-900 rounded-sm hover:bg-blue-800"
+                    onClick={(e) => { e.stopPropagation(); printHP311(r); }}
+                  >
+                    PRINT HP-311
+                  </button>
+                  <button
+                    className="px-2 py-1 text-[10px] font-bold bg-emerald-700 text-white border border-emerald-900 rounded-sm hover:bg-emerald-800"
+                    onClick={(e) => { e.stopPropagation(); printInternalRecord(r); }}
+                  >
+                    INTERNAL RECORD
+                  </button>
+                  <button
+                    className="px-2 py-1 text-[10px] font-bold bg-white text-red-700 border border-red-700 rounded-sm hover:bg-red-50"
+                    onClick={(e) => { e.stopPropagation(); onDelete(r); }}
+                  >
+                    DELETE
+                  </button>
+                </div>
               </td>
             </tr>
           ))}
