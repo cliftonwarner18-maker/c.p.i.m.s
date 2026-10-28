@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Field, TextField, SelectField, CheckField, Section, inputCls } from './Field';
 import { STATUSES, EVIDENCE_SOURCES, SCHOOL_GROUPS, COUNTIES } from './enforcementConstants';
 import { printHP311 } from './printHP311';
+import { printInternalRecord } from './printInternalRecord';
 
 const DIRS = ['E', 'W', 'N', 'S'];
 const ALL_SCHOOLS = SCHOOL_GROUPS.flatMap((g) => g.schools);
@@ -125,6 +126,15 @@ export default function ViolationForm({ record, onClose }) {
         <TextField label="Citation Number" value={f.citation_number} onChange={set('citation_number')} />
         <TextField label="Court Date" type="date" value={f.court_date} onChange={set('court_date')} />
         <TextField label="Returned / Closed Date" type="date" value={f.returned_date} onChange={set('returned_date')} />
+      </Section>
+
+      <Section title="Internal Record — Narrative / Disposition">
+        <Field label="Narrative" className="col-span-2 md:col-span-4">
+          <textarea className={inputCls} rows={6} value={f.narrative || ''} onChange={(e) => set('narrative')(e.target.value)} />
+        </Field>
+        <Field label="Disposition" className="col-span-2 md:col-span-4">
+          <textarea className={inputCls} rows={4} value={f.disposition || ''} onChange={(e) => set('disposition')(e.target.value)} />
+        </Field>
         <Field label="Internal Notes" className="col-span-2 md:col-span-4">
           <textarea className={inputCls} rows={2} value={f.notes || ''} onChange={(e) => set('notes')(e.target.value)} />
         </Field>
@@ -135,6 +145,7 @@ export default function ViolationForm({ record, onClose }) {
       <div className="flex gap-2">
         <button className="win-button" onClick={submit} disabled={save.isPending}>{save.isPending ? 'SAVING...' : 'SAVE CASE'}</button>
         <button className="win-button" onClick={() => printHP311(f)}>PRINT HP-311</button>
+        <button className="win-button" onClick={() => printInternalRecord(f)}>PRINT INTERNAL RECORD</button>
         <button className="win-button" onClick={onClose}>CANCEL</button>
       </div>
     </div>

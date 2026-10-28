@@ -232,6 +232,14 @@
       "format": "date",
       "description": "Date returned / case closed"
     },
+    "narrative": {
+      "type": "string",
+      "description": "Narrative \u2014 internal record account of the incident"
+    },
+    "disposition": {
+      "type": "string",
+      "description": "Disposition \u2014 internal record outcome of the case"
+    },
     "notes": {
       "type": "string",
       "description": "Internal notes"
