@@ -4,7 +4,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Field, TextField, SelectField, CheckField, Section, inputCls } from './Field';
 import { STATUSES, EVIDENCE_SOURCES, SCHOOL_GROUPS, COUNTIES } from './enforcementConstants';
 import { printHP311 } from './printHP311';
-import { printInternalRecord } from './printInternalRecord';
 
 const DIRS = ['E', 'W', 'N', 'S'];
 const ALL_SCHOOLS = SCHOOL_GROUPS.flatMap((g) => g.schools);
@@ -22,12 +21,6 @@ export default function ViolationForm({ record, onClose }) {
   const setWit = (i, k, v) => setF((p) => ({ ...p, witnesses: p.witnesses.map((w, j) => (j === i ? { ...w, [k]: v } : w)) }));
 
   const { data: buses = [] } = useQuery({ queryKey: ['buses'], queryFn: () => base44.entities.Bus.list() });
-  const { data: users = [] } = useQuery({ queryKey: ['users'], queryFn: () => base44.entities.User.list() });
-  const userOptions = useMemo(() => {
-    const set = new Set(users.map((u) => u.full_name || u.email).filter(Boolean));
-    if (f.camera_pulled_by) set.add(f.camera_pulled_by);
-    return [...set].sort();
-  }, [users, f.camera_pulled_by]);
   const busNumbers = useMemo(() => {
     const set = new Set(buses.map((b) => b.bus_number).filter(Boolean));
     if (f.school_bus_number) set.add(f.school_bus_number);
@@ -134,60 +127,11 @@ export default function ViolationForm({ record, onClose }) {
         <TextField label="Returned / Closed Date" type="date" value={f.returned_date} onChange={set('returned_date')} />
       </Section>
 
-      <Section title="Transportation Investigation — Internal Only">
-        <div className="col-span-2 md:col-span-4 flex flex-wrap items-center gap-4">
-          <CheckField label="Camera Pulled" checked={f.investigation_camera_pulled} onChange={set('investigation_camera_pulled')} />
-          <div className="w-40">
-            <TextField label="Date Pulled" type="date" value={f.camera_pulled_date} onChange={set('camera_pulled_date')} />
-          </div>
-          <div className="w-56">
-            <SelectField label="Pulled By" value={f.camera_pulled_by} onChange={set('camera_pulled_by')} options={userOptions} />
-          </div>
-        </div>
-        <Field label="Investigation Finding" className="col-span-2 md:col-span-4">
-          <div className="flex flex-col md:flex-row gap-2">
-            {['Violations Validated / Found', 'No Violations Witnessed / False Alarm'].map((o) => {
-              const on = f.investigation_outcome === o;
-              return (
-                <button
-                  type="button"
-                  key={o}
-                  onClick={() => set('investigation_outcome')(on ? undefined : o)}
-                  className={`flex items-center gap-2 flex-1 text-left px-3 py-2 text-xs font-bold border-2 ${on ? 'border-slate-800 bg-slate-800 text-white' : 'border-slate-400 bg-white text-slate-700 hover:bg-slate-100'}`}
-                >
-                  <span className={`inline-block w-3.5 h-3.5 border border-current text-center leading-3 text-[10px] ${on ? 'bg-white text-slate-800' : ''}`}>{on ? 'X' : ''}</span>
-                  {o}
-                </button>
-              );
-            })}
-          </div>
-        </Field>
-        <Field label="Transportation Investigator's Notes" className="col-span-2 md:col-span-4">
-          <textarea className={inputCls} rows={5} value={f.investigator_notes || ''} onChange={(e) => set('investigator_notes')(e.target.value)} />
-        </Field>
-        <Field label="Transportation Disposition" className="col-span-2 md:col-span-4">
-          <textarea className={inputCls} rows={4} value={f.transportation_disposition || ''} onChange={(e) => set('transportation_disposition')(e.target.value)} />
-        </Field>
-      </Section>
-
-      <Section title="Internal Record — Narrative / Disposition">
-        <Field label="Narrative" className="col-span-2 md:col-span-4">
-          <textarea className={inputCls} rows={6} value={f.narrative || ''} onChange={(e) => set('narrative')(e.target.value)} />
-        </Field>
-        <Field label="Disposition" className="col-span-2 md:col-span-4">
-          <textarea className={inputCls} rows={4} value={f.disposition || ''} onChange={(e) => set('disposition')(e.target.value)} />
-        </Field>
-        <Field label="Internal Notes" className="col-span-2 md:col-span-4">
-          <textarea className={inputCls} rows={2} value={f.notes || ''} onChange={(e) => set('notes')(e.target.value)} />
-        </Field>
-      </Section>
-
       {error && <div className="text-xs font-bold text-red-700">{error}</div>}
       {save.isError && <div className="text-xs font-bold text-red-700">Save failed. Please try again.</div>}
       <div className="flex gap-2">
         <button className="win-button" onClick={submit} disabled={save.isPending}>{save.isPending ? 'SAVING...' : 'SAVE CASE'}</button>
         <button className="win-button" onClick={() => printHP311(f)}>PRINT HP-311</button>
-        <button className="win-button" onClick={() => printInternalRecord(f)}>PRINT INTERNAL RECORD</button>
         <button className="win-button" onClick={onClose}>CANCEL</button>
       </div>
     </div>

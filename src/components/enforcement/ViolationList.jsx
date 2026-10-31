@@ -2,7 +2,6 @@ import React from 'react';
 import { format } from 'date-fns';
 import { STATUS_COLORS } from './enforcementConstants';
 import { printHP311 } from './printHP311';
-import { printInternalRecord } from './printInternalRecord';
 
 const fmt = (d) => (d ? format(new Date(d + 'T12:00:00'), 'MM/dd/yyyy') : '—');
 
@@ -39,12 +38,6 @@ export default function ViolationList({ rows, onOpen, onDelete }) {
                     onClick={(e) => { e.stopPropagation(); printHP311(r); }}
                   >
                     PRINT HP-311
-                  </button>
-                  <button
-                    className="px-2 py-1 text-[10px] font-bold bg-emerald-700 text-white border border-emerald-900 rounded-sm hover:bg-emerald-800"
-                    onClick={(e) => { e.stopPropagation(); printInternalRecord(r); }}
-                  >
-                    INTERNAL RECORD
                   </button>
                   <button
                     className="px-2 py-1 text-[10px] font-bold bg-white text-red-700 border border-red-700 rounded-sm hover:bg-red-50"
