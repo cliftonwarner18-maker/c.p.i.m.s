@@ -51,8 +51,33 @@ export default function SamsaraImporter() {
         return;
       }
 
-      const response = await base44.functions.invoke('importSamsaraData', { rows });
-      setResult(response.data);
+      const allBuses = await base44.entities.Bus.list();
+      let updated = 0;
+      let skipped = 0;
+      const errors = [];
+
+      for (const row of rows) {
+        const { bus_number, dash_cam_sid, gateway_sid } = row;
+        const bus = allBuses.find((b) => b.bus_number === bus_number);
+        if (!bus) { skipped++; continue; }
+
+        const dashCamId = dash_cam_sid && dash_cam_sid !== 'Installed' ? dash_cam_sid : null;
+        const gatewayId = gateway_sid && gateway_sid !== 'Installed' ? gateway_sid : null;
+        if (!dashCamId && !gatewayId) { skipped++; continue; }
+
+        const updateData = {};
+        if (dashCamId) updateData.dash_cam_sid = dashCamId;
+        if (gatewayId) updateData.gateway_sid = gatewayId;
+
+        try {
+          await base44.entities.Bus.update(bus.id, updateData);
+          updated++;
+        } catch (err) {
+          errors.push(`Bus ${bus_number}: ${err.message}`);
+        }
+      }
+
+      setResult({ updated, skipped, total: rows.length, errors: errors.length ? errors : null });
       setTextInput('');
     } catch (err) {
       setError(`Error: ${err.message}`);
