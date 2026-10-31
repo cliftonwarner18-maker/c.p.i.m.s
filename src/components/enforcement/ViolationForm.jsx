@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Field, TextField, SelectField, CheckField, Section, inputCls } from './Field';
-import { STATUSES, EVIDENCE_SOURCES, SCHOOL_GROUPS, COUNTIES } from './enforcementConstants';
+import { STATUSES, EVIDENCE_SOURCES, SCHOOL_GROUPS, COUNTIES, REFERRAL_AGENCIES } from './enforcementConstants';
 import { printHP311 } from './printHP311';
 
 const DIRS = ['E', 'W', 'N', 'S'];
@@ -114,6 +114,7 @@ export default function ViolationForm({ record, onClose }) {
         <TextField label="Received By" value={f.received_by} onChange={set('received_by')} />
         <TextField label="Date Received" type="date" value={f.received_date} onChange={set('received_date')} />
         <TextField label="Assigned To" value={f.assigned_to} onChange={set('assigned_to')} />
+        <SelectField label="Referred To Agency" value={f.referred_to_agency} onChange={set('referred_to_agency')} options={REFERRAL_AGENCIES} />
         <TextField label="Call No." value={f.call_no} onChange={set('call_no')} />
         <TextField label="Date Assigned" type="date" value={f.assigned_date} onChange={set('assigned_date')} />
         <SelectField label="Registered Owner Contacted" value={f.owner_contacted} onChange={set('owner_contacted')} options={['Yes', 'No']} />

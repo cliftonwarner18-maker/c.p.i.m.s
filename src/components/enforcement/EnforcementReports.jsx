@@ -86,6 +86,7 @@ export default function EnforcementReports() {
             <RankTable title="By Road" data={stats.byRoad} />
             <RankTable title="By County" data={stats.byCounty} />
             <RankTable title="By Evidence Source" data={stats.byEvidence} />
+            <RankTable title="By Referred Agency" data={stats.byAgency} />
             <RankTable title="By Assigned Officer" data={stats.byOfficer} />
             <RankTable title="By Time of Day" data={stats.byHour} />
           </div>

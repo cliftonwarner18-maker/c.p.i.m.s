@@ -32,6 +32,7 @@ export const buildStats = (rows) => {
     byCounty: countBy(rows, (r) => r.county),
     byEvidence: countBy(rows, (r) => r.evidence_source),
     byOfficer: countBy(rows, (r) => r.assigned_to),
+    byAgency: countBy(rows, (r) => r.referred_to_agency),
     byHour: countBy(rows, (r) => (r.violation_time ? `${r.violation_time.slice(0, 2)}:00` : '')).sort((a, b) => a.name.localeCompare(b.name)),
   };
 };
@@ -61,7 +62,8 @@ export const printReport = (stats, rangeLabel) => {
     ${table('Cases by Status', stats.byStatus)}${table('Cases by Month', stats.byMonth)}
     ${table('Violations by School', stats.bySchool)}${table('Violations by Bus', stats.byBus)}
     ${table('Violations by Road', stats.byRoad)}${table('Violations by County', stats.byCounty)}
-    ${table('Evidence Source', stats.byEvidence)}${table('Cases by Assigned Officer', stats.byOfficer)}
+    ${table('Evidence Source', stats.byEvidence)}${table('Cases Referred To Agency', stats.byAgency)}
+    ${table('Cases by Assigned Officer', stats.byOfficer)}
     ${table('Violations by Time of Day', stats.byHour)}
     </body></html>`);
   w.document.close();
@@ -70,7 +72,7 @@ export const printReport = (stats, rangeLabel) => {
 
 export const exportCsv = (rows) => {
   const cols = ['case_number', 'status', 'violation_date', 'violation_time', 'county', 'highway', 'school_bus_number', 'school_name',
-    'driver_name', 'license_plate', 'plate_state', 'violator_name', 'assigned_to', 'call_no', 'charges_preferred', 'citation_number',
+    'driver_name', 'license_plate', 'plate_state', 'violator_name', 'assigned_to', 'referred_to_agency', 'call_no', 'charges_preferred', 'citation_number',
     'court_date', 'returned_date', 'evidence_source'];
   const esc = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`;
   const csv = [cols.join(','), ...rows.map((r) => cols.map((c) => esc(r[c])).join(','))].join('\n');

@@ -7,6 +7,14 @@ export const EVIDENCE_SOURCES = ['Stop Arm Camera', 'Driver Report', 'Witness Re
 
 export const COUNTIES = ['New Hanover', 'Brunswick', 'Pender'];
 
+export const REFERRAL_AGENCIES = [
+  'Carolina Beach Police',
+  'New Hanover County Sheriff',
+  'Wilmington Police',
+  'State Highway Patrol',
+  'Other',
+];
+
 export const SCHOOL_GROUPS = [
   {
     group: 'Pre-Kindergarten Centers',
