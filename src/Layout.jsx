@@ -229,7 +229,7 @@ export default function Layout({ children, currentPageName }) {
           NHCS Data-TraCs System
         </div>
         <div style={{ fontSize: '9px', color: 'hsl(220,10%,50%)', letterSpacing: '0.04em' }}>
-          Powered by Base44 &nbsp;|&nbsp; Developed by: Clifton M. Warner
+          Powered by Base44 &nbsp;|&nbsp; Developed by: Clifton M. Warner &nbsp;|&nbsp; Donated to New Hanover County Schools
         </div>
         <div style={{ borderLeft: '1px solid hsl(220,18%,70%)', paddingLeft: '8px', color: 'hsl(220,10%,45%)', whiteSpace: 'nowrap' }}>
           {format(new Date(), 'MM/dd/yyyy - HH:mm')}
